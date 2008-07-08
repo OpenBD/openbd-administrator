@@ -44,7 +44,7 @@
 <!-- ======== Left Sidebar ======== -->
 
 <div id="sidebar">
-  <div>
+  <!--- <div>	
     <p class="title"><a href="index.html">Other</a></p>
     <ul>
       <li><a href="index.html">Overview</a></li>
@@ -52,6 +52,21 @@
         <span class="hidden">(this page)</span></li>
       <li><a href="sample.html">Sample Page</a></li>
     </ul>
+  </div> --->
+  <div>	
+    <p class="title">Server Settings</p>
+    <!--- <ul>
+      <li><a href="index.html">Overview</a></li>
+      <li class="highlight"><a href="template.html">Template</a>
+        <span class="hidden">(this page)</span></li>
+      <li><a href="sample.html">Sample Page</a></li>
+    </ul> --->
+  </div>
+  <div>
+	<p class="title">Datasources &amp; Search</p>
+	<ul>
+		<li><a href="#getPageContext().getRequest().getContextPath()#/bluedragon/administrator/datasources/index.cfm">Datasources</a></li>
+	</ul>
   </div>
 </div>
 
@@ -60,12 +75,12 @@
 
 <div id="main">
 
-<div id="navhead">
+<!--- <div id="navhead">
   <hr />
   <span class="hidden">Path to this page:</span>
   <a href="index.html">Home</a> &raquo;
   <a href="index.html">Other</a> &raquo;
-</div>
+</div> --->
 
 #request.content#
 
@@ -77,16 +92,8 @@
 
 <div id="footer">
   <hr />
-  Copyright &copy; 2004, John Zaitseff.  All rights reserved.
-  <span class="notprinted">
-    <a href="index.html">Terms of Use</a>.
-    <a href="index.html">Privacy Policy</a>.
-  </span>
+  Copyright &copy; 2008<cfif DatePart("yyyy", now()) gt 2008> - #DatePart("yyyy", now())#</cfif>
   <br />
-
-  This web site is maintained by
-  <a href="mailto:J.Zaitseff@zap.org.au">John Zaitseff</a>.
-  Last modified: 18th November, 2004.
 </div>
 
 </body>

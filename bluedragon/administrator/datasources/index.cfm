@@ -55,7 +55,9 @@
 		</form>
 		
 		<hr noshade="true" />
-
+		
+		<h3>Datasources</h3>
+		
 		<cfif message is not ""><p>#message#</p></cfif>
 		
 		<cfdump var="#datasources#" expand="true" />

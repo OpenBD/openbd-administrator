@@ -15,9 +15,126 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --->
-<cfcomponent name="datasource" extends="bluedragon.adminapi.base" displayname="datasource [BD AdminAPI]" hint="Add, modify, and delete BlueDragon data sources">
+<cfcomponent name="datasource" 
+		extends="bluedragon.adminapi.base" 
+		displayname="datasource [OpenBD AdminAPI]" 
+		hint="Add, modify, and delete OpenBD data sources">
+	
+	<!--- PUBLIC METHODS --->
+	<cffunction name="createDatasource" access="public" output="false" returntype="void" hint="Creates a new datasource">
+		<cfargument name="name" type="string" required="true" hint="OpenBD Datasource Name" />
+		<cfargument name="databasename" type="string" required="true" hint="Database name on the database server" />
+		<cfargument name="server" type="string" required="true" hint="Database server host name or IP address" />
+		<cfargument name="dbType" type="string" required="true" hint="Database type (e.g. mysql5, sqlserver, postgres, other, etc.)" />
+		<cfargument name="username" type="string" required="false" default="" hint="Database username" />
+		<cfargument name="password" type="string" required="false" default="" hint="Database password" />
+		<cfargument name="port"	type="numeric" required="false" default="0" hint="Port that is used to access the database server" />
+		<cfargument name="description" type="string" required="false" default="" hint="A description of this data source" />
+		<cfargument name="initstring" type="string" required="false" default="" hint="Additional initialization settings" />
+		<cfargument name="connectiontimeout" type="numeric" required="false" default="120" hint="Number of seconds OpenBD maintains an unused connection before it is destroyed" />
+		<cfargument name="connectionretries" type="numeric" required="false" default="0" hint="Number of connection retry attempts to make" />
+		<cfargument name="logintimeout" type="numeric" required="false" default="120" hint="Number of seconds before OpenBD times out the data source connection login attempt" />
+		<cfargument name="maxconnections" type="numeric" required="false" default="3" hint="Maximum number of simultaneous database connections" />
+		<cfargument name="perrequestconnections" type="boolean" required="false" default="false" hint="Indication of whether or not to pool connections" />
+		<cfargument name="sqlselect" type="boolean" required="false" default="true" hint="Allow SQL SELECT statements from this datasource" />
+		<cfargument name="sqlinsert" type="boolean" required="false" default="true" hint="Allow SQL INSERT statements from this datasource" />
+		<cfargument name="sqlupdate" type="boolean" required="false" default="true" hint="Allow SQL UPDATE statements from this datasource" />
+		<cfargument name="sqldelete" type="boolean" required="false" default="true" hint="Allow SQL DELETE statements from this datasource" />
+		<cfargument name="sqlstoredprocedures" type="boolean" required="false" default="true" hint="Allow SQL stored procedure calls from this datasource" />
+		<cfargument name="drivername" type="string" required="false" default="" hint="JDBC Driver Name (class) to use" />
+		
+		<cfset var localConfig = getConfig() />
+		<cfset var defaultSettings = structNew() />
+		<cfset var datasourceSettings = structNew() />
+		<cfset var datasourceVerified = false />
+		
+		<!--- make sure configuration structure exists, otherwise build it --->
+		<cfif (NOT StructKeyExists(localConfig, "cfquery")) OR (NOT StructKeyExists(localConfig.cfquery, "datasource"))>
+			<cfset localConfig.cfquery.datasource = ArrayNew(1) />
+		</cfif>
+		
+		<cfdump var="#localConfig#" expand="true" />
+		<cfabort />
+		
+		<!--- make sure the datasource doesn't already exist --->
+		
+		<!--- if we don't have a drivername or port, use the defaults for the database type --->
+		<cfif arguments.drivername is "" or arguments.port eq 0>
+			<cfset defaultSettings = getDBTypeDefaults(arguments.dbType) />
+		</cfif>
 
-	<cffunction name="deleteDataSource" access="public" output="false" returntype="void" hint="Delete the specified data source">
+		<cfif arguments.drivername is "">
+			<cfset arguments.drivername = defaultSettings.drivername />
+		</cfif>
+		
+		<cfif arguments.port eq 0>
+			<cfset arguments.port = defaultSettings.port />
+		</cfif>
+		
+		<!--- TODO: figure out how best to handle known database types vs. "other" type and when to throw an exception --->
+		<!--- TODO: figure out how to incorporate file-based databases like the dreaded Access, Derby, etc. --->
+		
+		<!--- build up the datasource settings --->
+		<cfscript>
+			// build up the datasource settings
+			datasourceSettings.name = trim(arguments.name);
+			datasourceSettings.databasename = trim(arguments.databasename);
+			datasourceSettings.username = trim(arguments.username);
+			datasourceSettings.password = trim(arguments.password);
+			datasourceSettings.drivername = trim(arguments.drivername);
+			datasourceSettings.hoststring = formatJDBCURL(trim(arguments.drivername), trim(arguments.server), 
+															trim(arguments.port), trim(arguments.databasename));
+			datasourceSettings.initstring = trim(arguments.initstring);
+			datasourceSettings.sqlselect = arguments.sqlselect;
+			datasourceSettings.sqlinsert = arguments.sqlinsert;
+			datasourceSettings.sqlupdate = arguments.sqlupdate;
+			datasourceSettings.sqldelete = arguments.sqldelete;
+			datasourceSettings.sqlstoredprocedures = arguments.sqlstoredprocedures;
+			datasourceSettings.logintimeout = ToString(arguments.logintimeout);
+			datasourceSettings.connectiontimeout = ToString(arguments.connectiontimeout);
+			datasourceSettings.connectionretries = ToString(arguments.connectionretries);
+			datasourceSettings.maxconnections = ToString(arguments.maxconnections);
+			datasourceSettings.perrequestconnections = arguments.perrequestconnections;
+			
+			// prepend the new datasource to the localconfig array
+			arrayPrepend(localConfig.cfquery.datasource, structCopy(datasourceSettings));
+			
+			// set the new config data
+			setConfig(localConfig);
+			
+			// register the driver and verify the datasource
+			registerDriver(arguments.drivername);
+			//datasourceVerified = verifyDatasource(trim(arguments.name));
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="getDatasources" access="public" output="false" returntype="array" hint="Returns an array containing all the data sources or a specified data source">
+		<cfargument name="dsnname" required="false" type="string" hint="The name of a data source to return data on" />
+		<cfset var localConfig = getConfig() />
+		<cfset var returnArray = "" />
+		<cfset var dsnIndex = "" />
+		
+		<!--- Make sure there are datasources --->
+		<cfif (NOT StructKeyExists(localConfig, "cfquery")) OR (NOT StructKeyExists(localConfig.cfquery, "datasource"))>
+			<cfthrow message="No registered datasources" type="bluedragon.adminapi.datasource" />
+		</cfif>
+		
+		<!--- Return entire data source array, unless a data source name is specified --->
+		<cfif NOT IsDefined("arguments.dsnname")>
+			<cfreturn localConfig.cfquery.datasource />
+		<cfelse>
+			<cfset returnArray = ArrayNew(1) />
+			<cfloop index="dsnIndex" from="1" to="#ArrayLen(localConfig.cfquery.datasource)#">
+				<cfif localConfig.cfquery.datasource[dsnIndex].name EQ arguments.dsnname>
+					<cfset returnArray[1] = Duplicate(localConfig.cfquery.datasource[dsnIndex]) />
+					<cfreturn returnArray />
+				</cfif>
+			</cfloop>
+			<cfthrow message="#arguments.dsnname# not registered as a datasource" type="bluedragon.adminapi.datasource">
+		</cfif>
+	</cffunction>
+	
+	<cffunction name="deleteDatasource" access="public" output="false" returntype="void" hint="Delete the specified data source">
 		<cfargument name="dsnname" required="true" type="string" hint="The name of the data source to be deleted" />
 		<cfset var localConfig = getConfig() />
 
@@ -36,33 +153,46 @@
 		<cfthrow message="#arguments.dsnname# not registered as a datasource" type="bluedragon.adminapi.datasource">
 	</cffunction>
 
-	<cffunction name="getDatasources" access="public" output="false" returntype="array" hint="Returns an array containing all the data sources or a specified data source">
-		<cfargument name="dsnname" required="false" type="string" hint="The name of a data source to return data on" />
-		<cfset var localConfig = getConfig() />
-		<cfset var returnArray = "" />
-		<cfset var dsnIndex = "" />
+	
+	<!--- PRIVATE METHODS --->
+	<cffunction name="formatJDBCURL" access="private" output="false" returntype="string" hint="Formats a JDBC URL for a specific database driver type">
+		<cfargument name="drivername" type="string" required="true" hint="The name of the database driver class" />
+		<cfargument name="server" type="string" required="true" hint="The database server name or IP address" />
+		<cfargument name="port" type="numeric" required="true" hint="The database server port" />
+		<cfargument name="database" type="string" required="true" hint="The database name" />
 		
-		<!--- Make sure there are datasources --->
-		<cfif (NOT StructKeyExists(localConfig, "cfquery")) OR (NOT StructKeyExists(localConfig.cfquery, "datasource"))>
-			<cfthrow message="No registered datasources" type="bluedragon.adminapi.datasource">		
-		</cfif>
+		<cfset var jdbcURL = "" />
 		
-		<!--- Return entire data source array, unless a data source name is specified --->
-		<cfif NOT IsDefined("arguments.dsnname")>
-			<cfreturn localConfig.cfquery.datasource />
-		<cfelse>
-			<cfset returnArray = ArrayNew(1) />
-			<cfloop index="dsnIndex" from="1" to="#ArrayLen(localConfig.cfquery.datasource)#">
-				<cfif localConfig.cfquery.datasource[dsnIndex].name EQ arguments.dsnname>
-					<cfset returnArray[1] = Duplicate(localConfig.cfquery.datasource[dsnIndex]) />
-					<cfreturn returnArray />
-				</cfif>
-			</cfloop>
-			<cfthrow message="#arguments.dsnname# not registered as a datasource" type="bluedragon.adminapi.datasource">
-		</cfif>
-	</cffunction>
+		<cfswitch expression="#arguments.drivername#">
+			<cfcase value="com.mysql.jdbc.Driver">
+				<!--- format is jdbc:mysql://[host][,failoverhost...][:port]/[database][?propertyName1][=propertyValue1][&propertyName2][=propertyValue2] --->
+				<cfset jdbcURL = "jdbc:mysql://#arguments.server#:#arguments.port#/#arguments.database#" />
+			</cfcase>
+		</cfswitch>
 
-	<cffunction name="registerDriver" access="package" output="false" returntype="boolean" hint="">
+		<cfreturn jdbcURL />
+	</cffunction>
+	
+	<cffunction name="getDBTypeDefaults" access="private" output="false" returntype="struct" hint="Returns a struct containing default settings for a specific database type">
+		<cfargument name="dbType" type="string" required="true" />
+		
+		<cfset var defaultSettings = structNew() />
+		
+		<cfswitch expression="#arguments.dbType#">
+			<cfcase value="mysql5">
+				<cfset defaultSettings.drivername = "com.mysql.jdbc.Driver" />
+				<cfset defaultSettings.port = 3306 />
+			</cfcase>
+			
+			<cfdefaultcase>
+				<cfthrow message="Cannot retrieve default settings for an unknown database type." type="bluedragon.adminapi.datasource" />
+			</cfdefaultcase>
+		</cfswitch>
+		
+		<cfreturn structCopy(defaultSettings) />
+	</cffunction>
+	
+	<cffunction name="registerDriver" access="private" output="false" returntype="boolean" hint="">
 		<cfargument name="class" type="string" required="true" hint="JDBC class name" />
 	
 		<cfset var javaClass = "" />

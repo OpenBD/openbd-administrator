@@ -1,11 +1,20 @@
+<cfsilent>
+	<cfscript>
+		contextPath = getPageContext().getRequest().getContextPath();
+		
+		if (contextPath is "/") {
+			contextPath = "";
+		}
+	</cfscript>
+</cfsilent>
 <cfoutput>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
   <title>Open BlueDragon Administrator</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <link rel="StyleSheet" href="#getPageContext().getRequest().getContextPath()#/bluedragon/administrator/css/sinorcaish-screen.css" type="text/css" media="screen" />
-  <link rel="StyleSheet" href="#getPageContext().getRequest().getContextPath()#/bluedragon/administrator/css/sinorcaish-print.css" type="text/css" media="print" />
+  <link rel="StyleSheet" href="#contextPath#/bluedragon/administrator/css/sinorcaish-screen.css" type="text/css" media="screen" />
+  <link rel="StyleSheet" href="#contextPath#/bluedragon/administrator/css/sinorcaish-print.css" type="text/css" media="print" />
 </head>
 
 <body>
@@ -23,20 +32,16 @@
 
   <div class="right">
     <span class="hidden">Useful links:</span>
-    <a href="index.html">Contacts</a> |
-    <a href="index.html">Feedback</a> |
-    <a href="index.html">Search</a> |
-    <a href="index.html">About</a>
+    <a href="http://www.openbluedragon.org" target="new">Open BlueDragon Web Site</a> | 
+    <a href="http://groups.google.com/group/openbd">Open BlueDragon Google Group</a> | 
+	<a href="http://code.google.com/p/openbluedragon-admin-app/">Open BlueDragon Admin Console Project</a>
   </div>
 
   <div class="subheader">
     <span class="hidden">Navigation:</span>
-    <a href="index.html">Home</a> |
-    <a href="index.html">Products</a> |
-    <a href="index.html">Services</a> |
-    <a href="index.html">Support</a> |
-    <a href="index.html">About</a> |
-    <a class="highlight" href="index.html">Other</a>
+    <a href="#contextPath#/bluedragon/administrator/index.cfm">Home</a> |
+    <a href="#contextPath#/bluedragon/administrator/logout.cfm">Logout</a>
+    <!--- <a class="highlight" href="index.html">Other</a> --->
   </div>
 </div>
 
@@ -63,10 +68,22 @@
     </ul> --->
   </div>
   <div>
-	<p class="title">Datasources &amp; Search</p>
+	<p class="title">Data &amp; Services</p>
 	<ul>
-		<li><a href="#getPageContext().getRequest().getContextPath()#/bluedragon/administrator/datasources/index.cfm">Datasources</a></li>
+		<li><a href="#contextPath#/bluedragon/administrator/datasources/index.cfm">Datasources</a></li>
 	</ul>
+  </div>
+  <div>
+	<p class="title">Debugging &amp; Logging</p>
+	<!--- <ul>
+		<li><a href="#contextPath#/bluedragon/administrator/debugging/index.cfm">Datasources</a></li>
+	</ul> --->
+  </div>
+  <div>
+	<p class="title">Extensions</p>
+	<!--- <ul>
+		<li><a href="#contextPath#/bluedragon/administrator/extensions/index.cfm">Datasources</a></li>
+	</ul> --->
   </div>
 </div>
 
@@ -92,7 +109,7 @@
 
 <div id="footer">
   <hr />
-  Copyright &copy; 2008<cfif DatePart("yyyy", now()) gt 2008> - #DatePart("yyyy", now())#</cfif>
+  Copyright &copy; 2008<cfif DatePart("yyyy", now()) gt 2008> - #DatePart("yyyy", now())#</cfif> <a href="http://www.openbluedragon.org">Open BlueDragon Project</a>
   <br />
 </div>
 

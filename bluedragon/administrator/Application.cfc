@@ -21,6 +21,7 @@
 		<cfargument name="thePage" type="string" required="true" />
 		
 		<cfscript>
+			// reload the application scope cfcs
 			if (not structKeyExists(Application, "inited") or not Application.inited or structKeyExists(url, "reload")) {
 				onApplicationStart();
 			}

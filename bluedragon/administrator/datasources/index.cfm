@@ -49,13 +49,13 @@
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
-				<td><input type="submit" name="submit" value="Add" /></td>
+				<td><input type="submit" name="submit" value="Add Datasource" /></td>
 			</tr>
 		</table>
 		</form>
 		
 		<hr noshade="true" />
-		
+		<!--- TODO: put setting to auto-configure ODBC datasources here? assuming this would only be applicable to windows --->
 		<h3>Datasources</h3>
 		
 		<cfif message is not ""><p>#message#</p></cfif>

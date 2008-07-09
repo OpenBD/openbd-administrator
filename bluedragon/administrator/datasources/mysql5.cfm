@@ -1,7 +1,19 @@
 <cfsavecontent variable="request.content">
 <cfoutput>
-<cfparam name="form.dsn" type="string" default="" />
+<cfparam name="url.dsn" type="string" default="" />
 <cfparam name="url.action" type="string" default="create" />
+
+<cfif not structKeyExists(session, "datasource")>
+	<cfset session.message = "An error occurred while processing the datasource action." />
+	<cflocation url="index.cfm" addtoken="false" />
+</cfif>
+
+<cfset dsinfo = session.datasource[1] />
+
+<cfif dsinfo.port eq 0>
+	<cfset dsinfo.port = 3306 />
+</cfif>
+
 <script type="text/javascript">
 	function showHideAdvSettings() {
 		var advSettings = document.getElementById('advancedSettings');
@@ -46,35 +58,36 @@
 <!--- TODO: need explanatory tooltips/mouseovers on all these settings, esp. 'per request connections' which 
 		from my understanding is the opposite of Adobe CF's description 'maintain connections across client requests'--->
 <!--- TODO: pull default driver and port values from the datasource.cfc --->
-<form name="datasourceForm" action="processDatasourceForm.cfm" method="post" onsubmit="return validate(this);">
+<form name="datasourceForm" action="_controller.cfm?action=processDatasourceForm" method="post" onsubmit="return validate(this);">
 <table border="0">
 	<tr>
 		<td>OpenBD Datasource Name</td>
-		<td><input name="name" type="text" size="30" maxlength="50" value="#form.dsn#" /></td>
+		<td><input name="name" type="text" size="30" maxlength="50" value="#dsinfo.name#" /></td>
 	</tr>
 	<tr>
 		<td>Database Name</td>
-		<td><input name="databasename" type="text" size="30" maxlength="250" /></td>
+		<td><input name="databasename" type="text" size="30" maxlength="250" value="#dsinfo.databasename#" /></td>
 	</tr>
 	<tr>
 		<td>Database Server</td>
-		<td><input name="server" type="text" size="30" maxlength="250" /></td>
+		<td><input name="server" type="text" size="30" maxlength="250" value="#dsinfo.server#" /></td>
 	</tr>
 	<tr>
 		<td>Server Port</td>
-		<td><input name="port" type="text" size="6" maxlength="5" value="3306" /></td>
+		<td><input name="port" type="text" size="6" maxlength="5" value="#dsinfo.port#" /></td>
 	</tr>
 	<tr>
 		<td>User Name</td>
-		<td><input name="username" type="text" size="30" maxlength="50" /></td>
+		<td><input name="username" type="text" size="30" maxlength="50" value="#dsinfo.username#" /></td>
 	</tr>
+	<!--- TODO: need to figure out how to handle the password once things are encrypted --->
 	<tr>
 		<td>Password</td>
-		<td><input name="password" type="text" size="30" maxlength="16" /></td>
+		<td><input name="password" type="password" size="30" maxlength="16" value="#dsinfo.password#" /></td>
 	</tr>
 	<tr>
 		<td valign="top">Description</td>
-		<td valign="top"><textarea name="description" rows="4" cols="40"></textarea></td>
+		<td valign="top"><textarea name="description" rows="4" cols="40">#dsinfo.description#</textarea></td>
 	</tr>
 	<tr>
 		<td>
@@ -82,7 +95,7 @@
 		</td>
 		<td align="right">
 			<input type="submit" name="submit" value="Submit" />
-			<input type="button" name="cancel" value="Cancel" />
+			<input type="button" name="cancel" value="Cancel" onclick="javascript:location.replace('index.cfm');" />
 		</td>
 	</tr>
 </table>
@@ -98,15 +111,15 @@
 		<td valign="top">
 			<table border="0">
 				<tr>
-					<td><input type="checkbox" name="sqlselect" value="true" checked="true" />SELECT</td>
-					<td><input type="checkbox" name="sqlinsert" value="true" checked="true" />INSERT</td>
+					<td><input type="checkbox" name="sqlselect" value="true"<cfif dsinfo.sqlselect> checked="true"</cfif> />SELECT</td>
+					<td><input type="checkbox" name="sqlinsert" value="true"<cfif dsinfo.sqlinsert> checked="true"</cfif> />INSERT</td>
 				</tr>
 				<tr>
-					<td><input type="checkbox" name="sqlupdate" value="true" checked="true" />UPDATE</td>
-					<td><input type="checkbox" name="sqldelete" value="true" checked="true" />DELETE</td>
+					<td><input type="checkbox" name="sqlupdate" value="true"<cfif dsinfo.sqlupdate> checked="true"</cfif> />UPDATE</td>
+					<td><input type="checkbox" name="sqldelete" value="true"<cfif dsinfo.sqldelete> checked="true"</cfif> />DELETE</td>
 				</tr>
 				<tr>
-					<td><input type="checkbox" name="sqlstoredprocedures" value="true" checked="true" />Stored Procedures</td>
+					<td><input type="checkbox" name="sqlstoredprocedures" value="true"<cfif dsinfo.sqlstoredprocedures> checked="true"</cfif> />Stored Procedures</td>
 					<td>&nbsp;</td>
 				</tr>
 			</table>
@@ -114,23 +127,23 @@
 	</tr>
 	<tr>
 		<td>Per-Request Connections</td>
-		<td><input type="checkbox" name="perrequestconnections" value="true" /></td>
+		<td><input type="checkbox" name="perrequestconnections" value="true"<cfif dsinfo.perrequestconnections> checked="true"</cfif> /></td>
 	</tr>
 	<tr>
 		<td>Maximum Connections</td>
-		<td><input type="text" name="maxconnections" size="4" maxlength="4" value="24" /></td>
+		<td><input type="text" name="maxconnections" size="4" maxlength="4" value="#dsinfo.maxconnections#" /></td>
 	</tr>
 	<tr>
 		<td>Connection Timeout</td>
-		<td><input type="text" name="connectiontimeout" size="4" maxlength="4" value="120" /></td>
+		<td><input type="text" name="connectiontimeout" size="4" maxlength="4" value="#dsinfo.connectiontimeout#" /></td>
 	</tr>
 	<tr>
 		<td>Login Timeout</td>
-		<td><input type="text" name="logintimeout" size="4" maxlength="4" value="120" /></td>
+		<td><input type="text" name="logintimeout" size="4" maxlength="4" value="#dsinfo.logintimeout#" /></td>
 	</tr>
 	<tr>
 		<td>Connection Retries</td>
-		<td><input type="text" name="connectionretries" size="4" maxlength="4" value="0" /></td>
+		<td><input type="text" name="connectionretries" size="4" maxlength="4" value="#dsinfo.connectionretries#" /></td>
 	</tr>
 	<!--- TODO: add "encrypt password" checkbox or just always encrypt? --->
 	<!--- TODO: add "use unicode" checkbox or make user add that into the init string? --->
@@ -138,7 +151,7 @@
 </div>
 	<input type="hidden" name="dbType" value="mysql5" />
 	<input type="hidden" name="drivername" value="com.mysql.jdbc.Driver" />
-	<input type="hidden" name="action" value="#url.action#" />
+	<input type="hidden" name="datasourceAction" value="#url.action#" />
 </form>
 </cfoutput>
 </cfsavecontent>

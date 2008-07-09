@@ -48,6 +48,11 @@ body {
 }				/* printed to paper                    */
 
 
+.message {
+	color: 			red;
+	font-weight: 	bold;
+}
+
 /* Headings */
 
 h1,				/* Headings (H1-H6) should only be used in */

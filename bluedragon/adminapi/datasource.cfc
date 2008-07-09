@@ -42,6 +42,7 @@
 		<cfargument name="sqldelete" type="boolean" required="false" default="true" hint="Allow SQL DELETE statements from this datasource" />
 		<cfargument name="sqlstoredprocedures" type="boolean" required="false" default="true" hint="Allow SQL stored procedure calls from this datasource" />
 		<cfargument name="drivername" type="string" required="false" default="" hint="JDBC Driver Name (class) to use" />
+		<cfargument name="action" type="string" required="false" default="create" hint="Action to take on the datasource (create or update)" />
 		
 		<cfset var localConfig = getConfig() />
 		<cfset var defaultSettings = structNew() />
@@ -52,9 +53,6 @@
 		<cfif (NOT StructKeyExists(localConfig, "cfquery")) OR (NOT StructKeyExists(localConfig.cfquery, "datasource"))>
 			<cfset localConfig.cfquery.datasource = ArrayNew(1) />
 		</cfif>
-		
-		<cfdump var="#localConfig#" expand="true" />
-		<cfabort />
 		
 		<!--- if the datasource already exists and this isn't an update, throw an error --->
 		
@@ -81,6 +79,7 @@
 			datasourceSettings.databasename = trim(arguments.databasename);
 			datasourceSettings.username = trim(arguments.username);
 			datasourceSettings.password = trim(arguments.password);
+			datasourceSettings.description = trim(arguments.description);
 			datasourceSettings.drivername = trim(arguments.drivername);
 			datasourceSettings.hoststring = formatJDBCURL(trim(arguments.drivername), trim(arguments.server), 
 															trim(arguments.port), trim(arguments.databasename));
@@ -150,6 +149,8 @@
 				<cfif localConfig.cfquery.datasource[i].name is arguments.dsn>
 					<cfset dsnExists = true />
 					<cfbreak />
+				<cfelse>
+					<cfset dsnExists = false />
 				</cfif>
 			</cfloop>
 		</cfif>
@@ -176,7 +177,6 @@
 		<cfthrow message="#arguments.dsnname# not registered as a datasource" type="bluedragon.adminapi.datasource">
 	</cffunction>
 
-	
 	<!--- PRIVATE METHODS --->
 	<cffunction name="formatJDBCURL" access="private" output="false" returntype="string" hint="Formats a JDBC URL for a specific database driver type">
 		<cfargument name="drivername" type="string" required="true" hint="The name of the database driver class" />

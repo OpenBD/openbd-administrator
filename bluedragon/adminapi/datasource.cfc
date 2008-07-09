@@ -21,7 +21,7 @@
 		hint="Add, modify, and delete OpenBD data sources">
 	
 	<!--- PUBLIC METHODS --->
-	<cffunction name="createDatasource" access="public" output="false" returntype="void" hint="Creates a new datasource">
+	<cffunction name="saveDatasource" access="public" output="false" returntype="void" hint="Creates or updates a datasource">
 		<cfargument name="name" type="string" required="true" hint="OpenBD Datasource Name" />
 		<cfargument name="databasename" type="string" required="true" hint="Database name on the database server" />
 		<cfargument name="server" type="string" required="true" hint="Database server host name or IP address" />
@@ -56,7 +56,7 @@
 		<cfdump var="#localConfig#" expand="true" />
 		<cfabort />
 		
-		<!--- make sure the datasource doesn't already exist --->
+		<!--- if the datasource already exists and this isn't an update, throw an error --->
 		
 		<!--- if we don't have a drivername or port, use the defaults for the database type --->
 		<cfif arguments.drivername is "" or arguments.port eq 0>
@@ -85,16 +85,16 @@
 			datasourceSettings.hoststring = formatJDBCURL(trim(arguments.drivername), trim(arguments.server), 
 															trim(arguments.port), trim(arguments.databasename));
 			datasourceSettings.initstring = trim(arguments.initstring);
-			datasourceSettings.sqlselect = arguments.sqlselect;
-			datasourceSettings.sqlinsert = arguments.sqlinsert;
-			datasourceSettings.sqlupdate = arguments.sqlupdate;
-			datasourceSettings.sqldelete = arguments.sqldelete;
-			datasourceSettings.sqlstoredprocedures = arguments.sqlstoredprocedures;
+			datasourceSettings.sqlselect = ToString(arguments.sqlselect);
+			datasourceSettings.sqlinsert = ToString(arguments.sqlinsert);
+			datasourceSettings.sqlupdate = ToString(arguments.sqlupdate);
+			datasourceSettings.sqldelete = ToString(arguments.sqldelete);
+			datasourceSettings.sqlstoredprocedures = ToString(arguments.sqlstoredprocedures);
 			datasourceSettings.logintimeout = ToString(arguments.logintimeout);
 			datasourceSettings.connectiontimeout = ToString(arguments.connectiontimeout);
 			datasourceSettings.connectionretries = ToString(arguments.connectionretries);
 			datasourceSettings.maxconnections = ToString(arguments.maxconnections);
-			datasourceSettings.perrequestconnections = arguments.perrequestconnections;
+			datasourceSettings.perrequestconnections = ToString(arguments.perrequestconnections);
 			
 			// prepend the new datasource to the localconfig array
 			arrayPrepend(localConfig.cfquery.datasource, structCopy(datasourceSettings));
@@ -132,6 +132,29 @@
 			</cfloop>
 			<cfthrow message="#arguments.dsnname# not registered as a datasource" type="bluedragon.adminapi.datasource">
 		</cfif>
+	</cffunction>
+	
+	<cffunction name="datasourceExists" access="public" output="false" returntype="boolean" 
+				hint="Returns a boolean indicating whether or not a datasource with the specified name exists">
+		<cfargument name="dsn" type="string" required="true" hint="The datasource name to check" />
+		
+		<cfset var dsnExists = true />
+		<cfset var localConfig = getConfig() />
+		<cfset var i = 0 />
+		
+		<cfif not StructKeyExists(localConfig, "cfquery") or not StructKeyExists(localConfig.cfquery, "datasource")>
+			<!--- no datasources at all, so this one doesn't exist ---->
+			<cfset dsnExists = false />
+		<cfelse>
+			<cfloop index="i" from="1" to="#ArrayLen(localConfig.cfquery.datasource)#">
+				<cfif localConfig.cfquery.datasource[i].name is arguments.dsn>
+					<cfset dsnExists = true />
+					<cfbreak />
+				</cfif>
+			</cfloop>
+		</cfif>
+		
+		<cfreturn dsnExists />
 	</cffunction>
 	
 	<cffunction name="deleteDatasource" access="public" output="false" returntype="void" hint="Delete the specified data source">

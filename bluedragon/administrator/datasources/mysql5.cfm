@@ -1,6 +1,7 @@
 <cfsavecontent variable="request.content">
 <cfoutput>
 <cfparam name="form.dsn" type="string" default="" />
+<cfparam name="url.action" type="string" default="create" />
 <script type="text/javascript">
 	function showHideAdvSettings() {
 		var advSettings = document.getElementById('advancedSettings');
@@ -137,6 +138,7 @@
 </div>
 	<input type="hidden" name="dbType" value="mysql5" />
 	<input type="hidden" name="drivername" value="com.mysql.jdbc.Driver" />
+	<input type="hidden" name="action" value="#url.action#" />
 </form>
 </cfoutput>
 </cfsavecontent>

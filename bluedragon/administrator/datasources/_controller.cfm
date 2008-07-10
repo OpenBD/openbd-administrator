@@ -73,11 +73,11 @@
 				<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
 			<cfelse>
 				<!--- if for some reason we get here and the datasource doesn't exist, just do an add--->
-				<cfif not Application.datasource.datasourceExists(args.existingDatasourceName)>
+				<cfif not Application.datasource.datasourceExists(args.dsn)>
 					<cflocation url="_controller.cfm?action=addDatasource&dbType=#args.dbType#&dsn=#args.dsn#" addtoken="false" />
 				<cfelse>
 					<cfset session.datasource = Application.datasource.getDatasources(args.dsn) />
-					<cflocation url="#args.dbType#.cfm?action=update&existingDatasourceName=#args.existingDatasourceName#" addtoken="false" />
+					<cflocation url="#args.dbType#.cfm?action=update" addtoken="false" />
 				</cfif>
 			</cfif>
 		</cfcase>
@@ -93,7 +93,7 @@
 			<cfparam name="args.sqldelete" type="boolean" default="false" />
 			<cfparam name="args.sqlstoredprocedures" type="boolean" default="false" />
 			<cfparam name="args.perrequestconnections" type="boolean" default="false" />
-			<cfparam name="args.action" type="string" default="create" />
+			<cfparam name="args.datasourceAction" type="string" default="create" />
 			
 			<cfset errorFields = "" />
 			
@@ -134,7 +134,8 @@
 																		args.connectionretries, args.logintimeout, 
 																		args.maxconnections, args.perrequestconnections, 
 																		args.sqlselect, args.sqlinsert, args.sqlupdate, args.sqldelete, 
-																		args.sqlstoredprocedures, args.drivername, args.action)>
+																		args.sqlstoredprocedures, args.drivername, args.datasourceAction, 
+																		args.existingDatasourceName) />
 						<cfcatch type="bluedragon.adminapi.datasource">
 							<cfset session.message = CFCATCH.Message />
 							<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />

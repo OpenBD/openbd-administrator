@@ -2,11 +2,19 @@
 	<cfparam name="datasourceRetrievalMessage" type="string" default="" />
 	
 	<cfset datasources = arrayNew(1) />
+	<cfset dbdrivers = arrayNew(1) />
 	
 	<cftry>
 		<cfset datasources = Application.datasource.getDatasources() />
-		<cfcatch>
+		<cfcatch type="any">
 			<cfset datasourceRetrievalMessage = CFCATCH.Message />
+		</cfcatch>
+	</cftry>
+	
+	<cftry>
+		<cfset dbdrivers = Application.datasource.getRegisteredDrivers() />
+		<cfcatch type="any">
+			<cfset dbDriverRetrievalMessage = CFCATCH.Message />
 		</cfcatch>
 	</cftry>
 </cfsilent>
@@ -77,12 +85,11 @@
 			<tr>
 				<td>Database Type</td>
 				<td>
-					<select name="dbType" onchange="javascript:updateDBInfo();">
+					<select name="datasourceconfigpage" onchange="javascript:updateDBInfo();">
 						<option value="" selected="true">- select -</option>
-						<option value="mssql-jtds">Microsoft SQL Server 2000/2005 (jTDS Driver)</option>
-						<option value="mssql-microsoft">Microsoft SQL Server 2005 (Microsoft JDBC Driver)</option>
-						<option value="mysql5">MySQL 4/5 (MySQL JDBC Driver)</option>
-						<option value="postgres">PostgreSQL (PostgreSQL Driver)</option>
+					<cfloop index="i" from="1" to="#arrayLen(dbdrivers)#">
+						<option value="#dbdrivers[i].datasourceconfigpage#">#dbdrivers[i].driverdescription#</option>
+					</cfloop>
 					</select>
 				</td>
 			</tr>

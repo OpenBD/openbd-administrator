@@ -15,14 +15,16 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --->
-<cfcomponent name="base" displayname="base [BD AdminAPI]" hint="Base object for other Admin API CFCs">
+<cfcomponent name="base" 
+		displayname="base [OpenBD AdminAPI]" 
+		hint="Base object for other OpenBD Admin API CFCs">
 
 	<cfset init() />
 
 	<cffunction access="package" name="init" output="false" returntype="any" displayname="init" hint="Initialize base">
 
 		<cfset variables.api.version = "0.1a" />
-		<cfset variables.api.builddate = "20080505" />
+		<cfset variables.api.builddate = "20080710" />
 
 		<!--- Grab some JVM specific information (no guessing or hacks) --->
 		<cfset variables.separator.path = getJVMProperty("path.separator") />
@@ -31,8 +33,8 @@
 		<!--- Frequently used messages, should probably be moved to some internationalization routine (later, much later) --->
 		<cfset variables.msg.NotImplemented = "Not Implemented Yet" />
 		
-		<cfset variables.msg.compatibility.NotImplemented = "Not implemented yet by BD AdminAPI compatibility layer" />
-		<cfset variables.msg.compatibility.Unsupported = "Unsupported by BD AdminAPI Compatibility Layer" />
+		<cfset variables.msg.compatibility.NotImplemented = "Not implemented yet by OpenBD AdminAPI compatibility layer" />
+		<cfset variables.msg.compatibility.Unsupported = "Unsupported by OpenBD AdminAPI Compatibility Layer" />
 
 		<cfreturn this />
 	</cffunction>
@@ -61,8 +63,8 @@
 		<!--- <cfif isAdminUser()> --->
 			<cflock scope="Server" type="exclusive" timeout="5">
 				<cfset admin.server = duplicate(arguments.currentConfig) />
-				<cfset admin.server.bdadminapi.lastupdated = DateFormat(now(), "dd/mmm/yyyy") & " " & TimeFormat(now(), "HH:mm:ss") />
-				<cfset admin.server.bdadminapi.version = api.version />
+				<cfset admin.server.openbdadminapi.lastupdated = DateFormat(now(), "dd/mmm/yyyy") & " " & TimeFormat(now(), "HH:mm:ss") />
+				<cfset admin.server.openbdadminapi.version = api.version />
 				
 				<cfset xmlConfig = createObject("java", "com.naryx.tagfusion.xmlConfig.xmlCFML").init(admin) />
 				<cfset success = createObject("java", "com.naryx.tagfusion.cfm.engine.cfEngine").writeXmlFile(xmlConfig) />

@@ -43,6 +43,7 @@
 		<cfargument name="sqlstoredprocedures" type="boolean" required="false" default="true" hint="Allow SQL stored procedure calls from this datasource" />
 		<cfargument name="drivername" type="string" required="false" default="" hint="JDBC Driver Name (class) to use" />
 		<cfargument name="action" type="string" required="false" default="create" hint="Action to take on the datasource (create or update)" />
+		<cfargument name="existingDatasourceName" type="string" required="false" default="" hint="The existing (old) datasource name so we know what to delete if this is an update" />
 		
 		<cfset var localConfig = getConfig() />
 		<cfset var defaultSettings = structNew() />
@@ -61,7 +62,8 @@
 		
 		<!--- if this is an update, delete the existing datasource --->
 		<cfif arguments.action is "update">
-			<cfset deleteDatasource(arguments.name) />
+			<cfset deleteDatasource(arguments.existingDatasourceName) />
+			<cfset localConfig = getConfig() />
 		</cfif>
 		
 		<!--- if we don't have a drivername or port, use the defaults for the database type --->
@@ -120,6 +122,7 @@
 
 	<cffunction name="getDatasources" access="public" output="false" returntype="array" hint="Returns an array containing all the data sources or a specified data source">
 		<cfargument name="dsnname" required="false" type="string" hint="The name of a data source to return data on" />
+		
 		<cfset var localConfig = getConfig() />
 		<cfset var returnArray = "" />
 		<cfset var dsnIndex = "" />
@@ -187,7 +190,11 @@
 		</cfloop>
 		<cfthrow message="#arguments.dsnname# not registered as a datasource" type="bluedragon.adminapi.datasource">
 	</cffunction>
-
+	
+	<cffunction name="getRegisteredDrivers" access="public" output="false" returntype="array" hint="Returns an array containing all the database drivers that are 'known' to OpenBD">
+		<cfreturn getConfig().cfquery.dbdrivers.driver />
+	</cffunction>
+	
 	<!--- PRIVATE METHODS --->
 	<cffunction name="formatJDBCURL" access="private" output="false" returntype="string" hint="Formats a JDBC URL for a specific database driver type">
 		<cfargument name="drivername" type="string" required="true" hint="The name of the database driver class" />

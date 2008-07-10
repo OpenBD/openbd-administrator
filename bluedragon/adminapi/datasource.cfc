@@ -55,6 +55,14 @@
 		</cfif>
 		
 		<!--- if the datasource already exists and this isn't an update, throw an error --->
+		<cfif arguments.action is "create" and datasourceExists(arguments.name)>
+			<cfthrow message="The datasource already exists" type="bluedragon.adminapi.datasource" />
+		</cfif>
+		
+		<!--- if this is an update, delete the existing datasource --->
+		<cfif arguments.action is "update">
+			<cfset deleteDatasource(arguments.name) />
+		</cfif>
 		
 		<!--- if we don't have a drivername or port, use the defaults for the database type --->
 		<cfif arguments.drivername is "" or arguments.port eq 0>
@@ -80,7 +88,10 @@
 			datasourceSettings.username = trim(arguments.username);
 			datasourceSettings.password = trim(arguments.password);
 			datasourceSettings.description = trim(arguments.description);
+			datasourceSettings.dbtype = arguments.dbType;
 			datasourceSettings.drivername = trim(arguments.drivername);
+			datasourceSettings.server = trim(arguments.server);
+			datasourceSettings.port = trim(arguments.port);
 			datasourceSettings.hoststring = formatJDBCURL(trim(arguments.drivername), trim(arguments.server), 
 															trim(arguments.port), trim(arguments.databasename));
 			datasourceSettings.initstring = trim(arguments.initstring);

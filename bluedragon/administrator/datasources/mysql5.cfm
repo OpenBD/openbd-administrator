@@ -152,6 +152,7 @@
 	<input type="hidden" name="dbType" value="mysql5" />
 	<input type="hidden" name="drivername" value="com.mysql.jdbc.Driver" />
 	<input type="hidden" name="datasourceAction" value="#url.action#" />
+	<input type="hidden" name="existingDatasourceName" value="#dsinfo.name#" />
 </form>
 </cfoutput>
 </cfsavecontent>

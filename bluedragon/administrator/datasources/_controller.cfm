@@ -73,11 +73,11 @@
 				<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
 			<cfelse>
 				<!--- if for some reason we get here and the datasource doesn't exist, just do an add--->
-				<cfif not Application.datasource.datasourceExists(args.dsn)>
+				<cfif not Application.datasource.datasourceExists(args.existingDatasourceName)>
 					<cflocation url="_controller.cfm?action=addDatasource&dbType=#args.dbType#&dsn=#args.dsn#" addtoken="false" />
 				<cfelse>
 					<cfset session.datasource = Application.datasource.getDatasources(args.dsn) />
-					<cflocation url="#args.dbType#.cfm?action=update" addtoken="false" />
+					<cflocation url="#args.dbType#.cfm?action=update&existingDatasourceName=#args.existingDatasourceName#" addtoken="false" />
 				</cfif>
 			</cfif>
 		</cfcase>

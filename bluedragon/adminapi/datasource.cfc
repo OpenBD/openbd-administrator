@@ -25,7 +25,6 @@
 		<cfargument name="name" type="string" required="true" hint="OpenBD Datasource Name" />
 		<cfargument name="databasename" type="string" required="true" hint="Database name on the database server" />
 		<cfargument name="server" type="string" required="true" hint="Database server host name or IP address" />
-		<cfargument name="dbType" type="string" required="true" hint="Database type (e.g. mysql5, sqlserver, postgres, other, etc.)" />
 		<cfargument name="username" type="string" required="false" default="" hint="Database username" />
 		<cfargument name="password" type="string" required="false" default="" hint="Database password" />
 		<cfargument name="port"	type="numeric" required="false" default="0" hint="Port that is used to access the database server" />
@@ -42,7 +41,6 @@
 		<cfargument name="sqldelete" type="boolean" required="false" default="true" hint="Allow SQL DELETE statements from this datasource" />
 		<cfargument name="sqlstoredprocedures" type="boolean" required="false" default="true" hint="Allow SQL stored procedure calls from this datasource" />
 		<cfargument name="drivername" type="string" required="false" default="" hint="JDBC driver class to use" />
-		<cfargument name="driverdescription" type="string" required="false" default="" hint="Description of the driver for display in the datasource list" />
 		<cfargument name="action" type="string" required="false" default="create" hint="Action to take on the datasource (create or update)" />
 		<cfargument name="existingDatasourceName" type="string" required="false" default="" hint="The existing (old) datasource name so we know what to delete if this is an update" />
 		
@@ -55,6 +53,14 @@
 		<cfif (NOT StructKeyExists(localConfig, "cfquery")) OR (NOT StructKeyExists(localConfig.cfquery, "datasource"))>
 			<cfset localConfig.cfquery.datasource = ArrayNew(1) />
 		</cfif>
+
+		<!--- register the driver--this will tell us whether or not openbd can hit the driver --->
+		<cftry>
+			<cfset registerDriver(arguments.drivername) />
+			<cfcatch type="bluedragon.adminapi.datasource">
+				<cfrethrow />
+			</cfcatch>
+		</cftry>
 		
 		<!--- if the datasource already exists and this isn't an update, throw an error --->
 		<cfif arguments.action is "create" and datasourceExists(arguments.name)>
@@ -67,15 +73,11 @@
 			<cfset localConfig = getConfig() />
 		</cfif>
 		
-		<!--- if we don't have a drivername or port, use the defaults for the database type --->
-		<cfif arguments.drivername is "" or arguments.port eq 0>
-			<cfset defaultSettings = getDBTypeDefaults(arguments.dbType) />
+		<!--- if we don't have a port, use the defaults for the database type --->
+		<cfif arguments.port eq 0>
+			<cfset defaultSettings = getDriverInfo(arguments.drivername) />
 		</cfif>
 
-		<cfif arguments.drivername is "">
-			<cfset arguments.drivername = defaultSettings.drivername />
-		</cfif>
-		
 		<cfif arguments.port eq 0>
 			<cfset arguments.port = defaultSettings.port />
 		</cfif>
@@ -91,9 +93,7 @@
 			datasourceSettings.username = trim(arguments.username);
 			datasourceSettings.password = trim(arguments.password);
 			datasourceSettings.description = trim(arguments.description);
-			datasourceSettings.dbtype = arguments.dbType;
 			datasourceSettings.drivername = trim(arguments.drivername);
-			datasourceSettings.driverdescription = trim(arguments.driverdescription);
 			datasourceSettings.server = trim(arguments.server);
 			datasourceSettings.port = trim(arguments.port);
 			datasourceSettings.hoststring = formatJDBCURL(trim(arguments.drivername), trim(arguments.server), 
@@ -115,11 +115,10 @@
 			
 			// set the new config data
 			setConfig(localConfig);
-			
-			// register the driver and verify the datasource
-			registerDriver(arguments.drivername);
-			//datasourceVerified = verifyDatasource(trim(arguments.name));
 		</cfscript>
+		
+		<!--- TODO: verify the datasource --->
+		<!--- <cfset datasourceVerified = verifyDatasource(trim(arguments.name)) /> --->
 	</cffunction>
 
 	<cffunction name="getDatasources" access="public" output="false" returntype="array" hint="Returns an array containing all the data sources or a specified data source">
@@ -130,7 +129,7 @@
 		<cfset var dsnIndex = "" />
 		
 		<!--- Make sure there are datasources --->
-		<cfif (NOT StructKeyExists(localConfig, "cfquery")) OR (NOT StructKeyExists(localConfig.cfquery, "datasource"))>
+		<cfif NOT StructKeyExists(localConfig, "cfquery") OR NOT StructKeyExists(localConfig.cfquery, "datasource")>
 			<cfthrow message="No registered datasources" type="bluedragon.adminapi.datasource" />
 		</cfif>
 		
@@ -193,7 +192,57 @@
 		<cfthrow message="#arguments.dsnname# not registered as a datasource" type="bluedragon.adminapi.datasource">
 	</cffunction>
 	
-	<cffunction name="getRegisteredDrivers" access="public" output="false" returntype="array" hint="Returns an array containing all the database drivers that are 'known' to OpenBD">
+	<cffunction name="getRegisteredDrivers" access="public" output="false" returntype="array" 
+			hint="Returns an array containing all the database drivers that are 'known' to OpenBD. If the node doesn't exist in the XML we'll create it and populate it with the standard driver information. Note we can't guarantee the user will have the drivers installed/in their classpath but that should throw an error if they try to add a datasource that uses a driver they don't have.">
+		<cfset var localConfig = getConfig() />
+		<cfset var dbDriverInfo = structNew() />
+		
+		<cfif not StructKeyExists(localConfig.cfquery, "dbdrivers")>
+			<!--- add the dbdrivers node with the default drivers that should be shipping with OpenBD --->
+			<cfscript>
+				localConfig.cfquery.dbdrivers = structNew();
+				localConfig.cfquery.dbdrivers.driver = arrayNew(1);
+				
+				// mysql (provider: mysql)
+				dbDriverInfo.name = "mysql 4/5";
+				dbDriverInfo.datasourceconfigpage = "mysql5.cfm";
+				dbDriverInfo.version = "5.1.6";
+				dbDriverInfo.drivername = "com.mysql.jdbc.Driver";
+				dbDriverInfo.driverdescription = "MySQL 4/5 (MySQL)";
+				dbDriverInfo.jdbctype = "4";
+				dbDriverInfo.provider = "MySQL";
+				dbDriverInfo.defaultport = "3306";
+				
+				arrayAppend(localConfig.cfquery.dbdrivers.driver, structCopy(dbDriverInfo));
+				
+				// mssql (provider: ms)
+				dbDriverInfo.name = "microsoft sql server 2005 (microsoft)";
+				dbDriverInfo.datasourceconfigpage = "sqlserver2005-ms.cfm";
+				dbDriverInfo.version = "1.2";
+				dbDriverInfo.drivername = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+				dbDriverInfo.driverdescription = "Microsoft SQL Server 2005 (Microsoft)";
+				dbDriverInfo.jdbctype = "4";
+				dbDriverInfo.provider = "Microsoft";
+				dbDriverInfo.defaultport = "1433";
+				
+				arrayAppend(localConfig.cfquery.dbdrivers.driver, structCopy(dbDriverInfo));
+				
+				// mssql (provider: jtds)
+				dbDriverInfo.name = "microsoft sql server (jtds)";
+				dbDriverInfo.datasourceconfigpage = "sqlserver-jtds.cfm";
+				dbDriverInfo.version = "1.2.2";
+				dbDriverInfo.drivername = "net.sourceforge.jtds.jdbc.Driver";
+				dbDriverInfo.driverdescription = "Microsoft SQL Server (jTDS)";
+				dbDriverInfo.jdbctype = "4";
+				dbDriverInfo.provider = "jTDS";
+				dbDriverInfo.defaultport = "1433";
+				
+				arrayAppend(localConfig.cfquery.dbdrivers.driver, structCopy(dbDriverInfo));
+				
+				setConfig(localConfig);
+			</cfscript>
+		</cfif>
+
 		<cfreturn getConfig().cfquery.dbdrivers.driver />
 	</cffunction>
 	
@@ -215,7 +264,7 @@
 			</cfloop>
 		<cfelseif arguments.drivername is not "">
 			<cfloop index="i" from="1" to="#arrayLen(dbdrivers)#" step="1">
-				<cfif dbdrivers[i].driverclass is arguments.drivername>
+				<cfif dbdrivers[i].drivername is arguments.drivername>
 					<cfset driverInfo = dbdrivers[i] />
 					<cfbreak />
 				</cfif>
@@ -230,7 +279,7 @@
 		
 		<cfset var verified = false />
 		
-		<!--- validation queries are in com.naryx.sql.nConnection --->
+		<!--- validation queries are in com.nary.sql.nConnection --->
 		
 		<!--- TODO: depler 20080505 - not exactly sure the correct java calls to replicate the functionality of the <cfadmin> below --->
 		<!--- some possible ideas:
@@ -254,31 +303,26 @@
 		
 		<cfswitch expression="#arguments.drivername#">
 			<cfcase value="com.mysql.jdbc.Driver">
-				<!--- format is jdbc:mysql://[host][,failoverhost...][:port]/[database][?propertyName1][=propertyValue1][&propertyName2][=propertyValue2] --->
+				<!--- url format: jdbc:mysql://[host][,failoverhost...][:port]/[database][?propertyName1][=propertyValue1][&propertyName2][=propertyValue2] --->
 				<cfset jdbcURL = "jdbc:mysql://#arguments.server#:#arguments.port#/#arguments.database#" />
 			</cfcase>
-		</cfswitch>
-
-		<cfreturn jdbcURL />
-	</cffunction>
-	
-	<cffunction name="getDBTypeDefaults" access="private" output="false" returntype="struct" hint="Returns a struct containing default settings for a specific database type">
-		<cfargument name="dbType" type="string" required="true" />
-		
-		<cfset var defaultSettings = structNew() />
-		
-		<cfswitch expression="#arguments.dbType#">
-			<cfcase value="mysql5">
-				<cfset defaultSettings.drivername = "com.mysql.jdbc.Driver" />
-				<cfset defaultSettings.port = 3306 />
+			
+			<cfcase value="com.microsoft.sqlserver.jdbc.SQLServerDriver">
+				<!--- url format: jdbc:sqlserver://[serverName[\instanceName][:portNumber]][;property=value[;property=value]] --->
+				<cfset jdbcURL = "jdbc:sqlserver://#arguments.server#:#arguments.port#;databaseName=#arguments.database#" />
+			</cfcase>
+			
+			<cfcase value="net.sourceforge.jtds.jdbc.Driver">
+				<!--- url format: jdbc:jtds:<server_type>://<server>[:<port>][/<database>][;<property>=<value>[;...]] --->
+				<cfset jdbcURL = "jdbc:jtds:sqlserver://#arguments.server#:#arguments.port#/#arguments.database#" />
 			</cfcase>
 			
 			<cfdefaultcase>
-				<cfthrow message="Cannot retrieve default settings for an unknown database type." type="bluedragon.adminapi.datasource" />
+				<cfthrow message="Cannot format JDBC URL for unknown driver types" type="bluedragon.adminapi.datasource" />
 			</cfdefaultcase>
 		</cfswitch>
-		
-		<cfreturn structCopy(defaultSettings) />
+
+		<cfreturn jdbcURL />
 	</cffunction>
 	
 	<cffunction name="registerDriver" access="private" output="false" returntype="boolean" hint="">
@@ -290,7 +334,7 @@
 			<cfset registerJDBCDriver = createObject("java", "java.lang.Class").forName(arguments.class) />
 			
 			<cfcatch type="any">
-				<cfthrow message="Could not register #arguments.class#" type="bluedragon.adminapi.datasource" />
+				<cfthrow message="Could not register database driver #arguments.class#" type="bluedragon.adminapi.datasource" />
 			</cfcatch>
 		</cftry>
 

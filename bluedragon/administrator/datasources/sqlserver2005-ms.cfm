@@ -46,7 +46,7 @@
 		return ok;
 	}
 </script>
-<h3>Configure Datasource - MySQL 4/5 (MySQL)</h3>
+<h3>Configure Datasource - SQL Server 2005 (Microsoft)</h3>
 <br />
 <cfif structKeyExists(session, "message")>
 <p style="color:red;font-weight:bold;">#session.message#</p>

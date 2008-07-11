@@ -129,15 +129,17 @@
 					<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
 				<cfelse>
 					<cftry>
-						<cfset Application.datasource.saveDatasource(args.name, args.databasename, args.server, args.dbType, 
-																		args.username, args.password, args.port, args.description, 
+						<cfset Application.datasource.saveDatasource(args.name, args.databasename, args.server, args.username, 
+																		args.password, args.port, args.description, 
 																		args.initstring, args.connectiontimeout, 
 																		args.connectionretries, args.logintimeout, 
 																		args.maxconnections, args.perrequestconnections, 
 																		args.sqlselect, args.sqlinsert, args.sqlupdate, args.sqldelete, 
-																		args.sqlstoredprocedures, args.driverclass, args.driverdescription, 
+																		args.sqlstoredprocedures, args.drivername, 
 																		args.datasourceAction, args.existingDatasourceName) />
 						<cfcatch type="bluedragon.adminapi.datasource">
+							<cfdump var="#cfcatch#" />
+							<cfabort />
 							<cfset session.message = CFCATCH.Message />
 							<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
 						</cfcatch>

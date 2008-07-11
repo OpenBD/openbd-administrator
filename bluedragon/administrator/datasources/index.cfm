@@ -1,22 +1,29 @@
 <cfsilent>
 	<cfparam name="datasourceRetrievalMessage" type="string" default="" />
-	
-	<cfset datasources = arrayNew(1) />
+
 	<cfset dbdrivers = arrayNew(1) />
-	
-	<cftry>
-		<cfset datasources = Application.datasource.getDatasources() />
-		<cfcatch type="any">
-			<cfset datasourceRetrievalMessage = CFCATCH.Message />
-		</cfcatch>
-	</cftry>
-	
+	<cfset datasources = arrayNew(1) />
+
 	<cftry>
 		<cfset dbdrivers = Application.datasource.getRegisteredDrivers() />
 		<cfcatch type="any">
 			<cfset dbDriverRetrievalMessage = CFCATCH.Message />
 		</cfcatch>
 	</cftry>
+	
+	<cftry>
+		<cfset datasources = Application.datasource.getDatasources() />
+		
+		<!--- add the database driver description to the array of datasources --->
+		<cfloop index="i" from="1" to="#arrayLen(datasources)#">
+			<cfset datasources[i].driverdescription = Application.datasource.getDriverInfo(drivername = datasources[i].drivername).driverdescription />
+		</cfloop>
+		
+		<cfcatch type="any">
+			<cfset datasourceRetrievalMessage = CFCATCH.Message />
+		</cfcatch>
+	</cftry>
+	
 </cfsilent>
 
 <cfsavecontent variable="request.content">
@@ -83,6 +90,7 @@
 		<cfif arrayLen(datasources) eq 0>
 			<p><strong><em>No dataources configured</em></strong></p>
 		<cfelse>
+		
 		<table border="0" width="100%" cellpadding="2" cellspacing="1" bgcolor="##999999">
 			<tr bgcolor="##dedede">
 				<td width="100"><strong>Actions</strong></td>

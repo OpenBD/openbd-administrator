@@ -41,7 +41,8 @@
 		<cfargument name="sqlupdate" type="boolean" required="false" default="true" hint="Allow SQL UPDATE statements from this datasource" />
 		<cfargument name="sqldelete" type="boolean" required="false" default="true" hint="Allow SQL DELETE statements from this datasource" />
 		<cfargument name="sqlstoredprocedures" type="boolean" required="false" default="true" hint="Allow SQL stored procedure calls from this datasource" />
-		<cfargument name="drivername" type="string" required="false" default="" hint="JDBC Driver Name (class) to use" />
+		<cfargument name="drivername" type="string" required="false" default="" hint="JDBC driver class to use" />
+		<cfargument name="driverdescription" type="string" required="false" default="" hint="Description of the driver for display in the datasource list" />
 		<cfargument name="action" type="string" required="false" default="create" hint="Action to take on the datasource (create or update)" />
 		<cfargument name="existingDatasourceName" type="string" required="false" default="" hint="The existing (old) datasource name so we know what to delete if this is an update" />
 		
@@ -92,6 +93,7 @@
 			datasourceSettings.description = trim(arguments.description);
 			datasourceSettings.dbtype = arguments.dbType;
 			datasourceSettings.drivername = trim(arguments.drivername);
+			datasourceSettings.driverdescription = trim(arguments.driverdescription);
 			datasourceSettings.server = trim(arguments.server);
 			datasourceSettings.port = trim(arguments.port);
 			datasourceSettings.hoststring = formatJDBCURL(trim(arguments.drivername), trim(arguments.server), 
@@ -193,6 +195,52 @@
 	
 	<cffunction name="getRegisteredDrivers" access="public" output="false" returntype="array" hint="Returns an array containing all the database drivers that are 'known' to OpenBD">
 		<cfreturn getConfig().cfquery.dbdrivers.driver />
+	</cffunction>
+	
+	<cffunction name="getDriverInfo" access="public" output="false" returntype="struct" 
+			hint="Returns a struct containing the information for a particular driver. Currently this is pulled by the driver config page but this can be expanded to get the driver info by other attributes.">
+		<cfargument name="datasourceconfigpage" type="string" required="false" default="" />
+		<cfargument name="drivername" type="string" required="false" default="" />
+		
+		<cfset var dbdrivers = getConfig().cfquery.dbdrivers.driver />
+		<cfset var driverInfo = structNew() />
+		<cfset var i = 0 />
+		
+		<cfif arguments.datasourceconfigpage is not "">
+			<cfloop index="i" from="1" to="#arrayLen(dbdrivers)#" step="1">
+				<cfif dbdrivers[i].datasourceconfigpage is arguments.datasourceconfigpage>
+					<cfset driverInfo = dbdrivers[i] />
+					<cfbreak />
+				</cfif>
+			</cfloop>
+		<cfelseif arguments.drivername is not "">
+			<cfloop index="i" from="1" to="#arrayLen(dbdrivers)#" step="1">
+				<cfif dbdrivers[i].driverclass is arguments.drivername>
+					<cfset driverInfo = dbdrivers[i] />
+					<cfbreak />
+				</cfif>
+			</cfloop>
+		</cfif>
+		
+		<cfreturn driverInfo />
+	</cffunction>
+	
+	<cffunction name="verifyDSN" access="public" output="false" returntype="boolean" hint="Verifies a datasource">
+		<cfargument name="dsnname" type="string" required="true" hint="Datasource name to verify" />
+		
+		<cfset var verified = false />
+		
+		<!--- validation queries are in com.naryx.sql.nConnection --->
+		
+		<!--- TODO: depler 20080505 - not exactly sure the correct java calls to replicate the functionality of the <cfadmin> below --->
+		<!--- some possible ideas:
+		<cfset cfEngine = createObject("java", "com.naryx.tagfusion.cfm.engine.cfEngine") />
+		<cfset testDSN = createObject("java", "com.naryx.tagfusion.cfm.sql.cfDataSource").init(#arguments.dsnname#) />
+
+		<cfset something = cfEngine.getDataSourceStatus().put(#arguments.dsnname#, createObject("java", "com.naryx.tagfusion.cfm.sql.cfDataSourceStatus")) />
+		--->
+		
+		<cfreturn true />
 	</cffunction>
 	
 	<!--- PRIVATE METHODS --->
@@ -582,28 +630,6 @@
 			about dataSourceStatusArray[y].success and the DSN cannot be used
 		--->
 		<cfset verifyDSN(dsnStruct.name) />
-	</cffunction>
-
-	<cffunction name="verifyDSN" access="public" output="false" returntype="boolean" hint="Verifies a datasource">
-		<cfargument name="dsnname" type="string" required="true" hint="Datasource name to verify" />
-
-
-		<!--- TODO: depler 20080505 - not exactly sure the correct java calls to replicate the functionality of the <cfadmin> below --->
-		<!--- some possible ideas:
-		<cfset cfEngine = createObject("java", "com.naryx.tagfusion.cfm.engine.cfEngine") />
-		<cfset testDSN = createObject("java", "com.naryx.tagfusion.cfm.sql.cfDataSource").init(#arguments.dsnname#) />
-
-		<cfset something = cfEngine.getDataSourceStatus().put(#arguments.dsnname#, createObject("java", "com.naryx.tagfusion.cfm.sql.cfDataSourceStatus")) />
-		--->
-		
-		<!--- 
-		<cfadmin password="#getSessionPassword()#" action="verifydatasource" name="#arguments.dsnname#">
-		
-		<cfif variables.datasource.success NEQ TRUE>
-			<cfthrow message="#variables.datasource.errormessage#" type="bluedragon.adminapi.datasource" />
-		</cfif>
-		--->
-		<cfreturn true />
 	</cffunction>
 
 </cfcomponent>

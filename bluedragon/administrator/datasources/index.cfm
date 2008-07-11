@@ -37,32 +37,6 @@
 				}
 			}
 			
-			function updateDBInfo() {
-				var f = document.forms.addDatasource;
-				var dbType = f.dbType.value;
-				
-				switch(dbType) {
-					case 'mssql-jtds':
-						f.drivername = 'net.sourceforge.jtds.jdbc.Driver';
-						break;
-						
-					case 'mssql-microsoft':
-						f.drivername = 'com.microsoft.sqlserver.jdbc.SQLServerDriver';
-						break;
-					
-					case 'mysql5':
-						f.drivername = 'com.mysql.jdbc.Driver';
-						break;
-					
-					case 'postgres':
-						f.drivername = 'org.postgresql.Driver';
-						break;
-					
-					default:
-						alert('Invalid database type selection');
-				}
-			}
-			
 			function removeDatasource(dsn) {
 				if(confirm("Are you sure you want to remove this datasource?")) {
 					location.replace('_controller.cfm?action=removeDatasource&dsn=' + dsn);
@@ -85,7 +59,7 @@
 			<tr>
 				<td>Database Type</td>
 				<td>
-					<select name="datasourceconfigpage" onchange="javascript:updateDBInfo();">
+					<select name="datasourceconfigpage">
 						<option value="" selected="true">- select -</option>
 					<cfloop index="i" from="1" to="#arrayLen(dbdrivers)#">
 						<option value="#dbdrivers[i].datasourceconfigpage#">#dbdrivers[i].driverdescription#</option>
@@ -98,7 +72,6 @@
 				<td><input type="submit" name="submit" value="Add Datasource" /></td>
 			</tr>
 		</table>
-			<input type="hidden" name="drivername" value="" />
 		</form>
 		
 		<hr noshade="true" />
@@ -122,13 +95,13 @@
 			<!--- TODO: need to sort alphabetically --->
 			<tr bgcolor="##ffffff">
 				<td width="100">
-					<a href="_controller.cfm?action=editDatasource&dsn=#datasources[i].name#&dbType=#datasources[i].dbtype#" alt="Edit Datasource" title="Edit Datasource"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
+					<a href="_controller.cfm?action=editDatasource&dsn=#datasources[i].name#" alt="Edit Datasource" title="Edit Datasource"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
 					<a href="_controller.cfm?action=verifyDatasource&dsn=#datasources[i].name#" alt="Verify Datasource" title="Verify Datasource"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
 					<a href="javascript:void(0);" onclick="javascript:removeDatasource('#datasources[i].name#');" alt="Remove Datasource" title="Remove Datasource"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
 				</td>
 				<td>#datasources[i].name#</td>
 				<td>#datasources[i].description#</td>
-				<td>#datasources[i].drivername#</td>
+				<td>#datasources[i].driverdescription#</td>
 				<td>&nbsp;</td>
 			</tr>
 		</cfloop>

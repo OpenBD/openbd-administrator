@@ -33,13 +33,16 @@
 				<cfset session.message = "A datasource with that name already exists" />
 				<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
 			<cfelse>
+				<!--- get the defaults for the db driver --->
+				<cfset dbDriverDefaults = Application.datasource.getDriverInfo(datasourceconfigpage = args.datasourceconfigpage) />
+				
 				<!--- set default form values so we can use the same form for adds and edits  --->
 				<cfscript>
 					dsinfo = structNew();
 					dsinfo.name = args.dsn;
 					dsinfo.databasename = "";
 					dsinfo.server = "";
-					dsinfo.port = 0;
+					dsinfo.port = dbDriverDefaults.defaultport;
 					dsinfo.username = "";
 					dsinfo.password = "";
 					dsinfo.description = "";
@@ -54,6 +57,8 @@
 					dsinfo.connectiontimeout = 120;
 					dsinfo.logintimeout = 120;
 					dsinfo.connectionretries = 0;
+					dsinfo.drivername = dbDriverDefaults.drivername;
+					dsinfo.driverdescription = dbDriverDefaults.driverdescription;
 					
 					datasource = arrayNew(1);
 					datasource[1] = StructCopy(dsinfo);
@@ -61,7 +66,7 @@
 					session.datasource = datasource;
 				</cfscript>
 				
-				<cflocation url="#args.dbType#.cfm" addtoken="false" />
+				<cflocation url="#args.datasourceconfigpage#" addtoken="false" />
 			</cfif>
 		</cfcase>
 		
@@ -72,13 +77,9 @@
 				<cfset session.message = "Please select a valid datasource to edit" />
 				<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
 			<cfelse>
-				<!--- if for some reason we get here and the datasource doesn't exist, just do an add--->
-				<cfif not Application.datasource.datasourceExists(args.dsn)>
-					<cflocation url="_controller.cfm?action=addDatasource&dbType=#args.dbType#&dsn=#args.dsn#" addtoken="false" />
-				<cfelse>
-					<cfset session.datasource = Application.datasource.getDatasources(args.dsn) />
-					<cflocation url="#args.dbType#.cfm?action=update" addtoken="false" />
-				</cfif>
+				<cfset session.datasource = Application.datasource.getDatasources(args.dsn) />
+				<cfset dbDriverDefaults = Application.datasource.getDriverInfo(drivername = session.datasource[1].drivername) />
+				<cflocation url="#dbDriverDefaults.datasourceconfigpage#?action=update" addtoken="false" />
 			</cfif>
 		</cfcase>
 
@@ -134,8 +135,8 @@
 																		args.connectionretries, args.logintimeout, 
 																		args.maxconnections, args.perrequestconnections, 
 																		args.sqlselect, args.sqlinsert, args.sqlupdate, args.sqldelete, 
-																		args.sqlstoredprocedures, args.drivername, args.datasourceAction, 
-																		args.existingDatasourceName) />
+																		args.sqlstoredprocedures, args.driverclass, args.driverdescription, 
+																		args.datasourceAction, args.existingDatasourceName) />
 						<cfcatch type="bluedragon.adminapi.datasource">
 							<cfset session.message = CFCATCH.Message />
 							<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />

@@ -334,7 +334,8 @@
 			<cfset registerJDBCDriver = createObject("java", "java.lang.Class").forName(arguments.class) />
 			
 			<cfcatch type="any">
-				<cfthrow message="Could not register database driver #arguments.class#" type="bluedragon.adminapi.datasource" />
+				<cfthrow message="Could not register database driver #arguments.class#. Please make sure this driver is in your classpath." 
+						type="bluedragon.adminapi.datasource" />
 			</cfcatch>
 		</cftry>
 

@@ -138,10 +138,8 @@
 																		args.sqlstoredprocedures, args.drivername, 
 																		args.datasourceAction, args.existingDatasourceName) />
 						<cfcatch type="bluedragon.adminapi.datasource">
-							<cfdump var="#cfcatch#" />
-							<cfabort />
 							<cfset session.message = CFCATCH.Message />
-							<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
+							<cflocation url="index.cfm" addtoken="false" />
 						</cfcatch>
 					</cftry>
 					

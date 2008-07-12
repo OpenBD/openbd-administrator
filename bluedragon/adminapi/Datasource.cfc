@@ -15,10 +15,9 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --->
-<cfcomponent name="datasource" 
-		extends="bluedragon.adminapi.base" 
-		displayname="datasource [OpenBD AdminAPI]" 
-		hint="Add, modify, and delete OpenBD data sources">
+<cfcomponent displayname="Datasource" 
+		extends="bluedragon.adminapi.Base" 
+		hint="Manage OpenBD data sources">
 	
 	<!--- PUBLIC METHODS --->
 	<cffunction name="saveDatasource" access="public" output="false" returntype="void" hint="Creates or updates a datasource">
@@ -279,6 +278,7 @@
 		
 		<cfset var verified = false />
 		
+		<!--- TODO: let user define own validation query? --->
 		<!--- validation queries are in com.nary.sql.nConnection --->
 		
 		<!--- TODO: depler 20080505 - not exactly sure the correct java calls to replicate the functionality of the <cfadmin> below --->

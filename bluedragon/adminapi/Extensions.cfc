@@ -17,8 +17,8 @@
 --->
 <cfcomponent displayname="Extensions" 
 		output="false" 
-		extends="bluedragon.adminapi.Base" 
-		hint="Manages customtags, mappings, and CFXs - OpenBD Admin API">
+		extends="Base" 
+		hint="Manages customtags and CFXs - OpenBD Admin API">
 
 	<cffunction name="deleteCPPCFX" access="public" output="false" returntype="void" hint="Delete a C++ CFX tag">
 		<cfargument name="cfxname" required="true" type="string" hint="Specifies a CFX tag name" />
@@ -82,26 +82,6 @@
 		<cfthrow message="#arguments.cfxname# not registered as a Java CFX" type="bluedragon.adminapi.extensions">
 	</cffunction>
 
-	<cffunction name="deleteMapping" access="public" output="false" returntype="void" hint="Delete the specified mapping">
-		<cfargument name="mapName" required="true" type="string" hint="Specifies a logical path name" />
-		<cfset var localConfig = getConfig() />
-		<cfset var mapIndex = "" />
-
-		<!--- Make sure there are Mappings --->
-		<cfif (NOT StructKeyExists(localConfig, "cfmappings")) OR (NOT StructKeyExists(localConfig.cfmappings, "mapping"))>
-			<cfthrow message="No Mappings Defined" type="bluedragon.adminapi.extensions">		
-		</cfif>
-
-		<cfloop index="mapIndex" from="1" to="#ArrayLen(localConfig.cfmappings.mapping)#">
-			<cfif localConfig.cfmappings.mapping[mapIndex].name EQ arguments.mapName>
-				<cfset ArrayDeleteAt(localConfig.cfmappings.mapping, mapIndex) />
-				<cfset setConfig(localConfig) />
-				<cfreturn />
-			</cfif>
-		</cfloop>
-		<cfthrow message="#arguments.mapName# is not defined as a mapping" type="bluedragon.adminapi.extensions">
-	</cffunction>
-
 	<cffunction name="getCPPCFX" access="public" output="false" returntype="array" hint="List the names of all registered C++ CFX tags or a specified C++ CFX tag">
 		<cfargument name="cfxname" required="false" type="string" hint="Specifies a CFX tag name" />
 		<cfset var localConfig = getConfig() />
@@ -161,31 +141,6 @@
 				</cfif>
 			</cfloop>
 			<cfthrow message="#arguments.cfxname# not registered as a Java CFX" type="bluedragon.adminapi.extensions">
-		</cfif>
-	</cffunction>
-
-	<cffunction name="getMappings" access="public" output="false" returntype="array" hint="Returns array of mappings which equate logical paths to directory paths">
-		<cfargument name="mapName" required="false" type="string" hint="Specifies a logical path name" />
-		<cfset var localConfig = getConfig() />
-		<cfset var mapIndex = "" />
-		<cfset var returnArray = ArrayNew(1) />
-
-		<!--- Make sure there are Mappings --->
-		<cfif (NOT StructKeyExists(localConfig, "cfmappings")) OR (NOT StructKeyExists(localConfig.cfmappings, "mapping"))>
-			<cfthrow message="No Mappings Defined" type="bluedragon.adminapi.extensions">		
-		</cfif>
-
-		<!--- Return entire Mapping array, unless a map name is specified --->
-		<cfif NOT IsDefined("arguments.mapName")>
-			<cfreturn localConfig.cfmappings.mapping />
-		<cfelse>
-			<cfloop index="mapIndex" from="1" to="#ArrayLen(localConfig.cfmappings.mapping)#">
-				<cfif localConfig.cfmappings.mapping[mapIndex].name EQ arguments.mapName>
-					<cfset returnArray[1] = Duplicate(localConfig.cfmappings.mapping[mapIndex]) />
-					<cfreturn returnArray />
-				</cfif>
-			</cfloop>
-			<cfthrow message="#arguments.mapName# is not defined as a mapping" type="bluedragon.adminapi.extensions">
 		</cfif>
 	</cffunction>
 
@@ -257,30 +212,6 @@
 
 		<!--- Prepend it to the Java CFX array --->
 		<cfset ArrayPrepend(localConfig.javacustomtags.mapping, Duplicate(javaCFX)) />
-	
-		<cfset setConfig(localConfig) />
-	</cffunction>
-
-	<cffunction name="setMapping" access="public" output="false" returntype="void" hint="Creates a mapping, equating a logical path to a directory path">
-		<cfargument name="mapName" type="string" required="true" hint="Mapping name to show in the Administrator - Logical path name" />
-		<cfargument name="mapPath" type="string" required="true" hint="Directory path name" />
-		<cfargument name="name"	 type="string" default="#arguments.mapName#" hint="Mapping name for lookup. (Defaults to lowercase on mapName)" />
-		
-		<cfset var localConfig = getConfig() />
-		<cfset var mapping = StructNew() />
-
-		<!--- Make sure configuration structure exists, otherwise build it --->
-		<cfif (NOT StructKeyExists(localConfig, "cfmappings")) OR (NOT StructKeyExists(localConfig.cfmappings, "mapping"))>
-			<cfset localConfig.cfmappings.mapping = ArrayNew(1) />
-		</cfif>
-		
-		<!--- Build Mapping Struct --->
-		<cfset mapping.displayname = arguments.mapName />
-		<cfset mapping.directory = arguments.mapPath />
-		<cfset mapping.name = LCase(arguments.name) />
-
-		<!--- Prepend it to the Mapping array --->
-		<cfset ArrayPrepend(localConfig.cfmappings.mapping, Duplicate(mapping)) />
 	
 		<cfset setConfig(localConfig) />
 	</cffunction>

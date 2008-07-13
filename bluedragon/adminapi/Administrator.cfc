@@ -18,7 +18,7 @@
 <cfcomponent displayname="Administrator" 
 		output="false" 
 		extends="Base" 
-		hint="Manages administrator security for the OpenBD Admin API">
+		hint="Manages administrator security - OpenBD Admin API">
 
 	<cffunction access="public" name="login" output="false" returntype="boolean">
 		<cfargument name="adminPassword" type="string" required="true">

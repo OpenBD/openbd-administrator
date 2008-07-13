@@ -17,7 +17,7 @@
 --->
 <cfcomponent displayname="Mail" 
 		output="false" 
-		extends="bluedragon.adminapi.Base" 
+		extends="Base" 
 		hint="Manages mail settings - OpenBD Admin API">
 
 	<cffunction name="deleteMailServer" access="public" returntype="void" output="false" hint="">

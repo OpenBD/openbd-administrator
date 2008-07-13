@@ -31,11 +31,20 @@
 					}
 				}
 			}
+			
+			function confirmRevert() {
+				if (confirm("Are you sure you want to revert to the previous version of the server settings?")) {
+					location.replace("_controller.cfm?action=revertToPreviousSettings");
+				}
+			}
 		</script>
 		
 		<h3>Server Settings</h3>
 		
-		<p><em>(Settings last updated #serverSettings.lastupdated#)</em></p>
+		<p>
+			Settings last updated #serverSettings.lastupdated#<br />
+			<a href="javascript:void(0);" onclick="javascript:confirmRevert();">Revert to previous settings</a>
+		</p>
 		
 		<cfif structKeyExists(session, "message") and session.message is not "">
 			<p class="message">#session.message#</p>
@@ -111,7 +120,7 @@
 					<input type="text" name="componentcfc" size="40" value="#serverSettings['component-cfc']#" />
 				</td>
 			</tr>
-			<tr bgcolor="##f0f0f0">
+			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
 				<td>
 					<input type="submit" name="submit" value="Submit" />
@@ -120,7 +129,7 @@
 		</table>
 		</form>
 		
-		<p><strong>Important Information Concerning Default Error Handler and Missing Template Handler Paths</strong></p>
+		<p><strong>Important Information Concerning Physical Paths</strong></p>
 		
 		<ul>
 			<li>
@@ -143,7 +152,7 @@
 				read and instantiate the CFC, but this does not ensure that an error in the CFC itself will not cause 
 				global problems on this instance of OpenBD. If problems do occur, the value must be changed in 
 				WEB-INF/bluedragon/bluedragon.xml (preferably back to its deafult value of /WEB-INF/bluedragon/component.cfc) 
-				and the OpenBD must be restarted.
+				and the OpenBD instance must be restarted.
 			</li>
 		</ul>
 	</cfoutput>

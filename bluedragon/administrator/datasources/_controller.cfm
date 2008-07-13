@@ -96,26 +96,26 @@
 			<cfparam name="args.perrequestconnections" type="boolean" default="false" />
 			<cfparam name="args.datasourceAction" type="string" default="create" />
 			
-			<cfset errorFields = "" />
+			<cfset errorFields = arrayNew(1) />
 			
 			<!--- validate the form data --->
 			<cfif trim(args.name) is "">
-				<cfset errorFields = listAppend(errorFields, "Datasource Name") />
+				<cfset arrayAppend(errorFields, "Datasource Name") />
 			</cfif>
 			
 			<cfif trim(args.databasename) is "">
-				<cfset errorFields = listAppend(errorFields, "Database Name") />
+				<cfset arrayAppend(errorFields, "Database Name") />
 			</cfif>
 			
 			<cfif trim(args.server) is "">
-				<cfset errorFields = listAppend(errorFields, "Database Server") />
+				<cfset arrayAppend(errorFields, "Database Server") />
 			</cfif>
 			
 			<cfif trim(args.port) is "" or not isNumeric(trim(form.port))>
-				<cfset errorFields = listAppend(errorFields, "Server Port") />
+				<cfset arrayAppend(errorFields, "Server Port") />
 			</cfif>
 			
-			<cfif errorFields is not "">
+			<cfif arrayLen(errorFields) neq 0>
 				<!--- TODO: add nicer functionality so the entire form gets repopulated on error --->
 				<cfset session.errorFields = errorFields />
 				<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
@@ -149,6 +149,7 @@
 			</cfif>
 		</cfcase>
 		
+		<!--- TODO: implement verifyDatasource --->
 		<cfcase value="verifyDatasource">
 		</cfcase>
 

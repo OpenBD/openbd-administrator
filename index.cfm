@@ -1,8 +1,8 @@
-<!--- test datasources --->
-<cfquery name="test" datasource="simplekms">
-	select * from Category
-</cfquery>
+<cfset junk = queryNew("name,value") />
+<cfset queryAddRow(junk, 1) />
+<cfset querySetCell(junk, "name", "test", 1) />
+<cfset querySetCell(junk, "value", "100", 1) />
 
-<cfdump var="#test#" expand="true" />
-
-<cfoutput>isNumeric('123.45') = #isNumeric('123.45')#</cfoutput>
+<cfchart format="jpg">
+	<cfchartseries type="bar" query="junk" itemcolumn="name" valuecolumn="value"></cfchartseries>
+</cfchart>

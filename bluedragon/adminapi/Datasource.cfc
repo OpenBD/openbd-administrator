@@ -17,7 +17,7 @@
 --->
 <cfcomponent displayname="Datasource" 
 		output="false" 
-		extends="bluedragon.adminapi.Base" 
+		extends="Base" 
 		hint="Manages datasources - OpenBD Admin API">
 	
 	<!--- PUBLIC METHODS --->
@@ -71,6 +71,11 @@
 		<cfif arguments.action is "update">
 			<cfset deleteDatasource(arguments.existingDatasourceName) />
 			<cfset localConfig = getConfig() />
+			
+			<!--- if we're editing the only remaining datasource, need to recreate the datasource struture --->
+			<cfif NOT StructKeyExists(localConfig, "cfquery") OR NOT StructKeyExists(localConfig.cfquery, "datasource")>
+				<cfset localConfig.cfquery.datasource = ArrayNew(1) />
+			</cfif>
 		</cfif>
 		
 		<!--- if we don't have a port, use the defaults for the database type --->

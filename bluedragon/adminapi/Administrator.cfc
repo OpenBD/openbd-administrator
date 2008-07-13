@@ -15,7 +15,10 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --->
-<cfcomponent name="administrator" extends="bluedragon.adminapi.base" displayname="administrator [BD AdminAPI]" hint="Basic Administrator functionality">
+<cfcomponent displayname="Administrator" 
+		output="false" 
+		extends="Base" 
+		hint="Manages administrator security for the OpenBD Admin API">
 
 	<cffunction access="public" name="login" output="false" returntype="boolean">
 		<cfargument name="adminPassword" type="string" required="true">

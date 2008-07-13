@@ -15,9 +15,9 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --->
-<cfcomponent name="base" 
-		displayname="base [OpenBD AdminAPI]" 
-		hint="Base object for other OpenBD Admin API CFCs">
+<cfcomponent displayname="Base" 
+		output="false" 
+		hint="Base CFC for OpenBD Admin API CFCs">
 
 	<cfset init() />
 

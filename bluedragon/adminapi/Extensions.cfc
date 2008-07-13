@@ -15,7 +15,10 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --->
-<cfcomponent name="extensions" extends="bluedragon.adminapi.base" displayname="extensions [BD AdminAPI]" hint="Manages customtags, mappings, and CFXs in BlueDragon">
+<cfcomponent displayname="Extensions" 
+		output="false" 
+		extends="bluedragon.adminapi.Base" 
+		hint="Manages customtags, mappings, and CFXs - OpenBD Admin API">
 
 	<cffunction name="deleteCPPCFX" access="public" output="false" returntype="void" hint="Delete a C++ CFX tag">
 		<cfargument name="cfxname" required="true" type="string" hint="Specifies a CFX tag name" />

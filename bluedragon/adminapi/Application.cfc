@@ -1,4 +1,6 @@
-<cfcomponent displayname="Application" output="false" hint="Application CFC for the Open BlueDragon admin API">
+<cfcomponent displayname="Application" 
+		output="false" 
+		hint="Application CFC - OpenBD Aadmin API">
 	
 	<cfscript>
 		this.name = "OpenBDAdminAPI";

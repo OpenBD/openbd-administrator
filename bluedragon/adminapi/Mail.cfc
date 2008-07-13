@@ -15,10 +15,13 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --->
-<cfcomponent name="mail" extends="bluedragon.adminapi.base" displayname="mail [BD AdminAPI]" hint="Manages BlueDRagon mail settings">
+<cfcomponent displayname="Mail" 
+		output="false" 
+		extends="bluedragon.adminapi.Base" 
+		hint="Manages mail settings - OpenBD Admin API">
 
 	<cffunction name="deleteMailServer" access="public" returntype="void" output="false" hint="">
-		<cfthrow message="Not Implemented Yet" type="bluedragon.adminapi.mail">
+		<cfthrow message="Not Implemented Yet" type="bluedragon.adminapi.Mail">
 	</cffunction>
 
 	<cffunction name="getAvailableMailCharsets" access="public" returntype="array" output="false" hint="Returns an array of the character sets available for Mail.">

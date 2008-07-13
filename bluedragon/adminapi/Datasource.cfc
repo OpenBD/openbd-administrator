@@ -16,8 +16,9 @@
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --->
 <cfcomponent displayname="Datasource" 
+		output="false" 
 		extends="bluedragon.adminapi.Base" 
-		hint="Manage OpenBD data sources">
+		hint="Manages datasources - OpenBD Admin API">
 	
 	<!--- PUBLIC METHODS --->
 	<cffunction name="saveDatasource" access="public" output="false" returntype="void" hint="Creates or updates a datasource">
@@ -56,14 +57,14 @@
 		<!--- register the driver--this will tell us whether or not openbd can hit the driver --->
 		<cftry>
 			<cfset registerDriver(arguments.drivername) />
-			<cfcatch type="bluedragon.adminapi.datasource">
+			<cfcatch type="bluedragon.adminapi.Datasource">
 				<cfrethrow />
 			</cfcatch>
 		</cftry>
 		
 		<!--- if the datasource already exists and this isn't an update, throw an error --->
 		<cfif arguments.action is "create" and datasourceExists(arguments.name)>
-			<cfthrow message="The datasource already exists" type="bluedragon.adminapi.datasource" />
+			<cfthrow message="The datasource already exists" type="bluedragon.adminapi.Datasource" />
 		</cfif>
 		
 		<!--- if this is an update, delete the existing datasource --->
@@ -129,7 +130,7 @@
 		
 		<!--- Make sure there are datasources --->
 		<cfif NOT StructKeyExists(localConfig, "cfquery") OR NOT StructKeyExists(localConfig.cfquery, "datasource")>
-			<cfthrow message="No registered datasources" type="bluedragon.adminapi.datasource" />
+			<cfthrow message="No registered datasources" type="bluedragon.adminapi.Datasource" />
 		</cfif>
 		
 		<!--- Return entire data source array, unless a data source name is specified --->
@@ -143,7 +144,7 @@
 					<cfreturn returnArray />
 				</cfif>
 			</cfloop>
-			<cfthrow message="#arguments.dsnname# not registered as a datasource" type="bluedragon.adminapi.datasource">
+			<cfthrow message="#arguments.dsnname# not registered as a datasource" type="bluedragon.adminapi.Datasource">
 		</cfif>
 	</cffunction>
 	
@@ -178,7 +179,7 @@
 
 		<!--- Make sure there are datasources --->
 		<cfif (NOT StructKeyExists(localConfig, "cfquery")) OR (NOT StructKeyExists(localConfig.cfquery, "datasource"))>
-			<cfthrow message="No datasources defined" type="bluedragon.adminapi.datasource">		
+			<cfthrow message="No datasources defined" type="bluedragon.adminapi.Datasource">		
 		</cfif>
 
 		<cfloop index="dsnIndex" from="1" to="#ArrayLen(localConfig.cfquery.datasource)#">
@@ -188,7 +189,7 @@
 				<cfreturn />
 			</cfif>
 		</cfloop>
-		<cfthrow message="#arguments.dsnname# not registered as a datasource" type="bluedragon.adminapi.datasource">
+		<cfthrow message="#arguments.dsnname# not registered as a datasource" type="bluedragon.adminapi.Datasource">
 	</cffunction>
 	
 	<cffunction name="getRegisteredDrivers" access="public" output="false" returntype="array" 
@@ -318,7 +319,7 @@
 			</cfcase>
 			
 			<cfdefaultcase>
-				<cfthrow message="Cannot format JDBC URL for unknown driver types" type="bluedragon.adminapi.datasource" />
+				<cfthrow message="Cannot format JDBC URL for unknown driver types" type="bluedragon.adminapi.Datasource" />
 			</cfdefaultcase>
 		</cfswitch>
 
@@ -335,7 +336,7 @@
 			
 			<cfcatch type="any">
 				<cfthrow message="Could not register database driver #arguments.class#. Please make sure this driver is in your classpath." 
-						type="bluedragon.adminapi.datasource" />
+						type="bluedragon.adminapi.Datasource" />
 			</cfcatch>
 		</cftry>
 
@@ -407,7 +408,7 @@
 				<cfset dsnStruct.hoststring = "jdbc:microsoft:sqlserver://" & arguments.servername & ":" & arguments.port & ";databasename=" & arguments.databasename />
 			</cfcase>
 			<cfdefaultcase>
-				<cfthrow message="Invalid drivername for SetMSSQL(), possibly use SetOther() instead" type="bluedragon.adminapi.datasource" />
+				<cfthrow message="Invalid drivername for SetMSSQL(), possibly use SetOther() instead" type="bluedragon.adminapi.Datasource" />
 			</cfdefaultcase>
 		</cfswitch>
 

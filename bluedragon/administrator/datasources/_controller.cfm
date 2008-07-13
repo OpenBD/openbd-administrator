@@ -137,7 +137,7 @@
 																		args.sqlselect, args.sqlinsert, args.sqlupdate, args.sqldelete, 
 																		args.sqlstoredprocedures, args.drivername, 
 																		args.datasourceAction, args.existingDatasourceName) />
-						<cfcatch type="bluedragon.adminapi.datasource">
+						<cfcatch type="bluedragon.adminapi.Datasource">
 							<cfset session.message = CFCATCH.Message />
 							<cflocation url="index.cfm" addtoken="false" />
 						</cfcatch>
@@ -160,7 +160,7 @@
 			<cfelse>
 				<cftry>
 					<cfset Application.datasource.deleteDatasource(args.dsn) />
-					<cfcatch type="bluedragon.adminapi.datasource">
+					<cfcatch type="bluedragon.adminapi.Datasource">
 						<cfset session.message = CFCATCH.Message />
 						<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
 					</cfcatch>

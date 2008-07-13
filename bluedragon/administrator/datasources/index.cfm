@@ -25,7 +25,6 @@
 	</cftry>
 	
 </cfsilent>
-
 <cfsavecontent variable="request.content">
 	<cfoutput>
 		<script type="text/javascript">
@@ -116,4 +115,6 @@
 		</table>
 		</cfif>
 	</cfoutput>
+	<cfset structDelete(session, "message", false) />
+	<cfset structDelete(session, "dbDriverRetrievalMessage", false) />
 </cfsavecontent>

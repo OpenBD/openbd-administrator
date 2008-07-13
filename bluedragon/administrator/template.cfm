@@ -59,7 +59,18 @@
     </ul>
   </div> --->
   <div>	
-    <p class="title">Server Settings</p>
+    <p class="title">Server</p>
+	<ul>
+		<li><a href="#contextPath#/bluedragon/administrator/settings/security.cfm">Security</a></li>
+		<li><a href="#contextPath#/bluedragon/administrator/settings/systeminfo.cfm">System Information</a></li>
+		<li><a href="#contextPath#/bluedragon/administrator/settings/index.cfm">Settings</a></li>
+		<li><a href="#contextPath#/bluedragon/administrator/settings/caching.cfm">Caching</a></li>
+		<li><a href="#contextPath#/bluedragon/administrator/settings/variables.cfm">Variables</a></li>
+		<li><a href="#contextPath#/bluedragon/administrator/settings/mappings.cfm">Mappings</a></li>
+		<li><a href="#contextPath#/bluedragon/administrator/settings/mail.cfm">Mail</a></li>
+		<li><a href="#contextPath#/bluedragon/administrator/settings/fonts.cfm">Fonts</a></li>
+		<li><a href="#contextPath#/bluedragon/administrator/settings/threads.cfm">Threads</a></li>
+	</ul>
     <!--- <ul>
       <li><a href="index.html">Overview</a></li>
       <li class="highlight"><a href="template.html">Template</a>

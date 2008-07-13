@@ -7,10 +7,12 @@
 	
 	<cffunction name="onApplicationStart" access="public" output="false" returntype="boolean">
 		<cfscript>
-			Application.administrator = createObject("component", "bluedragon.adminapi.administrator");
-			Application.datasource = createObject("component", "bluedragon.adminapi.datasource");
-			Application.extensions = createObject("component", "bluedragon.adminapi.extensions");
-			Application.mail = createObject("component", "bluedragon.adminapi.mail");
+			Application.administrator = createObject("component", "bluedragon.adminapi.Administrator");
+			Application.datasource = createObject("component", "bluedragon.adminapi.Datasource");
+			Application.extensions = createObject("component", "bluedragon.adminapi.Extensions");
+			Application.mail = createObject("component", "bluedragon.adminapi.Mail");
+			Application.serverSettings = createObject("component", "bluedragon.adminapi.ServerSettings");
+			
 			Application.inited = true;
 			
 			return true;

@@ -81,7 +81,7 @@
 
 <cfscript>
 	
-	dsnObj_BD = createObject("component", "bluedragon.adminapi.datasource");
+	dsnObj_BD = createObject("component", "bluedragon.adminapi.Datasource");
 	//dsnObj_CFMX = createObject("component", "cfide.adminapi.datasource");
 
 // Create and delete MySQL datasource with BD

@@ -14,7 +14,6 @@
 		<cfargument name="scriptprotect" type="boolean" required="true" hint="Apply global script protection - protects against cross-site scripting attacks" />
 		<cfargument name="scriptsrc" type="string" required="true" hint="Default CFFORM script location" />
 		<cfargument name="tempdirectory" type="string" required="true" hint="Default temp directory" />
-		<cfargument name="assert" type="boolean" required="true" hint="Enable cfassert and assert()" />
 		<cfargument name="component-cfc" type="string" required="true" hint="Path for the base CFC file for all CFCs" />
 		
 		<cfset var localConfig = getConfig() />
@@ -162,7 +161,6 @@
 			localConfig.system.scriptprotect = ToString(arguments.scriptprotect);
 			localConfig.system.scriptsrc = arguments.scriptsrc;
 			localConfig.system.tempdirectory = arguments.tempdirectory;
-			localConfig.system.assert = ToString(arguments.assert);
 			localConfig.system["component-cfc"] = arguments["component-cfc"];
 			
 			setConfig(localConfig);

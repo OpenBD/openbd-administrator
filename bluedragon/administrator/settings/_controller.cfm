@@ -52,7 +52,7 @@
 					<cfset Application.serverSettings.saveServerSettings(args.buffersize, args.whitespacecomp, args.errorhandler, 
 																			args.missingtemplatehandler, args.defaultcharset, 
 																			args.scriptprotect, args.scriptsrc, args.tempdirectory, 
-																			args.assert, args.componentcfc) />
+																			args.componentcfc) />
 					<cfcatch type="bluedragon.adminapi.serversettings">
 						<cfset session.message = CFCATCH.Message />
 						<cflocation url="index.cfm" addtoken="false" />

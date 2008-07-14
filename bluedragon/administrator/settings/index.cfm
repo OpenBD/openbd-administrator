@@ -108,13 +108,6 @@
 				</td>
 			</tr>
 			<tr>
-				<td align="right" bgcolor="##f0f0f0">Enable &lt;cfasset&gt; &amp; assert()</td>
-				<td bgcolor="##ffffff">
-					<input type="radio" name="assert" value="true"<cfif serverSettings.assert> checked="true"</cfif> /> Yes&nbsp;
-					<input type="radio" name="assert" value="false"<cfif not serverSettings.assert> checked="false"</cfif> />No
-				</td>
-			</tr>
-			<tr>
 				<td align="right" bgcolor="##f0f0f0">Base ColdFusion Component (CFC)</td>
 				<td bgcolor="##ffffff">
 					<input type="text" name="componentcfc" size="40" value="#serverSettings['component-cfc']#" />

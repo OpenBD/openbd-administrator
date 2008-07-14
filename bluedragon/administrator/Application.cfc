@@ -11,6 +11,7 @@
 			Application.caching = createObject("component", "bluedragon.adminapi.Caching");
 			Application.chart = createObject("component", "bluedragon.adminapi.Chart");
 			Application.datasource = createObject("component", "bluedragon.adminapi.Datasource");
+			Application.debugging = createObject("component", "bluedragon.adminapi.Debugging");
 			Application.extensions = createObject("component", "bluedragon.adminapi.Extensions");
 			Application.mail = createObject("component", "bluedragon.adminapi.Mail");
 			Application.mapping = createObject("component", "bluedragon.adminapi.Mapping");

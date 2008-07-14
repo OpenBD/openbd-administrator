@@ -49,15 +49,6 @@
 <!-- ======== Left Sidebar ======== -->
 
 <div id="sidebar">
-  <!--- <div>	
-    <p class="title"><a href="index.html">Other</a></p>
-    <ul>
-      <li><a href="index.html">Overview</a></li>
-      <li class="highlight"><a href="template.html">Template</a>
-        <span class="hidden">(this page)</span></li>
-      <li><a href="sample.html">Sample Page</a></li>
-    </ul>
-  </div> --->
   <div>	
     <p class="title">Server</p>
 	<ul>
@@ -68,10 +59,10 @@
 		<li><a href="#contextPath#/bluedragon/administrator/settings/variables.cfm">Variables</a></li>
 		<li><a href="#contextPath#/bluedragon/administrator/settings/mappings.cfm">Mappings</a></li>
 		<li><a href="#contextPath#/bluedragon/administrator/settings/mail.cfm">Mail</a></li>
-		<li><a href="#contextPath#/bluedragon/administrator/settings/fonts.cfm">Fonts</a></li>
-		<li><a href="#contextPath#/bluedragon/administrator/settings/threads.cfm">Threads</a></li>
+		<!--- <li><a href="#contextPath#/bluedragon/administrator/settings/fonts.cfm">Fonts</a></li> --->
+		<!--- <li><a href="#contextPath#/bluedragon/administrator/settings/threads.cfm">Threads</a></li> --->
 	</ul>
-    <!--- <ul>
+    <!--- just leaving this here for reference <ul>
       <li><a href="index.html">Overview</a></li>
       <li class="highlight"><a href="template.html">Template</a>
         <span class="hidden">(this page)</span></li>
@@ -86,15 +77,18 @@
   </div>
   <div>
 	<p class="title">Debugging &amp; Logging</p>
-	<!--- <ul>
-		<li><a href="#contextPath#/bluedragon/administrator/debugging/index.cfm">Datasources</a></li>
-	</ul> --->
+	<ul>
+		<li><a href="#contextPath#/bluedragon/administrator/debugging/index.cfm">Debug Settings</a></li>
+		<li><a href="#contextPath#/bluedragon/administrator/debugging/ipaddresses.cfm">Debug IP Addresses</a></li>
+		<!--- <li><a href="#contextPath#/bluedragon/administrator/debugging/scheduledtasks.cfm">Scheduled Tasks</a></li> --->
+		<!--- <li><a href="#contextPath/bluedragon/administrator/debugging/logs.cfm#">Log Files</a></li> --->
+	</ul>
   </div>
   <div>
 	<p class="title">Extensions</p>
-	<!--- <ul>
-		<li><a href="#contextPath#/bluedragon/administrator/extensions/index.cfm">Datasources</a></li>
-	</ul> --->
+	<ul>
+		<li><a href="#contextPath#/bluedragon/administrator/extensions/index.cfm">Custom Tag Paths</a></li>
+	</ul>
   </div>
 </div>
 

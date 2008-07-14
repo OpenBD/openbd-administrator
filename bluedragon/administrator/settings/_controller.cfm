@@ -95,8 +95,7 @@
 			</cfif>
 			
 			<cfif arrayLen(errorFields) gt 0>
-				<!--- TODO: add nicer functionality so the entire form gets repopulated on error;
-						maybe should repopulate things like tempdirectory and componentcfc with defaults --->
+				<!--- TODO: add nicer functionality so the entire form gets repopulated on error --->
 				<cfset session.errorFields = errorFields />
 				<cflocation url="mappings.cfm" addtoken="false" />
 			<cfelse>
@@ -149,8 +148,7 @@
 			</cfif>
 			
 			<cfif arrayLen(errorFields) gt 0>
-				<!--- TODO: add nicer functionality so the entire form gets repopulated on error;
-						maybe should repopulate things like tempdirectory and componentcfc with defaults --->
+				<!--- TODO: add nicer functionality so the entire form gets repopulated on error --->
 				<cfset session.errorFields = errorFields />
 				<cflocation url="caching.cfm" addtoken="false" />
 			<cfelse>
@@ -175,8 +173,7 @@
 			</cfif>
 			
 			<cfif arrayLen(errorFields) gt 0>
-				<!--- TODO: add nicer functionality so the entire form gets repopulated on error;
-						maybe should repopulate things like tempdirectory and componentcfc with defaults --->
+				<!--- TODO: add nicer functionality so the entire form gets repopulated on error --->
 				<cfset session.errorFields = errorFields />
 				<cflocation url="caching.cfm" addtoken="false" />
 			<cfelse>
@@ -191,6 +188,133 @@
 				<cfset session.message = "The query cache settings were updated successfully." />
 				<cflocation url="caching.cfm" addtoken="false" />
 			</cfif>
+		</cfcase>
+		
+		<!--- VARIABLES --->
+		<cfcase value="processVariableForm">
+			<cfset errorFields = arrayNew(1) />
+			
+			<!--- make sure all the numeric values are numeric --->
+			<cfif find(".", args.appTimeoutDays) neq 0 or not isNumeric(args.appTimeoutDays)>
+				<cfset arrayAppend(errorFields, "appTimeoutDays") />
+			</cfif>
+			
+			<cfif find(".", args.appTimeoutHours) neq 0 or not isNumeric(args.appTimeoutHours)>
+				<cfset arrayAppend(errorFields, "appTimeoutHours") />
+			</cfif>
+			
+			<cfif find(".", args.appTimeoutMinutes) neq 0 or not isNumeric(args.appTimeoutMinutes)>
+				<cfset arrayAppend(errorFields, "appTimoutMinutes") />
+			</cfif>
+			
+			<cfif find(".", args.appTimeoutSeconds) neq 0 or not isNumeric(args.appTimeoutSeconds)>
+				<cfset arrayAppend(errorFields, "appTimeoutSeconds") />
+			</cfif>
+			
+			<cfif find(".", args.sessionTimeoutDays) neq 0 or not isNumeric(args.sessionTimeoutDays)>
+				<cfset arrayAppend(errorFields, "sessionTimeoutDays") />
+			</cfif>
+			
+			<cfif find(".", args.sessionTimeoutHours) neq 0 or not isNumeric(args.sessionTimeoutHours)>
+				<cfset arrayAppend(errorFields, "sessionTimeoutHours") />
+			</cfif>
+			
+			<cfif find(".", args.sessionTimeoutMinutes) neq 0 or not isNumeric(args.sessionTimeoutMinutes)>
+				<cfset arrayAppend(errorFields, "sessionTimoutMinutes") />
+			</cfif>
+			
+			<cfif find(".", args.sessionTimeoutSeconds) neq 0 or not isNumeric(args.sessionTimeoutSeconds)>
+				<cfset arrayAppend(errorFields, "sessionTimeoutSeconds") />
+			</cfif>
+			
+			<cfif find(".", args.clientexpiry) neq 0 or not isNumeric(args.clientexpiry)>
+				<cfset arrayAppend(errorFields, "clientexpiry") />
+			</cfif>
+			
+			<cfif find(".", args.cfchartcachesize) neq 0 or not isNumeric(args.cfchartcachesize)>
+				<cfset arrayAppend(errorFields, "cfchartcachesize") />
+			</cfif>
+			
+			<cfif arrayLen(errorFields) gt 0>
+				<cfset session.errorFields = errorFields />
+				<cflocation url="variables.cfm" addtoken="false" />
+			</cfif>
+			
+			<!--- handle checkboxes that may not come through --->
+			<cfif not structKeyExists(args, "clientpurgeenabled")>
+				<cfset args.clientpurgeenabled = false />
+			</cfif>
+			
+			<cfif not structKeyExists(args, "cf5clientdata")>
+				<cfset args.cf5clientdata = false />
+			</cfif>
+			
+			<cftry>
+				<cfset Application.variableSettings.saveVariableSettings(args.j2eesession, args.appTimeoutDays, 
+																			args.appTimeoutHours, args.appTimeoutMinutes, 
+																			args.appTimeoutSeconds, args.sessionTimeoutDays, 
+																			args.sessionTimeoutHours, args.sessionTimeoutMinutes, 
+																			args.sessionTimeoutSeconds, args.clientstorage, 
+																			args.clientpurgeenabled, args.clientexpiry, 
+																			args.cf5clientdata) />
+				<cfcatch type="bluedragon.adminapi.variableSettings">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="variables.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cftry>
+				<cfset Application.chart.saveChartSettings(args.cfchartcachesize, args.cfchartstorage) />
+				<cfcatch type="bluedragon.adminapi.chart">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="variables.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cfset session.message = "The variable settings were updated successfully." />
+			<cflocation url="variables.cfm" addtoken="false" />
+		</cfcase>
+		
+		<!--- MAIL --->
+		<cfcase value="processMailForm">
+			<cfset errorFields = arrayNew(1) />
+			
+			<cfif find(".", args.smtpport) neq 0 or not isNumeric(args.smtpport)>
+				<cfset arrayAppend(errorFields, "smtpport") />
+			</cfif>
+			
+			<cfif find(".", args.timeout) neq 0 or not isNumeric(args.timeout)>
+				<cfset arrayAppend(errorFields, "timeout") />
+			</cfif>
+			
+			<cfif find(".", args.threads) neq 0 or not isNumeric(args.threads)>
+				<cfset arrayAppend(errorFields, "threads") />
+			</cfif>
+			
+			<cfif find(".", args.interval) neq 0 or not isNumeric(args.interval)>
+				<cfset arrayAppend(errorFields, "interval") />
+			</cfif>
+			
+			<cfif arrayLen(errorFields) gt 0>
+				<cfset session.errorFields = errorFields />
+				<cflocation url="mail.cfm" addtoken="false" />
+			</cfif>
+			
+			<cfif args.backupsmtpservers is not "">
+				<cfset args.smtpserver = args.smtpserver & "," & args.backupsmtpservers />
+			</cfif>
+			
+			<cftry>
+				<cfset Application.mail.saveMailSettings(args.smtpserver, args.smtpport, args.timeout, 
+															args.threads, args.interval, args.charset) />
+				<cfcatch type="bluedragon.adminapi.mail">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="mail.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cfset session.message = "The mail settings were saved successfully." />
+			<cflocation url="mail.cfm" addtoken="false" />
 		</cfcase>
 		
 		<!--- DEFAULT CASE --->

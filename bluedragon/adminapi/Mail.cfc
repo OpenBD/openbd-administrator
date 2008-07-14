@@ -20,66 +20,54 @@
 		extends="Base" 
 		hint="Manages mail settings - OpenBD Admin API">
 
-	<cffunction name="deleteMailServer" access="public" returntype="void" output="false" hint="">
-		<cfthrow message="Not Implemented Yet" type="bluedragon.adminapi.Mail">
-	</cffunction>
-
-	<cffunction name="getAvailableMailCharsets" access="public" returntype="array" output="false" hint="Returns an array of the character sets available for Mail.">
-		<cfobject type="java" action="create" name="charset" class="java.nio.charset.Charset">
-		<cfreturn StructKeyArray(charset.availableCharsets()) />
-	</cffunction>
-
-	<cffunction name="getMailProperty" access="public" returntype="any" output="false" hint="Returns the value of specified mail property">
-		<cfargument name="propertyName" required="true" type="any" hint="Valid Properties are:<ul><li>CharSet</li><li>Interval</li></ul>" />
-
-		<cfif NOT ListFindNoCase("charset,interval", arguments.propertyName)>
-			<cfthrow message="Invalid Mail Property: #arguments.propertyName#" type="bluedragon.adminapi.mail">
+	<cffunction name="getMailSettings" access="public" returntype="struct" output="false" 
+			hint="Returns a struct containing the mail settings">
+		<cfset var localConfig = getConfig() />
+		<cfset var doSetConfig = false />
+		
+		<!--- some of the mail settings may not exist --->
+		<cfif not structKeyExists(localConfig.cfmail, "threads")>
+			<cfset localConfig.cfmail.threads = "1" />
+			<cfset doSetConfig = true />
 		</cfif>
 		
-		<cfset var localConfig = getConfig() />
-		<cfset var returnValue = Evaluate("localConfig.cfmail." & LCase(arguments.propertyName)) />
+		<cfif not structKeyExists(localConfig.cfmail, "charset")>
+			<cfset localConfig.cfmail.charset = getDefaultCharset() />
+			<cfset doSetConfig = true />
+		</cfif>
 		
-		<cfreturn returnValue />
+		<cfif not structKeyExists(localConfig.cfmail, "timeout")>
+			<cfset localConfig.cfmail.timeout = "60" />
+			<cfset doSetConfig = true />
+		</cfif>
+		
+		<cfif doSetConfig>
+			<cfset setConfig(localConfig) />
+		</cfif>
+		
+		<cfreturn localConfig.cfmail />
 	</cffunction>
 
-	<cffunction name="getMailServers" access="public" returntype="array" output="false" hint="">
-		<cfthrow message="Not Implemented Yet" type="bluedragon.adminapi.mail">
-	</cffunction>
-
-	<cffunction name="setMailProperty" access="public" returntype="void" output="false" hint="Sets mail property to value specified">
-		<cfargument name="propertyName" required="yes" hint="Valid Properties are:<ul><li>CharSet</li><li>Interval</li></ul>">
-		<cfargument name="propertyValue" required="yes" hint="Value for the specified mail property">
-
+	<cffunction name="saveMailSettings" access="public" returntype="void" output="false" hint="Saves mail settings">
+		<cfargument name="smtpserver" type="string" required="true" hint="SMTP servers including backup servers" />
+		<cfargument name="smtpport" type="numeric" required="true" hint="The SMTP port" />
+		<cfargument name="timeout" type="numeric" required="true" hint="The connection timeout in seconds" />
+		<cfargument name="threads" type="numeric" required="true" hint="The number of threads to be used by cfmail" />
+		<cfargument name="interval" type="numeric" required="true" hint="The spool polling interval in seconds" />
+		<cfargument name="charset" type="string" required="true" hint="The default charset used by cfmail" />
+		
 		<cfset var localConfig = getConfig() />
-
-		<cfswitch expression="#LCase(arguments.propertyName)#">
-			<cfcase value="charset">
-				<cfif ListFind(ArrayToList(getAvailableMailCharsets()), arguments.propertyValue)>
-					<cfset localConfig.cfmail.charset = arguments.propertyValue />
-				<cfelse>
-					<cfthrow message="Unsupported Mail Charset: #arguments.propertyValue#" type="bluedragon.adminapi.mail">
-				</cfif>
-				
-			</cfcase>
-			<cfcase value="interval">
-				<cfset localConfig.cfmail.interval = ToString(arguments.propertyValue) />
-			</cfcase>
-			<cfdefaultcase>
-				<cfthrow message="Invalid Mail Property: #arguments.propertyName#" type="bluedragon.adminapi.mail">
-			</cfdefaultcase>
-		</cfswitch>
-
-		<cfset setConfig(localConfig) />
-	</cffunction>
-
-	<cffunction name="setMailServer" access="public" returntype="void" output="false" hint="Adds a new mail server">
-		<cfargument name="server" type="string" required="true" hint="Name of mail server">
-		<cfargument name="port" type="numeric" default="25" hint="Port number of mail server">
-
-		<cfset var localConfig = getConfig() />
-		<cfset localConfig.cfmail.smtpserver = arguments.server />
-		<cfset localConfig.cfmail.smtpport = ToString(arguments.port) />
-		<cfset setConfig(localConfig) />
-	</cffunction>
+		
+		<cfscript>
+			localConfig.cfmail.smtpserver = arguments.smtpserver;
+			localConfig.cfmail.smtpport = ToString(arguments.smtpport);
+			localConfig.cfmail.timeout = ToString(arguments.timeout);
+			localConfig.cfmail.threads = ToString(arguments.threads);
+			localConfig.cfmail.interval = ToString(arguments.interval);
+			localConfig.cfmail.charset = arguments.charset;
+			
+			setConfig(localConfig);
+		</cfscript>
+ 	</cffunction>
 
 </cfcomponent>

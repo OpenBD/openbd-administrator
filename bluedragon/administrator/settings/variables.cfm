@@ -115,7 +115,10 @@
 						</cfloop>
 					</cfif>
 					</select><br />
-					<input type="checkbox" name="clientpurgeenabled" value="true"<cfif variableSettings.clientpurgeenabled> checked="true"</cfif> />Enable purging of data that is <input type="text" name="clientexpiry" size="3" maxlength="3" /> days old<br />
+					<input type="checkbox" name="clientpurgeenabled" value="true"<cfif variableSettings.clientpurgeenabled> checked="true"</cfif> />
+					Enable purging of data that is&nbsp;
+					<input type="text" name="clientexpiry" size="3" maxlength="3" value="#variableSettings.clientexpiry#" />&nbsp;
+					days old<br />
 					<input type="checkbox" name="cf5clientdata" value="true"<cfif variableSettings.cf5clientdata> checked="true"</cfif> />ColdFusion 5-compatible client data
 				</td>
 			</tr>

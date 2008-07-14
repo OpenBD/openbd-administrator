@@ -35,6 +35,38 @@
 		
 		<cfreturn structCopy(localConfig.cfapplication) />
 	</cffunction>
-
-
+	
+	<cffunction name="saveVariableSettings" access="public" output="false" returntype="void" 
+			hint="Saves the variable settings">
+		<cfargument name="j2eesession" type="boolean" required="true" hint="Enables/disables J2EE session variables" />
+		<cfargument name="appTimeoutDays" type="numeric" required="true" hint="Application timeout days" />
+		<cfargument name="appTimeoutHours" type="numeric" required="true" hint="Application timeout hours" />
+		<cfargument name="appTimeoutMinutes" type="numeric" required="true" hint="Application timeout minutes" />
+		<cfargument name="appTimeoutSeconds" type="numeric" required="true" hint="Application timeout seconds" />
+		<cfargument name="sessionTimeoutDays" type="numeric" required="true" hint="Session timeout days" />
+		<cfargument name="sessionTimeoutHours" type="numeric" required="true" hint="Session timeout hours" />
+		<cfargument name="sessionTimeoutMinutes" type="numeric" required="true" hint="Session timeout minutes" />
+		<cfargument name="sessionTimeoutSeconds" type="numeric" required="true" hint="Session timeout seconds" />
+		<cfargument name="clientstorage" type="string" required="true" hint="Client storage location" />
+		<cfargument name="clientpurgeenabled" type="boolean" required="true" hint="Enable/disable automatic client variable purging" />
+		<cfargument name="clientexpiry" type="numeric" required="true" hint="Number of days after which client variables are purged" />
+		<cfargument name="cf5clientdata" type="boolean" required="true" hint="Enables/disables CF 5-compatible client variables" />
+		
+		<cfset var localConfig = getConfig() />
+		<cfset var applicationtimeout = "##CreateTimeSpan(#arguments.appTimeoutDays#,#arguments.appTimeoutHours#,#arguments.appTimeoutMinutes#,#arguments.appTimeoutSeconds#)##" />
+		<cfset var sessiontimeout = "##CreateTimeSpan(#arguments.sessionTimeoutDays#,#arguments.sessionTimeoutHours#,#arguments.sessionTimeoutMinutes#,#arguments.sessionTimeoutSeconds#)##" />
+		
+		<cfscript>
+			localConfig.cfapplication.j2eesession = ToString(arguments.j2eesession);
+			localConfig.cfapplication.applicationtimeout = applicationtimeout;
+			localConfig.cfapplication.sessiontimeout = sessiontimeout;
+			localConfig.cfapplication.clientstorage = arguments.clientstorage;
+			localConfig.cfapplication.clientpurgeenabled = ToString(arguments.clientpurgeenabled);
+			localConfig.cfapplication.clientexpiry = ToString(arguments.clientexpiry);
+			localConfig.cfapplication.cf5clientdata = ToString(arguments.cf5clientdata);
+			
+			setConfig(localConfig);
+		</cfscript>
+	</cffunction>
+	
 </cfcomponent>

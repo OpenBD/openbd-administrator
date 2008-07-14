@@ -123,5 +123,13 @@
 		<cfargument name="value" required="yes">
 		<cfdump var="#arguments.value#">
 	</cffunction>
+
+	<cffunction name="getAvailableCharsets" access="public" output="false" returntype="struct" hint="Returns a struct containing the available charsets on the JVM">
+		<cfreturn createObject("java", "java.nio.charset.Charset").availableCharsets() />
+	</cffunction>
+	
+	<cffunction name="getDefaultCharset" access="public" output="false" returntype="string" hint="Returns the default charset for the JVM">
+		<cfreturn createObject("java", "java.nio.charset.Charset").defaultCharset().name() />
+	</cffunction>
 	
 </cfcomponent>

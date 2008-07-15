@@ -126,46 +126,6 @@
 	</cffunction>
 	
 	<!--- CFX TAGS --->
-	<cffunction name="deleteCPPCFX" access="public" output="false" returntype="void" hint="Delete a C++ CFX tag">
-		<cfargument name="cfxname" required="true" type="string" hint="Specifies a CFX tag name" />
-		<cfset var localConfig = getConfig() />
-		<cfset var cfxIndex = "" />
-
-		<!--- Make sure there are C++ CFXs --->
-		<cfif (NOT StructKeyExists(localConfig, "nativecustomtags")) OR (NOT StructKeyExists(localConfig.nativecustomtags, "mapping"))>
-			<cfthrow message="No registered C++ CFXs" type="bluedragon.adminapi.extensions">		
-		</cfif>
-
-		<cfloop index="cfxIndex" from="1" to="#ArrayLen(localConfig.nativecustomtags.mapping)#">
-			<cfif localConfig.nativecustomtags.mapping[cfxIndex].name EQ arguments.cfxname>
-				<cfset ArrayDeleteAt(localConfig.nativecustomtags.mapping, cfxIndex) />
-				<cfset setConfig(localConfig) />
-				<cfreturn />
-			</cfif>
-		</cfloop>
-		<cfthrow message="#arguments.cfxname# not registered as a C++ CFX" type="bluedragon.adminapi.extensions">
-	</cffunction>
-
-	<cffunction name="deleteJavaCFX" access="public" output="false" returntype="void" hint="Delete a Java CFX tag">
-		<cfargument name="cfxname" required="true" type="string" hint="Specifies a CFX tag name" />
-		<cfset var localConfig = getConfig() />
-		<cfset var cfxIndex = "" />
-
-		<!--- Make sure there are Java CFXs --->
-		<cfif (NOT StructKeyExists(localConfig, "javacustomtags")) OR (NOT StructKeyExists(localConfig.javacustomtags, "mapping"))>
-			<cfthrow message="No registered Java CFXs" type="bluedragon.adminapi.extensions">		
-		</cfif>
-
-		<cfloop index="cfxIndex" from="1" to="#ArrayLen(localConfig.javacustomtags.mapping)#">
-			<cfif localConfig.javacustomtags.mapping[cfxIndex].name EQ arguments.cfxname>
-				<cfset ArrayDeleteAt(localConfig.javacustomtags.mapping, cfxIndex) />
-				<cfset setConfig(localConfig) />
-				<cfreturn />
-			</cfif>
-		</cfloop>
-		<cfthrow message="#arguments.cfxname# not registered as a Java CFX" type="bluedragon.adminapi.extensions">
-	</cffunction>
-
 	<cffunction name="getCPPCFX" access="public" output="false" returntype="array" hint="List the names of all registered C++ CFX tags or a specified C++ CFX tag">
 		<cfargument name="cfxname" required="false" type="string" hint="Specifies a CFX tag name" />
 		<cfset var localConfig = getConfig() />
@@ -189,6 +149,85 @@
 			</cfloop>
 			<cfthrow message="#arguments.cfxname# not registered as a C++ CFX" type="bluedragon.adminapi.extensions">
 		</cfif>
+	</cffunction>
+
+	<cffunction name="setCPPCFX" access="public" output="false" returntype="void" hint="Registers a C++ CFX">
+		<cfargument name="displayname" type="string" required="true" hint="Name of CFX tag to show in the Administrator" />
+		<cfargument name="module" type="string" required="true" hint="Library module that implments the interface" />
+		<cfargument name="description" type="string" required="true" hint="Description of CFX tag" />
+		<cfargument name="name"	type="string" required="true" default="#arguments.displayname#" hint="Name of tag, beginning with cfx_" />
+		<cfargument name="keeploaded" type="boolean" required="true" hint="Indicates if BlueDragon should keep the CFX tag in memory" />
+		<cfargument name="function" type="string" required="true" hint="Name of the procedure that implements the tag" />
+		<cfargument name="existingCFXName" type="string" required="true" hint="The existing CFX tag name--used on updates" />
+		<cfargument name="action" type="string" required="true" hint="Action to take (create or update)" />
+		
+		<cfset var localConfig = getConfig() />
+		<cfset var cppCFX = StructNew() />
+		<cfset var tempFile = "" />
+		<cfset var temp = "" />
+		
+		<!--- Make sure configuration structure exists, otherwise build it --->
+		<cfif (NOT StructKeyExists(localConfig, "nativecustomtags")) OR (NOT StructKeyExists(localConfig.nativecustomtags, "mapping"))>
+			<cfset localConfig.nativecustomtags.mapping = ArrayNew(1) />
+		</cfif>
+		
+		<!--- make sure we can read the module --->
+		<cfif left(arguments.module, 1) is "$">
+			<cfset tempFile = right(arguments.module, len(arguments.module) - 1) />
+		<cfelse>
+			<cfset tempFile = expandPath(arguments.module) />
+		</cfif>
+		
+		<cftry>
+			<cffile action="read" file="#tempFile#" variable="temp" />
+			<cfcatch type="any">
+				<cfthrow message="An error occurred while attempting to read #tempFile#. #CFCATCH.Message#" 
+						type="bluedragon.adminapi.extensions" />
+			</cfcatch>
+		</cftry>
+
+		<!--- if this is an update, delete the existing tag --->
+		<cfif arguments.action is "update">
+			<cfset deleteCPPCFX(LCase(arguments.existingCFXName)) />
+			<cfset localConfig = getConfig() />
+
+			<cfif (NOT StructKeyExists(localConfig, "nativecustomtags")) OR (NOT StructKeyExists(localConfig.nativecustomtags, "mapping"))>
+				<cfset localConfig.nativecustomtags.mapping = ArrayNew(1) />
+			</cfif>
+		</cfif>
+		
+		<cfscript>
+			cppCFX.displayname = arguments.displayname;
+			cppCFX.module = arguments.module;
+			cppCFX.description = arguments.description;
+			cppCFX.name = LCase(arguments.name);
+			cppCFX.keeploaded = ToString(arguments.keeploaded);
+			cppCFX.function = arguments.function;
+			
+			arrayPrepend(localConfig.nativecustomtags.mapping, structCopy(cppCFX));
+			
+			setConfig(localConfig);
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="deleteCPPCFX" access="public" output="false" returntype="void" hint="Delete a C++ CFX tag">
+		<cfargument name="cfxname" required="true" type="string" hint="Specifies a CFX tag name" />
+		<cfset var localConfig = getConfig() />
+		<cfset var cfxIndex = "" />
+
+		<!--- Make sure there are C++ CFXs --->
+		<cfif (NOT StructKeyExists(localConfig, "nativecustomtags")) OR (NOT StructKeyExists(localConfig.nativecustomtags, "mapping"))>
+			<cfthrow message="No registered C++ CFXs" type="bluedragon.adminapi.extensions">		
+		</cfif>
+
+		<cfloop index="cfxIndex" from="1" to="#ArrayLen(localConfig.nativecustomtags.mapping)#">
+			<cfif localConfig.nativecustomtags.mapping[cfxIndex].name EQ arguments.cfxname>
+				<cfset ArrayDeleteAt(localConfig.nativecustomtags.mapping, cfxIndex) />
+				<cfset setConfig(localConfig) />
+				<cfreturn />
+			</cfif>
+		</cfloop>
+		<cfthrow message="#arguments.cfxname# not registered as a C++ CFX" type="bluedragon.adminapi.extensions">
 	</cffunction>
 
 	<cffunction name="getJavaCFX" access="public" output="false" returntype="array" hint="List the names of all registered Java CFX tags or a specified Java CFX tag">
@@ -216,60 +255,124 @@
 		</cfif>
 	</cffunction>
 
-	<cffunction name="setCPPCFX" access="public" output="false" returntype="void" hint="Registers a C++ CFX">
-		<cfargument name="displayname" type="string" required="true" hint="Name of CFX tag to show in the Administrator" />
-		<cfargument name="module" type="string" required="true" hint="Library module that implments the interface" />
-		<cfargument name="description" type="string" default="" hint="Description of CFX tag" />
-		<cfargument name="name"	 type="string" default="#arguments.displayname#" hint="Name of tag, beginning with cfx_" />
-		<cfargument name="keeploaded" type="boolean" default="true" hint="Indicates if BlueDragon should keep the CFX tag in memory" />
-		<cfargument name="function" type="string" default="ProcessTagRequest" hint="Name of the procedure that implements the tag" />
-		
-		<cfset var localConfig = getConfig() />
-		<cfset var cppCFX = StructNew() />
-
-		<!--- Make sure configuration structure exists, otherwise build it --->
-		<cfif (NOT StructKeyExists(localConfig, "nativecustomtags")) OR (NOT StructKeyExists(localConfig.nativecustomtags, "mapping"))>
-			<cfset localConfig.nativecustomtags.mapping = ArrayNew(1) />
-		</cfif>
-
-		<!--- Build C++ CFX Struct --->
-		<cfset cppCFX.displayname = arguments.displayname />
-		<cfset cppCFX.module = arguments.module />
-		<cfset cppCFX.description = arguments.description />
-		<cfset cppCFX.name = LCase(arguments.name) />
-		<cfset cppCFX.keeploaded = arguments.keeploaded />
-		<cfset cppCFX.function = arguments.function />
-
-		<!--- Prepend it to the Java CFX array --->
-		<cfset ArrayPrepend(localConfig.nativecustomtags.mapping, Duplicate(cppCFX)) />
-	
-		<cfset setConfig(localConfig) />
-	</cffunction>
-
 	<cffunction name="setJavaCFX" access="public" output="false" returntype="void" hint="Registers a Java CFX">
 		<cfargument name="displayname" type="string" required="true" hint="Name of CFX tag to show in the Administrator" />
 		<cfargument name="class" type="string" required="true" hint="Class name (minus .class) that implments the interface" />
-		<cfargument name="description" type="string" default="" hint="Description of CFX tag" />
-		<cfargument name="name"	 type="string" default="#arguments.displayname#" hint="Name of tag, beginning with cfx_" />
-		
+		<cfargument name="description" type="string" required="true" hint="Description of CFX tag" />
+		<cfargument name="name"	type="string" required="true" hint="Name of tag, beginning with cfx_" />
+		<cfargument name="existingCFXName" type="string" required="true" hint="The existing CFX tag name--used for updates in case the name changes" />
+		<cfargument name="action" type="string" required="true" hint="The action being take (create or update)" />
+
 		<cfset var localConfig = getConfig() />
 		<cfset var javaCFX = StructNew() />
+		<cfset var javaObj = 0 />
 
 		<!--- Make sure configuration structure exists, otherwise build it --->
 		<cfif (NOT StructKeyExists(localConfig, "javacustomtags")) OR (NOT StructKeyExists(localConfig.javacustomtags, "mapping"))>
 			<cfset localConfig.javacustomtags.mapping = ArrayNew(1) />
 		</cfif>
 		
-		<!--- Build Java CFX Struct --->
-		<cfset javaCFX.displayname = arguments.displayname />
-		<cfset javaCFX.class = arguments.class />
-		<cfset javaCFX.description = arguments.description />
-		<cfset javaCFX.name = LCase(arguments.name) />
+		<!--- see if we can create an instance of the java class they're using as the custom tag --->
+		<cftry>
+			<cfset javaObject = createObject("java", arguments.class) />
+			<cfcatch type="any">
+				<cfthrow message="Could not instantiate the Java class for the CFX tag." 
+						type="bluedragon.adminapi.extensions" />
+			</cfcatch>
+		</cftry>
+		
+		<!--- if this is an update, delete the existing tag --->
+		<cfif arguments.action is "update">
+			<cfset deleteJavaCFX(LCase(arguments.existingCFXName)) />
+			<cfset localConfig = getConfig() />
 
-		<!--- Prepend it to the Java CFX array --->
-		<cfset ArrayPrepend(localConfig.javacustomtags.mapping, Duplicate(javaCFX)) />
+			<cfif (NOT StructKeyExists(localConfig, "javacustomtags")) OR (NOT StructKeyExists(localConfig.javacustomtags, "mapping"))>
+				<cfset localConfig.javacustomtags.mapping = ArrayNew(1) />
+			</cfif>
+		</cfif>
+		
+		<cfscript>
+			javaCFX.displayname = arguments.displayname;
+			javaCFX.class = arguments.class;
+			javaCFX.description = arguments.description;
+			javaCFX.name = LCase(arguments.name);
+			
+			arrayPrepend(localConfig.javacustomtags.mapping, structCopy(javaCFX));
+			
+			setConfig(localConfig);
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="deleteJavaCFX" access="public" output="false" returntype="void" hint="Delete a Java CFX tag">
+		<cfargument name="cfxname" required="true" type="string" hint="Specifies a CFX tag name" />
+		<cfset var localConfig = getConfig() />
+		<cfset var cfxIndex = "" />
+
+		<!--- Make sure there are Java CFXs --->
+		<cfif (NOT StructKeyExists(localConfig, "javacustomtags")) OR (NOT StructKeyExists(localConfig.javacustomtags, "mapping"))>
+			<cfthrow message="No registered Java CFXs" type="bluedragon.adminapi.extensions">		
+		</cfif>
+
+		<cfloop index="cfxIndex" from="1" to="#ArrayLen(localConfig.javacustomtags.mapping)#">
+			<cfif localConfig.javacustomtags.mapping[cfxIndex].name EQ arguments.cfxname>
+				<cfset ArrayDeleteAt(localConfig.javacustomtags.mapping, cfxIndex) />
+				<cfset setConfig(localConfig) />
+				<cfreturn />
+			</cfif>
+		</cfloop>
+		<cfthrow message="#arguments.cfxname# not registered as a Java CFX" type="bluedragon.adminapi.extensions">
+	</cffunction>
 	
-		<cfset setConfig(localConfig) />
+	<cffunction name="verifyCFXTag" access="public" output="false" returntype="void" 
+			hint="Verifies a CFX tag by instantiating the Java class or doing a file read on the specified DLL">
+		<cfargument name="cfxname" required="true" type="string" hint="The CFX tag name" />
+		<cfargument name="type" required="true" type="string" hint="The type of CFX tag to verify (java or cpp)" />
+		
+		<cfset var cfxTag = 0 />
+		<cfset var tempFile = "" />
+		<cfset var temp = 0 />
+		
+		<cfif arguments.type is "java">
+			<cftry>
+				<cfset cfxTag = getJavaCFX(arguments.cfxname).get(0) />
+				<cfcatch type="any">
+					<cfthrow message="An error occurred while retrieving the Java CFX tag information from the server configuration. #CFCATCH.Message#" 
+							type="bluedragon.adminapi.extensions" />
+				</cfcatch>
+			</cftry>
+			
+			<cftry>
+				<cfset temp = createObject("java", cfxTag.class) />
+				<cfcatch type="any">
+					<cfthrow message="Could not instantiate the Java class for the CFX tag." 
+							type="bluedragon.adminapi.extensions" />
+				</cfcatch>
+			</cftry>
+		<cfelseif arguments.type is "cpp">
+			<cfset cfxTag = getCPPCFX(arguments.cfxname) />
+			
+			<cftry>
+				<cfset cfxTag = getCPPCFX(arguments.cfxname).get(0) />
+				<cfcatch type="any">
+					<cfthrow message="An error occurred while retrieving the C++ CFX tag information from the server configuration. #CFCATCH.Message#" 
+							type="bluedragon.adminapi.extensions" />
+				</cfcatch>
+			</cftry>
+			
+			<cfif left(cfxTag.module, 1) is "$">
+				<cfset tempFile = right(cfxTag.module, len(cfxTag.module) - 1) />
+			<cfelse>
+				<cfset tempFile = expandPath(cfxTag.module) />
+			</cfif>
+			
+			<cftry>
+				<cffile action="read" file="#tempFile#" variable="temp" />
+				<cfcatch type="any">
+					<cfthrow message="An error occurred while attempting to read #tempFile#. #CFCATCH.Message#" 
+							type="bluedragon.adminapi.extensions" />
+				</cfcatch>
+			</cftry>
+		</cfif>
 	</cffunction>
 
 </cfcomponent>

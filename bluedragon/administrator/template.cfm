@@ -88,6 +88,7 @@
 	<p class="title">Extensions</p>
 	<ul>
 		<li><a href="#contextPath#/bluedragon/administrator/extensions/customtagpaths.cfm">Custom Tag Paths</a></li>
+		<li><a href="#contextPath#/bluedragon/administrator/extensions/cfxtags.cfm">CFX Tags</a></li>
 	</ul>
   </div>
 </div>

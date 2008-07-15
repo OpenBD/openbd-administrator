@@ -52,7 +52,7 @@
 			<cfif left(arguments.directory, 1) is "$">
 				<cfset tempPath = right(arguments.directory, len(arguments.directory) - 1) />
 			<cfelse>
-				<cfset tempPath = arguments.directory />
+				<cfset tempPath = expandPath(arguments.directory) />
 			</cfif>
 			
 			<cfif not directoryExists(tempPath)>
@@ -100,7 +100,7 @@
 			<cfif left(mapping.directory, 1) is "$">
 				<cfset tempPath = right(mapping.directory, len(mapping.directory) - 1) />
 			<cfelse>
-				<cfset tempPath = mapping.directory />
+				<cfset tempPath = expandPath(mapping.directory) />
 			</cfif>
 			
 			<cfif not directoryExists(tempPath)>

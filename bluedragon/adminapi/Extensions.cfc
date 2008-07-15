@@ -19,7 +19,113 @@
 		output="false" 
 		extends="Base" 
 		hint="Manages customtags and CFXs - OpenBD Admin API">
+	
+	<!--- CUSTOM TAG PATHS --->
+	<cffunction name="getCustomTagPaths" access="public" output="false" returntype="array" hint="Returns an array of paths to customtags">
+		<cfset var localConfig = getConfig() />
 
+		<!--- Make sure there are Custom Tag Paths defined --->
+		<cfif NOT StructKeyExists(localConfig, "cfmlcustomtags") OR NOT StructKeyExists(localConfig.cfmlcustomtags, "mapping")>
+			<cfthrow message="No Custom Tag Paths Defined" type="bluedragon.adminapi.extensions" />		
+		</cfif>
+	
+		<!--- Return entire Custom Tag Path list as an array --->
+		<cfreturn ListToArray(localConfig.cfmlcustomtags.mapping[1].directory, separator.path) />
+	</cffunction>
+
+	<cffunction name="setCustomTagPath" access="public" output="false" returntype="void" hint="Defines a new path to customtags">
+		<cfargument name="path" type="string" required="true" hint="Custom tag path" />
+		<cfargument name="customTagPathAction" type="string" required="true" hint="The action to perform (create or edit)" />
+		
+		<cfset var localConfig = getConfig() />
+		<cfset var tempPath = "" />
+		
+		<!--- Make sure there are Custom Tag Paths defined --->
+		<cfif (NOT StructKeyExists(localConfig, "cfmlcustomtags")) OR (NOT StructKeyExists(localConfig.cfmlcustomtags, "mapping"))>
+			<cfset localConfig.cfmlcustomtags.mapping = ArrayNew(1) />
+			<cfset localConfig.cfmlcustomtags.mapping[1].name = "cf" />
+		</cfif>
+		
+		<!--- if this is an update, delete the existing custom tag path --->
+		<cfif arguments.customTagPathAction is "update">
+			<cfset deleteCustomTagPath(arguments.path) />
+		</cfif>
+		
+		<!--- verify the custom tag path --->
+		<cftry>
+			<cfif left(arguments.path, 1) is "$">
+				<cfset tempPath = right(arguments.path, len(arguments.path) - 1) />
+			<cfelse>
+				<cfset tempPath = expandPath(arguments.path) />
+			</cfif>
+			
+			<cfif not directoryExists(tempPath)>
+				<cfthrow message="The custom tag path specified is not accessible. Please verify that the directory exists and has the correct permissions." 
+						type="bluedragon.adminapi.extensions" />
+			</cfif>
+			<cfcatch type="any">
+				<cfthrow message="The custom tag path specified is not accessible. Please verify that the directory exists and has the correct permissions." 
+						type="bluedragon.adminapi.extensions" />
+			</cfcatch>
+		</cftry>
+		
+		<cfset localConfig.cfmlcustomtags.mapping[1].directory = ListAppend(localConfig.cfmlcustomtags.mapping[1].directory, arguments.path, separator.path) />
+
+		<cfset setConfig(localConfig) />
+	</cffunction>
+
+	<cffunction name="deleteCustomTagPath" access="public" output="false" returntype="void" hint="Deletes a custom tag path">
+		<cfargument name="path" type="string" required="true" hint="Custom tag path to delete" />
+		<cfset var localConfig = getConfig() />
+		<cfset var listIndex = "" />
+
+		<!--- Make sure there are Custom Tag Paths defined --->
+		<cfif (NOT StructKeyExists(localConfig, "cfmlcustomtags")) OR (NOT StructKeyExists(localConfig.cfmlcustomtags, "mapping"))>
+			<cfthrow message="No Custom Tag Paths Defined" type="bluedragon.adminapi.extensions" />		
+		</cfif>
+	
+		<!--- Find index of path in list --->
+		<cfset listIndex = ListFindNoCase(localConfig.cfmlcustomtags.mapping[1].directory, arguments.path, separator.path) />
+		
+		<!--- if found, remove customtag path from list --->
+		<cfif listIndex neq 0>
+			<cfset localConfig.cfmlcustomtags.mapping[1].directory = ListDeleteAt(localConfig.cfmlcustomtags.mapping[1].directory, listIndex, separator.path) />
+			<cfset setConfig(localConfig) />
+		<cfelse>
+			<cfthrow message="#arguments.path# is not defined as a customtag path" type="bluedragon.adminapi.extensions" />
+		</cfif>
+	</cffunction>
+	
+	<cffunction name="verifyCustomTagPath" access="public" output="false" returntype="void" hint="Verifies a custom tag path by running directoryexists() on the path">
+		<cfargument name="path" type="string" required="true" hint="Custom tag path to verify" />
+		
+		<cfset var localConfig = getConfig() />
+		
+		<!--- Make sure there are Custom Tag Paths defined --->
+		<cfif (NOT StructKeyExists(localConfig, "cfmlcustomtags")) OR (NOT StructKeyExists(localConfig.cfmlcustomtags, "mapping"))>
+			<cfthrow message="No Custom Tag Paths Defined" type="bluedragon.adminapi.extensions" />		
+		</cfif>
+
+		<!--- verify the custom tag path --->
+		<cftry>
+			<cfif left(arguments.path, 1) is "$">
+				<cfset tempPath = right(arguments.path, len(arguments.path) - 1) />
+			<cfelse>
+				<cfset tempPath = expandPath(arguments.path) />
+			</cfif>
+			
+			<cfif not directoryExists(tempPath)>
+				<cfthrow message="The custom tag path specified is not accessible. Please verify that the directory exists and has the correct permissions." 
+						type="bluedragon.adminapi.extensions" />
+			</cfif>
+			<cfcatch type="any">
+				<cfthrow message="The custom tag path specified is not accessible. Please verify that the directory exists and has the correct permissions." 
+						type="bluedragon.adminapi.extensions" />
+			</cfcatch>
+		</cftry>
+	</cffunction>
+	
+	<!--- CFX TAGS --->
 	<cffunction name="deleteCPPCFX" access="public" output="false" returntype="void" hint="Delete a C++ CFX tag">
 		<cfargument name="cfxname" required="true" type="string" hint="Specifies a CFX tag name" />
 		<cfset var localConfig = getConfig() />
@@ -38,28 +144,6 @@
 			</cfif>
 		</cfloop>
 		<cfthrow message="#arguments.cfxname# not registered as a C++ CFX" type="bluedragon.adminapi.extensions">
-	</cffunction>
-
-	<cffunction name="deleteCustomTagPath" access="public" output="false" returntype="void" hint="Deletes a customtag path">
-		<cfargument name="path" required="true" type="string" hint="Path to customtag" />
-		<cfset var localConfig = getConfig() />
-		<cfset var listIndex = "" />
-
-		<!--- Make sure there are Custom Tag Paths defined --->
-		<cfif (NOT StructKeyExists(localConfig, "cfmlcustomtags")) OR (NOT StructKeyExists(localConfig.cfmlcustomtags, "mapping"))>
-			<cfthrow message="No CustomTag Paths Defined" type="bluedragon.adminapi.extensions">		
-		</cfif>
-	
-		<!--- Find index of path in list --->
-		<cfset listIndex = ListFindNoCase(localConfig.cfmlcustomtags.mapping[1].directory, arguments.path, separator.path) />
-		
-		<!--- if found, remove customtag path from list --->
-		<cfif listIndex>
-			<cfset ListDeleteAt(localConfig.cfmlcustomtags.mapping[1].directory, listIndex, separator.path) />
-			<cfset setConfig(localConfig) />
-			<cfreturn />
-		</cfif>
-		<cfthrow message="#arguments.path# is not defined as a customtag path" type="bluedragon.adminapi.extensions">
 	</cffunction>
 
 	<cffunction name="deleteJavaCFX" access="public" output="false" returntype="void" hint="Delete a Java CFX tag">
@@ -105,18 +189,6 @@
 			</cfloop>
 			<cfthrow message="#arguments.cfxname# not registered as a C++ CFX" type="bluedragon.adminapi.extensions">
 		</cfif>
-	</cffunction>
-
-	<cffunction name="getCustomTagPaths" access="public" output="false" returntype="array" hint="Returns an array of paths to customtags">
-		<cfset var localConfig = getConfig() />
-
-		<!--- Make sure there are Custom Tag Paths defined --->
-		<cfif (NOT StructKeyExists(localConfig, "cfmlcustomtags")) OR (NOT StructKeyExists(localConfig.cfmlcustomtags, "mapping"))>
-			<cfthrow message="No Custom Tag Paths Defined" type="bluedragon.adminapi.extensions">		
-		</cfif>
-	
-		<!--- Return entire Custom Tag Path list as an array --->
-		<cfreturn ListToArray(localConfig.cfmlcustomtags.mapping[1].directory, separator.path) />
 	</cffunction>
 
 	<cffunction name="getJavaCFX" access="public" output="false" returntype="array" hint="List the names of all registered Java CFX tags or a specified Java CFX tag">
@@ -171,22 +243,6 @@
 		<!--- Prepend it to the Java CFX array --->
 		<cfset ArrayPrepend(localConfig.nativecustomtags.mapping, Duplicate(cppCFX)) />
 	
-		<cfset setConfig(localConfig) />
-	</cffunction>
-
-	<cffunction name="setCustomTagPath" access="public" output="false" returntype="void" hint="Defines a new path to customtags">
-		<cfargument name="path" required="true" type="string" hint="Path to customtag" />
-		<cfset var localConfig = getConfig() />
-
-		<!--- Make sure there are Custom Tag Paths defined --->
-		<cfif (NOT StructKeyExists(localConfig, "cfmlcustomtags")) OR (NOT StructKeyExists(localConfig.cfmlcustomtags, "mapping"))>
-			<cfset localConfig.cfmlcustomtags.mapping = ArrayNew(1) />
-			<cfset localConfig.cfmlcustomtags.mapping[1].name = "cf" />
-		</cfif>
-	
-		<!--- Append customtag path to list --->
-		<cfreturn ListAppend(localConfig.cfmlcustomtags.mapping[1].directory, arguments.path, separator.path) />
-
 		<cfset setConfig(localConfig) />
 	</cffunction>
 

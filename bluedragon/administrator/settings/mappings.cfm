@@ -105,7 +105,7 @@
 			<li>
 				When specifying a full physical path on UNIX-based systems (including GNU/Linux and Mac OS X), you must place 
 				a "$" at the beginning of the path. For example:<br />
-				$/usr/local/myPath/myErrorHandler.cfm
+				$/usr/local/myPath
 			</li>
 			<li>
 				A path beginning with "/" is interpreted as a relative path from the web application root directory, which 

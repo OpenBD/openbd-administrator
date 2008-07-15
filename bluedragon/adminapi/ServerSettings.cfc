@@ -19,7 +19,6 @@
 		<cfset var localConfig = getConfig() />
 		<cfset var tempFile = "" />
 		<cfset var tempPath = "" />
-		<cfset var doExpandPath = false />
 		
 		<!--- do some trimming of the string values for good measure --->
 		<cfscript>
@@ -34,18 +33,12 @@
 				this can still totally hose things up but they can always fix it via the XML file directly --->
 		<cfif left(arguments["component-cfc"], 1) is "$">
 			<cfset tempPath = right(arguments["component-cfc"], len(arguments["component-cfc"]) - 1) />
-			<cfset doExpandPath = false />
 		<cfelse>
-			<cfset tempPath = arguments["component-cfc"] />
-			<cfset doExpandPath = true />
+			<cfset tempPath = expandPath(arguments["component-cfc"]) />
 		</cfif>
 		
 		<cftry>
-			<cfif doExpandPath>
-				<cffile action="read" file="#expandPath(arguments['component-cfc'])#" variable="tempFile" />
-			<cfelse>
-				<cffile action="read" file="#arguments['component-cfc']#" variable="tempFile" />
-			</cfif>
+			<cffile action="read" file="#tempPath#" variable="tempFile" />
 			<cfcatch type="any">
 				<cfthrow message="Cannot read the base CFC file. Please verify this setting." 
 						type="bluedragon.adminapi.serversettings" />
@@ -58,17 +51,11 @@
 		<cfif arguments.errorhandler is not "">
 			<cfif left(arguments.errorhandler, 1) is "$">
 				<cfset tempPath = right(arguments.errorhandler, len(arguments.errorhandler) - 1) />
-				<cfset doExpandPath = false />
 			<cfelse>
-				<cfset tempPath = arguments.errorhandler />
-				<cfset doExpandPath = true />
+				<cfset tempPath = expandPath(arguments.errorhandler) />
 			</cfif>
 			<cftry>
-				<cfif doExpandPath>
-					<cffile action="read" file="#expandPath(tempPath)#" variable="tempFile" />
-				<cfelse>
-					<cffile action="read" file="#tempPath#" variable="tempFile" />
-				</cfif>
+				<cffile action="read" file="#tempPath#" variable="tempFile" />
 				<cfcatch type="any">
 					<cfthrow message="Cannot read the specified error handler. Please verify this setting." 
 							type="bluedragon.adminapi.serversettings" />
@@ -79,17 +66,11 @@
 		<cfif arguments.missingtemplatehandler is not "">
 			<cfif left(arguments.missingtemplatehandler, 1) is "$">
 				<cfset tempPath = right(arguments.missingtemplatehandler, len(arguments.missingtemplatehandler) - 1) />
-				<cfset doExpandPath = false />
 			<cfelse>
-				<cfset tempPath = arguments.missingtemplatehandler />
-				<cfset doExpandPath = true />
+				<cfset tempPath = expandPath(arguments.missingtemplatehandler) />
 			</cfif>
 			<cftry>
-				<cfif doExpandPath>
-					<cffile action="read" file="#expandPath(tempPath)#" variable="tempFile" />
-				<cfelse>
-					<cffile action="read" file="#tempPath#" variable="tempFile" />
-				</cfif>
+				<cffile action="read" file="#tempPath#" variable="tempFile" />
 				<cfcatch type="any">
 					<cfthrow message="Cannot read the specified missing template handler. Please verify this setting." 
 							type="bluedragon.adminapi.serversettings" />
@@ -100,22 +81,13 @@
 		<cfif arguments.tempdirectory is not "">
 			<cfif left(arguments.tempdirectory, 1) is "$">
 				<cfset tempPath = right(arguments.tempdirectory, len(arguments.tempdirectory) - 1) />
-				<cfset doExpandPath = false />
 			<cfelse>
-				<cfset tempPath = arguments.tempdirectory />
-				<cfset doExpandPath = true />
+				<cfset tempPath = expandPath(arguments.tempdirectory) />
 			</cfif>
 			<cftry>
-				<cfif doExpandPath>
-					<cfif not directoryExists(expandPath(tempPath))>
-						<cfthrow message="Cannot read the specified temp directory. Please verify this setting." 
-								type="bluedragon.adminapi.serversettings" />
-					</cfif>
-				<cfelse>
-					<cfif not directoryExists(tempPath)>
-						<cfthrow message="Cannot read the specified temp directory. Please verify this setting." 
-								type="bluedragon.adminapi.serversettings" />
-					</cfif>
+				<cfif not directoryExists(tempPath)>
+					<cfthrow message="Cannot read the specified temp directory. Please verify this setting." 
+							type="bluedragon.adminapi.serversettings" />
 				</cfif>
 				<cfcatch type="any">
 					<cfthrow message="Cannot read the specified temp directory. Please verify this setting." 
@@ -127,22 +99,13 @@
 		<cfif arguments.scriptsrc is not "">
 			<cfif left(arguments.scriptsrc, 1) is "$">
 				<cfset tempPath = right(arguments.scriptsrc, len(arguments.scriptsrc) - 1) />
-				<cfset doExpandPath = false />
 			<cfelse>
-				<cfset tempPath = arguments.scriptsrc />
-				<cfset doExpandPath = true />
+				<cfset tempPath = expandPath(arguments.scriptsrc) />
 			</cfif>
 			<cftry>
-				<cfif doExpandPath>
-					<cfif not directoryExists(expandPath(tempPath))>
-						<cfthrow message="Cannot read the specified script source directory. Please verify this setting." 
-								type="bluedragon.adminapi.serversettings" />
-					</cfif>
-				<cfelse>
-					<cfif not directoryExists(tempPath)>
-						<cfthrow message="Cannot read the specified script source directory. Please verify this setting." 
-								type="bluedragon.adminapi.serversettings" />
-					</cfif>
+				<cfif not directoryExists(tempPath)>
+					<cfthrow message="Cannot read the specified script source directory. Please verify this setting." 
+							type="bluedragon.adminapi.serversettings" />
 				</cfif>
 				<cfcatch type="any">
 					<cfthrow message="Cannot read the specified script source directory. Please verify this setting." 

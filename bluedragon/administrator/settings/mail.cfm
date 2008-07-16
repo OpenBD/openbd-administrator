@@ -1,5 +1,8 @@
 <cfsilent>
 	<cfparam name="mailMessage" type="string" default="" />
+	<cfparam name="mailAvailable" type="boolean" default="true" />
+	<cfparam name="spoolCount" type="numeric" default="-1" />
+	<cfparam name="undeliveredCount" type="numeric" default="-1" />
 	
 	<cftry>
 		<cfset mailSettings = Application.mail.getMailSettings() />
@@ -17,6 +20,18 @@
 		<cfset primarySMTPServer = mailSettings.smtpserver />
 		<cfset backupSMTPServers = "" />
 	</cfif>
+	
+	<cfset spoolCount = Application.mail.getSpooledMailCount() />
+	<cfset undeliveredCount = Application.mail.getUndeliveredMailCount() />
+	
+	<!--- some java app servers don't ship with javamail, so try instantiating 
+			a mail session and inform the user if a mail session object can't be created --->
+	<cftry>
+		<cfset mailSession = createObject("java", "javax.mail.Session") />
+		<cfcatch type="any">
+			<cfset mailAvailable = false />
+		</cfcatch>
+	</cftry>
 </cfsilent>
 <cfsavecontent variable="request.content">
 	<cfoutput>
@@ -47,6 +62,21 @@
 		
 		<cfif mailMessage is not "">
 			<p class="message">#mailMessage#</p>
+		</cfif>
+		
+		<cfif not mailAvailable>
+			<p class="message">It appears that you do not hava JavaMail installed.</p>
+			
+			<p>
+				Some Java application severs, such as <a href="http://tomcat.apache.org/">Tomcat</a>, do not ship with JavaMail. 
+				Without JavaMail installed, Open BlueDragon is unable to send mail.
+			</p>
+			
+			<p>
+				Please download <a href="http://java.sun.com/products/javamail/downloads/index.html">JavaMail</a> and place 
+				mail.jar in your classpath (either in your application server's shared lib directory, or in Open BlueDragon's 
+				/WEB-INF/lib directory) and restart Open BlueDragon to enable mail functionality.
+			</p>
 		</cfif>
 		
 		<form name="mailForm" action="_controller.cfm?action=processMailForm" method="post" onsubmit="javascript:return validate(this);">
@@ -103,6 +133,13 @@
 			</tr>
 		</table>
 		</form>
+		
+		<h3>Mail Status</h3>
+		
+		<ul>
+			<li>Spooled Mail: #spoolCount# messages</li>
+			<li>Undelivered Mail: #undeliveredCount# messages</li>
+		</ul>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
 </cfsavecontent>

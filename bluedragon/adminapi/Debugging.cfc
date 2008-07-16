@@ -1,8 +1,9 @@
 <cfcomponent displayname="Debugging" 
 		output="false" 
 		extends="Base" 
-		hint="Manages debugging settings - OpenBD Admin API">
-
+		hint="Manages debugging and logging settings - OpenBD Admin API">
+	
+	<!--- DEBUGGING --->
 	<cffunction name="getDebugSettings" access="public" output="false" returntype="struct" 
 			hint="Returns a struct containing the current debug settings">
 		<cfset var localConfig = getConfig() />
@@ -387,6 +388,30 @@
 		</cfloop>
 		
 		<cfset setConfig(localConfig) />
+	</cffunction>
+	
+	<!--- LOGGING --->
+	<cffunction name="getLogFiles" access="public" output="false" returntype="array" 
+			hint="Returns an array containing the paths to available log files">
+		<cfset var logFiles = arrayNew(1) />
+		
+		<!--- add the standard bluedragon.log file --->
+		<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/bluedragon.log"))>
+			<cfset arrayAppend(logFiles, "/WEB-INF/bluedragon/work/bluedragon.log") />
+		</cfif>
+		
+		<!--- add other log files if they exist --->
+		<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/cfmail/mail.log"))>
+			<cfset arrayAppend(logFiles, "/WEB-INF/bluedragon/work/cfmail/mail.log") />
+		</cfif>
+		
+		<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/cfquerybatch/querybatch.log"))>
+			<cfset arrayAppend(logFiles, "/WEB-INF/bluedragon/work/cfquerybatch/querybatch.log") />
+		</cfif>
+		
+		<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/cfschedule/schedule.log"))>
+			<cfset arrayAppend(logFiles, "/WEB-INF/bluedragon/work/cfschedule/schedule.log") />
+		</cfif>
 	</cffunction>
 	
 </cfcomponent>

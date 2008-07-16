@@ -20,7 +20,7 @@
 		extends="Base" 
 		hint="Manages mail settings - OpenBD Admin API">
 
-	<cffunction name="getMailSettings" access="public" returntype="struct" output="false" 
+	<cffunction name="getMailSettings" access="public" output="false" returntype="struct" 
 			hint="Returns a struct containing the mail settings">
 		<cfset var localConfig = getConfig() />
 		<cfset var doSetConfig = false />
@@ -48,7 +48,7 @@
 		<cfreturn localConfig.cfmail />
 	</cffunction>
 
-	<cffunction name="saveMailSettings" access="public" returntype="void" output="false" hint="Saves mail settings">
+	<cffunction name="saveMailSettings" access="public" output="false" returntype="void" hint="Saves mail settings">
 		<cfargument name="smtpserver" type="string" required="true" hint="SMTP servers including backup servers" />
 		<cfargument name="smtpport" type="numeric" required="true" hint="The SMTP port" />
 		<cfargument name="timeout" type="numeric" required="true" hint="The connection timeout in seconds" />
@@ -69,5 +69,37 @@
 			setConfig(localConfig);
 		</cfscript>
  	</cffunction>
-
+	
+	<cffunction name="getSpooledMailCount" access="public" output="false" returntype="numeric" 
+			hint="Returns the number of files currently in the mail spool. If this returns -1 it means an error occurred while reading the spool directory.">
+		<cfset var spoolCount = 0 />
+		<cfset var spoolDirList = 0 />
+		
+		<cftry>
+			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work/cfmail/spool')#" name="spoolDirList" />
+			<cfset spoolCount = spoolDirList.RecordCount />
+			<cfcatch type="any">
+				<cfset spoolCount = -1 />
+			</cfcatch>
+		</cftry>
+		
+		<cfreturn spoolCount />
+	</cffunction>
+	
+	<cffunction name="getUndeliveredMailCount" access="public" output="false" returntype="numeric" 
+			hint="Returns the number of files currently in the undelivered mail directory. If this returns -1 it means an error occurred while reading the undelivered directory.">
+		<cfset var undeliveredCount = 0 />
+		<cfset var undeliveredlDirList = 0 />
+		
+		<cftry>
+			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work/cfmail/undelivered')#" name="undeliveredDirList" />
+			<cfset undeliveredCount = undeliveredDirList.RecordCount />
+			<cfcatch type="any">
+				<cfset undeliveredCount = -1 />
+			</cfcatch>
+		</cftry>
+		
+		<cfreturn undeliveredCount />
+	</cffunction>
+	
 </cfcomponent>

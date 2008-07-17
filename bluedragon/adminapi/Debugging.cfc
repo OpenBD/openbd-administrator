@@ -394,24 +394,86 @@
 	<cffunction name="getLogFiles" access="public" output="false" returntype="array" 
 			hint="Returns an array containing the paths to available log files">
 		<cfset var logFiles = arrayNew(1) />
+		<cfset var logFile = structNew() />
+		<cfset var temp = "" />
 		
 		<!--- add the standard bluedragon.log file --->
 		<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/bluedragon.log"))>
-			<cfset arrayAppend(logFiles, "/WEB-INF/bluedragon/work/bluedragon.log") />
+			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work')#" name="temp" />
+			
+			<cfquery name="temp" dbtype="query">
+				SELECT size, datelastmodified 
+				FROM temp 
+				WHERE name = 'bluedragon.log'
+			</cfquery>
+			
+			<cfset logFile.name = "bluedragon.log" />
+			<cfset logFile.fullpath = expandPath("/WEB-INF/bluedragon/work/bluedragon.log") />
+			<cfset logFile.size = temp.size />
+			<cfset logFile.datelastmodified = LSDateFormat(temp.datelastmodified, "yyyy-mm-dd") & " " & LSTimeFormat(temp.datelastmodified, "HH:mm:ss") />
+			
+			<cfset arrayAppend(logFiles, logFile) />
 		</cfif>
 		
 		<!--- add other log files if they exist --->
 		<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/cfmail/mail.log"))>
-			<cfset arrayAppend(logFiles, "/WEB-INF/bluedragon/work/cfmail/mail.log") />
+			<cfset logFile = structNew() />
+			
+			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work/cfmail')#" name="temp" />
+			
+			<cfquery name="temp" dbtype="query">
+				SELECT size, datelastmodified 
+				FROM temp 
+				WHERE name = 'mail.log'
+			</cfquery>
+			
+			<cfset logFile.name = "mail.log" />
+			<cfset logFile.fullpath = expandPath("/WEB-INF/bluedragon/work/cfmail/mail.log") />
+			<cfset logFile.size = temp.size />
+			<cfset logFile.datelastmodified = LSDateFormat(temp.datelastmodified, "yyyy-mm-dd") & " " & LSTimeFormat(temp.datelastmodified, "HH:mm:ss") />
+			
+			<cfset arrayAppend(logFiles, logFile) />
 		</cfif>
 		
 		<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/cfquerybatch/querybatch.log"))>
-			<cfset arrayAppend(logFiles, "/WEB-INF/bluedragon/work/cfquerybatch/querybatch.log") />
+			<cfset logFile = structNew() />
+			
+			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work/cfquerybatch')#" name="temp" />
+			
+			<cfquery name="temp" dbtype="query">
+				SELECT size, datelastmodified 
+				FROM temp 
+				WHERE name = 'querybatch.log'
+			</cfquery>
+			
+			<cfset logFile.name = "querybatch.log" />
+			<cfset logFile.fullpath = expandPath("/WEB-INF/bluedragon/work/cfquerybatch/querybatch.log") />
+			<cfset logFile.size = temp.size />
+			<cfset logFile.datelastmodified = LSDateFormat(temp.datelastmodified, "yyyy-mm-dd") & " " & LSTimeFormat(temp.datelastmodified, "HH:mm:ss") />
+			
+			<cfset arrayAppend(logFiles, logFile) />
 		</cfif>
 		
 		<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/cfschedule/schedule.log"))>
-			<cfset arrayAppend(logFiles, "/WEB-INF/bluedragon/work/cfschedule/schedule.log") />
+			<cfset logFile = structNew() />
+			
+			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work/cfschedule')#" name="temp" />
+			
+			<cfquery name="temp" dbtype="query">
+				SELECT size, datelastmodified 
+				FROM temp 
+				WHERE name = 'schedule.log'
+			</cfquery>
+			
+			<cfset logFile.name = "schedule.log" />
+			<cfset logFile.fullpath = expandPath("/WEB-INF/bluedragon/work/cfschedule/schedule.log") />
+			<cfset logFile.size = temp.size />
+			<cfset logFile.datelastmodified = LSDateFormat(temp.datelastmodified, "yyyy-mm-dd") & " " & LSTimeFormat(temp.datelastmodified, "HH:mm:ss") />
+			
+			<cfset arrayAppend(logFiles, logFile) />
 		</cfif>
+		
+		<cfreturn logFiles />
 	</cffunction>
 	
 </cfcomponent>

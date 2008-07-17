@@ -115,7 +115,12 @@
 
 <div id="footer">
   <hr />
-  Copyright &copy; 2008<cfif DatePart("yyyy", now()) gt 2008> - #DatePart("yyyy", now())#</cfif> <a href="http://www.openbluedragon.org">Open BlueDragon Project</a>
+	<div style="float:left;">
+	  Copyright &copy; 2008<cfif DatePart("yyyy", now()) gt 2008> - #DatePart("yyyy", now())#</cfif> <a href="http://www.openbluedragon.org">Open BlueDragon Project</a>
+	</div>
+	<div style="float:right;">
+		Version #Application.adminConsoleVersion# - #Application.adminConsoleBuildDate#
+	</div>
   <br />
 </div>
 

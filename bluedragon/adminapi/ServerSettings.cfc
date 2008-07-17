@@ -178,4 +178,9 @@
 		<!--- TODO: finish implementing reverting to previous settings --->
 	</cffunction>
 	
+	<cffunction name="getJVMProperties" access="public" output="false" returntype="struct" 
+			hint="Returns a struct containing the JVM properties">
+		<cfreturn createObject("java", "java.lang.System").getProperties() />
+	</cffunction>
+	
 </cfcomponent>

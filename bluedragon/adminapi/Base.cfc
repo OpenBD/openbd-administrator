@@ -132,4 +132,14 @@
 		<cfreturn createObject("java", "java.nio.charset.Charset").defaultCharset().name() />
 	</cffunction>
 	
+	<cffunction name="getAdminAPIInfo" access="public" output="false" returntype="struct" 
+			hint="Returns a struct containing the basic information about the admin API (version and last build date)">
+		<cfset var adminAPIInfo = structNew() />
+		
+		<cfset adminAPIInfo.version = variables.api.version />
+		<cfset adminAPIInfo.builddate = variables.api.builddate />
+		
+		<cfreturn structCopy(adminAPIInfo) />
+	</cffunction>
+	
 </cfcomponent>

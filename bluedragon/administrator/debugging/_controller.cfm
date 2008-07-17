@@ -220,6 +220,33 @@
 			<cflocation url="ipaddresses.cfm" addtoken="false" />
 		</cfcase>
 		
+		<!--- LOGGING --->
+		<cfcase value="archiveLogFile">
+			<cftry>
+				<cfset Application.debugging.archiveLogFile(args.logFile) />
+				<cfcatch type="bluedragon.adminapi.debugging">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="logs.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cfset session.message = "The log file was archived successfully." />
+			<cflocation url="logs.cfm" addtoken="false" />
+		</cfcase>
+		
+		<cfcase value="deleteLogFile">
+			<cftry>
+				<cfset Application.debugging.deleteLogFile(args.logFile) />
+				<cfcatch type="any">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="logs.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cfset session.message = "The log file was deleted successfully." />
+			<cflocation url="logs.cfm" addtoken="false" />
+		</cfcase>
+		
 		<!--- DEFAULT CASE --->
 		<cfdefaultcase>
 			<cfset session.message = "Invalid action" />

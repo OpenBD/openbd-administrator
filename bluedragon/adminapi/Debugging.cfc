@@ -397,7 +397,7 @@
 		<cfset var logFile = structNew() />
 		<cfset var temp = "" />
 		
-		<!--- add the standard bluedragon.log file --->
+		<!--- add the standard log files if they exist --->
 		<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/bluedragon.log"))>
 			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work')#" name="temp" />
 			
@@ -415,7 +415,6 @@
 			<cfset arrayAppend(logFiles, logFile) />
 		</cfif>
 		
-		<!--- add other log files if they exist --->
 		<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/cfmail/mail.log"))>
 			<cfset logFile = structNew() />
 			
@@ -473,7 +472,104 @@
 			<cfset arrayAppend(logFiles, logFile) />
 		</cfif>
 		
+		<!--- add custom log files --->
+		<cfif directoryExists(expandPath("/WEB-INF/bluedragon/work/cflog"))>
+			<cfdirectory action="list" directory="#expandPath('/WEB-INF/bluedragon/work/cflog')#" name="temp" />
+			
+			<cfquery name="temp" dbtype="query">
+				SELECT name, size, datelastmodified 
+				FROM temp 
+				WHERE name LIKE '%.log'
+			</cfquery>
+			
+			<cfloop query="temp">
+				<cfset logFile = structNew() />
+				<cfset logFile.name = temp.name />
+				<cfset logFile.fullpath = expandPath("/WEB-INF/bluedragon/work/cflog/#temp.name#") />
+				<cfset logFile.size = temp.size />
+				<cfset logFile.datelastmodified = LSDateFormat(temp.datelastmodified, "yyyy-mm-dd") & " " & LSTimeFormat(temp.datelastmodified, "HH:mm:ss") />
+				<cfset arrayAppend(logFiles, logFile) />
+			</cfloop>
+		</cfif>
+		
 		<cfreturn logFiles />
+	</cffunction>
+	
+	<cffunction name="archiveLogFile" access="public" output="false" returntype="void" 
+			hint="Renames the active log file to ${LOG_FILE}.log.1, deletes ${LOG_FILE}.log.10, and shifts all other log files back a number">
+		<cfargument name="logFile" type="string" required="true" hint="The log file to archive" />
+		
+		<cfset var logFilePath = getLogFilePath(arguments.logFile) />
+		<cfset var logFiles = 0 />
+		<cfset var i = 0 />
+		
+		<!--- get a listing of the current log files of this type --->
+		<cfdirectory action="list" directory="#logFilePath#" name="logFiles" />
+
+		<cfquery name="logFiles" dbtype="query">
+			SELECT 	name 
+			FROM 	logFiles 
+			WHERE 	name LIKE '#arguments.logFile#%'
+		</cfquery>
+		
+		<cfloop index="i" from="1" to="#logFiles.RecordCount#">
+			<cfif fileExists("#logFilePath#/#arguments.logFile#.#i#")>
+				<cfif i lt 10>
+					<cffile action="rename" source="#logFilePath#/#arguments.logFile#.#i#" 
+							destination="#logFilePath#/#arguments.logFile#.#i+1#" />
+				<cfelse>
+					<cffile action="delete" file="#logFilePath#/#arguments.logFile#.#i#" />
+				</cfif>
+			</cfif>
+		</cfloop>
+		
+		<cfif fileExists("#logFilePath#/#arguments.logFile#")>
+			<cffile action="rename" source="#logFilePath#/#arguments.logFile#" 
+					destination="#logFilePath#/#arguments.logFile#.1" />
+		</cfif>
+	</cffunction>
+	
+	<cffunction name="deleteLogFile" access="public" output="false" returntype="void" 
+			hint="Deletes a log file">
+		<cfargument name="logFile" type="string" required="true" hint="The log file to delete" />
+		
+		<cfset var logFilePath = getLogFilePath(arguments.logFile) />
+		
+		<cfif fileExists("#logFilePath#/#arguments.logFile#")>
+			<cffile action="delete" file="#logFilePath#/#arguments.logFile#">
+		</cfif>
+	</cffunction>
+	
+	<cffunction name="getLogFilePath" access="public" output="false" returntype="string" 
+			hint="Returns the directory path for a given log file">
+		<cfargument name="logFile" type="string" required="true" hint="The log file name" />
+		
+		<cfset var logFilePath = "" />
+		
+		<cfswitch expression="#arguments.logFile#">
+			<cfcase value="bluedragon.log">
+				<cfset logFilePath = expandPath("/WEB-INF/bluedragon/work") />
+			</cfcase>
+			
+			<cfcase value="mail.log">
+				<cfset logFilePath = expandPath("/WEB-INF/bluedragon/work/cfmail") />
+			</cfcase>
+			
+			<cfcase value="querybatch.log">
+				<cfset logFilePath = expandPath("/WEB-INF/bluedragon/work/cfquerybatch") />
+			</cfcase>
+			
+			<cfcase value="schedule.log">
+				<cfset logFilePath = expandPath("/WEB-INF/bluedragon/work/cfschedule") />
+			</cfcase>
+			
+			<!--- for all other log files, assume they're in the default cflog directory --->
+			<cfdefaultcase>
+				<cfset logFilePath = expandPath("/WEB-INF/bluedragon/work/cflog") />
+			</cfdefaultcase>
+		</cfswitch>
+		
+		<cfreturn logFilePath />
 	</cffunction>
 	
 </cfcomponent>

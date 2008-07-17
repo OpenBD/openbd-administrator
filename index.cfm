@@ -1,3 +1,1 @@
-<cfmail to="matt@mattwoodward.com" from="matt@mattwoodward.com" subject="test">
-test
-</cfmail>
+<cflog application="true" file="test" type="information" text="test log entry" />

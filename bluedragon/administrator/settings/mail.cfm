@@ -136,9 +136,11 @@
 		
 		<h3>Mail Status</h3>
 		
+		<!--- TODO: add functionality to let user view/manage spooled and undelivered mail --->
 		<ul>
 			<li>Spooled Mail: #spoolCount# messages</li>
 			<li>Undelivered Mail: #undeliveredCount# messages</li>
+			<li><a href="_controller.cfm?action=respoolUndeliveredMail">Move All Undelivered Mail to Spool</a></li>
 		</ul>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />

@@ -102,4 +102,17 @@
 		<cfreturn undeliveredCount />
 	</cffunction>
 	
+	<cffunction name="respoolUndeliveredMail" access="public" output="false" returntype="void" 
+			hint="Moves all the mail in the undelivered directory to the spool">
+		<cfset var undeliveredMail = 0 />
+		
+		<cfdirectory action="list" directory="#expandPath('/WEB-INF/bluedragon/work/cfmail/undelivered')#" name="undeliveredMail" filter="*.email" />
+		
+		<cfif undeliveredMail.RecordCount gt 0>
+			<cfloop query="undeliveredMail">
+				<cffile action="move" source="#expandPath('/WEB-INF/bluedragon/work/cfmail/undelivered/#undeliveredMail.name#')#" 
+						destination="#expandPath('/WEB-INF/bluedragon/work/cfmail/spool/#undeliveredMail.name#')#" />
+			</cfloop>
+		</cfif>
+	</cffunction>
 </cfcomponent>

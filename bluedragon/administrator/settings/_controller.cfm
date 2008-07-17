@@ -317,6 +317,19 @@
 			<cflocation url="mail.cfm" addtoken="false" />
 		</cfcase>
 		
+		<cfcase value="respoolUndeliveredMail">
+			<cftry>
+				<cfset Application.mail.respoolUndeliveredMail() />
+				<cfcatch type="bluedragon.adminapi.mail">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="mail.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cfset session.message = "The undelivered mail was respooled successfully." />
+			<cflocation url="mail.cfm" addtoken="false" />
+		</cfcase>
+		
 		<!--- DEFAULT CASE --->
 		<cfdefaultcase>
 			<cfset session.message = "Invalid action" />

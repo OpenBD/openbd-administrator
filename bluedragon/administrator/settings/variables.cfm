@@ -87,7 +87,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right">Application Timeout</td>
+				<td bgcolor="##f0f0f0" align="right">Default Application Timeout</td>
 				<td bgcolor="##ffffff">
 					<input type="text" name="appTimeoutDays" size="3" maxlength="2" value="#listFirst(applicationTimeout)#"> days&nbsp;
 					<input type="text" name="appTimeoutHours" size="3" maxlength="2" value="#listGetAt(applicationTimeout, 2)#"> hours&nbsp;
@@ -96,7 +96,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right">Session Timeout</td>
+				<td bgcolor="##f0f0f0" align="right">Default Session Timeout</td>
 				<td bgcolor="##ffffff">
 					<input type="text" name="sessionTimeoutDays" size="3" maxlength="2" value="#listFirst(sessionTimeout)#"> days&nbsp;
 					<input type="text" name="sessionTimeoutHours" size="3" maxlength="2" value="#listGetAt(sessionTimeout, 2)#"> hours&nbsp;

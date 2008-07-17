@@ -150,4 +150,5 @@
 	</form>
 </cfoutput>
 <cfset structDelete(session, "message", false) />
+<cfset structDelete(session, "datasource", false) />
 </cfsavecontent>

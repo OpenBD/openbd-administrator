@@ -572,4 +572,44 @@
 		<cfreturn logFilePath />
 	</cffunction>
 	
+	<cffunction name="getLogFileLines" access="public" output="false" returntype="struct" 
+			hint="Returns a struct containing the elements totalLineCount, which is the total number of lines in the log file, and logFileLines, which is an array of log file lines retrieved using the start line and number of lines to display">
+		<cfargument name="logFile" type="string" required="true" hint="The name of the log file" />
+		<cfargument name="startLine" type="numeric" required="false" default="1" hint="The starting line" />
+		<cfargument name="numLinesToShow" type="numeric" required="false" default="25" hint="The number of lines to show" />
+		
+		<cfset var logFileData = structNew() />
+		<cfset var logFileLines = arrayNew(1) />
+		<cfset var fileReader = createObject("java", "java.io.FileReader").init("#getLogFilePath(arguments.logFile)#/#arguments.logFile#") />
+		<cfset var bufferedReader = createObject("java", "java.io.BufferedReader").init(fileReader) />
+		<cfset var lineNumberReader = createObject("java", "java.io.LineNumberReader").init(bufferedReader) />
+		<cfset var line = "" />
+		<cfset var hasMoreLines = true />
+		<cfset var totalLineCount = 0 />
+		
+		<cfloop condition="hasMoreLines">
+			<cfset line = lineNumberReader.readLine() />
+			
+			<cfif not IsNull(line)>
+				<cfset totalLineCount = totalLineCount + 1 />
+				
+				<cfif lineNumberReader.getLineNumber() gte arguments.startLine 
+						and lineNumberReader.getLineNumber() lte (arguments.startLine + arguments.numLinesToShow - 1)>
+					<cfset arrayAppend(logFileLines, line) />
+				</cfif>
+			<cfelse>
+				<cfset hasMoreLines = false />
+			</cfif>
+		</cfloop>
+		
+		<cfset logFileData.totalLineCount = totalLineCount />
+		<cfset logFileData.logFileLines = logFileLines />
+		
+		<cfset lineNumberReader.close() />
+		<cfset bufferedReader.close() />
+		<cfset fileReader.close() />
+		
+		<cfreturn logFileData />
+	</cffunction>
+	
 </cfcomponent>

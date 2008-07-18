@@ -23,7 +23,7 @@
 
 	<cfset init() />
 
-	<cffunction name="init" access="package" output="false" returntype="any" hint="Initialize base">
+	<cffunction name="init" access="package" output="false" returntype="any" hint="Constructor">
 		<cfset variables.api.version = "0.1a" />
 		<cfset variables.api.builddate = "20080710" />
 
@@ -40,17 +40,21 @@
 		<cfreturn this />
 	</cffunction>
 
-	<cffunction name="getSessionPassword" access="private" output="false" returntype="string" hint="Returns the session password">
+	<cffunction name="getSessionPassword" access="private" output="false" returntype="string" 
+			hint="Returns the session password">
 		<cfreturn Decrypt(ToString(ToBinary(cookie.bdauthorization_)), "00CE55488350C475DC8A9FEAE82743FA") />
 	</cffunction>
 
-	<cffunction name="setSessionPassword" access="package" output="false" returntype="void" hint="Sets the session password">
+	<cffunction name="setSessionPassword" access="package" output="false" returntype="void" 
+			hint="Sets the session password">
 		<cfargument name="adminPassword" type="string" required="true" hint="The administrator password" />
 		<cfset cookie.bdauthorization_ = ToBase64(Encrypt(arguments.adminPassword, "00CE55488350C475DC8A9FEAE82743FA")) />
 	</cffunction>
 	
-	<cffunction name="setConfig" access="package" output="false" returntype="void">
-		<cfargument name="currentConfig" type="struct" required="true" hint="The configuration struct, which is a struct representation of bluedragon.xml" />
+	<cffunction name="setConfig" access="package" output="false" returntype="void" 
+			hint="Sets the server configuration and tells OpenBD to refresh its settings">
+		<cfargument name="currentConfig" type="struct" required="true" 
+				hint="The configuration struct, which is a struct representation of bluedragon.xml" />
 		
 		<!--- <cfif isAdminUser()> --->
 			<cflock scope="Server" type="exclusive" timeout="5">
@@ -70,7 +74,8 @@
 --->
 	</cffunction>
 
-	<cffunction name="getConfig" access="package" output="false" returntype="struct">
+	<cffunction name="getConfig" access="package" output="false" returntype="struct" 
+			hint="Returns a struct representation of the OpenBD server configuration (bluedragon.xml)">
 		<cfset var admin = "" />
 		
 		<!---<cfif isAdminUser()> --->
@@ -86,26 +91,30 @@
 		<cfreturn admin.server />
 	</cffunction>
 
-	<cffunction name="isAdminUser" access="package" output="false" returntype="boolean">
+	<cffunction name="isAdminUser" access="package" output="false" returntype="boolean" 
+			hint="Returns a boolean indicating whether or not an admin user is logged in">
 		<cfif getSessionPassword() EQ "">
-			<cfreturn FALSE />
+			<cfreturn false />
 		</cfif>
-		<cfreturn TRUE />
+		<cfreturn true />
 	</cffunction>
 
-	<cffunction name="getJVMProperty" access="package" output="false" returntype="any" hint="Retrieves a specific JVM property">
-		<cfargument name="propertyName" type="string" required="true" />
+	<cffunction name="getJVMProperty" access="package" output="false" returntype="any" 
+			hint="Retrieves a specific JVM property">
+		<cfargument name="propertyName" type="string" required="true" hint="The JVM property to return" />
 		
 		<cfset var jvmProperty = createObject("java", "java.lang.System") />
 		
 		<cfreturn jvmProperty.getProperty(arguments.propertyName) />
 	</cffunction>
 	
-	<cffunction name="getAvailableCharsets" access="public" output="false" returntype="struct" hint="Returns a struct containing the available charsets on the JVM">
+	<cffunction name="getAvailableCharsets" access="public" output="false" returntype="struct" 
+			hint="Returns a struct containing the available charsets on the JVM">
 		<cfreturn createObject("java", "java.nio.charset.Charset").availableCharsets() />
 	</cffunction>
 	
-	<cffunction name="getDefaultCharset" access="public" output="false" returntype="string" hint="Returns the default charset for the JVM">
+	<cffunction name="getDefaultCharset" access="public" output="false" returntype="string" 
+			hint="Returns the default charset for the JVM">
 		<cfreturn createObject("java", "java.nio.charset.Charset").defaultCharset().name() />
 	</cffunction>
 	
@@ -119,8 +128,9 @@
 		<cfreturn structCopy(adminAPIInfo) />
 	</cffunction>
 
-	<cffunction name="dump" access="package" output="true" returntype="void">
-		<cfargument name="value" required="true">
-		<cfdump var="#arguments.value#">
+	<cffunction name="dump" access="package" output="true" returntype="void" 
+			hint="Dumps whatever variable is passed in">
+		<cfargument name="value" type="any" required="true" hint="The variable to dump" />
+		<cfdump var="#arguments.value#" />
 	</cffunction>
 </cfcomponent>

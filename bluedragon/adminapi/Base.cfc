@@ -1,3 +1,5 @@
+<!--- TODO: need to come up with the copyright holder for this project --->
+<!--- TODO: add gplv3 header on all the files --->
 <!---
 	Copyright (C) 2008  David C. Epler - dcepler@dcepler.net
 
@@ -21,8 +23,7 @@
 
 	<cfset init() />
 
-	<cffunction access="package" name="init" output="false" returntype="any" displayname="init" hint="Initialize base">
-
+	<cffunction name="init" access="package" output="false" returntype="any" hint="Initialize base">
 		<cfset variables.api.version = "0.1a" />
 		<cfset variables.api.builddate = "20080710" />
 
@@ -39,26 +40,17 @@
 		<cfreturn this />
 	</cffunction>
 
-	<!---
-	
-	--->
-	<cffunction access="private" name="getSessionPassword" output="false" returntype="string">
+	<cffunction name="getSessionPassword" access="private" output="false" returntype="string" hint="Returns the session password">
 		<cfreturn Decrypt(ToString(ToBinary(cookie.bdauthorization_)), "00CE55488350C475DC8A9FEAE82743FA") />
 	</cffunction>
 
-	<!---
-	
-	--->
-	<cffunction access="package" name="setSessionPassword" output="false" returntype="void">
-		<cfargument name="adminPassword" type="string" required="yes">
+	<cffunction name="setSessionPassword" access="package" output="false" returntype="void" hint="Sets the session password">
+		<cfargument name="adminPassword" type="string" required="true" hint="The administrator password" />
 		<cfset cookie.bdauthorization_ = ToBase64(Encrypt(arguments.adminPassword, "00CE55488350C475DC8A9FEAE82743FA")) />
 	</cffunction>
 	
-	<!---
-	
-	--->
-	<cffunction access="package" name="setConfig" output="false" returntype="void">
-		<cfargument name="currentConfig" type="variableName" required="yes">
+	<cffunction name="setConfig" access="package" output="false" returntype="void">
+		<cfargument name="currentConfig" type="struct" required="true" hint="The configuration struct, which is a struct representation of bluedragon.xml" />
 		
 		<!--- <cfif isAdminUser()> --->
 			<cflock scope="Server" type="exclusive" timeout="5">
@@ -78,10 +70,7 @@
 --->
 	</cffunction>
 
-	<!---
-	
-	--->
-	<cffunction access="package" name="getConfig" output="false" returntype="struct">
+	<cffunction name="getConfig" access="package" output="false" returntype="struct">
 		<cfset var admin = "" />
 		
 		<!---<cfif isAdminUser()> --->
@@ -97,33 +86,21 @@
 		<cfreturn admin.server />
 	</cffunction>
 
-	<!---
-	
-	--->
-	<cffunction access="package" name="isAdminUser" output="false" returntype="boolean">
+	<cffunction name="isAdminUser" access="package" output="false" returntype="boolean">
 		<cfif getSessionPassword() EQ "">
 			<cfreturn FALSE />
 		</cfif>
 		<cfreturn TRUE />
 	</cffunction>
 
-	<!---
-	
-	--->
-	<cffunction access="package" name="getJVMProperty" output="false" returntype="any">
+	<cffunction name="getJVMProperty" access="package" output="false" returntype="any" hint="Retrieves a specific JVM property">
 		<cfargument name="propertyName" type="string" required="true" />
-		<cfobject type="java" action="create" name="jvmProperty" class="java.lang.System">
+		
+		<cfset var jvmProperty = createObject("java", "java.lang.System") />
+		
 		<cfreturn jvmProperty.getProperty(arguments.propertyName) />
 	</cffunction>
 	
-	<!---
-	
-	--->
-	<cffunction access="package" name="dump" output="true" returntype="void">
-		<cfargument name="value" required="yes">
-		<cfdump var="#arguments.value#">
-	</cffunction>
-
 	<cffunction name="getAvailableCharsets" access="public" output="false" returntype="struct" hint="Returns a struct containing the available charsets on the JVM">
 		<cfreturn createObject("java", "java.nio.charset.Charset").availableCharsets() />
 	</cffunction>
@@ -141,5 +118,9 @@
 		
 		<cfreturn structCopy(adminAPIInfo) />
 	</cffunction>
-	
+
+	<cffunction name="dump" access="package" output="true" returntype="void">
+		<cfargument name="value" required="true">
+		<cfdump var="#arguments.value#">
+	</cffunction>
 </cfcomponent>

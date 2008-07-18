@@ -36,7 +36,7 @@
 		<cfreturn structCopy(localConfig.cfapplication) />
 	</cffunction>
 	
-	<cffunction name="saveVariableSettings" access="public" output="false" returntype="void" 
+	<cffunction name="setVariableSettings" access="public" output="false" returntype="void" 
 			hint="Saves the variable settings">
 		<cfargument name="j2eesession" type="boolean" required="true" hint="Enables/disables J2EE session variables" />
 		<cfargument name="appTimeoutDays" type="numeric" required="true" hint="Application timeout days" />

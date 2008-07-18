@@ -30,7 +30,7 @@
 		</cfif>
 	</cffunction>
 
-	<cffunction name="saveMapping" access="public" output="false" returntype="void" 
+	<cffunction name="setMapping" access="public" output="false" returntype="void" 
 				hint="Creates a mapping, equating a logical path to a directory path">
 		<cfargument name="name" type="string" required="true" hint="Logical path name" />
 		<cfargument name="directory" type="string" required="true" hint="Directory path name" />

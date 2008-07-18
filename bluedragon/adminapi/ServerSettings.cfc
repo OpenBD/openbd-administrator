@@ -4,7 +4,7 @@
 		hint="Manages server settings - OpenBD Admin API">
 	
 	<!--- PUBLIC METHODS --->
-	<cffunction name="saveServerSettings" access="public" output="false" returntype="void" 
+	<cffunction name="setServerSettings" access="public" output="false" returntype="void" 
 			hint="Saves updated server settings">
 		<cfargument name="buffersize" type="numeric" required="true" hint="Response buffer size - 0 indicates to buffer the entire page" />
 		<cfargument name="whitespacecomp" type="boolean" required="true" hint="Apply whitespace compression" />

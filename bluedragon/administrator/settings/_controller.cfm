@@ -49,7 +49,7 @@
 				<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
 			<cfelse>
 				<cftry>
-					<cfset Application.serverSettings.saveServerSettings(args.buffersize, args.whitespacecomp, args.errorhandler, 
+					<cfset Application.serverSettings.setServerSettings(args.buffersize, args.whitespacecomp, args.errorhandler, 
 																			args.missingtemplatehandler, args.defaultcharset, 
 																			args.scriptprotect, args.scriptsrc, args.tempdirectory, 
 																			args.componentcfc) />
@@ -100,7 +100,7 @@
 				<cflocation url="mappings.cfm" addtoken="false" />
 			<cfelse>
 				<cftry>
-					<cfset Application.mapping.saveMapping(args.name, args.directory, 
+					<cfset Application.mapping.setMapping(args.name, args.directory, 
 															args.mappingAction, args.existingMappingName) />
 					<cfcatch type="bluedragon.adminapi.mapping">
 						<cfset session.message = CFCATCH.Message />
@@ -153,7 +153,7 @@
 				<cflocation url="caching.cfm" addtoken="false" />
 			<cfelse>
 				<cftry>
-					<cfset Application.caching.saveFileCacheSettings(args.maxfiles, args.trustcache) />
+					<cfset Application.caching.setFileCacheSettings(args.maxfiles, args.trustcache) />
 					<cfcatch type="bluedragon.adminapi.caching">
 						<cfset session.message = CFCATCH.Message />
 						<cflocation url="caching.cfm" addtoken="false" />
@@ -178,7 +178,7 @@
 				<cflocation url="caching.cfm" addtoken="false" />
 			<cfelse>
 				<cftry>
-					<cfset Application.caching.saveQueryCacheSettings(args.cachecount) />
+					<cfset Application.caching.setQueryCacheSettings(args.cachecount) />
 					<cfcatch type="bluedragon.adminapi.caching">
 						<cfset session.message = CFCATCH.Message />
 						<cflocation url="caching.cfm" addtoken="false" />
@@ -250,7 +250,7 @@
 			</cfif>
 			
 			<cftry>
-				<cfset Application.variableSettings.saveVariableSettings(args.j2eesession, args.appTimeoutDays, 
+				<cfset Application.variableSettings.setVariableSettings(args.j2eesession, args.appTimeoutDays, 
 																			args.appTimeoutHours, args.appTimeoutMinutes, 
 																			args.appTimeoutSeconds, args.sessionTimeoutDays, 
 																			args.sessionTimeoutHours, args.sessionTimeoutMinutes, 
@@ -264,7 +264,7 @@
 			</cftry>
 			
 			<cftry>
-				<cfset Application.chart.saveChartSettings(args.cfchartcachesize, args.cfchartstorage) />
+				<cfset Application.chart.setChartSettings(args.cfchartcachesize, args.cfchartstorage) />
 				<cfcatch type="bluedragon.adminapi.chart">
 					<cfset session.message = CFCATCH.Message />
 					<cflocation url="variables.cfm" addtoken="false" />
@@ -305,7 +305,7 @@
 			</cfif>
 			
 			<cftry>
-				<cfset Application.mail.saveMailSettings(args.smtpserver, args.smtpport, args.timeout, 
+				<cfset Application.mail.setMailSettings(args.smtpserver, args.smtpport, args.timeout, 
 															args.threads, args.interval, args.charset) />
 				<cfcatch type="bluedragon.adminapi.mail">
 					<cfset session.message = CFCATCH.Message />

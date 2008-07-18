@@ -129,7 +129,7 @@
 					<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
 				<cfelse>
 					<cftry>
-						<cfset Application.datasource.saveDatasource(args.name, args.databasename, args.server, args.username, 
+						<cfset Application.datasource.setDatasource(args.name, args.databasename, args.server, args.username, 
 																		args.password, args.port, args.description, 
 																		args.initstring, args.connectiontimeout, 
 																		args.connectionretries, args.logintimeout, 

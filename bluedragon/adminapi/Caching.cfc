@@ -49,7 +49,7 @@
 		<cfreturn structCopy(cachingSettings) />
 	</cffunction>
 	
-	<cffunction name="saveFileCacheSettings" access="public" output="false" returntype="void" 
+	<cffunction name="setFileCacheSettings" access="public" output="false" returntype="void" 
 			hint="Updates the file cache settings">
 		<cfargument name="maxfiles" type="numeric" required="true" hint="The maximum number of files to cache" />
 		<cfargument name="trustcache" type="boolean" required="true" hint="Enable/disable trusted cache" />
@@ -67,7 +67,7 @@
 		<cfset setConfig(localConfig) />
 	</cffunction>
 	
-	<cffunction name="saveQueryCacheSettings" access="public" output="false" returntype="void" 
+	<cffunction name="setQueryCacheSettings" access="public" output="false" returntype="void" 
 			hint="Updates the query cache settings">
 		<cfargument name="cachecount" type="numeric" required="true" hint="The maximum number of queries to cache" />
 		

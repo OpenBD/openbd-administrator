@@ -48,7 +48,7 @@
 		<cfreturn localConfig.cfmail />
 	</cffunction>
 
-	<cffunction name="saveMailSettings" access="public" output="false" returntype="void" hint="Saves mail settings">
+	<cffunction name="setMailSettings" access="public" output="false" returntype="void" hint="Saves mail settings">
 		<cfargument name="smtpserver" type="string" required="true" hint="SMTP servers including backup servers" />
 		<cfargument name="smtpport" type="numeric" required="true" hint="The SMTP port" />
 		<cfargument name="timeout" type="numeric" required="true" hint="The connection timeout in seconds" />

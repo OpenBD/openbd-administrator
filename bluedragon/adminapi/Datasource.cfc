@@ -21,7 +21,7 @@
 		hint="Manages datasources - OpenBD Admin API">
 	
 	<!--- PUBLIC METHODS --->
-	<cffunction name="saveDatasource" access="public" output="false" returntype="void" hint="Creates or updates a datasource">
+	<cffunction name="setDatasource" access="public" output="false" returntype="void" hint="Creates or updates a datasource">
 		<cfargument name="name" type="string" required="true" hint="OpenBD Datasource Name" />
 		<cfargument name="databasename" type="string" required="true" hint="Database name on the database server" />
 		<cfargument name="server" type="string" required="true" hint="Database server host name or IP address" />

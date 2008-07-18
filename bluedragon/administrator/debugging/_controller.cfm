@@ -83,7 +83,7 @@
 			</cfif>
 			
 			<cftry>
-				<cfset Application.debugging.saveDebugOutputSettings(args.executiontimes, args.highlight, 
+				<cfset Application.debugging.setDebugOutputSettings(args.executiontimes, args.highlight, 
 																		args.database, args.exceptions, 
 																		args.tracepoints, args.timer, 
 																		args.variables) />
@@ -147,7 +147,7 @@
 			</cfif>
 			
 			<cftry>
-				<cfset Application.debugging.saveDebugVariablesSettings(args.local, args.url, args.session, 
+				<cfset Application.debugging.setDebugVariablesSettings(args.local, args.url, args.session, 
 																		args.variables, args.form, args.client, 
 																		args.request, args.cookie, args.application, 
 																		args.cgi, args.cffile, args.server) />

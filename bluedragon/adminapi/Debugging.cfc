@@ -198,7 +198,7 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="saveDebugOutputSettings" access="public" output="false" returntype="void" 
+	<cffunction name="setDebugOutputSettings" access="public" output="false" returntype="void" 
 			hint="Saves the debug output settings">
 		<cfargument name="executiontimes" type="boolean" required="true" hint="Enables/disables output of execution times" />
 		<cfargument name="highlight" type="numeric" required="true" hint="Number of milliseconds above which to highlight the execution time in the debug output" />
@@ -252,7 +252,7 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="saveDebugVariablesSettings" access="public" output="false" returntype="void" 
+	<cffunction name="setDebugVariablesSettings" access="public" output="false" returntype="void" 
 			hint="Saves the debug variables settings">
 		<cfargument name="local" type="boolean" required="true" hint="" />
 		<cfargument name="url" type="boolean" required="true" hint="" />

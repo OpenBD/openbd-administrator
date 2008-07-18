@@ -57,7 +57,7 @@
 					<a href="javascript:void(0);" onclick="javascript:archiveLogFile('#logFiles[i].name#');" alt="Archive Log File" title="Archive Log File"><img src="../images/folder_page.png" border="0" width="16" height="16" /></a>
 					<a href="javascript:void(0);" onclick="javascript:deleteLogFile('#logFiles[i].name#');" alt="Delete Log File" title="Delete Log File"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
 				</td>
-				<td><a href="" alt="View Log File" title="View Log File">#logFiles[i].name#</a></td>
+				<td><a href="viewlogfile.cfm?logFile=#logFiles[i].name#" alt="View Log File" title="View Log File">#logFiles[i].name#</a></td>
 				<td>#logFiles[i].size#</td>
 				<td>#logFiles[i].datelastmodified#</td>
 			</tr>

@@ -1,1 +1,5 @@
-<cflog application="true" file="test" type="information" text="test log entry" />
+<cfoutput>getTickCount(): #getTickCount()#</cfoutput>
+
+<cfset startTime = createObject("java", "com.naryx.tagfusion.cfm.engine.cfEngine").thisInstance.startTime />
+
+<cfoutput>startTime: #startTime#</cfoutput>

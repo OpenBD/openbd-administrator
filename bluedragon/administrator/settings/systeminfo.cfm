@@ -1,5 +1,7 @@
 <cfsilent>
 	<cfset adminAPIInfo = Application.serverSettings.getAdminAPIInfo() />
+	<cfset serverStartTime = Application.serverSettings.getServerStartTime() />
+	<cfset serverUptime = Application.serverSettings.getServerUpTime("struct") />
 </cfsilent>
 <cfsavecontent variable="request.content">
 	<cfoutput>
@@ -17,10 +19,9 @@
 				<td align="right" bgcolor="##f0f0f0">Server Name</td>
 				<td bgcolor="##ffffff">#cgi.server_name#</td>
 			</tr>
-			<!--- TODO: get server start time and add uptime value --->
 			<tr>
 				<td align="right" bgcolor="##f0f0f0">Start Time</td>
-				<td bgcolor="##ffffff">#server.coldfusion.expiration#</td>
+				<td bgcolor="##ffffff">#LSDateFormat(serverStartTime, "dd mmm yyyy")# #LSTimeFormat(serverStartTime, "HH:mm:ss")#</td>
 			</tr>
 			<tr>
 				<td align="right" bgcolor="##f0f0f0">Current Time</td>
@@ -28,10 +29,11 @@
 			</tr>
 			<tr>
 				<td align="right" bgcolor="##f0f0f0">Uptime</td>
-				<td bgcolor="##ffffff"></td>
+				<td bgcolor="##ffffff">#serverUptime.days# Days #serverUptime.hours# Hours #serverUptime.minutes# Minutes #serverUptime.seconds# Seconds</td>
 			</tr>
 		</table>
 		
+		<br />
 		<br />
 
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
@@ -56,6 +58,7 @@
 			</tr>
 		</table>
 		
+		<br />
 		<br />
 
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">

@@ -183,4 +183,50 @@
 		<cfreturn createObject("java", "java.lang.System").getProperties() />
 	</cffunction>
 	
+	<cffunction name="getServerStartTime" access="public" output="false" returntype="date" 
+			hint="Returns the server start time as a date object">
+		<cfset var startTimeMS = createObject("java", "com.naryx.tagfusion.cfm.engine.cfEngine").thisInstance.startTime />
+		<cfset var startTime = dateAdd("s", startTimeMS / 1000, dateConvert("utc2local", "01/01/1970 00:00:00.000")) />
+		
+		<cfreturn startTime />
+	</cffunction>
+	
+	<cffunction name="getServerUpTime" access="public" output="false" returntype="any" 
+			hint="Returns the server uptime either in seconds, or as a struct containing days, hours, minutes, and seconds">
+		<cfargument name="returnAs" type="string" required="false" default="seconds" />
+		
+		<cfset var uptimeInSeconds = dateDiff("s", getServerStartTime(), now()) />
+		<cfset var uptime = structNew() />
+		<cfset var remainingSeconds = uptimeInSeconds />
+		
+		<cfset uptime.days = 0 />
+		<cfset uptime.hours = 0 />
+		<cfset uptime.minutes = 0 />
+		<cfset uptime.seconds = 0 />
+		
+		<cfif arguments.returnAs is "seconds">
+			<cfset uptime = uptimeInSeconds />
+		<cfelse>
+			<cfif uptimeInSeconds / 86400 gte 1>
+				<cfset uptime.days = int(uptimeInSeconds / 86400) />
+				<cfset remainingSeconds = uptimeInSeconds mod 86400 />
+			</cfif>
+			
+			<cfif remainingSeconds gt 0 and remainingSeconds / 3600 gte 1>
+				<cfset uptime.hours = int(remainingSeconds / 3600) />
+				<cfset remainingSeconds = remainingSeconds mod 3600 />
+			</cfif>
+			
+			<cfif remainingSeconds gt 0 and remainingSeconds / 60 gte 1>
+				<cfset uptime.minutes = int(remainingSeconds / 60) />
+				<cfset remainingSeconds = remainingSeconds mod 60 />
+			</cfif>
+			
+			<cfif remainingSeconds gt 0>
+				<cfset uptime.seconds = remainingSeconds />
+			</cfif>
+		</cfif>
+		
+		<cfreturn uptime />
+	</cffunction>
 </cfcomponent>

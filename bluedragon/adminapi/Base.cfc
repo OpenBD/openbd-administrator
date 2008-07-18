@@ -103,9 +103,12 @@
 			hint="Retrieves a specific JVM property">
 		<cfargument name="propertyName" type="string" required="true" hint="The JVM property to return" />
 		
-		<cfset var jvmProperty = createObject("java", "java.lang.System") />
-		
-		<cfreturn jvmProperty.getProperty(arguments.propertyName) />
+		<cfreturn createObject("java", "java.lang.System").getProperty(arguments.propertyName) />
+	</cffunction>
+
+	<cffunction name="getJVMProperties" access="public" output="false" returntype="struct" 
+			hint="Returns a struct containing the JVM properties">
+		<cfreturn createObject("java", "java.lang.System").getProperties() />
 	</cffunction>
 	
 	<cffunction name="getAvailableCharsets" access="public" output="false" returntype="struct" 

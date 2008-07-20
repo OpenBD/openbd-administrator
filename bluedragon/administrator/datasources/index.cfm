@@ -107,7 +107,7 @@
 					<a href="javascript:void(0);" onclick="javascript:removeDatasource('#datasources[i].name#');" alt="Remove Datasource" title="Remove Datasource"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
 				</td>
 				<td>#datasources[i].name#</td>
-				<td>#datasources[i].description#</td>
+				<td><cfif structKeyExists(datasources[i], "description")>#datasources[i].description#<cfelse>&nbsp;</cfif></td>
 				<td>#datasources[i].driverdescription#</td>
 				<td>&nbsp;</td>
 			</tr>

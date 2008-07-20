@@ -83,7 +83,9 @@
 		</tr>
 		<tr>
 			<td valign="top">Description</td>
-			<td valign="top"><textarea name="description" rows="4" cols="40">#dsinfo.description#</textarea></td>
+			<td valign="top">
+				<textarea name="description" rows="4" cols="40"><cfif structKeyExists(dsinfo, "description")>#dsinfo.description#</cfif></textarea>
+			</td>
 		</tr>
 		<tr>
 			<td>

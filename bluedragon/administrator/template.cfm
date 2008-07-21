@@ -82,6 +82,7 @@
 		<li><a href="#contextPath#/bluedragon/administrator/debugging/ipaddresses.cfm">Debug IP Addresses</a></li>
 		<!--- <li><a href="#contextPath#/bluedragon/administrator/debugging/scheduledtasks.cfm">Scheduled Tasks</a></li> --->
 		<li><a href="#contextPath#/bluedragon/administrator/debugging/logs.cfm">Log Files</a></li>
+		<li><a href="#contextPath#/bluedragon/administrator/debugging/runtimeerrors.cfm">Runtime Error Logs</a></li>
 	</ul>
   </div>
   <div>

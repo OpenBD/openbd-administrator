@@ -612,4 +612,33 @@
 		<cfreturn logFileData />
 	</cffunction>
 	
+	<cffunction name="getRuntimeErrorLogs" access="public" output="false" returntype="query" 
+			hint="Returns a query object containing all the files in the runtime error log directory (/WEB-INF/bluedragon/work/temp/rtelogs)">
+		<cfset var rteLogs = 0 />
+		
+		<cfif directoryExists(expandPath("/WEB-INF/bluedragon/work/temp/rtelogs"))>
+			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work/temp/rtelogs')#" name="rteLogs" />
+			
+			<cfquery name="rteLogs" dbtype="query">
+				SELECT * 
+				FROM rteLogs 
+				ORDER BY datelastmodified DESC
+			</cfquery>
+		<cfelse>
+			<cfthrow type="bluedragon.adminapi.debugging" message="No runtime error logs exist" />
+		</cfif>
+		
+		<cfreturn rteLogs />
+	</cffunction>
+	
+	<cffunction name="deleteRuntimeErrorLog" access="public" output="false" returntype="void" 
+			hint="Deletes a runtime error log file">
+		<cfargument name="rteLog" type="string" required="true" hint="The runtime error log file to delete" />
+		
+		<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/temp/rtelogs/#arguments.rteLog#"))>
+			<cffile action="delete" file="#expandPath('/WEB-INF/bluedragon/work/temp/rtelogs/#arguments.rteLog#')#" />
+		<cfelse>
+			<cfthrow type="bluedragon.adminapi.debugging" message="The file attempting to be deleted no longer exists" />
+		</cfif>
+	</cffunction>
 </cfcomponent>

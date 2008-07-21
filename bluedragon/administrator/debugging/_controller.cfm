@@ -247,6 +247,19 @@
 			<cflocation url="logs.cfm" addtoken="false" />
 		</cfcase>
 		
+		<cfcase value="deleteRuntimeErrorLog">
+			<cftry>
+				<cfset Application.debugging.deleteRuntimeErrorLog(args.rteLog) />
+				<cfcatch type="any">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="runtimeerrors.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cfset session.message = "The runtime error log was deleted successfully." />
+			<cflocation url="runtimeerrors.cfm" addtoken="false" />
+		</cfcase>
+		
 		<!--- DEFAULT CASE --->
 		<cfdefaultcase>
 			<cfset session.message = "Invalid action" />

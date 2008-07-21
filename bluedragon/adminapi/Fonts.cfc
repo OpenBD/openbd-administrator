@@ -1,33 +1,24 @@
-<cfcomponent displayname="Mapping" 
+<cfcomponent displayname="Fonts" 
 		output="false" 
 		extends="Base" 
-		hint="Manage mappings - OpenBD Admin API">
+		hint="Manage font directories - OpenBD Admin API">
 
-	<cffunction name="getMappings" access="public" output="false" returntype="array" 
-			hint="Returns array of mappings which equate logical paths to directory paths">
-		<cfargument name="mapName" required="false" type="string" hint="The mapping to retrieve" />
-		
+	<cffunction name="getFontDirectories" access="public" output="false" returntype="array" 
+			hint="Returns an array containing the defined font directories">
 		<cfset var localConfig = getConfig() />
-		<cfset var mapIndex = "" />
 		<cfset var returnArray = ArrayNew(1) />
+		<cfset var fontDir = "" />
 
-		<!--- Make sure there are Mappings --->
-		<cfif (NOT StructKeyExists(localConfig, "cfmappings")) OR (NOT StructKeyExists(localConfig.cfmappings, "mapping"))>
-			<cfthrow message="No Mappings Defined" type="bluedragon.adminapi.mapping" />
-		</cfif>
-
-		<!--- Return entire Mapping array, unless a map name is specified --->
-		<cfif NOT IsDefined("arguments.mapName")>
-			<cfreturn localConfig.cfmappings.mapping />
+		<!--- Make sure there are font directories --->
+		<cfif (NOT StructKeyExists(localConfig, "fonts")) OR (NOT StructKeyExists(localConfig.fonts, "dirs"))>
+			<cfthrow message="No Font Directories Defined" type="bluedragon.adminapi.fonts" />
 		<cfelse>
-			<cfloop index="mapIndex" from="1" to="#ArrayLen(localConfig.cfmappings.mapping)#">
-				<cfif localConfig.cfmappings.mapping[mapIndex].name EQ arguments.mapName>
-					<cfset returnArray[1] = Duplicate(localConfig.cfmappings.mapping[mapIndex]) />
-					<cfreturn returnArray />
-				</cfif>
+			<cfloop list="#localConfig.fonts.dirs#"  index="fontDir">
+				<cfset arrayAppend(returnArray, fontDir) />
 			</cfloop>
-			<cfthrow message="#arguments.mapName# is not defined as a mapping" type="bluedragon.adminapi.mapping" />
 		</cfif>
+
+		<cfreturn returnArray />
 	</cffunction>
 
 	<cffunction name="setMapping" access="public" output="false" returntype="void" 
@@ -143,7 +134,7 @@
 				<cfreturn />
 			</cfif>
 		</cfloop>
-		<cfthrow message="#arguments.mapName# is not defined as a mapping" type="bluedragon.adminapi.mapping" />
+		<cfthrow message="#arguments.mapName# is not defined as a mapping" type="bluedragon.adminapi.mapping">
 	</cffunction>
 
 </cfcomponent>

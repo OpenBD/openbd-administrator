@@ -330,6 +330,11 @@
 			<cflocation url="mail.cfm" addtoken="false" />
 		</cfcase>
 		
+		<!--- FONTS --->
+		<cfcase value="processFontDirForm">
+		
+		</cfcase>
+		
 		<!--- DEFAULT CASE --->
 		<cfdefaultcase>
 			<cfset session.message = "Invalid action" />

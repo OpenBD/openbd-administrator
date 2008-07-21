@@ -13,6 +13,7 @@
 			Application.datasource = createObject("component", "bluedragon.adminapi.Datasource");
 			Application.debugging = createObject("component", "bluedragon.adminapi.Debugging");
 			Application.extensions = createObject("component", "bluedragon.adminapi.Extensions");
+			Application.fonts = createObject("component", "bluedragon.adminapi.Fonts");
 			Application.mail = createObject("component", "bluedragon.adminapi.Mail");
 			Application.mapping = createObject("component", "bluedragon.adminapi.Mapping");
 			Application.serverSettings = createObject("component", "bluedragon.adminapi.ServerSettings");

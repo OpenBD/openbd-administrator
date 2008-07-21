@@ -5,6 +5,9 @@
 		if (contextPath is "/") {
 			contextPath = "";
 		}
+		
+		theSection = listGetAt(CGI.SCRIPT_NAME, listLen(CGI.SCRIPT_NAME, "/") - 1, "/");
+		thePage = listLast(CGI.SCRIPT_NAME, "/");
 	</cfscript>
 </cfsilent>
 <cfoutput>
@@ -18,7 +21,6 @@
 </head>
 
 <body>
-
 <!-- For non-visual or non-stylesheet-capable user agents -->
 <div id="mainlink"><a href="##main">Skip to main content.</a></div>
 
@@ -53,43 +55,37 @@
     <p class="title">Server</p>
 	<ul>
 		<li><a href="#contextPath#/bluedragon/administrator/settings/security.cfm">Security</a></li>
-		<li><a href="#contextPath#/bluedragon/administrator/settings/systeminfo.cfm">System Information</a></li>
-		<li><a href="#contextPath#/bluedragon/administrator/settings/index.cfm">Settings</a></li>
-		<li><a href="#contextPath#/bluedragon/administrator/settings/caching.cfm">Caching</a></li>
-		<li><a href="#contextPath#/bluedragon/administrator/settings/variables.cfm">Variables</a></li>
-		<li><a href="#contextPath#/bluedragon/administrator/settings/mappings.cfm">Mappings</a></li>
-		<li><a href="#contextPath#/bluedragon/administrator/settings/mail.cfm">Mail</a></li>
-		<!--- <li><a href="#contextPath#/bluedragon/administrator/settings/fonts.cfm">Fonts</a></li> --->
+		<li<cfif theSection is "settings" and listFind("systeminfo.cfm,jvmproperties.cfm", thePage) neq 0> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/settings/systeminfo.cfm">System Information</a></li>
+		<li<cfif theSection is "settings" and thePage is "index.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/settings/index.cfm">Settings</a></li>
+		<li<cfif theSection is "settings" and thePage is "caching.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/settings/caching.cfm">Caching</a></li>
+		<li<cfif theSection is "settings" and thePage is "variables.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/settings/variables.cfm">Variables</a></li>
+		<li<cfif theSection is "settings" and thePage is "mappings.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/settings/mappings.cfm">Mappings</a></li>
+		<li<cfif theSection is "settings" and thePage is "mail.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/settings/mail.cfm">Mail</a></li>
+		<li<cfif theSection is "settings" and thePage is "fonts.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/settings/fonts.cfm">Fonts</a></li>
 		<!--- <li><a href="#contextPath#/bluedragon/administrator/settings/threads.cfm">Threads</a></li> --->
 	</ul>
-    <!--- just leaving this here for reference <ul>
-      <li><a href="index.html">Overview</a></li>
-      <li class="highlight"><a href="template.html">Template</a>
-        <span class="hidden">(this page)</span></li>
-      <li><a href="sample.html">Sample Page</a></li>
-    </ul> --->
   </div>
   <div>
 	<p class="title">Data &amp; Services</p>
 	<ul>
-		<li><a href="#contextPath#/bluedragon/administrator/datasources/index.cfm">Datasources</a></li>
+		<li<cfif theSection is "datasources"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/index.cfm">Datasources</a></li>
 	</ul>
   </div>
   <div>
 	<p class="title">Debugging &amp; Logging</p>
 	<ul>
-		<li><a href="#contextPath#/bluedragon/administrator/debugging/index.cfm">Debug Settings</a></li>
-		<li><a href="#contextPath#/bluedragon/administrator/debugging/ipaddresses.cfm">Debug IP Addresses</a></li>
+		<li<cfif theSection is "debugging" and thePage is "index.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/index.cfm">Debug Settings</a></li>
+		<li<cfif theSection is "debugging" and thePage is "ipaddresses.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/ipaddresses.cfm">Debug IP Addresses</a></li>
 		<!--- <li><a href="#contextPath#/bluedragon/administrator/debugging/scheduledtasks.cfm">Scheduled Tasks</a></li> --->
-		<li><a href="#contextPath#/bluedragon/administrator/debugging/logs.cfm">Log Files</a></li>
-		<li><a href="#contextPath#/bluedragon/administrator/debugging/runtimeerrors.cfm">Runtime Error Logs</a></li>
+		<li<cfif theSection is "debugging" and listFind("logs.cfm,viewlogfile.cfm", thePage) neq 0> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/logs.cfm">Log Files</a></li>
+		<li<cfif theSection is "debugging" and listFind("runtimeerrors.cfm,viewrtelog.cfm", thePage) neq 0> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/runtimeerrors.cfm">Runtime Error Logs</a></li>
 	</ul>
   </div>
   <div>
 	<p class="title">Extensions</p>
 	<ul>
-		<li><a href="#contextPath#/bluedragon/administrator/extensions/customtagpaths.cfm">Custom Tag Paths</a></li>
-		<li><a href="#contextPath#/bluedragon/administrator/extensions/cfxtags.cfm">CFX Tags</a></li>
+		<li<cfif theSection is "extensions" and thePage is "customtagpaths.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/extensions/customtagpaths.cfm">Custom Tag Paths</a></li>
+		<li<cfif theSection is "extensions" and listFind("cfxtags.cfm,javacfx.cfm,cppcfx.cfm", thePage) neq 0> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/extensions/cfxtags.cfm">CFX Tags</a></li>
 	</ul>
   </div>
 </div>

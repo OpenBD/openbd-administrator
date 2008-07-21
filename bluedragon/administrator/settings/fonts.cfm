@@ -1,0 +1,105 @@
+<cfsilent>
+	<cfparam name="fontsMessage" type="string" default="" />
+	<cfparam name="fontDirs" type="array" default="#arrayNew(1)#" />
+	
+	<cfif structKeyExists(url, "fontDir")>
+		<cfset fontDirAction = "update" />
+	<cfelse>
+		<cfset url.fontDir = "" />
+		<cfset fontDirAction = "create" />
+	</cfif>
+	
+	<cftry>
+		<cfset fontDirs = Application.fonts.getFontDirectories() />
+		<cfcatch type="bluedragon.adminapi.fonts">
+			<cfset fontsMessage = CFCATCH.Message />
+		</cfcatch>
+	</cftry>
+</cfsilent>
+<cfsavecontent variable="request.content">
+	<cfoutput>
+		<script type="text/javascript">
+			function validate(f) {
+				if (f.fontDir.value.length == 0) {
+					alert("Please enter the font directory");
+					return false;
+				} else {
+					return true;
+				}
+			}
+			
+			function removeFontDir(fontDir) {
+				if (confirm("Are you sure you want to remove this font directory?")) {
+					location.replace("_controller.cfm?action=removeFontDirectory&fontDir=" + fontDir);
+				}
+			}
+		</script>
+		
+		<h3>Font Directories</h3>
+		
+		<cfif structKeyExists(session, "message") and session.message is not "">
+			<p class="message">#session.message#</p>
+		</cfif>
+		
+		<cfif fontsMessage is not "">
+			<p class="message">#fontsMessage#</p>
+		</cfif>
+		
+		<cfif arrayLen(fontDirs) gt 0>
+		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+			<tr bgcolor="##f0f0f0">
+				<td><strong>Actions</strong></td>
+				<td><strong>Font Directory</strong></td>
+			</tr>
+		<cfloop index="i" from="1" to="#arrayLen(fontDirs)#">
+			<tr bgcolor="##ffffff">
+				<td width="100">
+					<a href="_controller.cfm?action=editFontDirectory&fontDir=#fontDirs[i]#" alt="Edit Font Directory" title="Edit Font Directory"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
+					<a href="_controller.cfm?action=verifyFontDirectory&name=#fontDirs[i]#" alt="Verify Font Directory" title="Verify Font Directory"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
+					<a href="javascript:void(0);" onclick="javascript:removeFontDir('#fontDirs[i]#');" alt="Remove Font Directory" title="Remove Font Directory"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
+				</td>
+				<td>#fontDirs[i]#</td>
+			</tr>
+		</cfloop>
+		</table>
+		</cfif>
+		
+		<h3><cfif fontDirAction is "create">Add a<cfelse>Edit</cfif> Font Directory</h3>
+		
+		<form name="fontDirForm" action="_controller.cfm?action=processFontDirForm" method="post" onsubmit="javascript:return validate(this);">
+		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+			<tr>
+				<td align="right" bgcolor="##f0f0f0">Font Directory</td>
+				<td bgcolor="##ffffff">
+					<input type="text" name="name" size="40" value="#url.fontDir#" />
+				</td>
+			</tr>
+			<tr bgcolor="##dedede">
+				<td>&nbsp;</td>
+				<td>
+					<input type="submit" name="submit" value="Submit" />
+				</td>
+			</tr>
+		</table>
+			<input type="hidden" name="fontDirAction" value="#fontDirAction#" />
+			<input type="hidden" name="existingFontDir" value="#url.fontDir#">
+		</form>
+		
+		<p><strong>Important Information Concerning Specifying Physical Paths</strong></p>
+		
+		<ul>
+			<li>
+				A full physical path starting with "/" (on Unix-based systems) or a full drive path including drive letter 
+				(on Windows systems) may be specified. On Unix-based systems the common font folders include:<br />
+				/usr/X/lib/X11/fonts/TrueType<br />
+				/usr/openwin/lib/X11/fonts/TrueType<br />
+				/usr/share/fonts/default/TrueType<br />
+				/usr/X11R6/lib/X11/fonts/ttf<br />
+				/usr/X11R6/lib/X11/fonts/truetype<br />
+				/usr/X11R6/lib/X11/fonts/TTF
+			</li>
+		</ul>
+	</cfoutput>
+	<cfset structDelete(session, "message", false) />
+	<cfset structDelete(session, "fontDir", false) />
+</cfsavecontent>

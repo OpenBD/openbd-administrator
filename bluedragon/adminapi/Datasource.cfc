@@ -199,8 +199,14 @@
 	
 	<cffunction name="getRegisteredDrivers" access="public" output="false" returntype="array" 
 			hint="Returns an array containing all the database drivers that are 'known' to OpenBD. If the node doesn't exist in the XML we'll create it and populate it with the standard driver information. Note we can't guarantee the user will have the drivers installed/in their classpath but that should throw an error if they try to add a datasource that uses a driver they don't have.">
+		<cfargument name="resetDrivers" type="boolean" required="false" default="false" />
+		
 		<cfset var localConfig = getConfig() />
 		<cfset var dbDriverInfo = structNew() />
+		
+		<cfif arguments.resetDrivers>
+			<cfset StructDelete(localConfig.cfquery, "dbdrivers", false) />
+		</cfif>
 		
 		<cfif not StructKeyExists(localConfig.cfquery, "dbdrivers")>
 			<!--- add the dbdrivers node with the default drivers that should be shipping with OpenBD --->
@@ -241,6 +247,18 @@
 				dbDriverInfo.jdbctype = "4";
 				dbDriverInfo.provider = "jTDS";
 				dbDriverInfo.defaultport = "1433";
+				
+				arrayAppend(localConfig.cfquery.dbdrivers.driver, structCopy(dbDriverInfo));
+				
+				// "other" (user-configured jdbc)
+				dbDriverInfo.name = "other";
+				dbDriverInfo.datasourceconfigpage = "other.cfm";
+				dbDriverInfo.version = "";
+				dbDriverInfo.drivername = "";
+				dbDriverInfo.driverdescription = "Other JDBC Driver";
+				dbDriverInfo.jdbctype = "";
+				dbDriverInfo.provider = "";
+				dbDriverInfo.defaultport = "";
 				
 				arrayAppend(localConfig.cfquery.dbdrivers.driver, structCopy(dbDriverInfo));
 				

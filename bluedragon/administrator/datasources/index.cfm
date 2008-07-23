@@ -45,7 +45,13 @@
 			
 			function removeDatasource(dsn) {
 				if(confirm("Are you sure you want to remove this datasource?")) {
-					location.replace('_controller.cfm?action=removeDatasource&dsn=' + dsn);
+					location.replace("_controller.cfm?action=removeDatasource&dsn=" + dsn);
+				}
+			}
+			
+			function resetDBDrivers() {
+				if(confirm("Are you sure you want to reset the database driver list to the defaults?")) {
+					location.replace("_controller.cfm?action=resetDatabaseDrivers");
 				}
 			}
 		</script>
@@ -70,7 +76,8 @@
 					<cfloop index="i" from="1" to="#arrayLen(dbdrivers)#">
 						<option value="#dbdrivers[i].datasourceconfigpage#">#dbdrivers[i].driverdescription#</option>
 					</cfloop>
-					</select>
+					</select>&nbsp;
+					<a href="javascript:void(0);" onclick="javascript:resetDBDrivers()">Reset Database Drivers</a>
 				</td>
 			</tr>
 			<tr>

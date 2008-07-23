@@ -137,7 +137,7 @@
 																		args.sqlselect, args.sqlinsert, args.sqlupdate, args.sqldelete, 
 																		args.sqlstoredprocedures, args.drivername, 
 																		args.datasourceAction, args.existingDatasourceName) />
-						<cfcatch type="bluedragon.adminapi.Datasource">
+						<cfcatch type="bluedragon.adminapi.datasource">
 							<cfset session.message = CFCATCH.Message />
 							<cflocation url="index.cfm" addtoken="false" />
 						</cfcatch>
@@ -161,7 +161,7 @@
 			<cfelse>
 				<cftry>
 					<cfset Application.datasource.deleteDatasource(args.dsn) />
-					<cfcatch type="bluedragon.adminapi.Datasource">
+					<cfcatch type="bluedragon.adminapi.datasource">
 						<cfset session.message = CFCATCH.Message />
 						<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
 					</cfcatch>
@@ -170,6 +170,19 @@
 				<cfset session.message = "The datasource was removed successfully." />
 				<cflocation url="index.cfm" addtoken="false" />
 			</cfif>
+		</cfcase>
+		
+		<cfcase value="resetDatabaseDrivers">
+			<cftry>
+				<cfset Application.datasource.getRegisteredDrivers(true) />
+				<cfcatch type="bluedragon.adminapi.datasource">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="index.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cfset session.message = "The database drivers were reset successfully." />
+			<cflocation url="index.cfm" addtoken="false" />
 		</cfcase>
 		
 		<cfdefaultcase>

@@ -88,7 +88,7 @@
 	
 	<cffunction name="verifyMapping" access="public" output="false" returntype="void" 
 			hint="Verifies the mapping by running cfdirectory on both the physical and logical paths">
-		<cfargument name="mappingName" type="string" required="true" />
+		<cfargument name="mappingName" type="string" required="true" hint="The mapping to verify" />
 		
 		<cfset var mapping = getMappings(arguments.mappingName) />
 		<cfset var tempPath = "" />
@@ -127,13 +127,14 @@
 	</cffunction>
 
 	<cffunction name="deleteMapping" access="public" output="false" returntype="void" hint="Delete the specified mapping">
-		<cfargument name="mapName" required="true" type="string" hint="Specifies a logical path name" />
+		<cfargument name="mapName" required="true" type="string" hint="The mapping to delete" />
+		
 		<cfset var localConfig = getConfig() />
 		<cfset var mapIndex = "" />
 
 		<!--- Make sure there are Mappings --->
 		<cfif (NOT StructKeyExists(localConfig, "cfmappings")) OR (NOT StructKeyExists(localConfig.cfmappings, "mapping"))>
-			<cfthrow message="No Mappings Defined" type="bluedragon.adminapi.mapping">		
+			<cfthrow message="No Mappings Defined" type="bluedragon.adminapi.mapping" />		
 		</cfif>
 
 		<cfloop index="mapIndex" from="1" to="#ArrayLen(localConfig.cfmappings.mapping)#">

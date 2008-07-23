@@ -332,7 +332,53 @@
 		
 		<!--- FONTS --->
 		<cfcase value="processFontDirForm">
+			<cfset errorFields = arrayNew(1) />
+			
+			<cfif trim(args.fontDir) is "">
+				<cfset arrayAppend(errorFields, "fontDir") />
+			</cfif>
+			
+			<cfif arrayLen(errorFields) gt 0>
+				<cfset session.errorFields = errorFields />
+				<cflocation url="fonts.cfm" addtoken="false" />
+			</cfif>
+			
+			<cftry>
+				<cfset Application.fonts.setFontDirectory(args.fontDir, args.fontDirAction, args.existingFontDir) />
+				<cfcatch type="bluedragon.adminapi.fonts">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="fonts.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cfset session.message = "The font directory was processed successfully." />
+			<cflocation url="fonts.cfm" addtoken="false" />
+		</cfcase>
 		
+		<cfcase value="verifyFontDirectory">
+			<cftry>
+				<cfset Application.fonts.verifyFontDirectory(args.fontDir) />
+				<cfcatch type="any">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="fonts.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cfset session.message = "The font directory was verified successfully." />
+			<cflocation url="fonts.cfm" addtoken="false" />
+		</cfcase>
+		
+		<cfcase value="removeFontDirectory">
+			<cftry>
+				<cfset Application.fonts.deleteFontDirectory(args.fontDir) />
+				<cfcatch type="any">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="fonts.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cfset session.message = "The font directory was removed successfully." />
+			<cflocation url="fonts.cfm" addtoken="false" />
 		</cfcase>
 		
 		<!--- DEFAULT CASE --->

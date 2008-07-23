@@ -1,13 +1,7 @@
 <cfsilent>
 	<cfparam name="fontsMessage" type="string" default="" />
 	<cfparam name="fontDirs" type="array" default="#arrayNew(1)#" />
-	
-	<cfif structKeyExists(url, "fontDir")>
-		<cfset fontDirAction = "update" />
-	<cfelse>
-		<cfset url.fontDir = "" />
-		<cfset fontDirAction = "create" />
-	</cfif>
+	<cfparam name="fontDirAction" type="string" default="create" />
 	
 	<cftry>
 		<cfset fontDirs = Application.fonts.getFontDirectories() />
@@ -26,6 +20,14 @@
 				} else {
 					return true;
 				}
+			}
+			
+			function editFontDir(fontDir) {
+				var f = document.forms.fontDirForm;
+				
+				f.fontDir.value = fontDir;
+				f.existingFontDir.value = fontDir;
+				f.fontDirAction.value = "update";
 			}
 			
 			function removeFontDir(fontDir) {
@@ -54,8 +56,8 @@
 		<cfloop index="i" from="1" to="#arrayLen(fontDirs)#">
 			<tr bgcolor="##ffffff">
 				<td width="100">
-					<a href="_controller.cfm?action=editFontDirectory&fontDir=#fontDirs[i]#" alt="Edit Font Directory" title="Edit Font Directory"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
-					<a href="_controller.cfm?action=verifyFontDirectory&name=#fontDirs[i]#" alt="Verify Font Directory" title="Verify Font Directory"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
+					<a href="javascript:void(0);" onclick="javascript:editFontDir('#fontDirs[i]#')" alt="Edit Font Directory" title="Edit Font Directory"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
+					<a href="_controller.cfm?action=verifyFontDirectory&fontDir=#fontDirs[i]#" alt="Verify Font Directory" title="Verify Font Directory"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
 					<a href="javascript:void(0);" onclick="javascript:removeFontDir('#fontDirs[i]#');" alt="Remove Font Directory" title="Remove Font Directory"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
 				</td>
 				<td>#fontDirs[i]#</td>
@@ -71,7 +73,7 @@
 			<tr>
 				<td align="right" bgcolor="##f0f0f0">Font Directory</td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="name" size="40" value="#url.fontDir#" />
+					<input type="text" name="fontDir" size="40" value="" />
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">
@@ -82,7 +84,7 @@
 			</tr>
 		</table>
 			<input type="hidden" name="fontDirAction" value="#fontDirAction#" />
-			<input type="hidden" name="existingFontDir" value="#url.fontDir#">
+			<input type="hidden" name="existingFontDir" value="">
 		</form>
 		
 		<p><strong>Important Information Concerning Specifying Physical Paths</strong></p>

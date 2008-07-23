@@ -10,7 +10,8 @@
 		<cfset var fontDir = "" />
 
 		<!--- Make sure there are font directories --->
-		<cfif (NOT StructKeyExists(localConfig, "fonts")) OR (NOT StructKeyExists(localConfig.fonts, "dirs"))>
+		<cfif NOT StructKeyExists(localConfig, "fonts") OR NOT StructKeyExists(localConfig.fonts, "dirs") 
+				OR localConfig.fonts.dirs is "">
 			<cfthrow message="No Font Directories Defined" type="bluedragon.adminapi.fonts" />
 		<cfelse>
 			<cfloop list="#localConfig.fonts.dirs#"  index="fontDir">
@@ -90,14 +91,14 @@
 		
 		<cfset var localConfig = getConfig() />
 		<cfset var i = 0 />
-
+		
 		<cfif (NOT StructKeyExists(localConfig, "fonts")) OR (NOT StructKeyExists(localConfig.fonts, "dirs"))>
 			<cfthrow message="No Font Directories Defined" type="bluedragon.adminapi.fonts" />		
 		</cfif>
-
+		
 		<cfloop index="i" from="1" to="#listLen(localConfig.fonts.dirs)#">
 			<cfif listGetAt(localConfig.fonts.dirs, i) is arguments.fontDirectory>
-				<cfset listDeleteAt(localConfig.fonts.dirs, i) />
+				<cfset localConfig.fonts.dirs = listDeleteAt(localConfig.fonts.dirs, i) />
 				<cfset setConfig(localConfig) />
 				<cfreturn />
 			</cfif>

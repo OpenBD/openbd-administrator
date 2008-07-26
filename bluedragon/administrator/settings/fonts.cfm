@@ -46,7 +46,7 @@
 		<cfif fontsMessage is not "">
 			<p class="message">#fontsMessage#</p>
 		</cfif>
-		
+
 		<cfif arrayLen(fontDirs) gt 0>
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr bgcolor="##f0f0f0">
@@ -67,6 +67,15 @@
 		</cfif>
 		
 		<h3><cfif fontDirAction is "create">Add a<cfelse>Edit</cfif> Font Directory</h3>
+
+		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
+			<p class="message">The following errors occurred:</p>
+			<ul>
+			<cfloop index="i" from="1" to="#arrayLen(errorFields)#">
+				<li>#errorFields[i][2]#</li>
+			</cfloop>
+			</ul>
+		</cfif>
 		
 		<form name="fontDirForm" action="_controller.cfm?action=processFontDirForm" method="post" onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
@@ -104,4 +113,5 @@
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "fontDir", false) />
+	<cfset structDelete(session, "errorFields", false) />
 </cfsavecontent>

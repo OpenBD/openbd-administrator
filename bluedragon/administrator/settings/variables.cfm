@@ -76,6 +76,15 @@
 		<cfif variableMessage is not "">
 			<p class="message">#variableMessage#</p>
 		</cfif>
+
+		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
+			<p class="message">The following errors occurred:</p>
+			<ul>
+			<cfloop index="i" from="1" to="#arrayLen(errorFields)#">
+				<li>#errorFields[i][2]#</li>
+			</cfloop>
+			</ul>
+		</cfif>
 		
 		<form name="variableForm" action="_controller.cfm?action=processVariableForm" method="post" onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
@@ -150,4 +159,5 @@
 		</form>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
+	<cfset structDelete(session, "errorFields", false) />
 </cfsavecontent>

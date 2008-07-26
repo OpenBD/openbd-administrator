@@ -39,6 +39,15 @@
 		<cfif cachingMessage is not "">
 			<p class="message">#cachingMessage#</p>
 		</cfif>
+
+		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
+			<p class="message">The following errors occurred:</p>
+			<ul>
+			<cfloop index="i" from="1" to="#arrayLen(errorFields)#">
+				<li>#errorFields[i][2]#</li>
+			</cfloop>
+			</ul>
+		</cfif>
 		
 		<!--- TODO: need to implement getting the file, query, and content cache count and let the user flush these --->
 		
@@ -88,4 +97,5 @@
 		</form>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
+	<cfset structDelete(session, "errorFields", false) />
 </cfsavecontent>

@@ -50,6 +50,15 @@
 			<p class="message">#session.message#</p>
 		</cfif>
 		
+		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
+			<p class="message">The following errors occurred:</p>
+			<ul>
+			<cfloop index="i" from="1" to="#arrayLen(errorFields)#">
+				<li>#errorFields[i][2]#</li>
+			</cfloop>
+			</ul>
+		</cfif>
+				
 		<form name="serverSettings" action="_controller.cfm?action=processServerSettingsForm" method="post" onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr>
@@ -142,12 +151,13 @@
 			<li>
 				If you change this value, PLEASE use caution and ensure that the CFC file being used is error free,
 				and that the path to the CFC file is valid. Upon submitting the form the application will attempt to 
-				read and instantiate the CFC, but this does not ensure that an error in the CFC itself will not cause 
+				read the physical CFC file, but this does not ensure that an error in the CFC itself will not cause 
 				global problems on this instance of OpenBD. If problems do occur, the value must be changed in 
-				WEB-INF/bluedragon/bluedragon.xml (preferably back to its deafult value of /WEB-INF/bluedragon/component.cfc) 
+				/WEB-INF/bluedragon/bluedragon.xml (preferably back to its deafult value of /WEB-INF/bluedragon/component.cfc) 
 				and the OpenBD instance must be restarted.
 			</li>
 		</ul>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
+	<cfset structDelete(session, "errorFields", false) />
 </cfsavecontent>

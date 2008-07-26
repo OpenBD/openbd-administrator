@@ -49,14 +49,44 @@
 	</cffunction>
 
 	<cffunction name="setMailSettings" access="public" output="false" returntype="void" hint="Saves mail settings">
-		<cfargument name="smtpserver" type="string" required="true" hint="SMTP servers including backup servers" />
+		<cfargument name="smtpserver" type="string" required="true" 
+				hint="Comma-delimited list of SMTP servers including backup servers" />
 		<cfargument name="smtpport" type="numeric" required="true" hint="The SMTP port" />
 		<cfargument name="timeout" type="numeric" required="true" hint="The connection timeout in seconds" />
 		<cfargument name="threads" type="numeric" required="true" hint="The number of threads to be used by cfmail" />
 		<cfargument name="interval" type="numeric" required="true" hint="The spool polling interval in seconds" />
 		<cfargument name="charset" type="string" required="true" hint="The default charset used by cfmail" />
+		<cfargument name="testConnection" type="boolean" required="false" default="false" 
+				hint="Boolean indicating to test mail server connectivity" />
 		
 		<cfset var localConfig = getConfig() />
+		<cfset var mailSession = 0 />
+		<cfset var transport = 0 />
+		<cfset var mailServer = 0 />
+		<cfset var errorMessage = "" />
+		
+		<cfif arguments.testConnection>
+			<!--- need to test all the servers --->
+			<cfloop list="#arguments.smtpserver#" index="mailServer">
+				<cftry>
+					<cfset mailSession = createObject("java", "javax.mail.Session").getDefaultInstance(createObject("java", "java.util.Properties").init()) />
+					<cfset transport = mailSession.getTransport("smtp") />
+					<cfset transport.connect(mailServer, "", "") />
+					<cfcatch type="any">
+						<cfif errorMessage is "">
+							<cfset errorMessage = "Mail server connection failed for the following mail server(s): " />
+						</cfif>
+						
+						<cfset errorMessage = errorMessage & mailServer & ", " />
+					</cfcatch>
+				</cftry>
+			</cfloop>
+			
+			<cfif errorMessage is not "">
+				<cfset errorMessage = left(errorMessage, len(errorMessage) - 2) />
+				<cfthrow message="#errorMessage#" type="bluedragon.adminapi.mail" />
+			</cfif>
+		</cfif>
 		
 		<cfscript>
 			localConfig.cfmail.smtpserver = arguments.smtpserver;
@@ -65,7 +95,7 @@
 			localConfig.cfmail.threads = ToString(arguments.threads);
 			localConfig.cfmail.interval = ToString(arguments.interval);
 			localConfig.cfmail.charset = arguments.charset;
-			
+
 			setConfig(localConfig);
 		</cfscript>
  	</cffunction>

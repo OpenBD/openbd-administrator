@@ -48,6 +48,7 @@
 					return false;
 				} else if (f.interval.value != parseInt(f.interval.value)) {
 					alert("The value of Spool Interval is not numeric");
+					return false;
 				} else {
 					return true;
 				}
@@ -82,8 +83,8 @@
 		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
 			<p class="message">The following errors occurred:</p>
 			<ul>
-			<cfloop index="i" from="1" to="#arrayLen(errorFields)#">
-				<li>#errorFields[i][2]#</li>
+			<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
+				<li>#session.errorFields[i][2]#</li>
 			</cfloop>
 			</ul>
 		</cfif>
@@ -134,6 +135,12 @@
 				<td bgcolor="##f0f0f0" align="right">Backup SMTP Server(s)</td>
 				<td bgcolor="##ffffff">
 					<input type="text" name="backupsmtpservers" size="40" value="#backupSMTPServers#" />
+				</td>
+			</tr>
+			<tr>
+				<td bgcolor="##f0f0f0" align="right">Test Mail Server Connection(s)</td>
+				<td bgcolor="##ffffff">
+					<input type="checkbox" name="testConnection" value="true" />
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">

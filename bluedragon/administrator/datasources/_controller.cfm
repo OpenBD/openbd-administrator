@@ -52,6 +52,7 @@
 					dsinfo.name = args.dsn;
 					dsinfo.databasename = "";
 					dsinfo.server = "";
+					dsinfo.hoststring = "";
 					dsinfo.port = dbDriverDefaults.defaultport;
 					dsinfo.username = "";
 					dsinfo.password = "";

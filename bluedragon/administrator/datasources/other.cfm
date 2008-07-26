@@ -32,14 +32,11 @@
 			if (f.name.value.length == 0) {
 				alert("Please enter the datasource name");
 				ok = false;
-			} else if (f.databasename.value.length == 0) {
-				alert("Please enter the database name");
+			} else if (f.hoststring.value.length == 0) {
+				alert("Please enter the JDBC URL");
 				ok = false;
-			} else if (f.server.value.length == 0) {
-				alert("Please enter the database server");
-				ok = false;
-			} else if (f.port.value.length == 0) {
-				alert("Please enter the database server port");
+			} else if (f.drivername.value.length == 0) {
+				alert("Please enter the JDBC driver name");
 				ok = false;
 			}
 			
@@ -55,8 +52,8 @@
 	<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
 		<p class="message">The following errors occurred:</p>
 		<ul>
-		<cfloop index="i" from="1" to="#arrayLen(errorFields)#">
-			<li>#errorFields[i][2]#</li>
+		<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
+			<li>#session.errorFields[i][2]#</li>
 		</cfloop>
 		</ul>
 	</cfif>
@@ -71,16 +68,14 @@
 			<td><input name="name" type="text" size="30" maxlength="50" value="#dsinfo.name#" /></td>
 		</tr>
 		<tr>
-			<td>Database Name</td>
-			<td><input name="databasename" type="text" size="30" maxlength="250" value="#dsinfo.databasename#" /></td>
+			<td valign="top">JDBC URL</td>
+			<td valign="top">
+				<textarea name="hoststring" cols="40" rows="4">#dsinfo.hoststring#</textarea>
+			</td>
 		</tr>
 		<tr>
-			<td>Database Server</td>
-			<td><input name="server" type="text" size="30" maxlength="250" value="#dsinfo.server#" /></td>
-		</tr>
-		<tr>
-			<td>Server Port</td>
-			<td><input name="port" type="text" size="6" maxlength="5" value="#dsinfo.port#" /></td>
+			<td>Driver Class</td>
+			<td><input name="drivername" type="text" size="30" maxlength="250" value="#dsinfo.drivername#" /></td>
 		</tr>
 		<tr>
 			<td>User Name</td>

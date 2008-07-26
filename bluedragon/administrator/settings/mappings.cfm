@@ -77,8 +77,8 @@
 		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
 			<p class="message">The following errors occurred:</p>
 			<ul>
-			<cfloop index="i" from="1" to="#arrayLen(errorFields)#">
-				<li>#errorFields[i][2]#</li>
+			<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
+				<li>#session.errorFields[i][2]#</li>
 			</cfloop>
 			</ul>
 		</cfif>

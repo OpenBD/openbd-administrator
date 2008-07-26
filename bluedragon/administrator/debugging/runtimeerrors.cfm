@@ -25,7 +25,7 @@
 		</script>
 		
 		<h3>Runtime Error Logs</h3>
-		
+		<!--- TODO: add paging of RTE logs --->
 		<cfif structKeyExists(session, "message") and session.message is not "">
 			<p class="message">#session.message#</p>
 		</cfif>

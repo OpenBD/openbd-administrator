@@ -317,6 +317,8 @@
 		
 		<!--- MAIL --->
 		<cfcase value="processMailForm">
+			<cfparam name="args.testConnection" type="boolean" default="false" />
+			
 			<cfset errorFields = arrayNew(2) />
 			<cfset errorFieldsIndex = 1 />
 			
@@ -355,7 +357,8 @@
 			
 			<cftry>
 				<cfset Application.mail.setMailSettings(args.smtpserver, args.smtpport, args.timeout, 
-															args.threads, args.interval, args.charset) />
+															args.threads, args.interval, args.charset, 
+															args.testConnection) />
 				<cfcatch type="bluedragon.adminapi.mail">
 					<cfset session.message = CFCATCH.Message />
 					<cflocation url="mail.cfm" addtoken="false" />

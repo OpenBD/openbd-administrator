@@ -62,6 +62,15 @@
 			<p class="message">#session.message#</p>
 		</cfif>
 		
+		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
+			<p class="message">The following errors occurred:</p>
+			<ul>
+			<cfloop index="i" from="1" to="#arrayLen(errorFields)#">
+				<li>#errorFields[i][2]#</li>
+			</cfloop>
+			</ul>
+		</cfif>
+		
 		<form name="addDatasource" action="_controller.cfm?action=addDatasource" method="post" onsubmit="javascript:return validate(this);">
 		<table border="0">
 			<tr>
@@ -124,4 +133,5 @@
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "dbDriverRetrievalMessage", false) />
+	<cfset structDelete(session, "errorFields", false) />
 </cfsavecontent>

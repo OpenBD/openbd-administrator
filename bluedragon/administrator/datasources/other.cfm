@@ -51,6 +51,16 @@
 	<cfif structKeyExists(session, "message")>
 	<p style="color:red;font-weight:bold;">#session.message#</p>
 	</cfif>
+
+	<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
+		<p class="message">The following errors occurred:</p>
+		<ul>
+		<cfloop index="i" from="1" to="#arrayLen(errorFields)#">
+			<li>#errorFields[i][2]#</li>
+		</cfloop>
+		</ul>
+	</cfif>
+	
 	<!--- TODO: need explanatory tooltips/mouseovers on all these settings, esp. 'per request connections' which 
 			from my understanding is the opposite of Adobe CF's description 'maintain connections across client requests'--->
 	<!--- TODO: pull default driver and port values from the datasource.cfc --->
@@ -153,4 +163,5 @@
 </cfoutput>
 <cfset structDelete(session, "message", false) />
 <cfset structDelete(session, "datasource", false) />
+<cfset structDelete(session, "errorFields", false) />
 </cfsavecontent>

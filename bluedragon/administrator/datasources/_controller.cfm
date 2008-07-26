@@ -22,16 +22,26 @@
 	<cfswitch expression="#args.action#">
 		<cfcase value="addDatasource">
 			<cfparam name="args.dsn" type="string" default="" />
+
+			<cfset errorFields = arrayNew(2) />
+			<cfset errorFieldsIndex = 1 />
 			
 			<cfif trim(args.dsn) is "">
-				<cfset session.message = "Please enter a datasource name" />
-				<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
+				<cfset errorFields[errorFieldsIndex][1] = "dsn") />
+				<cfset errorFields[errorFieldsIndex][2] = "The value of Datasource Name cannot be blank" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<!--- check to see if the datasource already exists --->
 			<cfif Application.datasource.datasourceExists(args.dsn)>
-				<cfset session.message = "A datasource with that name already exists" />
-				<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
+				<cfset errorFields[errorFieldsIndex][1] = "dsn") />
+				<cfset errorFields[errorFieldsIndex][2] = "A datasource with that name already exists" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
+			
+			<cfif arrayLen(errorFields) gt 0>
+				<cfset session.errorFields = errorFields />
+				<cflocation url="index.cfm" addtoken="false" />
 			<cfelse>
 				<!--- get the defaults for the db driver --->
 				<cfset dbDriverDefaults = Application.datasource.getDriverInfo(datasourceconfigpage = args.datasourceconfigpage) />
@@ -96,23 +106,32 @@
 			<cfparam name="args.perrequestconnections" type="boolean" default="false" />
 			<cfparam name="args.datasourceAction" type="string" default="create" />
 			
-			<cfset errorFields = arrayNew(1) />
+			<cfset errorFields = arrayNew(2) />
+			<cfset errorFieldsIndex = 1 />
 			
 			<!--- validate the form data --->
 			<cfif trim(args.name) is "">
-				<cfset arrayAppend(errorFields, "Datasource Name") />
+				<cfset errorFields[errorFieldsIndex][1] = "name") />
+				<cfset errorFields[errorFieldsIndex][2] = "The value of Datasource Name cannot be blank" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif trim(args.databasename) is "">
-				<cfset arrayAppend(errorFields, "Database Name") />
+				<cfset errorFields[errorFieldsIndex][1] = "databasename") />
+				<cfset errorFields[errorFieldsIndex][2] = "The value of Database Name cannot be blank" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif trim(args.server) is "">
-				<cfset arrayAppend(errorFields, "Database Server") />
+				<cfset errorFields[errorFieldsIndex][1] = "server") />
+				<cfset errorFields[errorFieldsIndex][2] = "The value of Database Server cannot be blank" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif trim(args.port) is "" or not isNumeric(trim(form.port))>
-				<cfset arrayAppend(errorFields, "Server Port") />
+				<cfset errorFields[errorFieldsIndex][1] = "port") />
+				<cfset errorFields[errorFieldsIndex][2] = "The value of Server Port cannot be blank and must be numeric" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif arrayLen(errorFields) neq 0>

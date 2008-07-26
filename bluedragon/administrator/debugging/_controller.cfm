@@ -51,10 +51,17 @@
 		</cfcase>
 		
 		<cfcase value="processDebugOutputForm">
-			<cfset errorFields = arrayNew(1) />
+			<cfset errorFields = arrayNew(2) />
+			<cfset errorFieldsIndex = 1 />
 			
 			<cfif find(".", args.highlight) neq 0 or not isNumeric(args.highlight)>
-				<cfset arrayAppend(errorFields, "highlight") />
+				<cfset errorFields[errorFieldsIndex][1] = "highlight") />
+				<cfset errorFields[errorFieldsIndex][2] = "The value of Highlight Execution Times is not numeric" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
+			
+			<cfif arrayLen(errorFields) gt 0>
+				<cfset session.errorFields = errorFields />
 				<cflocation url="index.cfm" addtoken="false" />
 			</cfif>
 			
@@ -175,10 +182,13 @@
 		</cfcase>
 		
 		<cfcase value="addIPAddress">
-			<cfset errorFields = arrayNew(1) />
+			<cfset errorFields = arrayNew(2) />
+			<cfset errorFieldsIndex = 1 />
 			
 			<cfif REFindNoCase("^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$", args.ipaddress) eq 0>
-				<cfset arrayAppend(errorFields, "ipaddress") />
+				<cfset errorFields[errorFieldsIndex][1] = "ipaddress") />
+				<cfset errorFields[errorFieldsIndex][2] = "The IP Address value does not appear to be valid" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif arrayLen(errorFields) gt 0>
@@ -198,10 +208,13 @@
 		</cfcase>
 		
 		<cfcase value="removeIPAddresses">
-			<cfset errorFields = arrayNew(1) />
+			<cfset errorFields = arrayNew(2) />
+			<cfset errorFieldsIndex = 1 />
 			
 			<cfif trim(args.ipaddresses) is "">
-				<cfset arrayAppend(errorFields, "ipaddresses") />
+				<cfset errorFields[errorFieldsIndex][1] = "ipaddresses") />
+				<cfset errorFields[errorFieldsIndex][2] = "No IP address to remove was selected" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif arrayLen(errorFields) gt 0>

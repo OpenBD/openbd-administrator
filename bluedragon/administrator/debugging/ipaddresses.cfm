@@ -40,6 +40,15 @@
 		<cfif ipAddressMessage is not "">
 			<p class="message">#ipAddressMessage#</p>
 		</cfif>
+
+		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
+			<p class="message">The following errors occurred:</p>
+			<ul>
+			<cfloop index="i" from="1" to="#arrayLen(errorFields)#">
+				<li>#errorFields[i][2]#</li>
+			</cfloop>
+			</ul>
+		</cfif>
 		
 		<form name="addIPAddressForm" action="_controller.cfm?action=addIPAddress" method="post" onsubmit="javascript:return validateAddIPAddressForm(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
@@ -89,4 +98,5 @@
 		</form>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
+	<cfset structDelete(session, "errorFields", false) />
 </cfsavecontent>

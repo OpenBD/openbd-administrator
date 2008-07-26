@@ -13,7 +13,7 @@
 		<script type="text/javascript">
 			function validateDebugOutputForm(f) {
 				if (f.highlight.value != parseInt(f.highlight.value)) {
-					alert("The value for Highlight Execution Times is not numeric");
+					alert("The value of Highlight Execution Times is not numeric");
 					return false;
 				} else {
 					return true;
@@ -29,6 +29,15 @@
 		
 		<cfif debuggingMessage is not "">
 			<p class="message">#debuggingMessage#</p>
+		</cfif>
+
+		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
+			<p class="message">The following errors occurred:</p>
+			<ul>
+			<cfloop index="i" from="1" to="#arrayLen(errorFields)#">
+				<li>#errorFields[i][2]#</li>
+			</cfloop>
+			</ul>
 		</cfif>
 		
 		<form name="debugSettingsForm" action="_controller.cfm?action=processDebugSettingsForm" method="post">
@@ -184,4 +193,5 @@
 		</form>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
+	<cfset structDelete(session, "errorFields", false) />
 </cfsavecontent>

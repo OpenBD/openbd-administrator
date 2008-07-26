@@ -55,7 +55,7 @@
 			<cfset errorFieldsIndex = 1 />
 			
 			<cfif find(".", args.highlight) neq 0 or not isNumeric(args.highlight)>
-				<cfset errorFields[errorFieldsIndex][1] = "highlight") />
+				<cfset errorFields[errorFieldsIndex][1] = "highlight" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Highlight Execution Times is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
@@ -186,7 +186,7 @@
 			<cfset errorFieldsIndex = 1 />
 			
 			<cfif REFindNoCase("^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$", args.ipaddress) eq 0>
-				<cfset errorFields[errorFieldsIndex][1] = "ipaddress") />
+				<cfset errorFields[errorFieldsIndex][1] = "ipaddress" />
 				<cfset errorFields[errorFieldsIndex][2] = "The IP Address value does not appear to be valid" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
@@ -212,7 +212,7 @@
 			<cfset errorFieldsIndex = 1 />
 			
 			<cfif trim(args.ipaddresses) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "ipaddresses") />
+				<cfset errorFields[errorFieldsIndex][1] = "ipaddresses" />
 				<cfset errorFields[errorFieldsIndex][2] = "No IP address to remove was selected" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>

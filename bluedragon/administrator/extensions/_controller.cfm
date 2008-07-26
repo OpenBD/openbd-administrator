@@ -25,7 +25,7 @@
 			<cfset errorFieldsIndex = 1 />
 			
 			<cfif trim(args.directory) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "directory") />
+				<cfset errorFields[errorFieldsIndex][1] = "directory" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Custom Tag Path cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
@@ -91,25 +91,25 @@
 			<cfset errorFieldsIndex = 1 />
 			
 			<cfif trim(args.name) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "name") />
+				<cfset errorFields[errorFieldsIndex][1] = "name" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Tag Name cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif lCase(left(args.name, 4)) is not "cfx_">
-				<cfset errorFields[errorFieldsIndex][1] = "name") />
+				<cfset errorFields[errorFieldsIndex][1] = "name" />
 				<cfset errorFields[errorFieldsIndex][2] = "The Tag Name must begin with cfx_" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif REFindNoCase("^([a-zA-Z0-9_-]+)$", args.name) eq 0>
-				<cfset errorFields[errorFieldsIndex][1] = "name") />
+				<cfset errorFields[errorFieldsIndex][1] = "name" />
 				<cfset errorFields[errorFieldsIndex][2] = "The Tag Name must not include special characters" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif trim(args.class) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "class") />
+				<cfset errorFields[errorFieldsIndex][1] = "class" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Class Name cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
@@ -163,31 +163,31 @@
 			<cfset errorFieldsIndex = 1 />
 			
 			<cfif trim(args.name) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "name") />
+				<cfset errorFields[errorFieldsIndex][1] = "name" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Tag Name cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif lCase(left(args.name, 4)) is not "cfx_">
-				<cfset errorFields[errorFieldsIndex][1] = "name") />
+				<cfset errorFields[errorFieldsIndex][1] = "name" />
 				<cfset errorFields[errorFieldsIndex][2] = "The Tag Name must begin with cfx_" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif REFindNoCase("^([a-zA-Z0-9_-]+)$", args.name) eq 0>
-				<cfset errorFields[errorFieldsIndex][1] = "name") />
+				<cfset errorFields[errorFieldsIndex][1] = "name" />
 				<cfset errorFields[errorFieldsIndex][2] = "The Tag Name must not include special characters" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif trim(args.module) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "module") />
+				<cfset errorFields[errorFieldsIndex][1] = "module" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Module Name cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif trim(args.function) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "function") />
+				<cfset errorFields[errorFieldsIndex][1] = "function" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Function Name cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>

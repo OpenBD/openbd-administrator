@@ -27,14 +27,14 @@
 			<cfset errorFieldsIndex = 1 />
 			
 			<cfif trim(args.dsn) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "dsn") />
+				<cfset errorFields[errorFieldsIndex][1] = "dsn" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Datasource Name cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<!--- check to see if the datasource already exists --->
 			<cfif Application.datasource.datasourceExists(args.dsn)>
-				<cfset errorFields[errorFieldsIndex][1] = "dsn") />
+				<cfset errorFields[errorFieldsIndex][1] = "dsn" />
 				<cfset errorFields[errorFieldsIndex][2] = "A datasource with that name already exists" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
@@ -111,25 +111,25 @@
 			
 			<!--- validate the form data --->
 			<cfif trim(args.name) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "name") />
+				<cfset errorFields[errorFieldsIndex][1] = "name" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Datasource Name cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif trim(args.databasename) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "databasename") />
+				<cfset errorFields[errorFieldsIndex][1] = "databasename" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Database Name cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif trim(args.server) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "server") />
+				<cfset errorFields[errorFieldsIndex][1] = "server" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Database Server cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif trim(args.port) is "" or not isNumeric(trim(form.port))>
-				<cfset errorFields[errorFieldsIndex][1] = "port") />
+				<cfset errorFields[errorFieldsIndex][1] = "port" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Server Port cannot be blank and must be numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>

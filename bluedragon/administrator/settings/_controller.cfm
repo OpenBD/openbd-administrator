@@ -24,31 +24,31 @@
 			<cfset errorFieldsIndex = 1 />
 			
 			<cfif find(".", args.buffersize) neq 0 or not isNumeric(args.buffersize)>
-				<cfset errorFields[errorFieldsIndex][1] = "buffersize") />
+				<cfset errorFields[errorFieldsIndex][1] = "buffersize" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Response Buffer Size is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif trim(args.defaultcharset) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "defaultcharset") />
+				<cfset errorFields[errorFieldsIndex][1] = "defaultcharset" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Default Character Set cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif trim(args.scriptsrc) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "scriptsrc") />
+				<cfset errorFields[errorFieldsIndex][1] = "scriptsrc" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Default CFFORM Script Source Location cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif trim(args.tempdirectory) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "tempdirectory") />
+				<cfset errorFields[errorFieldsIndex][1] = "tempdirectory" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Temp Directory Location cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif trim(args.componentcfc) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "componentcfc") />
+				<cfset errorFields[errorFieldsIndex][1] = "componentcfc" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Base ColdFusion Component (CFC) cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
@@ -99,13 +99,13 @@
 			<cfset errorFieldsIndex = 1 />
 			
 			<cfif trim(args.name) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "name") />
+				<cfset errorFields[errorFieldsIndex][1] = "name" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Logical Path cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif trim(args.directory) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "directory") />
+				<cfset errorFields[errorFieldsIndex][1] = "directory" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Directory Path cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
@@ -160,7 +160,7 @@
 			<cfset errorFieldsIndex = 1 />
 			
 			<cfif find(".", args.maxfiles) neq 0 or not isNumeric(args.maxfiles)>
-				<cfset errorFields[errorFieldsIndex][1] = "maxfiles") />
+				<cfset errorFields[errorFieldsIndex][1] = "maxfiles" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of File Cache Size is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
@@ -187,7 +187,7 @@
 			<cfset errorFieldsIndex = 1 />
 			
 			<cfif find(".", args.cachecount) neq 0 or not isNumeric(args.cachecount)>
-				<cfset errorFields[errorFieldsIndex][1] = "cachecount") />
+				<cfset errorFields[errorFieldsIndex][1] = "cachecount" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Query Cache Size is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
@@ -216,61 +216,61 @@
 			
 			<!--- make sure all the numeric values are numeric --->
 			<cfif find(".", args.appTimeoutDays) neq 0 or not isNumeric(args.appTimeoutDays)>
-				<cfset errorFields[errorFieldsIndex][1] = "appTimeoutDays") />
+				<cfset errorFields[errorFieldsIndex][1] = "appTimeoutDays" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Default Application Timeout Days is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif find(".", args.appTimeoutHours) neq 0 or not isNumeric(args.appTimeoutHours)>
-				<cfset errorFields[errorFieldsIndex][1] = "appTimeoutHours") />
+				<cfset errorFields[errorFieldsIndex][1] = "appTimeoutHours" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Default Application Timeout Hours is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif find(".", args.appTimeoutMinutes) neq 0 or not isNumeric(args.appTimeoutMinutes)>
-				<cfset errorFields[errorFieldsIndex][1] = "appTimeoutMinutes") />
+				<cfset errorFields[errorFieldsIndex][1] = "appTimeoutMinutes" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Default Application Timeout Minutes is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif find(".", args.appTimeoutSeconds) neq 0 or not isNumeric(args.appTimeoutSeconds)>
-				<cfset errorFields[errorFieldsIndex][1] = "appTimeoutSeconds") />
+				<cfset errorFields[errorFieldsIndex][1] = "appTimeoutSeconds" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Default Application Timeout Seconds is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif find(".", args.sessionTimeoutDays) neq 0 or not isNumeric(args.sessionTimeoutDays)>
-				<cfset errorFields[errorFieldsIndex][1] = "sessionTimeoutDays") />
+				<cfset errorFields[errorFieldsIndex][1] = "sessionTimeoutDays" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Default Session Timeout Days is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif find(".", args.sessionTimeoutHours) neq 0 or not isNumeric(args.sessionTimeoutHours)>
-				<cfset errorFields[errorFieldsIndex][1] = "sessionTimeoutHours") />
+				<cfset errorFields[errorFieldsIndex][1] = "sessionTimeoutHours" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Default Session Timeout Hours is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif find(".", args.sessionTimeoutMinutes) neq 0 or not isNumeric(args.sessionTimeoutMinutes)>
-				<cfset errorFields[errorFieldsIndex][1] = "sessionTimeoutMinutes") />
+				<cfset errorFields[errorFieldsIndex][1] = "sessionTimeoutMinutes" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Default Session Timeout Minutes is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif find(".", args.sessionTimeoutSeconds) neq 0 or not isNumeric(args.sessionTimeoutSeconds)>
-				<cfset errorFields[errorFieldsIndex][1] = "sessionTimeoutSeconds") />
+				<cfset errorFields[errorFieldsIndex][1] = "sessionTimeoutSeconds" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Default Session Timeout Seconds is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif find(".", args.clientexpiry) neq 0 or not isNumeric(args.clientexpiry)>
-				<cfset errorFields[errorFieldsIndex][1] = "clientexpiry") />
+				<cfset errorFields[errorFieldsIndex][1] = "clientexpiry" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Client Variable Expiration Days is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif find(".", args.cfchartcachesize) neq 0 or not isNumeric(args.cfchartcachesize)>
-				<cfset errorFields[errorFieldsIndex][1] = "cfchartcachesize") />
+				<cfset errorFields[errorFieldsIndex][1] = "cfchartcachesize" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of CFCHART Cache Size is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
@@ -321,25 +321,25 @@
 			<cfset errorFieldsIndex = 1 />
 			
 			<cfif find(".", args.smtpport) neq 0 or not isNumeric(args.smtpport)>
-				<cfset errorFields[errorFieldsIndex][1] = "smtpport") />
+				<cfset errorFields[errorFieldsIndex][1] = "smtpport" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of SMTP Port is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif find(".", args.timeout) neq 0 or not isNumeric(args.timeout)>
-				<cfset errorFields[errorFieldsIndex][1] = "timeout") />
+				<cfset errorFields[errorFieldsIndex][1] = "timeout" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Timeout is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif find(".", args.threads) neq 0 or not isNumeric(args.threads)>
-				<cfset errorFields[errorFieldsIndex][1] = "threads") />
+				<cfset errorFields[errorFieldsIndex][1] = "threads" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Mail Threads is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
 			<cfif find(".", args.interval) neq 0 or not isNumeric(args.interval)>
-				<cfset errorFields[errorFieldsIndex][1] = "interval") />
+				<cfset errorFields[errorFieldsIndex][1] = "interval" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Spool Interval is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
@@ -385,7 +385,7 @@
 			<cfset errorFieldsIndex = 1 />
 			
 			<cfif trim(args.fontDir) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "fontDir") />
+				<cfset errorFields[errorFieldsIndex][1] = "fontDir" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of Font Directory cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>

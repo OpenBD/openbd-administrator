@@ -86,7 +86,6 @@
 			<td>User Name</td>
 			<td><input name="username" type="text" size="30" maxlength="50" value="#dsinfo.username#" /></td>
 		</tr>
-		<!--- TODO: need to figure out how to handle the password once things are encrypted --->
 		<tr>
 			<td>Password</td>
 			<td><input name="password" type="password" size="30" maxlength="16" value="#dsinfo.password#" /></td>

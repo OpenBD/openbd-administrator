@@ -63,7 +63,6 @@
 	
 	<!--- TODO: need explanatory tooltips/mouseovers on all these settings, esp. 'per request connections' which 
 			from my understanding is the opposite of Adobe CF's description 'maintain connections across client requests'--->
-	<!--- TODO: pull default driver and port values from the datasource.cfc --->
 	<form name="datasourceForm" action="_controller.cfm?action=processDatasourceForm" method="post" onsubmit="return validate(this);">
 	<table border="0">
 		<tr>
@@ -86,7 +85,6 @@
 			<td>User Name</td>
 			<td><input name="username" type="text" size="30" maxlength="50" value="#dsinfo.username#" /></td>
 		</tr>
-		<!--- TODO: need to figure out how to handle the password once things are encrypted --->
 		<tr>
 			<td>Password</td>
 			<td><input name="password" type="password" size="30" maxlength="16" value="#dsinfo.password#" /></td>

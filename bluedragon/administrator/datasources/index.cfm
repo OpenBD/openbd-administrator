@@ -11,19 +11,31 @@
 		</cfcatch>
 	</cftry>
 	
-	<cftry>
+	<!--- <cftry> --->
 		<cfset datasources = Application.datasource.getDatasources() />
 		
-		<!--- add the database driver description to the array of datasources --->
+		<!--- add the database driver description and some other placeholder info to the array of datasources --->
 		<cfloop index="i" from="1" to="#arrayLen(datasources)#">
 			<cfset datasources[i].driverdescription = Application.datasource.getDriverInfo(drivername = datasources[i].drivername).driverdescription />
 		</cfloop>
 		
-		<cfcatch type="any">
+		<!--- if session.datasourceStatus exists, either one or all datasources are being verified so add that info to the 
+				datasources --->
+		<cfif structKeyExists(session, "datasourceStatus")>
+			<cfloop index="i" from="1" to="#arrayLen(session.datasourceStatus)#">
+				<cfloop index="j" from="1" to="#arrayLen(datasources)#">
+					<cfif session.datasourceStatus[i].name is datasources[j].name>
+						<cfset datasources[j].verified = session.datasourceStatus[i].verified />
+						<cfset datasources[j].message = session.datasourceStatus[i].message />
+					</cfif>
+				</cfloop>
+			</cfloop>
+		</cfif>
+		
+		<!--- <cfcatch type="any">
 			<cfset datasourceRetrievalMessage = CFCATCH.Message />
 		</cfcatch>
-	</cftry>
-	
+	</cftry> --->
 </cfsilent>
 <cfsavecontent variable="request.content">
 	<cfoutput>
@@ -53,6 +65,10 @@
 				if(confirm("Are you sure you want to reset the database driver list to the defaults?")) {
 					location.replace("_controller.cfm?action=resetDatabaseDrivers");
 				}
+			}
+			
+			function verifyAllDatasources() {
+				location.replace("_controller.cfm?action=verifyDatasource")
 			}
 		</script>
 		
@@ -97,7 +113,7 @@
 		</form>
 		
 		<hr noshade="true" />
-		<!--- TODO: put setting to auto-configure ODBC datasources here? assuming this would only be applicable to windows --->
+		<!--- TODO: put setting to auto-configure ODBC datasources here? this would only be applicable to windows --->
 		<h3>Datasources</h3>
 		
 		<cfif datasourceRetrievalMessage is not ""><p class="message">#datasourceRetrievalMessage#</p></cfif>
@@ -116,7 +132,7 @@
 			</tr>
 		<cfloop index="i" from="1" to="#arrayLen(datasources)#">
 			<!--- TODO: need to sort alphabetically --->
-			<tr bgcolor="##ffffff">
+			<tr <cfif not structKeyExists(datasources[i], "verified")>bgcolor="##ffffff"<cfelseif datasources[i].verified>bgcolor="##ccffcc"<cfelseif not datasources[i].verified>bgcolor="##ffff99"</cfif>>
 				<td width="100">
 					<a href="_controller.cfm?action=editDatasource&dsn=#datasources[i].name#" alt="Edit Datasource" title="Edit Datasource"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
 					<a href="_controller.cfm?action=verifyDatasource&dsn=#datasources[i].name#" alt="Verify Datasource" title="Verify Datasource"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
@@ -125,13 +141,30 @@
 				<td>#datasources[i].name#</td>
 				<td><cfif structKeyExists(datasources[i], "description")>#datasources[i].description#<cfelse>&nbsp;</cfif></td>
 				<td>#datasources[i].driverdescription#</td>
-				<td>&nbsp;</td>
+				<td width="200">
+					<cfif structKeyExists(datasources[i], "verified")>
+						<cfif datasources[i].verified>
+							<img src="../images/tick.png" width="16" height="16" alt="Datasource Verified" title="Datasource Verified" />
+						<cfelseif not datasources[i].verified>
+							<img src="../images/exclamation.png" width="16" height="16" alt="Datasource Verification Failed" title="Datasource Verification Failed" /><br />
+							#datasources[i].message#
+						</cfif>
+					<cfelse>
+						&nbsp;
+					</cfif>
+				</td>
 			</tr>
 		</cfloop>
+			<tr bgcolor="##dedede">
+				<td colspan="5">
+					<input type="button" name="verifyAll" value="Verify All Datasources" onclick="javascript:verifyAllDatasources()" />
+				</td>
+			</tr>
 		</table>
 		</cfif>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "dbDriverRetrievalMessage", false) />
 	<cfset structDelete(session, "errorFields", false) />
+	<cfset structDelete(session, "datasourceStatus", false) />
 </cfsavecontent>

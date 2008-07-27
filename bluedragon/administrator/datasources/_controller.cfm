@@ -17,6 +17,7 @@
 		structDelete(session, "message", false);
 		structDelete(session, "datasource", false);
 		structDelete(session, "errorFields", false);
+		structDelete(session, "datasourceStatus", false);
 	</cfscript>
 	
 	<cfswitch expression="#args.action#">
@@ -106,6 +107,8 @@
 			<cfparam name="args.sqlstoredprocedures" type="boolean" default="false" />
 			<cfparam name="args.perrequestconnections" type="boolean" default="false" />
 			<cfparam name="args.datasourceAction" type="string" default="create" />
+			<cfparam name="args.hoststring" type="string" default="" />
+			<cfparam name="args.dbtype" type="string" default="" />
 			
 			<cfset errorFields = arrayNew(2) />
 			<cfset errorFieldsIndex = 1 />
@@ -117,22 +120,32 @@
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
-			<cfif trim(args.databasename) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "databasename" />
-				<cfset errorFields[errorFieldsIndex][2] = "The value of Database Name cannot be blank" />
-				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			<cfif args.dbtype is "">
+				<cfif trim(args.databasename) is "">
+					<cfset errorFields[errorFieldsIndex][1] = "databasename" />
+					<cfset errorFields[errorFieldsIndex][2] = "The value of Database Name cannot be blank" />
+					<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+				</cfif>
+				
+				<cfif trim(args.server) is "">
+					<cfset errorFields[errorFieldsIndex][1] = "server" />
+					<cfset errorFields[errorFieldsIndex][2] = "The value of Database Server cannot be blank" />
+					<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+				</cfif>
+				
+				<cfif trim(args.port) is "" or not isNumeric(trim(form.port))>
+					<cfset errorFields[errorFieldsIndex][1] = "port" />
+					<cfset errorFields[errorFieldsIndex][2] = "The value of Server Port cannot be blank and must be numeric" />
+					<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+				</cfif>
 			</cfif>
 			
-			<cfif trim(args.server) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "server" />
-				<cfset errorFields[errorFieldsIndex][2] = "The value of Database Server cannot be blank" />
-				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
-			</cfif>
-			
-			<cfif trim(args.port) is "" or not isNumeric(trim(form.port))>
-				<cfset errorFields[errorFieldsIndex][1] = "port" />
-				<cfset errorFields[errorFieldsIndex][2] = "The value of Server Port cannot be blank and must be numeric" />
-				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			<cfif args.dbtype is "other">
+				<cfif trim(args.hoststring) is "">
+					<cfset errorFields[errorFieldsIndex][1] = "hoststring" />
+					<cfset errorFields[errorFieldsIndex][2] = "The value of JDBC URL cannot be blank" />
+					<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+				</cfif>
 			</cfif>
 			
 			<cfif arrayLen(errorFields) neq 0>
@@ -149,14 +162,33 @@
 					<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
 				<cfelse>
 					<cftry>
-						<cfset Application.datasource.setDatasource(args.name, args.databasename, args.server, args.username, 
-																		args.password, args.port, args.description, 
-																		args.initstring, args.connectiontimeout, 
-																		args.connectionretries, args.logintimeout, 
-																		args.maxconnections, args.perrequestconnections, 
-																		args.sqlselect, args.sqlinsert, args.sqlupdate, args.sqldelete, 
-																		args.sqlstoredprocedures, args.drivername, 
-																		args.datasourceAction, args.existingDatasourceName) />
+						<cfswitch expression="#args.dbtype#">
+							<!--- known jdbc driver types --->
+							<cfcase value="">
+								<cfset Application.datasource.setDatasource(args.name, args.databasename, args.server, 
+																				args.port, args.username, args.password, 
+																				"", args.description, 
+																				args.initstring, args.connectiontimeout, 
+																				args.connectionretries, args.logintimeout, 
+																				args.maxconnections, args.perrequestconnections, 
+																				args.sqlselect, args.sqlinsert, args.sqlupdate, args.sqldelete, 
+																				args.sqlstoredprocedures, args.drivername, 
+																				args.datasourceAction, args.existingDatasourceName) />
+							</cfcase>
+							
+							<!--- 'other' jdbc driver --->
+							<cfcase value="other">
+								<cfset Application.datasource.setDatasource(args.name, "", "", 0, args.username, 
+																				args.password, args.hoststring, args.description, 
+																				args.initstring, args.connectiontimeout, 
+																				args.connectionretries, args.logintimeout, 
+																				args.maxconnections, args.perrequestconnections, 
+																				args.sqlselect, args.sqlinsert, args.sqlupdate, args.sqldelete, 
+																				args.sqlstoredprocedures, args.drivername, 
+																				args.datasourceAction, args.existingDatasourceName, 
+																				args.verificationquery) />
+							</cfcase>
+						</cfswitch>
 						<cfcatch type="bluedragon.adminapi.datasource">
 							<cfset session.message = CFCATCH.Message />
 							<cflocation url="index.cfm" addtoken="false" />
@@ -169,10 +201,43 @@
 			</cfif>
 		</cfcase>
 		
-		<!--- TODO: implement verifyDatasource --->
 		<cfcase value="verifyDatasource">
+			<cfparam name="args.dsn" type="string" default="" />
+			<cfparam name="datasources" type="array" default="#arrayNew(1)#" />
+			
+			<cfset session.datasourceStatus = ArrayNew(1)>
+			
+			<!--- is args.dsn is not "" then we're verifying a single datasource; otherwise verify all --->
+			<cfif args.dsn is not "">
+				<cfset datasources = Application.datasource.getDatasources(args.dsn) />
+			<cfelse>
+				<cfset datasources = Application.datasource.getDatasources() />
+			</cfif>
+			
+			<cfloop index="i" from="1" to="#arrayLen(datasources)#">
+				<cfset session.datasourceStatus[i].name = datasources[i].name />
+				
+				<cftry>
+					<cfset verified = Application.datasource.verifyDatasource(datasources[i].name) />
+					<cfcatch type="bluedragon.adminapi.datasource">
+						<cfset session.datasourceStatus[i].verified = false />
+						<cfset session.datasourceStatus[i].message = CFCATCH.Message />
+						<cflocation url="index.cfm" addtoken="false" />
+					</cfcatch>
+				</cftry>
+	
+				<cfif verified>
+					<cfset session.datasourceStatus[i].verified = true />
+					<cfset session.datasourceStatus[i].message = "" />
+				<cfelse>
+					<cfset session.datasourceStatus[i].verified = false />
+					<cfset session.datasourceStatus[i].message = "" />
+				</cfif>
+			</cfloop>
+			
+			<cflocation url="index.cfm" addtoken="false" />
 		</cfcase>
-
+		
 		<cfcase value="removeDatasource">
 			<!--- make sure the datasource exists --->
 			<cfif not Application.datasource.datasourceExists(args.dsn)>

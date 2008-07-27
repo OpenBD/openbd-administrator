@@ -32,18 +32,21 @@
 			if (f.name.value.length == 0) {
 				alert("Please enter the datasource name");
 				ok = false;
-			} else if (f.hoststring.value.length == 0) {
-				alert("Please enter the JDBC URL");
+			} else if (f.databasename.value.length == 0) {
+				alert("Please enter the database name");
 				ok = false;
-			} else if (f.drivername.value.length == 0) {
-				alert("Please enter the JDBC driver name");
+			} else if (f.server.value.length == 0) {
+				alert("Please enter the database server");
+				ok = false;
+			} else if (f.port.value.length == 0) {
+				alert("Please enter the database server port");
 				ok = false;
 			}
 			
 			return ok;
 		}
 	</script>
-	<h3>Configure Datasource - Other</h3>
+	<h3>Configure Datasource - PostgreSQL</h3>
 	<br />
 	<cfif structKeyExists(session, "message")>
 	<p style="color:red;font-weight:bold;">#session.message#</p>
@@ -60,6 +63,7 @@
 	
 	<!--- TODO: need explanatory tooltips/mouseovers on all these settings, esp. 'per request connections' which 
 			from my understanding is the opposite of Adobe CF's description 'maintain connections across client requests'--->
+	<!--- TODO: pull default driver and port values from the datasource.cfc --->
 	<form name="datasourceForm" action="_controller.cfm?action=processDatasourceForm" method="post" onsubmit="return validate(this);">
 	<table border="0">
 		<tr>
@@ -67,14 +71,16 @@
 			<td><input name="name" type="text" size="30" maxlength="50" value="#dsinfo.name#" /></td>
 		</tr>
 		<tr>
-			<td valign="top">JDBC URL</td>
-			<td valign="top">
-				<textarea name="hoststring" cols="40" rows="4">#dsinfo.hoststring#</textarea>
-			</td>
+			<td>Database Name</td>
+			<td><input name="databasename" type="text" size="30" maxlength="250" value="#dsinfo.databasename#" /></td>
 		</tr>
 		<tr>
-			<td>Driver Class</td>
-			<td><input name="drivername" type="text" size="30" maxlength="250" value="#dsinfo.drivername#" /></td>
+			<td>Database Server</td>
+			<td><input name="server" type="text" size="30" maxlength="250" value="#dsinfo.server#" /></td>
+		</tr>
+		<tr>
+			<td>Server Port</td>
+			<td><input name="port" type="text" size="6" maxlength="5" value="#dsinfo.port#" /></td>
 		</tr>
 		<tr>
 			<td>User Name</td>
@@ -88,12 +94,6 @@
 			<td valign="top">Description</td>
 			<td valign="top">
 				<textarea name="description" rows="4" cols="40"><cfif structKeyExists(dsinfo, "description")>#dsinfo.description#</cfif></textarea>
-			</td>
-		</tr>
-		<tr>
-			<td valign="top">Verification Query</td>
-			<td valign="top">
-				<textarea name="verificationquery" rows="4" cols="40"><cfif structKeyExists(dsinfo, "verificationquery")>#dsinfo.verificationquery#</cfif></textarea>
 			</td>
 		</tr>
 		<tr>
@@ -158,7 +158,6 @@
 		<input type="hidden" name="drivername" value="#dsinfo.drivername#" />
 		<input type="hidden" name="datasourceAction" value="#url.action#" />
 		<input type="hidden" name="existingDatasourceName" value="#dsinfo.name#" />
-		<input type="hidden" name="dbtype" value="other" />
 	</form>
 </cfoutput>
 <cfset structDelete(session, "message", false) />

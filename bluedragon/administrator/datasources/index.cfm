@@ -21,7 +21,7 @@
 					<cfset datasources[i].driverdescription = Application.datasource.getDriverInfo(drivername = datasources[i].drivername).driverdescription />
 					<cfcatch type="any">
 						<!--- assume there's a drivername in one of the datasource nodes that we can't pull data on --->
-						<cfset datasources[i].driverdescription = >
+						<cfset datasources[i].driverdescription = "" />
 					</cfcatch>
 				</cftry>
 			<cfelse>

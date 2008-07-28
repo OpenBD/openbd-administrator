@@ -14,9 +14,19 @@
 	<!--- <cftry> --->
 		<cfset datasources = Application.datasource.getDatasources() />
 		
-		<!--- add the database driver description and some other placeholder info to the array of datasources --->
+		<!--- add the database driver description (if available) and some other placeholder info to the array of datasources --->
 		<cfloop index="i" from="1" to="#arrayLen(datasources)#">
-			<cfset datasources[i].driverdescription = Application.datasource.getDriverInfo(drivername = datasources[i].drivername).driverdescription />
+			<cfif structKeyExists(datasources[i], "drivername")>
+				<cftry>
+					<cfset datasources[i].driverdescription = Application.datasource.getDriverInfo(drivername = datasources[i].drivername).driverdescription />
+					<cfcatch type="any">
+						<!--- assume there's a drivername in one of the datasource nodes that we can't pull data on --->
+						<cfset datasources[i].driverdescription = >
+					</cfcatch>
+				</cftry>
+			<cfelse>
+				<cfset datasources[i].driverdescription = "" />
+			</cfif>
 		</cfloop>
 		
 		<!--- if session.datasourceStatus exists, either one or all datasources are being verified so add that info to the 

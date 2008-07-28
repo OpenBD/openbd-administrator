@@ -218,21 +218,13 @@
 				<cfset session.datasourceStatus[i].name = datasources[i].name />
 				
 				<cftry>
-					<cfset verified = Application.datasource.verifyDatasource(datasources[i].name) />
+					<cfset session.datasourceStatus[i].verified = Application.datasource.verifyDatasource(datasources[i].name) />
+					<cfset session.datasourceStatus[i].message = "" />
 					<cfcatch type="bluedragon.adminapi.datasource">
 						<cfset session.datasourceStatus[i].verified = false />
 						<cfset session.datasourceStatus[i].message = CFCATCH.Message />
-						<cflocation url="index.cfm" addtoken="false" />
 					</cfcatch>
 				</cftry>
-	
-				<cfif verified>
-					<cfset session.datasourceStatus[i].verified = true />
-					<cfset session.datasourceStatus[i].message = "" />
-				<cfelse>
-					<cfset session.datasourceStatus[i].verified = false />
-					<cfset session.datasourceStatus[i].message = "" />
-				</cfif>
 			</cfloop>
 			
 			<cflocation url="index.cfm" addtoken="false" />

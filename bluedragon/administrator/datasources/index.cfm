@@ -11,7 +11,7 @@
 		</cfcatch>
 	</cftry>
 	
-	<!--- <cftry> --->
+	<cftry>
 		<cfset datasources = Application.datasource.getDatasources() />
 		
 		<!--- add the database driver description (if available) and some other placeholder info to the array of datasources --->
@@ -42,10 +42,10 @@
 			</cfloop>
 		</cfif>
 		
-		<!--- <cfcatch type="any">
+		<cfcatch type="any">
 			<cfset datasourceRetrievalMessage = CFCATCH.Message />
 		</cfcatch>
-	</cftry> --->
+	</cftry>
 </cfsilent>
 <cfsavecontent variable="request.content">
 	<cfoutput>

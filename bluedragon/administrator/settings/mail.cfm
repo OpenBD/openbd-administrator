@@ -3,6 +3,7 @@
 	<cfparam name="mailAvailable" type="boolean" default="true" />
 	<cfparam name="spoolCount" type="numeric" default="-1" />
 	<cfparam name="undeliveredCount" type="numeric" default="-1" />
+	<cfparam name="mailServerAction" type="string" default="Add" />
 	
 	<cftry>
 		<cfset mailSettings = Application.mail.getMailSettings() />
@@ -55,7 +56,7 @@
 			}
 		</script>
 		
-		<h3>Mail Settings</h3>
+		<h3>#mailServerAction# Mail Server</h3>
 		
 		<cfif structKeyExists(session, "message") and session.message is not "">
 			<p class="message">#session.message#</p>
@@ -101,6 +102,18 @@
 				<td bgcolor="##f0f0f0" align="right">SMTP Port</td>
 				<td bgcolor="##ffffff">
 					<input type="text" name="smtpport" size="3" maxlength="5" value="#mailSettings.smtpport#" />
+				</td>
+			</tr>
+			<tr>
+				<td bgcolor="##f0f0f0" align="right">User Name</td>
+				<td bgcolor="##ffffff">
+					<input type="text" name="smtpserver" size="40" value="##" />
+				</td>
+			</tr>
+			<tr>
+				<td bgcolor="##f0f0f0" align="right">Password</td>
+				<td bgcolor="##ffffff">
+					<input type="text" name="smtpserver" size="40" value="#primarySMTPServer#" />
 				</td>
 			</tr>
 			<tr>

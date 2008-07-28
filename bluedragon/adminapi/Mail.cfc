@@ -47,6 +47,55 @@
 		
 		<cfreturn localConfig.cfmail />
 	</cffunction>
+	
+	<cffunction name="getMailServers" access="public" output="false" returntype="array" 
+			hint="Returns specific mail server information or all the registered mail servers">
+		<cfargument name="mailServer" type="string" required="false" default="" hint="The mail server to retrieve" />
+		
+		<cfset var mailServers = arrayNew(1) />
+		<cfset var mailServerList = "" />
+		<cfset var theMailServer = "" />
+		<cfset var tempMailServer = structNew() />
+		<cfset var localConfig = getConfig() />
+		<cfset var doSetConfig = false />
+
+		<!--- some of the mail settings may not exist --->
+		<cfif not structKeyExists(localConfig.cfmail, "threads")>
+			<cfset localConfig.cfmail.threads = "1" />
+			<cfset doSetConfig = true />
+		</cfif>
+		
+		<cfif not structKeyExists(localConfig.cfmail, "charset")>
+			<cfset localConfig.cfmail.charset = getDefaultCharset() />
+			<cfset doSetConfig = true />
+		</cfif>
+		
+		<cfif not structKeyExists(localConfig.cfmail, "timeout")>
+			<cfset localConfig.cfmail.timeout = "60" />
+			<cfset doSetConfig = true />
+		</cfif>
+		
+		<cfif doSetConfig>
+			<cfset setConfig(localConfig) />
+		</cfif>
+		
+		<cfset mailServerList = localConfig.cfmail.smtpserver />
+		
+		<cfif arguments.mailServer is not "">
+			<cfloop list="#mailServerList#" index="theMailServer">
+				<cfif findNoCase(arguments.mailServer, theMailServer) gt 0>
+					<!--- if the server info has been formatted using port, username, and password, need to handle it differently --->
+					<cfif find("@", theMailServer) gt 0>
+						<cfset tempMailServer.username = listFirst(listFirst(theMailServer, "@"), ":") />
+						<cfset tempMailServer.password = listLast(listFirst(theMailServer, "@"), ":") />
+						<cfset tempMailServer.smtpserver = listFirst(listLast(theMailServer, "@"), ":") />
+						<cfset tempMailServer.port = listLast(listLast(theMailServer, "@")) />
+						<cfset arrayAppend(mailServers, tempMailServer) />
+					</cfif>
+				</cfif>
+			</cfloop>
+		</cfif>
+	</cffunction>
 
 	<cffunction name="setMailSettings" access="public" output="false" returntype="void" hint="Saves mail settings">
 		<cfargument name="smtpserver" type="string" required="true" 

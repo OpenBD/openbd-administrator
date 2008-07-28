@@ -121,7 +121,6 @@
 		<cfif arrayLen(datasources) eq 0>
 			<p><strong><em>No dataources configured</em></strong></p>
 		<cfelse>
-		
 		<table border="0" width="100%" cellpadding="2" cellspacing="1" bgcolor="##999999">
 			<tr bgcolor="##dedede">
 				<td width="100"><strong>Actions</strong></td>

@@ -316,17 +316,47 @@
 		</cfcase>
 		
 		<!--- MAIL --->
-		<cfcase value="processMailForm">
+		<cfcase value="processMailServerForm">
 			<cfparam name="args.testConnection" type="boolean" default="false" />
+			<cfparam name="args.isPrimary" type="boolean" default="false" />
 			
 			<cfset errorFields = arrayNew(2) />
 			<cfset errorFieldsIndex = 1 />
+			
+			<cfif trim(args.smtpserver) is "">
+				<cfset errorFields[errorFieldsIndex][1] = "smtpserver" />
+				<cfset errorFields[errorFieldsIndex][2] = "The value of SMTP Server cannot be blank" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
 			
 			<cfif find(".", args.smtpport) neq 0 or not isNumeric(args.smtpport)>
 				<cfset errorFields[errorFieldsIndex][1] = "smtpport" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of SMTP Port is not numeric" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
+			
+			<cfif arrayLen(errorFields) gt 0>
+				<cfset session.errorFields = errorFields />
+				<cflocation url="mail.cfm" addtoken="false" />
+			</cfif>
+			
+			<cftry>
+				<cfset Application.mail.setMailServer(args.smtpserver, args.smtpport, 
+														args.username, args.password, 
+														args.isPrimary, args.testConnection) />
+				<cfcatch type="bluedragon.adminapi.mail">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="mail.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cfset session.message = "The mail server was saved successfully." />
+			<cflocation url="mail.cfm" addtoken="false" />
+		</cfcase>
+		
+		<cfcase value="processMailSettingsForm">
+			<cfset errorFields = arrayNew(2) />
+			<cfset errorFieldsIndex = 1 />
 			
 			<cfif find(".", args.timeout) neq 0 or not isNumeric(args.timeout)>
 				<cfset errorFields[errorFieldsIndex][1] = "timeout" />
@@ -351,14 +381,9 @@
 				<cflocation url="mail.cfm" addtoken="false" />
 			</cfif>
 			
-			<cfif args.backupsmtpservers is not "">
-				<cfset args.smtpserver = args.smtpserver & "," & args.backupsmtpservers />
-			</cfif>
-			
 			<cftry>
-				<cfset Application.mail.setMailSettings(args.smtpserver, args.smtpport, args.timeout, 
-															args.threads, args.interval, args.charset, 
-															args.testConnection) />
+				<cfset Application.mail.setMailSettings(args.timeout, args.threads, args.interval, 
+														args.charset) />
 				<cfcatch type="bluedragon.adminapi.mail">
 					<cfset session.message = CFCATCH.Message />
 					<cflocation url="mail.cfm" addtoken="false" />
@@ -366,6 +391,19 @@
 			</cftry>
 			
 			<cfset session.message = "The mail settings were saved successfully." />
+			<cflocation url="mail.cfm" addtoken="false" />
+		</cfcase>
+		
+		<cfcase value="removeMailServer">
+			<cftry>
+				<cfset Application.mail.deleteMailServer(args.mailServer) />
+				<cfcatch type="bluedragon.adminapi.mail">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="mail.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cfset session.message = "The mail server was removed successfully." />
 			<cflocation url="mail.cfm" addtoken="false" />
 		</cfcase>
 		

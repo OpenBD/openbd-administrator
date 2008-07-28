@@ -7,6 +7,7 @@
 	
 	<cftry>
 		<cfset mailSettings = Application.mail.getMailSettings() />
+		<cfset mailServers = Application.mail.getMailServers() />
 		<cfset charsets = Application.mail.getAvailableCharsets() />
 		
 		<cfcatch type="bluedragon.adminapi.mail">
@@ -14,12 +15,15 @@
 		</cfcatch>
 	</cftry>
 	
-	<cfif listLen(mailSettings.smtpserver, ",") gt 1>
-		<cfset primarySMTPServer = listFirst(mailSettings.smtpserver) />
-		<cfset backupSMTPServers = listRest(mailSettings.smtpserver) />
+	<cfif structKeyExists(session, "mailServer")>
+		<cfset mailServer = session.mailServer />
+		<cfset mailServerAction = "Update" />
 	<cfelse>
-		<cfset primarySMTPServer = mailSettings.smtpserver />
-		<cfset backupSMTPServers = "" />
+		<cfset mailServer = structNew() />
+		<cfset mailServer.smtpserver = "" />
+		<cfset mailServer.smtpport = 25 />
+		<cfset mailServer.username = "" />
+		<cfset mailServer.password = "" />
 	</cfif>
 	
 	<cfset spoolCount = Application.mail.getSpooledMailCount() />
@@ -37,11 +41,20 @@
 <cfsavecontent variable="request.content">
 	<cfoutput>
 		<script type="text/javascript">
-			function validate(f) {
-				if (f.smtpport.value != parseInt(f.smtpport.value)) {
+			function validateMailServerForm(f) {
+				if (f.smtpserver.value.length == 0) {
+					alert("Please enter an SMTP server");
+					return false;
+				} else if (f.smtpport.value != parseInt(f.smtpport.value)) {
 					alert("The value of SMTP Port is not numeric");
 					return false;
-				} else if (f.timeout.value != parseInt(f.timeout.value)) {
+				} else {
+					return true;
+				}
+			}
+			
+			function validateMailSettingsForm(f) {
+				if (f.timeout.value != parseInt(f.timeout.value)) {
 					alert("The value of Timeout is not numeric");
 					return false;
 				} else if (f.threads.value != parseInt(f.threads.value)) {
@@ -54,13 +67,19 @@
 					return true;
 				}
 			}
+			
+			function removeMailServer(mailServer) {
+				if(confirm("Are you sure you want to remove this mail server?")) {
+					location.replace("_controller.cfm?action=removeMailServer&mailServer=" + mailServer);
+				}
+			}
 		</script>
-		
-		<h3>#mailServerAction# Mail Server</h3>
 		
 		<cfif structKeyExists(session, "message") and session.message is not "">
 			<p class="message">#session.message#</p>
 		</cfif>
+		
+		<h3>#mailServerAction# Mail Server</h3>
 		
 		<cfif mailMessage is not "">
 			<p class="message">#mailMessage#</p>
@@ -90,32 +109,57 @@
 			</ul>
 		</cfif>
 		
-		<form name="mailForm" action="_controller.cfm?action=processMailForm" method="post" onsubmit="javascript:return validate(this);">
+		<form name="mailServerForm" action="_controller.cfm?action=processMailServerForm" method="post" onsubmit="javascript:return validateMailServerForm(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr>
 				<td bgcolor="##f0f0f0" align="right">SMTP Server</td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="smtpserver" size="40" value="#primarySMTPServer#" />
+					<input type="text" name="smtpserver" size="40" value="#mailServer.smtpserver#" />
 				</td>
 			</tr>
 			<tr>
 				<td bgcolor="##f0f0f0" align="right">SMTP Port</td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="smtpport" size="3" maxlength="5" value="#mailSettings.smtpport#" />
+					<input type="text" name="smtpport" size="3" maxlength="5" value="#mailServer.smtpport#" />
 				</td>
 			</tr>
 			<tr>
 				<td bgcolor="##f0f0f0" align="right">User Name</td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="smtpserver" size="40" value="##" />
+					<input type="text" name="username" size="40" value="#mailServer.username#" />
 				</td>
 			</tr>
 			<tr>
 				<td bgcolor="##f0f0f0" align="right">Password</td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="smtpserver" size="40" value="#primarySMTPServer#" />
+					<input type="password" name="password" size="40" value="#mailServer.password#" />
 				</td>
 			</tr>
+			<tr>
+				<td bgcolor="##f0f0f0" align="right">Primary</td>
+				<td bgcolor="##ffffff">
+					<input type="checkbox" name="isPrimary" value="true" />
+				</td>
+			</tr>
+			<tr>
+				<td bgcolor="##f0f0f0" align="right">Test Connection</td>
+				<td bgcolor="##ffffff">
+					<input type="checkbox" name="testConnection" value="true" />
+				</td>
+			</tr>
+			<tr bgcolor="##dedede">
+				<td>&nbsp;</td>
+				<td><input type="submit" name="submit" value="Submit" /></td>
+			</tr>
+		</table>
+		</form>
+		
+		<h3>Global Mail Settings</h3>
+		
+		<p>These settings apply to all registered mail servers.</p>
+
+		<form name="mailSettingsForm" action="_controller.cfm?action=processMailSettingsForm" method="post" onsubmit="javascript:return validateMailSettingsForm(this);">
+		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr>
 				<td bgcolor="##f0f0f0" align="right">Timeout</td>
 				<td bgcolor="##ffffff">
@@ -144,24 +188,67 @@
 					</select>
 				</td>
 			</tr>
-			<tr>
-				<td bgcolor="##f0f0f0" align="right">Backup SMTP Server(s)</td>
-				<td bgcolor="##ffffff">
-					<input type="text" name="backupsmtpservers" size="40" value="#backupSMTPServers#" />
-				</td>
-			</tr>
-			<tr>
-				<td bgcolor="##f0f0f0" align="right">Test Mail Server Connection(s)</td>
-				<td bgcolor="##ffffff">
-					<input type="checkbox" name="testConnection" value="true" />
-				</td>
-			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
 				<td><input type="submit" name="submit" value="Submit" /></td>
 			</tr>
 		</table>
 		</form>
+		
+		<h3>Mail Servers</h3>
+		
+		<cfif arrayLen(mailServers) eq 0>
+			<p><strong><em>No mail servers configured</em></strong></p>
+		<cfelse>
+		<table border="0" width="700" cellpadding="2" cellspacing="1" bgcolor="##999999">
+			<tr bgcolor="##dedede">
+				<td width="100"><strong>Actions</strong></td>
+				<td><strong>Mail Server</strong></td>
+				<td><strong>Port</strong></td>
+				<td><strong>Using Login</strong></td>
+				<td><strong>Status</strong></td>
+			</tr>
+		<cfloop index="i" from="1" to="#arrayLen(mailServers)#">
+			<tr <cfif not structKeyExists(mailServers[i], "verified")>bgcolor="##ffffff"<cfelseif mailServers[i].verified>bgcolor="##ccffcc"<cfelseif not mailServers[i].verified>bgcolor="##ffff99"</cfif>>
+				<td width="100">
+					<a href="_controller.cfm?action=editMailServer&mailServer=#mailServers[i].smtpserver#" alt="Edit Mail Server" title="Edit Mail Server"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
+					<a href="_controller.cfm?action=verifyMailServer&mailServer=#mailServers[i].smtpserver#" alt="Verify Mail Server" title="Verify Mail Server"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
+					<a href="javascript:void(0);" onclick="javascript:removeMailServer('#mailServers[i].smtpserver#');" alt="Remove Mail Server" title="Remove Mail Server"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
+				</td>
+				<td>
+					<cfif i eq 1>
+						<img src="../images/asterisk_yellow.png" height="16" width="16" alt="Primary Mail Server" title="Primary Mail Server" />
+					</cfif>
+					#mailServers[i].smtpserver#
+				</td>
+				<td>#mailServers[i].smtpport#</td>
+				<td>
+					<cfif mailServers[i].username is not "">
+						Yes
+					<cfelse>
+						No
+					</cfif>
+				</td>
+				<td width="200">
+					<cfif structKeyExists(mailServers[i], "verified")>
+						<cfif mailServers[i].verified>
+							<img src="../images/tick.png" width="16" height="16" alt="Mail Server Verified" title="Mail Server Verified" />
+						<cfelseif not mailServers[i].verified>
+							<img src="../images/exclamation.png" width="16" height="16" alt="Mail Server Verification Failed" title="Mail Server Verification Failed" />
+						</cfif>
+					<cfelse>
+						&nbsp;
+					</cfif>
+				</td>
+			</tr>
+		</cfloop>
+			<tr bgcolor="##dedede">
+				<td colspan="5">
+					<input type="button" name="verifyAll" value="Verify All Mail Servers" onclick="javascript:verifyAllMailServers()" />
+				</td>
+			</tr>
+		</table>
+		</cfif>
 		
 		<h3>Mail Status</h3>
 		

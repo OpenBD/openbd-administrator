@@ -48,6 +48,24 @@
 		<cfreturn localConfig.cfmail />
 	</cffunction>
 	
+	<cffunction name="setMailSettings" access="public" output="false" returntype="void" hint="Saves mail settings">
+		<cfargument name="timeout" type="numeric" required="true" hint="The connection timeout in seconds" />
+		<cfargument name="threads" type="numeric" required="true" hint="The number of threads to be used by cfmail" />
+		<cfargument name="interval" type="numeric" required="true" hint="The spool polling interval in seconds" />
+		<cfargument name="charset" type="string" required="true" hint="The default charset used by cfmail" />
+		
+		<cfset var localConfig = getConfig() />
+		
+		<cfscript>
+			localConfig.cfmail.timeout = ToString(arguments.timeout);
+			localConfig.cfmail.threads = ToString(arguments.threads);
+			localConfig.cfmail.interval = ToString(arguments.interval);
+			localConfig.cfmail.charset = arguments.charset;
+
+			setConfig(localConfig);
+		</cfscript>
+ 	</cffunction>
+	
 	<cffunction name="getMailServers" access="public" output="false" returntype="array" 
 			hint="Returns specific mail server information or all the registered mail servers">
 		<cfargument name="mailServer" type="string" required="false" default="" hint="The mail server to retrieve" />
@@ -81,73 +99,145 @@
 		
 		<cfset mailServerList = localConfig.cfmail.smtpserver />
 		
-		<cfif arguments.mailServer is not "">
-			<cfloop list="#mailServerList#" index="theMailServer">
-				<cfif findNoCase(arguments.mailServer, theMailServer) gt 0>
-					<!--- if the server info has been formatted using port, username, and password, need to handle it differently --->
-					<cfif find("@", theMailServer) gt 0>
-						<cfset tempMailServer.username = listFirst(listFirst(theMailServer, "@"), ":") />
-						<cfset tempMailServer.password = listLast(listFirst(theMailServer, "@"), ":") />
-						<cfset tempMailServer.smtpserver = listFirst(listLast(theMailServer, "@"), ":") />
-						<cfset tempMailServer.port = listLast(listLast(theMailServer, "@")) />
-						<cfset arrayAppend(mailServers, tempMailServer) />
-					</cfif>
+		<cfloop list="#mailServerList#" index="theMailServer">
+			<cfset tempMailServer = structNew() />
+
+			<!--- if the server info has been formatted using port, username, and password, need to handle it differently --->
+			<cfif find("@", theMailServer) gt 0>
+				<cfset tempMailServer.smtpserver = listFirst(listLast(theMailServer, "@"), ":") />
+				<cfset tempMailServer.smtpport = listLast(listLast(theMailServer, "@"), ":") />
+				<cfset tempMailServer.username = listFirst(listFirst(theMailServer, "@"), ":") />
+				<cfset tempMailServer.password = listLast(listFirst(theMailServer, "@"), ":") />
+				<cfset arrayAppend(mailServers, tempMailServer) />
+			<cfelseif find(":", theMailServer) gt 0>
+				<cfset tempMailServer.smtpserver = listFirst(theMailServer, ":") />
+				<cfset tempMailServer.smtpport = listLast(theMailServer, ":") />
+				<cfset tempMailServer.username = "" />
+				<cfset tempMailServer.password = "" />
+				<cfset arrayAppend(mailServers, tempMailServer) />
+			<cfelse>
+				<cfset tempMailServer.smtpserver = theMailServer />
+				<cfset tempMailServer.smtpport = localConfig.cfmail.smtpport />
+				<cfset tempMailServer.username = "" />
+				<cfset tempMailServer.password = "" />
+				<cfset arrayAppend(mailServers, tempMailServer) />
+			</cfif>
+			
+			<cfif arguments.mailServer is not "" and findNoCase(arguments.mailServer, theMailServer) gt 0>
+				<cfset mailServers[1] = mailServers[i] />
+				
+				<cfif arrayLen(mailServers) gt 1>
+					<cfset arrayResize(mailServers, 1) />
 				</cfif>
-			</cfloop>
-		</cfif>
+				
+				<cfreturn mailServers />
+			</cfif>
+		</cfloop>
+		
+		<cfreturn mailServers />
 	</cffunction>
 
-	<cffunction name="setMailSettings" access="public" output="false" returntype="void" hint="Saves mail settings">
-		<cfargument name="smtpserver" type="string" required="true" 
-				hint="Comma-delimited list of SMTP servers including backup servers" />
-		<cfargument name="smtpport" type="numeric" required="true" hint="The SMTP port" />
-		<cfargument name="timeout" type="numeric" required="true" hint="The connection timeout in seconds" />
-		<cfargument name="threads" type="numeric" required="true" hint="The number of threads to be used by cfmail" />
-		<cfargument name="interval" type="numeric" required="true" hint="The spool polling interval in seconds" />
-		<cfargument name="charset" type="string" required="true" hint="The default charset used by cfmail" />
+	<cffunction name="setMailServer" access="public" output="false" returntype="void" hint="Creates or updates a mail server">
+		<cfargument name="smtpserver" type="string" required="true" hint="The SMTP server DNS name or IP address" />
+		<cfargument name="smtpport" type="numeric" required="false" hint="The SMTP port" />
+		<cfargument name="username" type="string" required="false" default="" hint="The SMTP server user name" />
+		<cfargument name="password" type="string" required="false" default="" hint="The SMTP server password" />
+		<cfargument name="isPrimary" type="boolean" required="false" default="true" 
+				hint="Boolean indicating whether or not this is the primary mail server" />
 		<cfargument name="testConnection" type="boolean" required="false" default="false" 
 				hint="Boolean indicating to test mail server connectivity" />
+		<cfargument name="existingSMTPServer" type="string" required="false" default="" 
+				hint="Existing SMTP server DNS name or IP address; used for updates" />
+		<cfargument name="action" type="string" required="false" default="create" hint="Action to take (create or update)" />
 		
 		<cfset var localConfig = getConfig() />
+		<cfset var mailServer = "" />
 		<cfset var mailSession = 0 />
 		<cfset var transport = 0 />
-		<cfset var mailServer = 0 />
 		<cfset var errorMessage = "" />
-		
-		<cfif arguments.testConnection>
-			<!--- need to test all the servers --->
-			<cfloop list="#arguments.smtpserver#" index="mailServer">
-				<cftry>
-					<cfset mailSession = createObject("java", "javax.mail.Session").getDefaultInstance(createObject("java", "java.util.Properties").init()) />
-					<cfset transport = mailSession.getTransport("smtp") />
-					<cfset transport.connect(mailServer, "", "") />
-					<cfcatch type="any">
-						<cfif errorMessage is "">
-							<cfset errorMessage = "Mail server connection failed for the following mail server(s): " />
-						</cfif>
-						
-						<cfset errorMessage = errorMessage & mailServer & ", " />
-					</cfcatch>
-				</cftry>
-			</cfloop>
-			
-			<cfif errorMessage is not "">
-				<cfset errorMessage = left(errorMessage, len(errorMessage) - 2) />
-				<cfthrow message="#errorMessage#" type="bluedragon.adminapi.mail" />
-			</cfif>
+		<cfset var i = 0 />
+		<cfset var doSetConfig = false />
+
+		<!--- some of the mail settings may not exist --->
+		<cfif not structKeyExists(localConfig.cfmail, "threads")>
+			<cfset localConfig.cfmail.threads = "1" />
+			<cfset doSetConfig = true />
 		</cfif>
 		
-		<cfscript>
-			localConfig.cfmail.smtpserver = arguments.smtpserver;
-			localConfig.cfmail.smtpport = ToString(arguments.smtpport);
-			localConfig.cfmail.timeout = ToString(arguments.timeout);
-			localConfig.cfmail.threads = ToString(arguments.threads);
-			localConfig.cfmail.interval = ToString(arguments.interval);
-			localConfig.cfmail.charset = arguments.charset;
+		<cfif not structKeyExists(localConfig.cfmail, "charset")>
+			<cfset localConfig.cfmail.charset = getDefaultCharset() />
+			<cfset doSetConfig = true />
+		</cfif>
+		
+		<cfif not structKeyExists(localConfig.cfmail, "timeout")>
+			<cfset localConfig.cfmail.timeout = "60" />
+			<cfset doSetConfig = true />
+		</cfif>
+		
+		<cfif doSetConfig>
+			<cfset setConfig(localConfig) />
+		</cfif>
+		
+		<!--- make sure the mail server doesn't already exist --->
+		<cfif listContainsNoCase(localConfig.cfmail.smtpserver, arguments.smtpserver)>
+			<cfthrow message="The mail server DNS name or IP address is already in the list of registered mail servers" 
+					type="bluedragon.adminapi.mail" />
+		</cfif>
+		
+		<!--- format the mail server information based on the arguments provided --->
+		<cfset mailServer = arguments.smtpserver />
+		
+		<cfif structKeyExists(arguments, "smtpport")>
+			<cfset mailServer = mailServer & ":" & arguments.smtpport />
+		<cfelse>
+			<cfset mailServer = mailServer & ":25" />
+		</cfif>
+		
+		<cfif arguments.username is not "">
+			<cfset mailServer = arguments.username & ":" & arguments.password & "@" & mailServer />
+		</cfif>
 
-			setConfig(localConfig);
-		</cfscript>
- 	</cffunction>
+		<!--- test the connection if necessary --->
+		<cfif arguments.testConnection>
+			<cftry>
+				<cfset verifyMailServer(mailServer) />
+				<cfcatch type="any">
+					<cfrethrow />
+				</cfcatch>
+			</cftry>
+		</cfif>
+		
+		<!--- if this is an update, delete the existing server --->
+		<cfif arguments.action is "update">
+			<cfset deleteMailServer(arguments.existingSMTPServer) />
+			<cfset localConfig = getConfig() />
+		</cfif>
+		
+		<!--- if this server is primary, prepend it to the list; otherwise append it to the list --->
+		<cfif arguments.isPrimary>
+			<cfset localConfig.cfmail.smtpserver = listPrepend(localConfig.cfmail.smtpserver, mailServer) />
+		<cfelse>
+			<cfset localConfig.cfmail.smtpserver = listAppend(localConfig.cfmail.smtpserver, mailServer) />
+		</cfif>
+		
+		<cfset setConfig(localConfig) />
+	</cffunction>
+	
+	<cffunction name="deleteMailServer" access="public" output="false" returntype="void" 
+			hint="Deletes a mail server from the list of available mail servers">
+		<cfargument name="mailServer" type="string" required="true" hint="The mail server to delete from the list of available mail servers" />
+		
+		<cfset var localConfig = getConfig() />
+		
+		<cfloop index="i" from="1" to="#listLen(localConfig.cfmail.smtpserver)#">
+			<cfif findNoCase(arguments.mailServer, listGetAt(localConfig.cfmail.smtpserver, i))>
+				<cfset localConfig.cfmail.smtpserver = listDeleteAt(localConfig.cfmail.smtpserver, i) />
+				<cfbreak />
+			</cfif>
+		</cfloop>
+		
+		<cfset setConfig(localConfig) />
+	</cffunction>
 	
 	<cffunction name="getSpooledMailCount" access="public" output="false" returntype="numeric" 
 			hint="Returns the number of files currently in the mail spool. If this returns -1 it means an error occurred while reading the spool directory.">
@@ -163,6 +253,40 @@
 		</cftry>
 		
 		<cfreturn spoolCount />
+	</cffunction>
+	
+	<cffunction name="verifyMailServer" access="public" output="false" returntype="void" 
+			hint="Verifies a mail server by connecting to the server via a JavaMail session">
+		<cfargument name="mailServer" type="string" required="true" hint="The mail server to verify, in format 'server', 'server:port', or 'user:pass@server:port'" />
+		
+		<cfset var mailSession = 0 />
+		<cfset var transport = 0 />
+		<cfset var theMailServer = "" />
+		<cfset var port = 25 />
+		<cfset var username = "" />
+		<cfset var password = "" />
+		
+		<cfif find("@", arguments.mailServer)>
+			<cfset theMailServer = listFirst(listLast(arguments.mailServer, "@"), ":") />
+			<cfset port = listLast(listLast(arguments.mailServer, "@"), ":") />
+			<cfset username = listFirst(listFirst(arguments.mailServer, "@"), ":") />
+			<cfset password = listLast(listFirst(arguments.mailServer, "@"), ":") />
+		<cfelseif find(":", arguments.mailServer)>
+			<cfset theMailServer = listFirst(arguments.mailServer, ":") />
+			<cfset port = listLast(arguments.mailServer, ":") />
+		<cfelse>
+			<cfset theMailServer = arguments.mailServer />
+		</cfif>
+		
+		<cftry>
+			<cfset mailSession = createObject("java", "javax.mail.Session").getDefaultInstance(createObject("java", "java.util.Properties").init()) />
+			<cfset transport = mailSession.getTransport("smtp") />
+			<cfset transport.connect(theMailServer, port, username, password) />
+			<cfset transport.close() />
+			<cfcatch type="any">
+				<cfthrow message="Mail server verification failed: #CFCATCH.Message#" type="bluedragon.adminapi.mail" />
+			</cfcatch>
+		</cftry>
 	</cffunction>
 	
 	<cffunction name="getUndeliveredMailCount" access="public" output="false" returntype="numeric" 

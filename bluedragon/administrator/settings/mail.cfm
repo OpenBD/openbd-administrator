@@ -79,6 +79,70 @@
 			<p class="message">#session.message#</p>
 		</cfif>
 		
+		<h3>Mail Status</h3>
+		
+		<!--- TODO: add functionality to let user view/manage spooled and undelivered mail --->
+		<ul>
+			<li>Spooled Mail: #spoolCount# messages</li>
+			<li>Undelivered Mail: #undeliveredCount# messages</li>
+			<li><a href="_controller.cfm?action=respoolUndeliveredMail">Move All Undelivered Mail to Spool</a></li>
+		</ul>
+		
+		<h3>Mail Servers</h3>
+		
+		<cfif arrayLen(mailServers) eq 0>
+			<p><strong><em>No mail servers configured</em></strong></p>
+		<cfelse>
+		<table border="0" width="700" cellpadding="2" cellspacing="1" bgcolor="##999999">
+			<tr bgcolor="##dedede">
+				<td width="100"><strong>Actions</strong></td>
+				<td><strong>Mail Server</strong></td>
+				<td><strong>Port</strong></td>
+				<td><strong>Using Login</strong></td>
+				<td><strong>Status</strong></td>
+			</tr>
+		<cfloop index="i" from="1" to="#arrayLen(mailServers)#">
+			<tr <cfif not structKeyExists(mailServers[i], "verified")>bgcolor="##ffffff"<cfelseif mailServers[i].verified>bgcolor="##ccffcc"<cfelseif not mailServers[i].verified>bgcolor="##ffff99"</cfif>>
+				<td width="100">
+					<a href="_controller.cfm?action=editMailServer&mailServer=#mailServers[i].smtpserver#" alt="Edit Mail Server" title="Edit Mail Server"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
+					<a href="_controller.cfm?action=verifyMailServer&mailServer=#mailServers[i].smtpserver#" alt="Verify Mail Server" title="Verify Mail Server"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
+					<a href="javascript:void(0);" onclick="javascript:removeMailServer('#mailServers[i].smtpserver#');" alt="Remove Mail Server" title="Remove Mail Server"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
+				</td>
+				<td>
+					<cfif i eq 1>
+						<img src="../images/asterisk_yellow.png" height="16" width="16" alt="Primary Mail Server" title="Primary Mail Server" />
+					</cfif>
+					#mailServers[i].smtpserver#
+				</td>
+				<td>#mailServers[i].smtpport#</td>
+				<td>
+					<cfif mailServers[i].username is not "">
+						Yes
+					<cfelse>
+						No
+					</cfif>
+				</td>
+				<td width="200">
+					<cfif structKeyExists(mailServers[i], "verified")>
+						<cfif mailServers[i].verified>
+							<img src="../images/tick.png" width="16" height="16" alt="Mail Server Verified" title="Mail Server Verified" />
+						<cfelseif not mailServers[i].verified>
+							<img src="../images/exclamation.png" width="16" height="16" alt="Mail Server Verification Failed" title="Mail Server Verification Failed" />
+						</cfif>
+					<cfelse>
+						&nbsp;
+					</cfif>
+				</td>
+			</tr>
+		</cfloop>
+			<tr bgcolor="##dedede">
+				<td colspan="5">
+					<input type="button" name="verifyAll" value="Verify All Mail Servers" onclick="javascript:verifyAllMailServers()" />
+				</td>
+			</tr>
+		</table>
+		</cfif>
+
 		<h3>#mailServerAction# Mail Server</h3>
 		
 		<cfif mailMessage is not "">
@@ -194,70 +258,6 @@
 			</tr>
 		</table>
 		</form>
-		
-		<h3>Mail Servers</h3>
-		
-		<cfif arrayLen(mailServers) eq 0>
-			<p><strong><em>No mail servers configured</em></strong></p>
-		<cfelse>
-		<table border="0" width="700" cellpadding="2" cellspacing="1" bgcolor="##999999">
-			<tr bgcolor="##dedede">
-				<td width="100"><strong>Actions</strong></td>
-				<td><strong>Mail Server</strong></td>
-				<td><strong>Port</strong></td>
-				<td><strong>Using Login</strong></td>
-				<td><strong>Status</strong></td>
-			</tr>
-		<cfloop index="i" from="1" to="#arrayLen(mailServers)#">
-			<tr <cfif not structKeyExists(mailServers[i], "verified")>bgcolor="##ffffff"<cfelseif mailServers[i].verified>bgcolor="##ccffcc"<cfelseif not mailServers[i].verified>bgcolor="##ffff99"</cfif>>
-				<td width="100">
-					<a href="_controller.cfm?action=editMailServer&mailServer=#mailServers[i].smtpserver#" alt="Edit Mail Server" title="Edit Mail Server"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
-					<a href="_controller.cfm?action=verifyMailServer&mailServer=#mailServers[i].smtpserver#" alt="Verify Mail Server" title="Verify Mail Server"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
-					<a href="javascript:void(0);" onclick="javascript:removeMailServer('#mailServers[i].smtpserver#');" alt="Remove Mail Server" title="Remove Mail Server"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
-				</td>
-				<td>
-					<cfif i eq 1>
-						<img src="../images/asterisk_yellow.png" height="16" width="16" alt="Primary Mail Server" title="Primary Mail Server" />
-					</cfif>
-					#mailServers[i].smtpserver#
-				</td>
-				<td>#mailServers[i].smtpport#</td>
-				<td>
-					<cfif mailServers[i].username is not "">
-						Yes
-					<cfelse>
-						No
-					</cfif>
-				</td>
-				<td width="200">
-					<cfif structKeyExists(mailServers[i], "verified")>
-						<cfif mailServers[i].verified>
-							<img src="../images/tick.png" width="16" height="16" alt="Mail Server Verified" title="Mail Server Verified" />
-						<cfelseif not mailServers[i].verified>
-							<img src="../images/exclamation.png" width="16" height="16" alt="Mail Server Verification Failed" title="Mail Server Verification Failed" />
-						</cfif>
-					<cfelse>
-						&nbsp;
-					</cfif>
-				</td>
-			</tr>
-		</cfloop>
-			<tr bgcolor="##dedede">
-				<td colspan="5">
-					<input type="button" name="verifyAll" value="Verify All Mail Servers" onclick="javascript:verifyAllMailServers()" />
-				</td>
-			</tr>
-		</table>
-		</cfif>
-		
-		<h3>Mail Status</h3>
-		
-		<!--- TODO: add functionality to let user view/manage spooled and undelivered mail --->
-		<ul>
-			<li>Spooled Mail: #spoolCount# messages</li>
-			<li>Undelivered Mail: #undeliveredCount# messages</li>
-			<li><a href="_controller.cfm?action=respoolUndeliveredMail">Move All Undelivered Mail to Spool</a></li>
-		</ul>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "errorFields", false) />

@@ -87,7 +87,7 @@
 			
 			<cfif trim(args.dsn) is "">
 				<cfset session.message = "Please select a valid datasource to edit" />
-				<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
+				<cflocation url="index.cfm" addtoken="false" />
 			<cfelse>
 				<cfset session.datasource = Application.datasource.getDatasources(args.dsn) />
 				<cfset dbDriverDefaults = Application.datasource.getDriverInfo(drivername = session.datasource[1].drivername) />
@@ -234,13 +234,13 @@
 			<!--- make sure the datasource exists --->
 			<cfif not Application.datasource.datasourceExists(args.dsn)>
 				<cfset session.message = "The datasource you attempted to remove does not exist." />
-				<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
+				<cflocation url="index.cfm" addtoken="false" />
 			<cfelse>
 				<cftry>
 					<cfset Application.datasource.deleteDatasource(args.dsn) />
 					<cfcatch type="bluedragon.adminapi.datasource">
 						<cfset session.message = CFCATCH.Message />
-						<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
+						<cflocation url="index.cfm" addtoken="false" />
 					</cfcatch>
 				</cftry>
 				

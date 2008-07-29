@@ -91,7 +91,12 @@
 			<cfelse>
 				<cfset session.datasource = Application.datasource.getDatasources(args.dsn) />
 				<cfset dbDriverDefaults = Application.datasource.getDriverInfo(drivername = session.datasource[1].drivername) />
-				<cflocation url="#dbDriverDefaults.datasourceconfigpage#?action=update" addtoken="false" />
+				
+				<cfif structKeyExists(dbDriverDefaults, "datasourceconfigpage")>
+					<cflocation url="#dbDriverDefaults.datasourceconfigpage#?action=update" addtoken="false" />
+				<cfelse>
+					<cflocation url="other.cfm?action=update" addtoken="false" />
+				</cfif>
 			</cfif>
 		</cfcase>
 

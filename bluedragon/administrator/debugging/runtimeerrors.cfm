@@ -1,14 +1,47 @@
 <cfsilent>
 	<cfparam name="logFilesMessage" type="string" default="" />
-
+	<cfparam name="url.start" type="numeric" default="1" />
+	
 	<cfset logFiles = 0 />
-
+	<cfset numPerPage = 50 />
+	
 	<cftry>
 		<cfset logFiles = Application.debugging.getRuntimeErrorLogs() />
 		<cfcatch type="any">
 			<cfset logFilesMessage = CFCATCH.Message />
 		</cfcatch>
 	</cftry>
+	
+	<cfif isQuery(logFiles)>
+		<cfif url.start neq 1>
+			<cfset showPrev = true />
+			<cfset prevStart = url.start - numPerPage />
+		<cfelse>
+			<cfset showPrev = false />
+		</cfif>
+
+		<cfif url.start + numPerPage - 1 lt logFiles.RecordCount>
+			<cfset showNext = true />
+			<cfset nextStart = url.start + numPerPage />
+			<cfset endLog = nextStart - 1 />
+		<cfelse>
+			<cfset showNext = false />
+			<cfset endLog = logFiles.RecordCount />
+		</cfif>
+		
+		<cfif logFiles.RecordCount mod numPerPage eq 0>
+			<cfset finalStart = ((logFiles.RecordCount / numPerPage) - 1) * numPerPage + 1 />
+		<cfelse>
+			<cfset numOnLastPage = logFiles.RecordCount mod numPerPage />
+			<cfset finalStart = logFiles.RecordCount - numOnLastPage + 1 />
+		</cfif>
+
+		<cfif endLog eq logFiles.RecordCount>
+			<cfset showFinal = false />
+		<cfelse>
+			<cfset showFinal = true />
+		</cfif>
+	</cfif>
 </cfsilent>
 <cfsavecontent variable="request.content">
 	<cfoutput>
@@ -25,7 +58,7 @@
 		</script>
 		
 		<h3>Runtime Error Logs</h3>
-		<!--- TODO: add paging of RTE logs --->
+		
 		<cfif structKeyExists(session, "message") and session.message is not "">
 			<p class="message">#session.message#</p>
 		</cfif>
@@ -37,12 +70,49 @@
 		<cfelse>
 		<table border="0" width="100%" cellpadding="2" cellspacing="1" bgcolor="##999999">
 			<tr bgcolor="##dedede">
+				<td colspan="2">Runtime Errors #url.start# - #endLog# of #logFiles.RecordCount#</td>
+				<td colspan="2" align="right">
+					<table border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<td width="16">
+								<cfif showPrev>
+									<a href="runtimeerrors.cfm?start=1"><img src="../images/resultset_first.png" border="0" width="16" height="16" alt="Go To Beginning" title="Go To Beginning" /></a>
+								<cfelse>
+									&nbsp;
+								</cfif>
+							</td>
+							<td width="16">
+								<cfif showPrev>
+									<a href="runtimeerrors.cfm?start=#prevStart#"><img src="../images/resultset_previous.png" border="0" width="16" height="16" alt="Previous #numPerPage#" title="Previous #numPerPage#" /></a>
+								<cfelse>
+									&nbsp;
+								</cfif>
+							</td>
+							<td width="16">
+								<cfif showNext>
+									<a href="runtimeerrors.cfm?start=#nextStart#"><img src="../images/resultset_next.png" border="0" width="16" height="16" alt="Next #numPerPage#" title="Next #numPerPage#" /></a>
+								<cfelse>
+									&nbsp;
+								</cfif>
+							</td>
+							<td width="16">
+								<cfif showFinal>
+									<a href="runtimeerrors.cfm?start=#finalStart#"><img src="../images/resultset_last.png" border="0" width="16" height="16" alt="Go To End" title="Go To End" /></a>
+								<cfelse>
+									&nbsp;
+								</cfif>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr bgcolor="##dedede">
 				<td width="100"><strong>Actions</strong></td>
 				<td><strong>Runtime Error Log</strong></td>
 				<td><strong>Size</strong></td>
 				<td><strong>Created</strong></td>
 			</tr>
-		<cfloop query="logFiles">
+		<cfloop query="logFiles" startrow="#url.start#" endrow="#endLog#">
 			<tr bgcolor="##ffffff">
 				<td width="100">
 					<a href="viewrtelog.cfm?rteLog=#logFiles.name#" alt="View Runtime Error Log" title="View Runtime Error Log"><img src="../images/page_find.png" border="0" width="16" height="16" /></a>

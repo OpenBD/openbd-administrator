@@ -619,7 +619,7 @@
 		<cfif directoryExists(expandPath("/WEB-INF/bluedragon/work/temp/rtelogs"))>
 			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work/temp/rtelogs')#" name="rteLogs" />
 			
-			<cfquery name="rteLogs" dbtype="query">
+			<cfquery name="rteLogs" dbtype="query" >
 				SELECT * 
 				FROM rteLogs 
 				ORDER BY datelastmodified DESC

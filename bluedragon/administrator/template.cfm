@@ -62,13 +62,20 @@
 		<li<cfif theSection is "settings" and thePage is "mappings.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/settings/mappings.cfm">Mappings</a></li>
 		<li<cfif theSection is "settings" and thePage is "mail.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/settings/mail.cfm">Mail</a></li>
 		<li<cfif theSection is "settings" and thePage is "fonts.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/settings/fonts.cfm">Fonts</a></li>
-		<!--- <li><a href="#contextPath#/bluedragon/administrator/settings/threads.cfm">Threads</a></li> --->
+		<!--- TODO: implement thread page --->
+		<!--- <li<cfif theSection is "settings" and thePage is "threads.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/settings/threads.cfm">Threads</a></li> --->
 	</ul>
   </div>
   <div>
 	<p class="title">Data &amp; Services</p>
 	<ul>
-		<li<cfif theSection is "datasources"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/index.cfm">Datasources</a></li>
+		<li<cfif theSection is "datasources" and thePage is "index.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/index.cfm">Datasources</a></li>
+		<!--- TODO: implement runtime state page --->
+		<!--- <li<cfif theSection is "datasources" and thePage is "runtimestate.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/runtimestate.cfm">Runtime State</a></li> --->
+		<!--- TODO: implement collections page --->
+		<!--- <li<cfif theSection is "datasources" and thePage is "collections.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/collections.cfm">Lucene Collections</a></li> --->
+		<!--- TODO: implement web services page --->
+		<!--- <li<cfif theSection is "datasources" and thePage is "webservices.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/webservices.cfm">Web Services</a></li> --->
 	</ul>
   </div>
   <div>
@@ -76,7 +83,7 @@
 	<ul>
 		<li<cfif theSection is "debugging" and thePage is "index.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/index.cfm">Debug Settings</a></li>
 		<li<cfif theSection is "debugging" and thePage is "ipaddresses.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/ipaddresses.cfm">Debug IP Addresses</a></li>
-		<!--- <li><a href="#contextPath#/bluedragon/administrator/debugging/scheduledtasks.cfm">Scheduled Tasks</a></li> --->
+		<!--- <li<cfif theSection is "debugging" and thePage is "scheduledtasks.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/scheduledtasks.cfm">Scheduled Tasks</a></li> --->
 		<li<cfif theSection is "debugging" and listFind("logs.cfm,viewlogfile.cfm", thePage) neq 0> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/logs.cfm">Log Files</a></li>
 		<li<cfif theSection is "debugging" and listFind("runtimeerrors.cfm,viewrtelog.cfm", thePage) neq 0> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/runtimeerrors.cfm">Runtime Error Logs</a></li>
 	</ul>

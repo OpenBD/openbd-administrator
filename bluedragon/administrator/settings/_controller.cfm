@@ -343,7 +343,8 @@
 			<cftry>
 				<cfset Application.mail.setMailServer(args.smtpserver, args.smtpport, 
 														args.username, args.password, 
-														args.isPrimary, args.testConnection) />
+														args.isPrimary, args.testConnection, 
+														args.existingSMTPServer, args.mailServerAction) />
 				<cfcatch type="bluedragon.adminapi.mail">
 					<cfset session.message = CFCATCH.Message />
 					<cflocation url="mail.cfm" addtoken="false" />
@@ -391,6 +392,56 @@
 			</cftry>
 			
 			<cfset session.message = "The mail settings were saved successfully." />
+			<cflocation url="mail.cfm" addtoken="false" />
+		</cfcase>
+		
+		<cfcase value="editMailServer">
+			<cftry>
+				<cfset session.mailServer = Application.mail.getMailServers(args.mailServer) />
+				<cfcatch type="any">
+					<cfset session.message = CFCATCH.Message />
+				</cfcatch>
+			</cftry>
+			
+			<cflocation url="mail.cfm" addtoken="false" />
+		</cfcase>
+		
+		<cfcase value="verifyMailServer">
+			<cfparam name="args.mailServer" type="string" default="" />
+			<cfparam name="mailServers" type="array" default="#arrayNew(1)#" />
+			
+			<cfset session.mailServerStatus = ArrayNew(1)>
+			
+			<!--- is args.mailServer is not "" then we're verifying a single mail server; otherwise verify all --->
+			<cfif args.mailServer is not "">
+				<cfset mailServers = Application.mail.getMailServers(args.mailServer) />
+			<cfelse>
+				<cfset mailServers = Application.mail.getMailServers() />
+			</cfif>
+			
+			<cfloop index="i" from="1" to="#arrayLen(mailServers)#">
+				<cfset session.mailServerStatus[i].smtpserver = mailServers[i].smtpserver />
+				
+				<cftry>
+					<cfset mailServerString = mailServers[i].smtpserver />
+					
+					<cfif mailServers[i].smtpport is not "">
+						<cfset mailServerString = mailServerString & ":" & mailServers[i].smtpport />
+					</cfif>
+					
+					<cfif mailServers[i].username is not "">
+						<cfset mailServerString = mailServers[i].username & ":" & mailServers[i].password & "@" & mailServerString />
+					</cfif>
+					
+					<cfset session.mailServerStatus[i].verified = Application.mail.verifyMailServer(mailServerString) />
+					<cfset session.mailServerStatus[i].message = "" />
+					<cfcatch type="bluedragon.adminapi.mail">
+						<cfset session.mailServerStatus[i].verified = false />
+						<cfset session.mailServerStatus[i].message = CFCATCH.Message />
+					</cfcatch>
+				</cftry>
+			</cfloop>
+			
 			<cflocation url="mail.cfm" addtoken="false" />
 		</cfcase>
 		

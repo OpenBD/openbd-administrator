@@ -73,9 +73,11 @@
 		<cfset var mailServers = arrayNew(1) />
 		<cfset var mailServerList = "" />
 		<cfset var theMailServer = "" />
+		<cfset var returnMailServer = structNew() />
 		<cfset var tempMailServer = structNew() />
 		<cfset var localConfig = getConfig() />
 		<cfset var doSetConfig = false />
+		<cfset var i = 0 />
 
 		<!--- some of the mail settings may not exist --->
 		<cfif not structKeyExists(localConfig.cfmail, "threads")>
@@ -99,9 +101,16 @@
 		
 		<cfset mailServerList = localConfig.cfmail.smtpserver />
 		
-		<cfloop list="#mailServerList#" index="theMailServer">
+		<cfloop index="i" from="1" to="#listLen(mailServerList)#">
 			<cfset tempMailServer = structNew() />
-
+			<cfset theMailServer = listGetAt(mailServerList, i) />
+			
+			<cfif i eq 1>
+				<cfset tempMailServer.isPrimary = true />
+			<cfelse>
+				<cfset tempMailServer.isPrimary = false />
+			</cfif>
+			
 			<!--- if the server info has been formatted using port, username, and password, need to handle it differently --->
 			<cfif find("@", theMailServer) gt 0>
 				<cfset tempMailServer.smtpserver = listFirst(listLast(theMailServer, "@"), ":") />
@@ -124,15 +133,16 @@
 			</cfif>
 			
 			<cfif arguments.mailServer is not "" and findNoCase(arguments.mailServer, theMailServer) gt 0>
-				<cfset mailServers[1] = mailServers[i] />
-				
-				<cfif arrayLen(mailServers) gt 1>
-					<cfset arrayResize(mailServers, 1) />
-				</cfif>
-				
-				<cfreturn mailServers />
+				<cfset returnMailServer = tempMailServer />
 			</cfif>
 		</cfloop>
+		
+		<cfif arguments.mailServer is not "" and not structIsEmpty(returnMailServer)>
+			<cfset mailServers = arrayNew(1) />
+			<cfset mailServers[1] = returnMailServer />
+		<cfelseif arguments.mailServer is not "" and (not isStruct(returnMailServer) or structIsEmpty(returnMailServer))>
+			<cfthrow message="Could not retrieve the mail server information" type="bluedragon.adminapi.mail" />
+		</cfif>
 		
 		<cfreturn mailServers />
 	</cffunction>
@@ -179,7 +189,7 @@
 		</cfif>
 		
 		<!--- make sure the mail server doesn't already exist --->
-		<cfif listContainsNoCase(localConfig.cfmail.smtpserver, arguments.smtpserver)>
+		<cfif arguments.action is "create" and listContainsNoCase(localConfig.cfmail.smtpserver, arguments.smtpserver)>
 			<cfthrow message="The mail server DNS name or IP address is already in the list of registered mail servers" 
 					type="bluedragon.adminapi.mail" />
 		</cfif>

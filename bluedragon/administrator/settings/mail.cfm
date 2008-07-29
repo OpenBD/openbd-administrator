@@ -3,7 +3,8 @@
 	<cfparam name="mailAvailable" type="boolean" default="true" />
 	<cfparam name="spoolCount" type="numeric" default="-1" />
 	<cfparam name="undeliveredCount" type="numeric" default="-1" />
-	<cfparam name="mailServerAction" type="string" default="Add" />
+	<cfparam name="mailServerAction" type="string" default="create" />
+	<cfparam name="mailServerFormActionHeader" type="string" default="Add a" />
 	
 	<cftry>
 		<cfset mailSettings = Application.mail.getMailSettings() />
@@ -11,19 +12,34 @@
 		<cfset charsets = Application.mail.getAvailableCharsets() />
 		
 		<cfcatch type="bluedragon.adminapi.mail">
-			<cfset variableMessage = CFCATCH.Message />
+			<cfset mailMessage = CFCATCH.Message />
 		</cfcatch>
 	</cftry>
 	
+	<!--- if session.mailServerStatus exists, either one or all mail servers are being verified so add that info to the 
+			mail servers --->
+	<cfif structKeyExists(session, "mailServerStatus")>
+		<cfloop index="i" from="1" to="#arrayLen(session.mailServerStatus)#">
+			<cfloop index="j" from="1" to="#arrayLen(mailServers)#">
+				<cfif session.mailServerStatus[i].smtpserver is mailServers[j].smtpserver>
+					<cfset mailServers[j].verified = session.mailServerStatus[i].verified />
+					<cfset mailServers[j].message = session.mailServerStatus[i].message />
+				</cfif>
+			</cfloop>
+		</cfloop>
+	</cfif>
+	
 	<cfif structKeyExists(session, "mailServer")>
-		<cfset mailServer = session.mailServer />
-		<cfset mailServerAction = "Update" />
+		<cfset mailServer = session.mailServer[1] />
+		<cfset mailServerAction = "update" />
+		<cfset mailServerFormActionHeader = "Edit" />
 	<cfelse>
 		<cfset mailServer = structNew() />
 		<cfset mailServer.smtpserver = "" />
 		<cfset mailServer.smtpport = 25 />
 		<cfset mailServer.username = "" />
 		<cfset mailServer.password = "" />
+		<cfset mailServer.isPrimary = false />
 	</cfif>
 	
 	<cfset spoolCount = Application.mail.getSpooledMailCount() />
@@ -66,6 +82,10 @@
 				} else {
 					return true;
 				}
+			}
+			
+			function verifyAllMailServers() {
+				location.replace("_controller.cfm?action=verifyMailServer");
 			}
 			
 			function removeMailServer(mailServer) {
@@ -127,7 +147,8 @@
 						<cfif mailServers[i].verified>
 							<img src="../images/tick.png" width="16" height="16" alt="Mail Server Verified" title="Mail Server Verified" />
 						<cfelseif not mailServers[i].verified>
-							<img src="../images/exclamation.png" width="16" height="16" alt="Mail Server Verification Failed" title="Mail Server Verification Failed" />
+							<img src="../images/exclamation.png" width="16" height="16" alt="Mail Server Verification Failed" title="Mail Server Verification Failed" /><br />
+							#mailServers[i].message#
 						</cfif>
 					<cfelse>
 						&nbsp;
@@ -143,7 +164,7 @@
 		</table>
 		</cfif>
 
-		<h3>#mailServerAction# Mail Server</h3>
+		<h3>#mailServerFormActionHeader# Mail Server</h3>
 		
 		<cfif mailMessage is not "">
 			<p class="message">#mailMessage#</p>
@@ -160,7 +181,7 @@
 			<p>
 				Please download <a href="http://java.sun.com/products/javamail/downloads/index.html">JavaMail</a> and place 
 				mail.jar in your classpath (either in your application server's shared lib directory, or in Open BlueDragon's 
-				/WEB-INF/lib directory) and restart Open BlueDragon to enable mail functionality.
+				/WEB-INF/lib directory), and restart Open BlueDragon to enable mail functionality.
 			</p>
 		</cfif>
 
@@ -202,7 +223,8 @@
 			<tr>
 				<td bgcolor="##f0f0f0" align="right">Primary</td>
 				<td bgcolor="##ffffff">
-					<input type="checkbox" name="isPrimary" value="true" />
+					<input type="checkbox" name="isPrimary" value="true"<cfif mailServer.isPrimary> checked="true"</cfif> />&nbsp;
+					(Note: if only one mail server is defined, it will always be primary)
 				</td>
 			</tr>
 			<tr>
@@ -216,6 +238,8 @@
 				<td><input type="submit" name="submit" value="Submit" /></td>
 			</tr>
 		</table>
+			<input type="hidden" name="mailServerAction" value="#mailServerAction#">
+			<input type="hidden" name="existingSMTPServer" value="#mailServer.smtpserver#" />
 		</form>
 		
 		<h3>Global Mail Settings</h3>
@@ -261,4 +285,6 @@
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "errorFields", false) />
+	<cfset structDelete(session, "mailServer", false) />
+	<cfset structDelete(session, "mailServerStatus", false) />
 </cfsavecontent>

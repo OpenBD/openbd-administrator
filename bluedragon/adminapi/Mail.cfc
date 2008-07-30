@@ -291,7 +291,7 @@
 		<cftry>
 			<cfset mailSession = createObject("java", "javax.mail.Session").getDefaultInstance(createObject("java", "java.util.Properties").init()) />
 			<cfset transport = mailSession.getTransport("smtp") />
-			<cfset transport.connect(theMailServer, port, username, password) />
+			<cfset transport.connect(theMailServer, JavaCast("int", port), username, password) />
 			<cfset transport.close() />
 			<cfcatch type="any">
 				<cfthrow message="Mail server verification failed: #CFCATCH.Message#" type="bluedragon.adminapi.mail" />

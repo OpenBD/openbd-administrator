@@ -22,8 +22,13 @@
 		<cfloop index="i" from="1" to="#arrayLen(session.mailServerStatus)#">
 			<cfloop index="j" from="1" to="#arrayLen(mailServers)#">
 				<cfif session.mailServerStatus[i].smtpserver is mailServers[j].smtpserver>
-					<cfset mailServers[j].verified = session.mailServerStatus[i].verified />
-					<cfset mailServers[j].message = session.mailServerStatus[i].message />
+					<cfif structKeyExists(session.mailServerStatus[i], "verified")>
+						<cfset mailServers[j].verified = session.mailServerStatus[i].verified />
+					</cfif>
+					
+					<cfif structKeyExists(session.mailServerStatus[i], "message")>
+						<cfset mailServers[j].message = session.mailServerStatus[i].message />
+					</cfif>
 				</cfif>
 			</cfloop>
 		</cfloop>

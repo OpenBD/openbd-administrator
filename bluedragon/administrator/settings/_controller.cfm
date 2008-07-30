@@ -433,7 +433,9 @@
 						<cfset mailServerString = mailServers[i].username & ":" & mailServers[i].password & "@" & mailServerString />
 					</cfif>
 					
-					<cfset session.mailServerStatus[i].verified = Application.mail.verifyMailServer(mailServerString) />
+					<cfset Application.mail.verifyMailServer(mailServerString) />
+					
+					<cfset session.mailServerStatus[i].verified = true />
 					<cfset session.mailServerStatus[i].message = "" />
 					<cfcatch type="bluedragon.adminapi.mail">
 						<cfset session.mailServerStatus[i].verified = false />

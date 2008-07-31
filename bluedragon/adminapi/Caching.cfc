@@ -82,5 +82,15 @@
 		
 		<cfset setConfig(localConfig) />
 	</cffunction>
-
+	
+	<cffunction name="getNumFilesInCache" access="public" output="false" returntype="numeric" 
+			hint="Returns the number of files in the file cache">
+		<cfreturn createObject("java", "com.naryx.tagfusion.cfm.file.cfmlFileCache").filesInCache() />
+	</cffunction>
+	
+	<cffunction name="getNumQueriesInCache" access="public" output="false" returntype="numeric" 
+			hint="Returns the number of queries in the cache">
+		<cfreturn createObject("java", "com.naryx.tagfusion.cfm.sql.cfQUERY").activeQueryCache.getNumberQueries() />
+	</cffunction>
+	
 </cfcomponent>

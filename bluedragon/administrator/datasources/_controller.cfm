@@ -18,6 +18,7 @@
 		structDelete(session, "datasource", false);
 		structDelete(session, "errorFields", false);
 		structDelete(session, "datasourceStatus", false);
+		structDelete(session, "searchCollection", false);
 	</cfscript>
 	
 	<cfswitch expression="#args.action#">
@@ -308,6 +309,65 @@
 				<cfset session.message = "The collection was created successfully" />
 				<cflocation url="collections.cfm" addtoken="false" />
 			</cfif>
+		</cfcase>
+		
+		<cfcase value="showIndexForm">
+			<cftry>
+				<cfset session.searchCollection = Application.searchCollections.getSearchCollection(args.name) />
+				<cfcatch type="bluedragon.adminapi.searchcollections">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="collections.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cflocation url="collectionindex.cfm" addtoken="false" />
+		</cfcase>
+		
+		<cfcase value="indexSearchCollection">
+			<cfset errorFields = arrayNew(2) />
+
+			<!--- validate the form data --->
+			<cfif trim(args.key) is "">
+				<cfset errorFields[errorFieldsIndex][1] = "key" />
+				<cfset errorFields[errorFieldsIndex][2] = "The value of Directory Path cannot be blank" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
+
+			<cfif arrayLen(errorFields) gt 0>
+				<cfset session.errorFields = errorFields />
+				<cflocation url="_controller.cfm?action=showIndexForm&name=#args.name#" addtoken="false" />
+			<cfelse>
+				<cftry>
+					<cfif args.type is "path">
+						<cfset collectionIndexStatus = Application.searchCollections.indexSearchCollection(args.collection, args.collectionAction, args.type, 
+																											args.key, args.language, args.urlpath, 
+																											args.extensions, args.recurse) />
+					<cfelseif args.type is "website">
+						<cfset collectionIndexStatus = Application.searchCollections.indexSearchCollection(args.collection, args.collectionAction, args.type, 
+																											args.key, args.language) />
+					</cfif>
+					<cfcatch type="bluedragon.adminapi.searchcollections">
+						<cfset session.message = CFCATCH.Message />
+						<cflocation url="_controller.cfm?action=showIndexForm&name=#args.name#" addtoken="false" />
+					</cfcatch>
+				</cftry>
+			</cfif>
+			
+			<cfset session.message = "The collection was indexed successfully: #collectionIndexStatus.inserted# documents inserted, #collectionIndexStatus.updated# documents updated, #collectionIndexStatus.deleted# documents deleted." />
+			<cflocation url="collections.cfm" addtoken="false" />
+		</cfcase>
+		
+		<cfcase value="deleteSearchCollection">
+			<cftry>
+				<cfset Application.searchCollections.deleteSearchCollection(args.name) />
+				<cfcatch type="bluedragon.adminapi.searchcollections">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="collections.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cfset session.message = "The collection was deleted successfully" />
+			<cflocation url="collections.cfm" addtoken="false" />
 		</cfcase>
 		
 		<cfcase value="getCollectionStatus">

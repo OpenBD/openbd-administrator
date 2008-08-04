@@ -1,4 +1,7 @@
 <cfsilent>
+	<!--- TODO: enable "info" button to get status, or get document count to display in list of collections --->
+	<!--- TODO: build simple query screen to allow users to run simple queries against collections from within the admin console --->
+	<!--- TODO: investiage integration with Luke (http://www.getopt.org/luke/) to allow better insight into collections --->
 	<cfparam name="searchCollectionsMessage" type="string" default="" />
 
 	<cfset supportedLanguages = arrayNew(1) />
@@ -28,6 +31,12 @@
 					return true;
 				}
 			}
+			
+			function deleteSearchCollection(collectionName) {
+				if (confirm("Are you sure you want to delete this search collection?")) {
+					location.replace("_controller.cfm?action=deleteSearchCollection&name=" + collectionName);
+				}
+			}
 		</script>
 		
 		<h3>Search Collections</h3>
@@ -50,7 +59,6 @@
 		<cfif arrayLen(searchCollections) eq 0>
 			<p><strong><em>No search collections configured</em></strong></p>
 		<cfelse>
-		<form name="collectionsForm" action="_controller.cfm?action=deleteSearchCollections" method="post" onsubmit="return validateCollectionsForm(this);">
 		<table border="0" width="100%" cellpadding="2" cellspacing="1" bgcolor="##999999">
 			<tr bgcolor="##dedede">
 				<td width="80"><strong>Actions</strong></td>
@@ -60,17 +68,16 @@
 				<td><strong>Store Body</strong></td>
 			</tr>
 		<cfloop index="i" from="1" to="#arrayLen(searchCollections)#">
-			<!--- TODO: need to sort alphabetically --->
 			<tr bgcolor="##ffffff">
 				<td>
-					<a href="_controller.cfm?action=getCollectionStatus&collection=#searchCollections[i].name#">
+					<!--- <a href="_controller.cfm?action=getCollectionStatus&name=#searchCollections[i].name#">
 						<img src="../images/information.png" width="16" height="16" alt="Collection Status" title="Collection Status" border="0" />
+					</a> --->
 					</a>
-					</a>
-					<a href="_controller.cfm?action=">
+					<a href="_controller.cfm?action=showIndexForm&name=#searchCollections[i].name#">
 						<img src="../images/lightning.png" width="16" height="16" alt="Index Collection" title="Index Collection" border="0" />
 					</a>
-					<a href="javascript:void(0);" onclick="javascript:deleteSearchCollection('searchCollections[i].name')">
+					<a href="javascript:void(0);" onclick="javascript:deleteSearchCollection('#searchCollections[i].name#')">
 						<img src="../images/cancel.png" width="16" heigth="16" alt="Delete Collection" title="Delete Collection" border="0" />
 					</a>
 				</td>
@@ -80,13 +87,7 @@
 				<td>#yesNoFormat(searchCollections[i].storebody)#</td>
 			</tr>
 		</cfloop>
-			<tr bgcolor="##dedede">
-				<td colspan="5" align="right">
-					<input type="button" name="submit" value="Delete Collections" />
-				</td>
-			</tr>
 		</table>
-		</form>
 		</cfif>
 		
 		<h3>Add New Collection</h3>

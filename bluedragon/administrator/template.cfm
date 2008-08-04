@@ -73,7 +73,7 @@
 		<!--- TODO: implement runtime state page --->
 		<!--- <li<cfif theSection is "datasources" and thePage is "runtimestate.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/runtimestate.cfm">Runtime State</a></li> --->
 		<!--- TODO: implement collections page --->
-		<!--- <li<cfif theSection is "datasources" and thePage is "collections.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/collections.cfm">Lucene Collections</a></li> --->
+		<li<cfif theSection is "datasources" and thePage is "collections.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/collections.cfm">Search Collections</a></li>
 		<!--- TODO: implement web services page --->
 		<!--- <li<cfif theSection is "datasources" and thePage is "webservices.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/webservices.cfm">Web Services</a></li> --->
 	</ul>

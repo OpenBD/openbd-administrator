@@ -16,6 +16,7 @@
 			Application.fonts = createObject("component", "bluedragon.adminapi.Fonts");
 			Application.mail = createObject("component", "bluedragon.adminapi.Mail");
 			Application.mapping = createObject("component", "bluedragon.adminapi.Mapping");
+			Application.searchCollections = createObject("component", "bluedragon.adminapi.SearchCollections");
 			Application.serverSettings = createObject("component", "bluedragon.adminapi.ServerSettings");
 			Application.variableSettings = createObject("component", "bluedragon.adminapi.VariableSettings");
 			

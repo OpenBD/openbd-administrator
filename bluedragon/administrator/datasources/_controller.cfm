@@ -21,6 +21,7 @@
 	</cfscript>
 	
 	<cfswitch expression="#args.action#">
+		<!--- DATASOURCES --->
 		<cfcase value="addDatasource">
 			<cfparam name="args.dsn" type="string" default="" />
 
@@ -267,6 +268,53 @@
 			<cflocation url="index.cfm" addtoken="false" />
 		</cfcase>
 		
+		<!--- SEARCH COLLECTIONS --->
+		<cfcase value="createSearchCollection">
+			<cfset errorFields = arrayNew(2) />
+			<cfset errorFieldsIndex = 1 />
+			
+			<!--- validate the form data --->
+			<cfif trim(args.name) is "">
+				<cfset errorFields[errorFieldsIndex][1] = "name" />
+				<cfset errorFields[errorFieldsIndex][2] = "The value of Collection Name cannot be blank" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
+			
+			<cfif trim(args.path) is "">
+				<cfset errorFields[errorFieldsIndex][1] = "path" />
+				<cfset errorFields[errorFieldsIndex][2] = "The value of Collection Path cannot be blank" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
+			
+			<cfif trim(args.language) is "">
+				<cfset errorFields[errorFieldsIndex][1] = "path" />
+				<cfset errorFields[errorFieldsIndex][2] = "You must select a Language for the collection" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
+			
+			<cfif arrayLen(errorFields) gt 0>
+				<cfset session.errorFields = errorFields />
+				<cflocation url="collections.cfm" addtoken="false" />
+			<cfelse>
+				<cftry>
+					<cfset Application.searchCollections.createSearchCollection(args.name, args.path, 
+																				args.language, args.storebody) />
+					<cfcatch type="bluedragon.adminapi.searchcollections">
+						<cfset session.message = CFCATCH.Message />
+						<cflocation url="collections.cfm" addtoken="false" />
+					</cfcatch>
+				</cftry>
+				
+				<cfset session.message = "The collection was created successfully" />
+				<cflocation url="collections.cfm" addtoken="false" />
+			</cfif>
+		</cfcase>
+		
+		<cfcase value="getCollectionStatus">
+			<cfset session.searchCollectionStatus = Application.searchCollections.getCollectionStatus(args.name) />
+		</cfcase>
+		
+		<!--- DEFAULT CASE -- NO VALID ACTION SPECIFIED --->
 		<cfdefaultcase>
 			<cfset session.message = "Invalid action" />
 			<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />

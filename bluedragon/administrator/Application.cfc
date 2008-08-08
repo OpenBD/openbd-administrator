@@ -16,12 +16,13 @@
 			Application.fonts = createObject("component", "bluedragon.adminapi.Fonts");
 			Application.mail = createObject("component", "bluedragon.adminapi.Mail");
 			Application.mapping = createObject("component", "bluedragon.adminapi.Mapping");
+			Application.scheduledTasks = createObject("component", "bluedragon.adminapi.ScheduledTasks");
 			Application.searchCollections = createObject("component", "bluedragon.adminapi.SearchCollections");
 			Application.serverSettings = createObject("component", "bluedragon.adminapi.ServerSettings");
 			Application.variableSettings = createObject("component", "bluedragon.adminapi.VariableSettings");
 			
-			Application.adminConsoleVersion = "0.5a";
-			Application.adminConsoleBuildDate = LSDateFormat(createDate(2008,7,17)) & " " & LSTimeFormat(createTime(17,16,00));
+			Application.adminConsoleVersion = "0.7a";
+			Application.adminConsoleBuildDate = LSDateFormat(createDate(2008,8,7)) & " " & LSTimeFormat(createTime(22,38,00));
 			
 			Application.inited = true;
 			

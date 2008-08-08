@@ -83,7 +83,7 @@
 	<ul>
 		<li<cfif theSection is "debugging" and thePage is "index.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/index.cfm">Debug Settings</a></li>
 		<li<cfif theSection is "debugging" and thePage is "ipaddresses.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/ipaddresses.cfm">Debug IP Addresses</a></li>
-		<!--- <li<cfif theSection is "debugging" and thePage is "scheduledtasks.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/scheduledtasks.cfm">Scheduled Tasks</a></li> --->
+		<li<cfif theSection is "debugging" and thePage is "scheduledtasks.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/scheduledtasks.cfm">Scheduled Tasks</a></li>
 		<li<cfif theSection is "debugging" and listFind("logs.cfm,viewlogfile.cfm", thePage) neq 0> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/logs.cfm">Log Files</a></li>
 		<li<cfif theSection is "debugging" and listFind("runtimeerrors.cfm,viewrtelog.cfm", thePage) neq 0> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/runtimeerrors.cfm">Runtime Error Logs</a></li>
 	</ul>

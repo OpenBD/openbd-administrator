@@ -103,6 +103,32 @@
 		<cfif structKeyExists(session, "message") and session.message is not "">
 			<p class="message">#session.message#</p>
 		</cfif>
+
+		<cfif not mailAvailable>
+			<h3>JavaMail Not Installed</h3>
+			
+			<p class="message">It appears that you do not hava JavaMail installed.</p>
+			
+			<p>
+				Some Java application severs, such as <a href="http://tomcat.apache.org/">Tomcat</a>, do not ship with JavaMail. 
+				Without JavaMail installed, Open BlueDragon is unable to send mail.
+			</p>
+			
+			<p>
+				Please download <a href="http://java.sun.com/products/javamail/downloads/index.html">JavaMail</a> and place 
+				mail.jar in your classpath (either in your application server's shared lib directory, or in Open BlueDragon's 
+				/WEB-INF/lib directory), and restart Open BlueDragon to enable mail functionality.
+			</p>
+		</cfif>
+
+		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
+			<p class="message">The following errors occurred:</p>
+			<ul>
+			<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
+				<li>#session.errorFields[i][2]#</li>
+			</cfloop>
+			</ul>
+		</cfif>
 		
 		<h3>Mail Status</h3>
 		
@@ -113,13 +139,16 @@
 			<li><a href="_controller.cfm?action=respoolUndeliveredMail">Move All Undelivered Mail to Spool</a></li>
 		</ul>
 		
-		<h3>Mail Servers</h3>
-		
 		<cfif arrayLen(mailServers) eq 0>
+			<h3>Mail Servers</h3>
+		
 			<p><strong><em>No mail servers configured</em></strong></p>
 		<cfelse>
 		<table border="0" width="700" cellpadding="2" cellspacing="1" bgcolor="##999999">
 			<tr bgcolor="##dedede">
+				<td colspan="5"><strong>Mail Servers</strong></td>
+			</tr>
+			<tr bgcolor="##f0f0f0">
 				<td width="100"><strong>Actions</strong></td>
 				<td><strong>Mail Server</strong></td>
 				<td><strong>Port</strong></td>
@@ -168,39 +197,18 @@
 			</tr>
 		</table>
 		</cfif>
-
-		<h3>#mailServerFormActionHeader# Mail Server</h3>
 		
+		<br /><br />
+
 		<cfif mailMessage is not "">
 			<p class="message">#mailMessage#</p>
 		</cfif>
 		
-		<cfif not mailAvailable>
-			<p class="message">It appears that you do not hava JavaMail installed.</p>
-			
-			<p>
-				Some Java application severs, such as <a href="http://tomcat.apache.org/">Tomcat</a>, do not ship with JavaMail. 
-				Without JavaMail installed, Open BlueDragon is unable to send mail.
-			</p>
-			
-			<p>
-				Please download <a href="http://java.sun.com/products/javamail/downloads/index.html">JavaMail</a> and place 
-				mail.jar in your classpath (either in your application server's shared lib directory, or in Open BlueDragon's 
-				/WEB-INF/lib directory), and restart Open BlueDragon to enable mail functionality.
-			</p>
-		</cfif>
-
-		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
-			<p class="message">The following errors occurred:</p>
-			<ul>
-			<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
-				<li>#session.errorFields[i][2]#</li>
-			</cfloop>
-			</ul>
-		</cfif>
-		
 		<form name="mailServerForm" action="_controller.cfm?action=processMailServerForm" method="post" onsubmit="javascript:return validateMailServerForm(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+			<tr bgcolor="##dedede">
+				<td colspan="2"><strong>#mailServerFormActionHeader# Mail Server</strong></td>
+			</tr>
 			<tr>
 				<td bgcolor="##f0f0f0" align="right">SMTP Server</td>
 				<td bgcolor="##ffffff">
@@ -247,12 +255,13 @@
 			<input type="hidden" name="existingSMTPServer" value="#mailServer.smtpserver#" />
 		</form>
 		
-		<h3>Global Mail Settings</h3>
+		<br /><br />
 		
-		<p>These settings apply to all registered mail servers.</p>
-
 		<form name="mailSettingsForm" action="_controller.cfm?action=processMailSettingsForm" method="post" onsubmit="javascript:return validateMailSettingsForm(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+			<tr bgcolor="##dedede">
+				<td colspan="2"><strong>Global Mail Settings</strong> (these settings apply to all registered mail servers)</td>
+			</tr>
 			<tr>
 				<td bgcolor="##f0f0f0" align="right">Timeout</td>
 				<td bgcolor="##ffffff">

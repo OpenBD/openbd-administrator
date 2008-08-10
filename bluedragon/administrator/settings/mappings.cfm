@@ -72,8 +72,6 @@
 		</table>
 		</cfif>
 		
-		<h3><cfif mappingAction is "create">Add a<cfelse>Edit</cfif> Mapping</h3>
-
 		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
 			<p class="message">The following errors occurred:</p>
 			<ul>
@@ -85,6 +83,9 @@
 		
 		<form name="mappingForm" action="_controller.cfm?action=processMappingForm" method="post" onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+			<tr bgcolor="##dedede">
+				<td colspan="2"><strong><cfif mappingAction is "create">Add a<cfelse>Edit</cfif> Mapping</strong></td>
+			</tr>
 			<tr>
 				<td align="right" bgcolor="##f0f0f0">Logical Path</td>
 				<td bgcolor="##ffffff">

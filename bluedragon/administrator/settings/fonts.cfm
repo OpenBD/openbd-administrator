@@ -66,8 +66,8 @@
 		</table>
 		</cfif>
 		
-		<h3><cfif fontDirAction is "create">Add a<cfelse>Edit</cfif> Font Directory</h3>
-
+		<br />
+		
 		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
 			<p class="message">The following errors occurred:</p>
 			<ul>
@@ -79,6 +79,9 @@
 		
 		<form name="fontDirForm" action="_controller.cfm?action=processFontDirForm" method="post" onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+			<tr bgcolor="##dedede">
+				<td colspan="2"><strong><cfif fontDirAction is "create">Add a<cfelse>Edit</cfif> Font Directory</strong></td>
+			</tr>
 			<tr>
 				<td align="right" bgcolor="##f0f0f0">Font Directory</td>
 				<td bgcolor="##ffffff">

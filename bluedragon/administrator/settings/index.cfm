@@ -61,6 +61,9 @@
 				
 		<form name="serverSettings" action="_controller.cfm?action=processServerSettingsForm" method="post" onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+			<tr bgcolor="##dedede">
+				<td colspan="2"><strong>Update Server Settings</strong></td>
+			</tr>
 			<tr>
 				<td align="right" bgcolor="##f0f0f0">Response Buffer Size</td>
 				<td bgcolor="##ffffff">

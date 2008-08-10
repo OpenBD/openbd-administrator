@@ -88,6 +88,9 @@
 		
 		<form name="variableForm" action="_controller.cfm?action=processVariableForm" method="post" onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+			<tr bgcolor="##dedede">
+				<td colspan="2"><strong>Update Variable Settings</strong></td>
+			</tr>
 			<tr>
 				<td bgcolor="##f0f0f0" align="right">Use J2EE Sessions</td>
 				<td bgcolor="##ffffff">

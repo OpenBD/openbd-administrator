@@ -90,10 +90,13 @@
 		</table>
 		</cfif>
 		
-		<h3>Add New Collection</h3>
+		<br /><br />
 		
 		<form name="addCollection" action="_controller.cfm?action=createSearchCollection" method="post" onsubmit="javascript:return validateAddCollectionForm(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+			<tr bgcolor="##dedede">
+				<td colspan="2"><strong>Add Search Collection</strong></td>
+			</tr>
 			<tr>
 				<td bgcolor="##f0f0f0">Collection Name</td>
 				<td bgcolor="##ffffff"><input type="text" name="name" size="50" maxlength="50" /></td>

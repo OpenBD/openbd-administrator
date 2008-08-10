@@ -374,6 +374,10 @@
 			<cfset session.searchCollectionStatus = Application.searchCollections.getCollectionStatus(args.name) />
 		</cfcase>
 		
+		<!--- SCHEDULED TASKS --->
+		<cfcase value="processScheduledTaskForm">
+		</cfcase>
+		
 		<!--- DEFAULT CASE -- NO VALID ACTION SPECIFIED --->
 		<cfdefaultcase>
 			<cfset session.message = "Invalid action" />

@@ -70,37 +70,43 @@
 		<cfelse>
 		<table border="0" width="100%" cellpadding="2" cellspacing="1" bgcolor="##999999">
 			<tr bgcolor="##dedede">
-				<td colspan="2">Runtime Errors #url.start# - #endLog# of #logFiles.RecordCount#</td>
-				<td colspan="2" align="right">
-					<table border="0" cellpadding="0" cellspacing="0">
+				<td colspan="4">
+					<table border="0" width="100%" cellpadding="0" cellspacing="0">
 						<tr>
-							<td width="16">
-								<cfif showPrev>
-									<a href="runtimeerrors.cfm?start=1"><img src="../images/resultset_first.png" border="0" width="16" height="16" alt="Go To Beginning" title="Go To Beginning" /></a>
-								<cfelse>
-									&nbsp;
-								</cfif>
-							</td>
-							<td width="16">
-								<cfif showPrev>
-									<a href="runtimeerrors.cfm?start=#prevStart#"><img src="../images/resultset_previous.png" border="0" width="16" height="16" alt="Previous #numPerPage#" title="Previous #numPerPage#" /></a>
-								<cfelse>
-									&nbsp;
-								</cfif>
-							</td>
-							<td width="16">
-								<cfif showNext>
-									<a href="runtimeerrors.cfm?start=#nextStart#"><img src="../images/resultset_next.png" border="0" width="16" height="16" alt="Next #numPerPage#" title="Next #numPerPage#" /></a>
-								<cfelse>
-									&nbsp;
-								</cfif>
-							</td>
-							<td width="16">
-								<cfif showFinal>
-									<a href="runtimeerrors.cfm?start=#finalStart#"><img src="../images/resultset_last.png" border="0" width="16" height="16" alt="Go To End" title="Go To End" /></a>
-								<cfelse>
-									&nbsp;
-								</cfif>
+							<td><strong>Runtime Errors #url.start# - #endLog# of #logFiles.RecordCount#</strong></td>
+							<td align="right">
+								<table border="0" cellpadding="0" cellspacing="0">
+									<tr>
+										<td width="16">
+											<cfif showPrev>
+												<a href="runtimeerrors.cfm?start=1"><img src="../images/resultset_first.png" border="0" width="16" height="16" alt="Go To Beginning" title="Go To Beginning" /></a>
+											<cfelse>
+												&nbsp;
+											</cfif>
+										</td>
+										<td width="16">
+											<cfif showPrev>
+												<a href="runtimeerrors.cfm?start=#prevStart#"><img src="../images/resultset_previous.png" border="0" width="16" height="16" alt="Previous #numPerPage#" title="Previous #numPerPage#" /></a>
+											<cfelse>
+												&nbsp;
+											</cfif>
+										</td>
+										<td width="16">
+											<cfif showNext>
+												<a href="runtimeerrors.cfm?start=#nextStart#"><img src="../images/resultset_next.png" border="0" width="16" height="16" alt="Next #numPerPage#" title="Next #numPerPage#" /></a>
+											<cfelse>
+												&nbsp;
+											</cfif>
+										</td>
+										<td width="16">
+											<cfif showFinal>
+												<a href="runtimeerrors.cfm?start=#finalStart#"><img src="../images/resultset_last.png" border="0" width="16" height="16" alt="Go To End" title="Go To End" /></a>
+											<cfelse>
+												&nbsp;
+											</cfif>
+										</td>
+									</tr>
+								</table>
 							</td>
 						</tr>
 					</table>

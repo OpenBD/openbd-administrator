@@ -78,8 +78,6 @@
 		</table>
 		</cfif>
 		
-		<h3><span id="actionHeader">Add a</span> Custom Tag Path</h3>
-		
 		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
 			<p class="message">The following errors occurred:</p>
 			<ul>
@@ -89,8 +87,13 @@
 			</ul>
 		</cfif>
 		
+		<br />
+		
 		<form name="customTagPathForm" action="_controller.cfm?action=processCustomTagPathForm" method="post" onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+			<tr>
+				<td colspan="2" bgcolor="##dedede"><strong><span id="actionHeader">Add a</span> Custom Tag Path</strong></td>
+			</tr>
 			<tr>
 				<td align="right" bgcolor="##f0f0f0">Custom Tag Path</td>
 				<td bgcolor="##ffffff">

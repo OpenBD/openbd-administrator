@@ -64,6 +64,9 @@
 				} else if (f.startdate.value.length > 0 && !dateCheck.test(f.startdate.value)) {
 					alert("Please enter a valid start date");
 					return false;
+				} else if (f.starttime_duration.value.length == 0 && f.starttime_once.value.length == 0) {
+					alert("Please enter a valid start time");
+					return false;
 				} else if (f.starttime_duration.value.length > 0 && !timeCheck.test(f.starttime_duration.value)) {
 					alert("Please enter a valid start time");
 					return false;
@@ -91,7 +94,7 @@
 				} else if (f.endtime_daily.value.length > 0 && !timeCheck.test(f.endtime_daily.value)) {
 					alert("Please enter a valid end time for the daily task");
 					return false;
-				} else if (f.publishtofile[0].checked && (f.publishpath.value.length == 0 || f.publishfile.value.length == 0)) {
+				} else if (f.publish[0].checked && (f.publishpath.value.length == 0 || f.publishfile.value.length == 0)) {
 					alert("Please enter a path and file name to which to publish the file");
 					return false;
 				} else if (f.requesttimeout.value.length > 0 && !numericCheck.test(f.requesttimeout.value)) {
@@ -211,7 +214,8 @@
 				<td bgcolor="##f0f0f0" align="right">Proxy Server</td>
 				<td bgcolor="##ffffff">
 					<input type="text" name="proxyserver" size="30" value="#scheduledTask.proxyserver#" />&nbsp;
-					Port <input type="text" name="proxyport" size="5" maxlength="5" value="#scheduledTask.proxyport#" /><!--- <br />
+					Port <input type="text" name="proxyport" size="5" maxlength="5" value="#scheduledTask.proxyport#" /><!---
+					TODO: enable this once proxyuser and proxypassword are added to the engine <br />
 					User Name: <input type="text" name="proxyuser" size="20" value="#scheduledTask.proxyuser#" />&nbsp;
 					Password: <input type="password" name="proxypassword" size="20" value="#scheduledTask.proxypassword#" /> --->
 				</td>
@@ -219,8 +223,8 @@
 			<tr>
 				<td bgcolor="##f0f0f0" align="right" valign="top">Publish Results to File</td>
 				<td bgcolor="##ffffff">
-					<input type="radio" name="publishtofile" value="true"<cfif scheduledTask.publishfile is not ""> checked="true"</cfif> />Yes&nbsp;
-					<input type="radio" name="publishtofile" value="false"<cfif scheduledTask.publishfile is ""> checked="true"</cfif> />No<br />
+					<input type="radio" name="publish" value="true"<cfif structKeyExists(scheduledTask, "publish") and isBoolean(scheduledTask.publish) and scheduledTask.publish> checked="true"</cfif> />Yes&nbsp;
+					<input type="radio" name="publish" value="false"<cfif (structKeyExists(scheduledTask, "publish") and (not isBoolean(scheduledTask.publish) or not scheduledTask.publish)) or not structKeyExists(scheduledTask, "publish")> checked="true"</cfif> />No<br />
 					<table border="0" cellpadding="0" cellspacing="0">
 						<tr>
 							<td>Path:</td>

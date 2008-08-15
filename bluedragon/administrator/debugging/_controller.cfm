@@ -405,7 +405,7 @@
 																	args.publishpath, args.uridirectory, args.publishfile, 
 																	args.resolvelinks, args.requesttimeout) />
 
-				<cfif args.name is not args.existingScheduledTaskName>
+				<cfif compareNoCase(args.name, args.existingScheduledTaskName) neq 0>
 					<cfset Application.scheduledTasks.deleteScheduledTask(args.existingScheduledTaskName) />
 				</cfif>
 				

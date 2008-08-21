@@ -34,7 +34,7 @@
 			hint="Creates or updates a scheduled task">
 		<cfargument name="task" type="string" required="true" hint="The scheduled task name" />
 		<cfargument name="url" type="string" required="true" hint="The URL the scheduled task will call" />
-		<cfargument name="startdate" type="date" required="true" hint="The start date for the scheduled task" />
+		<cfargument name="startdate" type="string" required="true" hint="The start date for the scheduled task" />
 		<cfargument name="starttime" type="string" required="true" hint="The start time for the scheduled task" />
 		<cfargument name="interval" type="string" required="true" 
 				hint="The interval at which to run the scheduled task (number of seconds, once, daily, weekly, or monthly)" />
@@ -58,6 +58,9 @@
 		<cfif arguments.action is "create" and scheduledTaskExists(arguments.task)>
 			<cfthrow type="bluedragon.adminapi.scheduledtasks" message="A scheduled task with that name already exists" />
 		</cfif>
+		
+		<cfdump var="#arguments#" />
+		<cfabort />
 		
 		<cfschedule action="update" 
 					task="#arguments.task#" 

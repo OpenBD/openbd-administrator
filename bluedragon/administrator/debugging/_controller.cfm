@@ -357,10 +357,12 @@
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
-			<cfif trim(args.requesttimeout) is "" and not isNumeric(args.requesttimeout)>
+			<cfif trim(args.requesttimeout) is not "" and not isNumeric(args.requesttimeout)>
 				<cfset errorFields[errorFieldsIndex][1] = "requesttimeout" />
 				<cfset errorFields[errorFieldsIndex][2] = "Please enter a numeric value for request timeout" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			<cfelse>
+				<cfset args.requesttimeout = 30 />
 			</cfif>
 			
 			<cfif arrayLen(errorFields) gt 0>
@@ -382,7 +384,11 @@
 					<cfset args.starttime = timeFormat(args.starttime_recurring, "H:mm") />
 					<cfset args.interval = args.tasktype />
 				<cfelseif args.runinterval is "daily">
-					<cfset args.starttime = timeFormat(args.starttime_daily, "H:mm") />
+					<cfif trim(args.starttime_daily) is "" and trim(args.starttime_duration) is not "">
+						<cfset args.starttime = timeFormat(args.starttime_duration, "H:mm") />
+					<cfelse>
+						<cfset args.starttime = timeFormat(args.starttime_daily, "H:mm") />
+					</cfif>
 				<cfelseif trim(args.starttime_duration) is not "">
 					<cfset args.starttime = timeFormat(args.starttime_duration, "H:mm") />
 				<cfelse>
@@ -395,13 +401,15 @@
 				
 				<cfif trim(args.endtime_duration) is not "">
 					<cfset args.endtime = timeFormat(args.endtime_duration, "H:mm") />
-				<cfelseif args.runinternal is "daily" and trim(args.endtime_daily) is not "">
+				<cfelseif args.runinterval is "daily" and trim(args.endtime_daily) is not "">
 					<cfset args.endtime = timeFormat(args.endtime_daily, "H:mm") />
+				<cfelse>
+					<cfset args.endtime = "" />
 				</cfif>
 
 				<cfset Application.scheduledTasks.setScheduledTask(args.name, args.urltouse, args.startdate, args.starttime, args.interval, 
 																	args.enddate, args.endtime, args.username, args.password, 
-																	args.proxyserver, args.proxyport, args.publishtofile, 
+																	args.proxyserver, args.proxyport, args.publish, 
 																	args.publishpath, args.uridirectory, args.publishfile, 
 																	args.resolvelinks, args.requesttimeout) />
 
@@ -416,6 +424,32 @@
 			</cftry>
 			
 			<cfset session.message = "The scheduled tasks was #args.scheduledTaskAction#d successfully" />
+			<cflocation url="scheduledtasks.cfm" addtoken="false" />
+		</cfcase>
+		
+		<cfcase value="runScheduledTask">
+			<cftry>
+				<cfset Application.scheduledTasks.runScheduledTask(args.name) />
+				<cfcatch type="bluedragon.adminapi.scheduledtasks">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="scheduledtasks.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+
+			<cfset session.message = "The scheduled task was run successfully." />
+			<cflocation url="scheduledtasks.cfm" addtoken="false" />
+		</cfcase>
+		
+		<cfcase value="deleteScheduledTask">
+			<cftry>
+				<cfset Application.scheduledTasks.deleteScheduledTask(args.name) />
+				<cfcatch type="bluedragon.adminapi.scheduledtasks">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="scheduledtasks.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cfset session.message = "The scheduled task was deleted successfully." />
 			<cflocation url="scheduledtasks.cfm" addtoken="false" />
 		</cfcase>
 		

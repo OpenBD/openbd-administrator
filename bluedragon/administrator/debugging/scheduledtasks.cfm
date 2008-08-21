@@ -58,7 +58,7 @@
 				if (f.name.value.length == 0) {
 					alert("Please enter the task name");
 					return false;
-				} else if (f.urltouse.value.length == 0 || !urlCheck.test(f.urltouse.value)) {
+				} else if (f.urltouse.value.length == 0 || !urlCheck.test(f.urltouse.value) || (urlCheck.test(f.urltouse.value) && f.urltouse.value.length <= 7)) {
 					alert("Please enter a valid URL");
 					return false;
 				} else if (f.startdate.value.length > 0 && !dateCheck.test(f.startdate.value)) {
@@ -121,7 +121,7 @@
 		<cfif scheduledTaskMessage is not "">
 			<p class="message">#scheduledTaskMessage#</p>
 		</cfif>
-		
+	
 		<cfif arrayLen(scheduledTasks) gt 0>
 			<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="100%">
 				<tr bgcolor="##dedede">
@@ -157,6 +157,15 @@
 		</cfif>
 		
 		<br /><br />
+
+		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
+			<p class="message">The following errors occurred:</p>
+			<ul>
+			<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
+				<li>#session.errorFields[i][2]#</li>
+			</cfloop>
+			</ul>
+		</cfif>
 		
 		<form name="scheduledTaskForm" action="_controller.cfm?action=processScheduledTaskForm" method="post" onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
@@ -264,10 +273,12 @@
 				</td>
 			</tr>
 		</table>
-			<input type="hidden" name="action" value="#scheduledTaskAction#" />
+			<input type="hidden" name="scheduledTaskAction" value="#scheduledTaskAction#" />
 			<input type="hidden" name="existingScheduledTaskName" value="#scheduledTask.name#" />
 		</form>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "scheduledTask", false) />
+	<!--- TODO: make sure we're clearing out error fields on all pages where used --->
+	<cfset structDelete(session, "errorFields", false) />
 </cfsavecontent>

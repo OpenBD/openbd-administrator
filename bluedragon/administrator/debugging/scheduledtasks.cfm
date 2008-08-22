@@ -61,6 +61,9 @@
 				} else if (f.urltouse.value.length == 0 || !urlCheck.test(f.urltouse.value) || (urlCheck.test(f.urltouse.value) && f.urltouse.value.length <= 7)) {
 					alert("Please enter a valid URL");
 					return false;
+				} else if (f.porttouse.value.length > 0 && !numericCheck(f.porttouse.value)) {
+					alert("Please enter a valid numeric value for the port");
+					return false;
 				} else if (f.startdate.value.length > 0 && !dateCheck.test(f.startdate.value)) {
 					alert("Please enter a valid start date");
 					return false;
@@ -209,7 +212,8 @@
 			<tr>
 				<td bgcolor="##f0f0f0" align="right">Full URL</td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="urltouse" size="30"<cfif scheduledTask.urltouse is ""> value="http://"<cfelse> value="#scheduledTask.urltouse#"</cfif> />
+					<input type="text" name="urltouse" size="30"<cfif scheduledTask.urltouse is ""> value="http://"<cfelse> value="#scheduledTask.urltouse#"</cfif> />&nbsp;
+					Port <input type="text" name="porttouse" size="5" maxlength="5"<cfif scheduledTask.porttouse eq -1 or scheduledTask.porttouse is ""> value=""<cfelse> value="#scheduledTask.porttouse#"</cfif> />
 				</td>
 			</tr>
 			<tr>

@@ -34,16 +34,17 @@
 			hint="Creates or updates a scheduled task">
 		<cfargument name="task" type="string" required="true" hint="The scheduled task name" />
 		<cfargument name="url" type="string" required="true" hint="The URL the scheduled task will call" />
-		<cfargument name="startdate" type="string" required="true" hint="The start date for the scheduled task" />
-		<cfargument name="starttime" type="string" required="true" hint="The start time for the scheduled task" />
+		<cfargument name="startdate" type="string" required="true" hint="The start date for the scheduled task (mm/dd/yyyy format)" />
+		<cfargument name="starttime" type="string" required="true" hint="The start time for the scheduled task (24 hour format)" />
 		<cfargument name="interval" type="string" required="true" 
 				hint="The interval at which to run the scheduled task (number of seconds, once, daily, weekly, or monthly)" />
-		<cfargument name="enddate" type="string" required="false" default="" hint="The end date for the scheduled task" />
-		<cfargument name="endtime" type="string" required="false" default="" hint="The end time for the scheduled task" />
+		<cfargument name="port" type="numeric" required="false" default="-1" hint="The port to use for the scheduled task URL" />
+		<cfargument name="enddate" type="string" required="false" default="" hint="The end date for the scheduled task (mm/dd/yyyy format)" />
+		<cfargument name="endtime" type="string" required="false" default="" hint="The end time for the scheduled task (24 hour format)" />
 		<cfargument name="username" type="string" required="false" default="" hint="User name required by the URL being called by the scheduled task" />
 		<cfargument name="password" type="string" required="false" default="" hint="Password required by the URL being called by the scheduled task" />
 		<cfargument name="proxyserver" type="string" required="false" default="" hint="Proxy server to use for the scheduled task" />
-		<cfargument name="proxyport" type="string" required="false" default="" hint="Proxy server port to use for the scheduled task" />
+		<cfargument name="proxyport" type="string" required="false" default="80" hint="Proxy server port to use for the scheduled task" />
 		<cfargument name="publish" type="boolean" required="false" default="false" 
 				hint="Boolean indicating whether or not to publish the results of the scheduled task to a file" />
 		<cfargument name="path" type="string" required="false" default="" hint="The path to which to publish the results of the scheduled task" />
@@ -59,28 +60,91 @@
 			<cfthrow type="bluedragon.adminapi.scheduledtasks" message="A scheduled task with that name already exists" />
 		</cfif>
 		
-		<cfdump var="#arguments#" />
-		<cfabort />
-		
-		<cfschedule action="update" 
-					task="#arguments.task#" 
-					url="#arguments.url#" 
-					operation="HTTPRequest" 
-					startdate="#arguments.startdate#" 
-					starttime="#arguments.starttime#" 
-					interval="#arguments.interval#" 
-					enddate="#arguments.enddate#" 
-					endtime="#arguments.endtime#" 
-					username="#arguments.username#" 
-					password="#arguments.password#" 
-					proxyserver="#arguments.proxyserver#" 
-					proxyport="#arguments.proxyport#" 
-					publish="#arguments.publish#" 
-					path="#arguments.path#" 
-					uridirectory="#arguments.uridirectory#" 
-					file="#arguments.file#" 
-					resolveurl="#arguments.resolveurl#" 
-					requesttimeout="#arguments.requesttimeout#" />
+		<!--- Set some defaults to minimize the different versions of the cfschedule tag we'll have to use in here. 
+				This will be much easier with attributecollection. From what I can tell, manipulating the XML file via setConfig() 
+				does not register the scheduled task with the scheduler, because the XML looked fine but the scheduler didn't 
+				pick up the scheduled task until after a restart. --->
+		<cfif arguments.enddate is "" and arguments.endtime is "">
+			<cfschedule action="update" 
+						task="#arguments.task#"
+						operation="HTTPRequest" 
+						url="#arguments.url#" 
+						port="#arguments.port#" 
+						startdate="#arguments.startdate#" 
+						starttime="#arguments.starttime#" 
+						interval="#arguments.interval#" 
+						username="#arguments.username#" 
+						password="#arguments.password#" 
+						proxyserver="#arguments.proxyserver#" 
+						proxyport="#arguments.proxyport#" 
+						publish="#arguments.publish#" 
+						path="#arguments.path#" 
+						uridirectory="#arguments.uridirectory#" 
+						file="#arguments.file#" 
+						resolveurl="#arguments.resolveurl#" 
+						requesttimeout="#arguments.requesttimeout#" />
+		<cfelseif arguments.enddate is not "" and arguments.endtime is "">
+			<cfschedule action="update" 
+						task="#arguments.task#"
+						operation="HTTPRequest" 
+						url="#arguments.url#" 
+						port="#arguments.port#" 
+						startdate="#arguments.startdate#" 
+						starttime="#arguments.starttime#" 
+						enddate="#arguments.enddate#" 
+						interval="#arguments.interval#" 
+						username="#arguments.username#" 
+						password="#arguments.password#" 
+						proxyserver="#arguments.proxyserver#" 
+						proxyport="#arguments.proxyport#" 
+						publish="#arguments.publish#" 
+						path="#arguments.path#" 
+						uridirectory="#arguments.uridirectory#" 
+						file="#arguments.file#" 
+						resolveurl="#arguments.resolveurl#" 
+						requesttimeout="#arguments.requesttimeout#" />
+		<cfelseif arguments.enddate is "" and arguments.endtime is not "">
+			<cfschedule action="update" 
+						task="#arguments.task#"
+						operation="HTTPRequest" 
+						url="#arguments.url#" 
+						port="#arguments.port#" 
+						startdate="#arguments.startdate#" 
+						starttime="#arguments.starttime#" 
+						endtime="#arguments.endtime#" 
+						interval="#arguments.interval#" 
+						username="#arguments.username#" 
+						password="#arguments.password#" 
+						proxyserver="#arguments.proxyserver#" 
+						proxyport="#arguments.proxyport#" 
+						publish="#arguments.publish#" 
+						path="#arguments.path#" 
+						uridirectory="#arguments.uridirectory#" 
+						file="#arguments.file#" 
+						resolveurl="#arguments.resolveurl#" 
+						requesttimeout="#arguments.requesttimeout#" />
+		<cfelseif arguments.enddate is not "" and arguments.endtime is not "">
+			<cfschedule action="update" 
+						task="#arguments.task#"
+						operation="HTTPRequest" 
+						url="#arguments.url#" 
+						port="#arguments.port#" 
+						startdate="#arguments.startdate#" 
+						starttime="#arguments.starttime#" 
+						enddate="#arguments.enddate#" 
+						endtime="#arguments.endtime#" 
+						interval="#arguments.interval#" 
+						username="#arguments.username#" 
+						password="#arguments.password#" 
+						proxyserver="#arguments.proxyserver#" 
+						proxyport="#arguments.proxyport#" 
+						publish="#arguments.publish#" 
+						path="#arguments.path#" 
+						uridirectory="#arguments.uridirectory#" 
+						file="#arguments.file#" 
+						resolveurl="#arguments.resolveurl#" 
+						requesttimeout="#arguments.requesttimeout#" />
+		</cfif>
 	</cffunction>
 	
 	<cffunction name="scheduledTaskExists" access="public" output="false" returntype="boolean" 

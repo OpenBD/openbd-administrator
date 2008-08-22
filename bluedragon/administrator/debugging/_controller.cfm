@@ -290,6 +290,22 @@
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
+			<cfif trim(args.porttouse) is not "" and not isNumeric(args.porttouse)>
+				<cfset errorFields[errorFieldsIndex][1] = "porttouse" />
+				<cfset errorFields[errorFieldsIndex][2] = "Please enter a numeric value for the port" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			<cfelse>
+				<cfset args.porttouse = -1 />
+			</cfif>
+			
+			<cfif trim(args.proxyport) is not "" and not isNumeric(args.proxyport)>
+				<cfset errorFields[errorFieldsIndex][1] = "proxyport" />
+				<cfset errorFields[errorFieldsIndex][2] = "Please enter a numeric value for the proxy port" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			<cfelse>
+				<cfset args.proxyport = 80 />
+			</cfif>
+			
 			<cfif trim(args.starttime_duration) is "" and trim(args.starttime_once) is "">
 				<cfset errorFields[errorFieldsIndex][1] = "starttime_duration" />
 				<cfset errorFields[errorFieldsIndex][2] = "Please enter a valid start time" />
@@ -407,8 +423,9 @@
 					<cfset args.endtime = "" />
 				</cfif>
 
-				<cfset Application.scheduledTasks.setScheduledTask(args.name, args.urltouse, args.startdate, args.starttime, args.interval, 
-																	args.enddate, args.endtime, args.username, args.password, 
+				<cfset Application.scheduledTasks.setScheduledTask(args.name, args.urltouse, args.startdate, args.starttime, 
+																	args.interval, args.porttouse, args.enddate, args.endtime, 
+																	args.username, args.password, 
 																	args.proxyserver, args.proxyport, args.publish, 
 																	args.publishpath, args.uridirectory, args.publishfile, 
 																	args.resolvelinks, args.requesttimeout) />
@@ -423,7 +440,7 @@
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The scheduled tasks was #args.scheduledTaskAction#d successfully" />
+			<cfset session.message = "The scheduled task was #args.scheduledTaskAction#d successfully" />
 			<cflocation url="scheduledtasks.cfm" addtoken="false" />
 		</cfcase>
 		

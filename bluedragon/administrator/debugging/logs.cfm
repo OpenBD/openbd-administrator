@@ -13,7 +13,7 @@
 <cfsavecontent variable="request.content">
 	<cfoutput>
 		<script type="text/javascript">
-			function deleteLogFile(logFile) {
+			/*function deleteLogFile(logFile) {
 				if(confirm("Are you sure you want to delete this log file?")) {
 					location.replace("_controller.cfm?action=deleteLogFile&logFile=" + logFile);
 				}
@@ -23,7 +23,7 @@
 				if(confirm("Are you sure you want to archive this log file?\nThis will delete your oldest log file of this type\nand rotate all other log files back one position.")) {
 					location.replace("_controller.cfm?action=archiveLogFile&logFile=" + logFile);
 				}
-			}
+			}*/
 			
 			function downloadLogFile(logFile) {
 				window.open("downloadlogfile.cfm?logFile=" + logFile);
@@ -54,8 +54,9 @@
 				<td width="100">
 					<a href="viewlogfile.cfm?logFile=#logFiles[i].name#" alt="View Log File" title="View Log File"><img src="../images/page_find.png" border="0" width="16" height="16" /></a>
 					<a href="javascript:void(0);" onclick="javascript:downloadLogFile('#logFiles[i].name#');" alt="Download Log File" title="Download Log File"><img src="../images/disk.png" border="0" width="16" height="16" /></a>
-					<a href="javascript:void(0);" onclick="javascript:archiveLogFile('#logFiles[i].name#');" alt="Archive Log File" title="Archive Log File"><img src="../images/folder_page.png" border="0" width="16" height="16" /></a>
-					<a href="javascript:void(0);" onclick="javascript:deleteLogFile('#logFiles[i].name#');" alt="Delete Log File" title="Delete Log File"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
+					<!--- TODO: deleting and archiving log files didn't currently jive with how the openbd engine deals with log files, so commenting this out for now --->
+					<!--- <a href="javascript:void(0);" onclick="javascript:archiveLogFile('#logFiles[i].name#');" alt="Archive Log File" title="Archive Log File"><img src="../images/folder_page.png" border="0" width="16" height="16" /></a>
+					<a href="javascript:void(0);" onclick="javascript:deleteLogFile('#logFiles[i].name#');" alt="Delete Log File" title="Delete Log File"><img src="../images/cancel.png" border="0" width="16" height="16" /></a> --->
 				</td>
 				<td><a href="viewlogfile.cfm?logFile=#logFiles[i].name#" alt="View Log File" title="View Log File">#logFiles[i].name#</a></td>
 				<td>#logFiles[i].size#</td>

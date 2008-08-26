@@ -12,7 +12,12 @@
 	</cftry>
 	
 	<cfif structKeyExists(session, "scheduledTask")>
-		<cfset scheduledTask = session.scheduledTask />
+		<cfset scheduledTask = session.scheduledTask[1] />
+		
+		<cfif not structKeyExists(scheduledTask, "tasktype")>
+			<cfset scheduledTask.tasktype = "" />
+		</cfif>
+		
 		<cfset scheduledTaskAction = "update" />
 		<cfset scheduledTaskActionLabel = "Edit">
 	<cfelse>
@@ -43,7 +48,7 @@
 	<cfoutput>
 		<script type="text/javascript">
 			function validate(f) {
-				var timeCheck =  /(00|01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|16|17|18|19|20|21|22|23):(0|1|2|3|4|5)\d{1}/;
+				var timeCheck =  /(1|2|3|4|5|6|7|8|9|00|01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|16|17|18|19|20|21|22|23):(0|1|2|3|4|5)\d{1}/;
 				var dateCheck =  /^(?=\d)(?:(?:(?:(?:(?:0?[13578]|1[02])(\/|-|\.)31)\1|(?:(?:0?[1,3-9]|1[0-2])(\/|-|\.)(?:29|30)\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})|(?:0?2(\/|-|\.)29\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))|(?:(?:0?[1-9])|(?:1[0-2]))(\/|-|\.)(?:0?[1-9]|1\d|2[0-8])\4(?:(?:1[6-9]|[2-9]\d)?\d{2}))($|\ (?=\d)))?(((0?[1-9]|1[012])(:[0-5]\d){0,2}(\ [AP]M))|([01]\d|2[0-3])(:[0-5]\d){1,2})?$/;
 				var numericCheck = /^\d{1,}$/;
 				var urlCheck = /^(http|https|ftp):\/\//;
@@ -67,17 +72,8 @@
 				} else if (f.startdate.value.length > 0 && !dateCheck.test(f.startdate.value)) {
 					alert("Please enter a valid start date");
 					return false;
-				} else if (f.starttime_duration.value.length == 0 && f.starttime_once.value.length == 0) {
-					alert("Please enter a valid start time");
-					return false;
-				} else if (f.starttime_duration.value.length > 0 && !timeCheck.test(f.starttime_duration.value)) {
-					alert("Please enter a valid start time");
-					return false;
 				} else if (f.enddate.value.length > 0 && !dateCheck(f.enddate.value)) {
 					alert("Please enter a valid end date");
-					return false;
-				} else if (f.endtime_duration.value.length > 0 && !timeCheck.test(f.endtime_duration.value)) {
-					alert("Please enter a valid end time");
 					return false;
 				} else if (runIntervalValue == "once" && (f.starttime_once.value.length == 0 || !timeCheck.test(f.starttime_once.value))) {
 					alert("Please enter a valid start time for the one-time task");
@@ -185,16 +181,14 @@
 				<td bgcolor="##f0f0f0" align="right" valign="top">Duration</td>
 				<td bgcolor="##ffffff">
 					Start Date: <input type="text" name="startdate" size="10" maxlength="10" value="#scheduledTask.startdate#" />&nbsp;
-					Start Time: <input type="text" name="starttime_duration" size="5" maxlength="5" value="#scheduledTask.starttime#" /><br />
-					End Date: <input type="text" name="enddate" size="10" maxlength="10" value="#scheduledTask.enddate#" />&nbsp;
-					End Time: <input type="text" name="endtime_duration" size="5" maxlength="5" value="#scheduledTask.endtime#" />
+					End Date: <input type="text" name="enddate" size="10" maxlength="10" value="#scheduledTask.enddate#" />
 				</td>
 			</tr>
 			<tr>
 				<td bgcolor="##f0f0f0" align="right" valign="top">Interval</td>
 				<td bgcolor="##ffffff">
-					<input type="radio" name="runinterval" value="once"<cfif scheduledTask.tasktype is "ONCE" or scheduledTask.tasktype is ""> checked="true"</cfif> />
-					One Time @ <input type="text" name="starttime_once" size="5" maxlength="5"<cfif scheduledTask.tasktype is "ONCE">value="#scheduledTask.starttime#"</cfif> /><br />
+					<input type="radio" name="runinterval" value="once"<cfif scheduledTask.tasktype is "ONCE"> checked="true"</cfif> />
+					One Time @ <input type="text" name="starttime_once" size="5" maxlength="5"<cfif scheduledTask.tasktype is "ONCE" and scheduledTask.starttime is not ""> value="#timeFormat(scheduledTask.starttime, 'H:mm')#"</cfif> /><br />
 					<input type="radio" name="runinterval" value="recurring"<cfif (scheduledTask.tasktype is "DAILY" or scheduledTask.tasktype is "WEEKLY" or scheduledTask.tasktype is "MONTHLY") and scheduledTask.interval eq -1> checked="true"</cfif> />
 					Recurring&nbsp;<select name="tasktype">
 									<option value="" selected="true">- select -</option>
@@ -202,11 +196,11 @@
 									<option value="WEEKLY"<cfif scheduledTask.tasktype is "WEEKLY" and scheduledTask.interval eq -1> selected="true"</cfif>>weekly</option>
 									<option value="MONTHLY"<cfif scheduledTask.tasktype is "MONTHLY" and scheduledTask.interval eq -1> selected="true"</cfif>>monthly</option>
 								</select>&nbsp;@&nbsp;
-					<input type="text" name="starttime_recurring" size="5" maxlength="5"<cfif scheduledTask.tasktype is "DAILY" or scheduledTask.tasktype is "WEEKLY" or scheduledTask.tasktype is "MONTHLY">value="#scheduledTask.starttime#"</cfif> /><br />
-					<input type="radio" name="runinterval" value="daily"<cfif scheduledTask.tasktype is "DAILY" and scheduledTask.interval neq -1> checked="true"</cfif> />
-					Daily every <input type="text" name="interval" size="5" maxlength="5"<cfif scheduledTask.tasktype is "DAILY" and scheduledTask.interval neq -1> value="#scheduledTask.interval#"</cfif> />&nbsp;
-					seconds from <input type="text" name="starttime_daily" size="5" maxlength="5"<cfif scheduledTask.tasktype is "DAILY" and scheduledTask.interval neq -1> value="#scheduledTask.starttime#"</cfif> />&nbsp;
-					to <input type="text" name="endtime_daily" size="5" maxlength="5"<cfif scheduledTask.tasktype is "DAILY" and scheduledTask.interval neq -1> value="#scheduledTask.endtime#"</cfif> />
+					<input type="text" name="starttime_recurring" size="5" maxlength="5"<cfif scheduledTask.tasktype is "DAILY" or scheduledTask.tasktype is "WEEKLY" or scheduledTask.tasktype is "MONTHLY">value="#timeFormat(scheduledTask.starttime, 'H:mm')#"</cfif> /><br />
+					<input type="radio" name="runinterval" value="daily"<cfif scheduledTask.tasktype is "" and scheduledTask.interval neq -1> checked="true"</cfif> />
+					Daily every <input type="text" name="interval" size="5" maxlength="5"<cfif scheduledTask.tasktype is "" and scheduledTask.interval neq -1> value="#scheduledTask.interval#"</cfif> />&nbsp;
+					seconds from <input type="text" name="starttime_daily" size="5" maxlength="5"<cfif scheduledTask.tasktype is "" and scheduledTask.interval neq -1> value="#timeFormat(scheduledTask.starttime, 'H:mm')#"</cfif> />&nbsp;
+					to <input type="text" name="endtime_daily" size="5" maxlength="5"<cfif scheduledTask.tasktype is "" and scheduledTask.interval neq -1 and scheduledTask.endtime is not ""> value="#timeFormat(scheduledTask.endtime, 'H:mm')#"</cfif> />
 				</td>
 			</tr>
 			<tr>

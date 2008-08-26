@@ -536,7 +536,7 @@
 		<cfset var logFilePath = getLogFilePath(arguments.logFile) />
 		
 		<cfif fileExists("#logFilePath#/#arguments.logFile#")>
-			<cffile action="delete" file="#logFilePath#/#arguments.logFile#">
+			<cffile action="delete" file="#logFilePath#/#arguments.logFile#" />
 		</cfif>
 	</cffunction>
 	

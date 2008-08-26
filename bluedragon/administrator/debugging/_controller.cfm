@@ -290,7 +290,7 @@
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
-			<cfif trim(args.porttouse) is not "" and not isNumeric(args.porttouse)>
+			<cfif trim(args.porttouse) is not "" and not isNumeric(trim(args.porttouse))>
 				<cfset errorFields[errorFieldsIndex][1] = "porttouse" />
 				<cfset errorFields[errorFieldsIndex][2] = "Please enter a numeric value for the port" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
@@ -298,7 +298,7 @@
 				<cfset args.porttouse = -1 />
 			</cfif>
 			
-			<cfif trim(args.proxyport) is not "" and not isNumeric(args.proxyport)>
+			<cfif trim(args.proxyport) is not "" and not isNumeric(trim(args.proxyport))>
 				<cfset errorFields[errorFieldsIndex][1] = "proxyport" />
 				<cfset errorFields[errorFieldsIndex][2] = "Please enter a numeric value for the proxy port" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
@@ -306,15 +306,27 @@
 				<cfset args.proxyport = 80 />
 			</cfif>
 			
-			<cfif trim(args.starttime_duration) is "" and trim(args.starttime_once) is "">
-				<cfset errorFields[errorFieldsIndex][1] = "starttime_duration" />
+			<cfif args.runinterval is "once" and not isValid("time", trim(args.starttime_once))>
+				<cfset errorFields[errorFieldsIndex][1] = "starttime_once" />
 				<cfset errorFields[errorFieldsIndex][2] = "Please enter a valid start time" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
-			<cfif trim(args.starttime_duration) is not "" and not isValid("time", args.starttime_duration)>
-				<cfset errorFields[errorFieldsIndex][1] = "starttime_duration" />
+			<cfif args.runinterval is "recurring" and not isValid("time", trim(args.starttime_recurring))>
+				<cfset errorFields[errorFieldsIndex][1] = "starttime_recurring" />
 				<cfset errorFields[errorFieldsIndex][2] = "Please enter a valid start time" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
+			
+			<cfif args.runinterval is "daily" and not isValid("time", trim(args.starttime_daily))>
+				<cfset errorFields[errorFieldsIndex][1] = "starttime_daily" />
+				<cfset errorFields[errorFieldsIndex][2] = "Please enter a valid start time" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
+
+			<cfif trim(args.endtime_daily) is not "" and not isValid("time", args.endtime_daily)>
+				<cfset errorFields[errorFieldsIndex][1] = "endtime_daily" />
+				<cfset errorFields[errorFieldsIndex][2] = "Please enter a valid end time for the daily task" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 
@@ -324,45 +336,15 @@
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 
-			<cfif trim(args.endtime_duration) is not "" and not isValid("time", args.endtime_duration)>
-				<cfset errorFields[errorFieldsIndex][1] = "endtime_duration" />
-				<cfset errorFields[errorFieldsIndex][2] = "Please enter a valid end time" />
-				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
-			</cfif>
-			
-			<cfif args.runinterval is "once" and (trim(args.starttime_once) is "" or not isValid("time", args.starttime_once))>
-				<cfset errorFields[errorFieldsIndex][1] = "starttime_once" />
-				<cfset errorFields[errorFieldsIndex][2] = "Please enter a valid start time" />
-				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
-			</cfif>
-			
 			<cfif args.runinterval is "recurring" and trim(args.tasktype) is "">
 				<cfset errorFields[errorFieldsIndex][1] = "tasktype" />
 				<cfset errorFields[errorFieldsIndex][2] = "Please select the interval for the recurring task" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
-			<cfif args.runinterval is "recurring" and (trim(args.starttime_recurring) is "" or not isValid("time", args.starttime_recurring))>
-				<cfset errorFields[errorFieldsIndex][1] = "starttime_recurring" />
-				<cfset errorFields[errorFieldsIndex][2] = "Please enter a valid start time for the recurring task" />
-				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
-			</cfif>
-			
 			<cfif args.runinterval is "daily" and (trim(args.interval) is "" or not isNumeric(args.interval) or args.interval gt 86400)>
 				<cfset errorFields[errorFieldsIndex][1] = "interval" />
 				<cfset errorFields[errorFieldsIndex][2] = "Please enter a valid number of seconds for the daily task. This number may not exceed 86400." />
-				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
-			</cfif>
-			
-			<cfif trim(args.starttime_daily) is not "" and not isValid("time", args.starttime_daily)>
-				<cfset errorFields[errorFieldsIndex][1] = "starttime_daily" />
-				<cfset errorFields[errorFieldsIndex][2] = "Please enter a valid start time for the daily task" />
-				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
-			</cfif>
-			
-			<cfif trim(args.endtime_daily) is not "" and not isValid("time", args.endtime_daily)>
-				<cfset errorFields[errorFieldsIndex][1] = "endtime_daily" />
-				<cfset errorFields[errorFieldsIndex][2] = "Please enter a valid end time for the daily task" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
@@ -400,24 +382,14 @@
 					<cfset args.starttime = timeFormat(args.starttime_recurring, "H:mm") />
 					<cfset args.interval = args.tasktype />
 				<cfelseif args.runinterval is "daily">
-					<cfif trim(args.starttime_daily) is "" and trim(args.starttime_duration) is not "">
-						<cfset args.starttime = timeFormat(args.starttime_duration, "H:mm") />
-					<cfelse>
-						<cfset args.starttime = timeFormat(args.starttime_daily, "H:mm") />
-					</cfif>
-				<cfelseif trim(args.starttime_duration) is not "">
-					<cfset args.starttime = timeFormat(args.starttime_duration, "H:mm") />
-				<cfelse>
-					<cfset args.starttime = timeFormat(now(), "H:mm") />
+					<cfset args.starttime = timeFormat(args.starttime_daily, "H:mm") />
 				</cfif>
 				
 				<cfif trim(args.enddate) is not "">
 					<cfset args.enddate = dateFormat(args.enddate, "mm/dd/yyyy") />
 				</cfif>
 				
-				<cfif trim(args.endtime_duration) is not "">
-					<cfset args.endtime = timeFormat(args.endtime_duration, "H:mm") />
-				<cfelseif args.runinterval is "daily" and trim(args.endtime_daily) is not "">
+				<cfif args.runinterval is "daily" and trim(args.endtime_daily) is not "">
 					<cfset args.endtime = timeFormat(args.endtime_daily, "H:mm") />
 				<cfelse>
 					<cfset args.endtime = "" />
@@ -428,7 +400,7 @@
 																	args.username, args.password, 
 																	args.proxyserver, args.proxyport, args.publish, 
 																	args.publishpath, args.uridirectory, args.publishfile, 
-																	args.resolvelinks, args.requesttimeout) />
+																	args.resolvelinks, args.requesttimeout, args.scheduledTaskAction) />
 
 				<cfif compareNoCase(args.name, args.existingScheduledTaskName) neq 0>
 					<cfset Application.scheduledTasks.deleteScheduledTask(args.existingScheduledTaskName) />
@@ -454,6 +426,11 @@
 			</cftry>
 
 			<cfset session.message = "The scheduled task was run successfully." />
+			<cflocation url="scheduledtasks.cfm" addtoken="false" />
+		</cfcase>
+		
+		<cfcase value="editScheduledTask">
+			<cfset session.scheduledTask = Application.scheduledTasks.getScheduledTasks(args.name) />
 			<cflocation url="scheduledtasks.cfm" addtoken="false" />
 		</cfcase>
 		

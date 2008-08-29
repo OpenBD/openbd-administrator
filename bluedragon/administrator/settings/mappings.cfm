@@ -81,6 +81,8 @@
 			</ul>
 		</cfif>
 		
+		<br />
+		
 		<form name="mappingForm" action="_controller.cfm?action=processMappingForm" method="post" onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr bgcolor="##dedede">

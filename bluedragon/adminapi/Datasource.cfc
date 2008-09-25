@@ -101,7 +101,8 @@
 		
 		<!--- build up the universal datasource settings --->
 		<cfscript>
-			datasourceSettings.name = trim(arguments.name);
+			datasourceSettings.name = trim(lcase(arguments.name));
+			datasourceSettings.displayname = arguments.name;
 			datasourceSettings.databasename = trim(arguments.databasename);
 			datasourceSettings.server = trim(arguments.server);
 			datasourceSettings.port = trim(ToString(arguments.port));

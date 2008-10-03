@@ -29,6 +29,7 @@
 	<!--- CUSTOM TAG PATHS --->
 	<cffunction name="getCustomTagPaths" access="public" output="false" returntype="array" hint="Returns an array of paths to customtags">
 		<cfset var localConfig = getConfig() />
+		<cfset var customTagPaths = arrayNew(1) />
 
 		<!--- Make sure there are Custom Tag Paths defined --->
 		<cfif NOT StructKeyExists(localConfig, "cfmlcustomtags") OR NOT StructKeyExists(localConfig.cfmlcustomtags, "mapping")>
@@ -36,7 +37,9 @@
 		</cfif>
 	
 		<!--- Return entire Custom Tag Path list as an array --->
-		<cfreturn ListToArray(localConfig.cfmlcustomtags.mapping[1].directory, separator.path) />
+		<cfset customTagPaths = ListToArray(localConfig.cfmlcustomtags.mapping[1].directory, separator.path) />
+		<cfset arraySort(customTagPaths, "textnocase", "asc")>
+		<cfreturn customTagPaths />
 	</cffunction>
 
 	<cffunction name="setCustomTagPath" access="public" output="false" returntype="void" hint="Defines a new path to customtags">
@@ -137,6 +140,8 @@
 		<cfset var localConfig = getConfig() />
 		<cfset var cfxIndex = "" />
 		<cfset var returnArray = ArrayNew(1) />
+		<cfset var sortKeys = arrayNew(1) />
+		<cfset var sortKey = structNew() />
 		
 		<!--- Make sure there are C++ CFXs --->
 		<cfif (NOT StructKeyExists(localConfig, "nativecustomtags")) OR (NOT StructKeyExists(localConfig.nativecustomtags, "mapping"))>
@@ -145,7 +150,12 @@
 		
 		<!--- Return entire C++ CFX array, unless a CFX name is specified --->
 		<cfif NOT IsDefined("arguments.cfxname")>
-			<cfreturn localConfig.nativecustomtags.mapping />
+			<!--- set the sorting information --->
+			<cfset sortKey.keyName = "displayname" />
+			<cfset sortKey.sortOrder = "ascending" />
+			<cfset arrayAppend(sortKeys, sortKey) />
+			
+			<cfreturn variables.udfs.sortArrayOfObjects(localConfig.nativecustomtags.mapping, sortKeys, false, false) />
 		<cfelse>
 			<cfloop index="cfxIndex" from="1" to="#ArrayLen(localConfig.nativecustomtags.mapping)#">
 				<cfif localConfig.nativecustomtags.mapping[cfxIndex].name EQ arguments.cfxname>
@@ -241,6 +251,8 @@
 		<cfset var localConfig = getConfig() />
 		<cfset var cfxIndex = "" />
 		<cfset var returnArray = ArrayNew(1) />
+		<cfset var sortKeys = arrayNew(1) />
+		<cfset var sortKey = structNew() />
 
 		<!--- Make sure there are Java CFXs --->
 		<cfif (NOT StructKeyExists(localConfig, "javacustomtags")) OR (NOT StructKeyExists(localConfig.javacustomtags, "mapping"))>
@@ -249,7 +261,12 @@
 
 		<!--- Return entire Java CFX array, unless a CFX name is specified --->
 		<cfif NOT IsDefined("arguments.cfxname")>
-			<cfreturn localConfig.javacustomtags.mapping />
+			<!--- set the sorting information --->
+			<cfset sortKey.keyName = "displayname" />
+			<cfset sortKey.sortOrder = "ascending" />
+			<cfset arrayAppend(sortKeys, sortKey) />
+			
+			<cfreturn variables.udfs.sortArrayOfObjects(localConfig.javacustomtags.mapping, sortKeys, false, false) />
 		<cfelse>
 			<cfloop index="cfxIndex" from="1" to="#ArrayLen(localConfig.javacustomtags.mapping)#">
 				<cfif localConfig.javacustomtags.mapping[cfxIndex].name EQ arguments.cfxname>

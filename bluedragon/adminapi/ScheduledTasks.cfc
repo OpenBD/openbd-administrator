@@ -34,6 +34,8 @@
 		<cfset var tasks = arrayNew(1) />
 		<cfset var returnArray = arrayNew(1) />
 		<cfset var i = 0 />
+		<cfset var sortKeys = arrayNew(1) />
+		<cfset var sortKey = structNew() />
 		
 		<cfif not structKeyExists(localConfig, "cfschedule") or not structKeyExists(localConfig.cfschedule, "task")>
 			<cfthrow message="No scheduled tasks configured" type="bluedragon.adminapi.scheduledtasks" />
@@ -48,7 +50,12 @@
 					</cfif>
 				</cfloop>
 			<cfelse>
-				<cfreturn localConfig.cfschedule.task />
+				<!--- set the sorting information --->
+				<cfset sortKey.keyName = "name" />
+				<cfset sortKey.sortOrder = "ascending" />
+				<cfset arrayAppend(sortKeys, sortKey) />
+				
+				<cfreturn variables.udfs.sortArrayOfObjects(localConfig.cfschedule.task, sortKeys, false, false) />
 			</cfif>
 		</cfif>
 	</cffunction>

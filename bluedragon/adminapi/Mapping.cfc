@@ -33,6 +33,8 @@
 		<cfset var localConfig = getConfig() />
 		<cfset var mapIndex = "" />
 		<cfset var returnArray = ArrayNew(1) />
+		<cfset var sortKeys = arrayNew(1) />
+		<cfset var sortKey = structNew() />
 
 		<!--- Make sure there are Mappings --->
 		<cfif (NOT StructKeyExists(localConfig, "cfmappings")) OR (NOT StructKeyExists(localConfig.cfmappings, "mapping"))>
@@ -41,7 +43,12 @@
 
 		<!--- Return entire Mapping array, unless a map name is specified --->
 		<cfif NOT IsDefined("arguments.mapName")>
-			<cfreturn localConfig.cfmappings.mapping />
+			<!--- set the sorting information --->
+			<cfset sortKey.keyName = "name" />
+			<cfset sortKey.sortOrder = "ascending" />
+			<cfset arrayAppend(sortKeys, sortKey) />
+			
+			<cfreturn variables.udfs.sortArrayOfObjects(localConfig.cfmappings.mapping, sortKeys, false, false) />
 		<cfelse>
 			<cfloop index="mapIndex" from="1" to="#ArrayLen(localConfig.cfmappings.mapping)#">
 				<cfif localConfig.cfmappings.mapping[mapIndex].name EQ arguments.mapName>

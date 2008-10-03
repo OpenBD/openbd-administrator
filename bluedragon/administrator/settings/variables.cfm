@@ -164,7 +164,9 @@
 						<option value="session"<cfif chartSettings.storage is "session"> selected="true"</cfif>>Session</option>
 					<cfif arrayLen(datasources) gt 0>
 						<cfloop index="i" from="1" to="#arrayLen(datasources)#">
-						<option value="#datasources[i].name#"<cfif chartSettings.storage is datasources[i].name> selected="true"</cfif>>#datasources[i].name#</option>
+						<option value="#datasources[i].name#"<cfif chartSettings.storage is datasources[i].name> selected="true"</cfif>>
+							<cfif structKeyExists(datasources[i], "displayname")>#datasources[i].displayname#<cfelse>#datasources[i].name#</cfif>
+						</option>
 						</cfloop>
 					</cfif>
 					</select>

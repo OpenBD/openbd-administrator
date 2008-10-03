@@ -43,8 +43,8 @@
 			Application.serverSettings = createObject("component", "bluedragon.adminapi.ServerSettings");
 			Application.variableSettings = createObject("component", "bluedragon.adminapi.VariableSettings");
 			
-			Application.adminConsoleVersion = "0.8a";
-			Application.adminConsoleBuildDate = LSDateFormat(createDate(2008,8,27)) & " " & LSTimeFormat(createTime(14,46,00));
+			Application.adminConsoleVersion = "1.0";
+			Application.adminConsoleBuildDate = LSDateFormat(createDate(2008,10,01)) & " " & LSTimeFormat(createTime(11,15,00));
 			
 			Application.inited = true;
 			

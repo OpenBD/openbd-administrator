@@ -89,7 +89,7 @@
 			</ul>
 		</cfif>
 		
-		<!--- TODO: need to implement getting the file, query, and content cache count and let the user flush these --->
+		<!--- TODO: need to implement getting the content cache count and let the user flush all caches --->
 		<form name="cacheStatusForm" action="" method="post" onsubmit="">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr bgcolor="##dedede">

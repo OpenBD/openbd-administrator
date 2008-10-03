@@ -150,6 +150,8 @@
 		<cfset var localConfig = getConfig() />
 		<cfset var returnArray = "" />
 		<cfset var dsnIndex = "" />
+		<cfset var sortKeys = arrayNew(1) />
+		<cfset var sortKey = structNew() />
 		
 		<!--- Make sure there are datasources --->
 		<cfif NOT StructKeyExists(localConfig, "cfquery") OR NOT StructKeyExists(localConfig.cfquery, "datasource")>
@@ -158,9 +160,12 @@
 		
 		<!--- Return entire data source array, unless a data source name is specified --->
 		<cfif NOT IsDefined("arguments.dsn") or arguments.dsn is "">
-			<cfdump var="#localConfig.cfquery.datasource#" />
-			<cfabort />
-			<cfreturn localConfig.cfquery.datasource />
+			<!--- set the sorting information --->
+			<cfset sortKey.keyName = "name" />
+			<cfset sortKey.sortOrder = "ascending" />
+			<cfset arrayAppend(sortKeys, sortKey) />
+	
+			<cfreturn variables.udfs.sortArrayOfObjects(localConfig.cfquery.datasource, sortKeys, false, false) />
 		<cfelse>
 			<cfset returnArray = ArrayNew(1) />
 			<cfloop index="dsnIndex" from="1" to="#ArrayLen(localConfig.cfquery.datasource)#">
@@ -223,6 +228,8 @@
 		
 		<cfset var localConfig = getConfig() />
 		<cfset var dbDriverInfo = structNew() />
+		<cfset var sortKeys = arrayNew(1) />
+		<cfset var sortKey = structNew() />
 		
 		<cfif arguments.resetDrivers>
 			<cfset StructDelete(localConfig.cfquery, "dbdrivers", false) />
@@ -297,8 +304,13 @@
 				setConfig(localConfig);
 			</cfscript>
 		</cfif>
+		
+		<!--- set the sorting information --->
+		<cfset sortKey.keyName = "driverdescription" />
+		<cfset sortKey.sortOrder = "ascending" />
+		<cfset arrayAppend(sortKeys, sortKey) />
 
-		<cfreturn getConfig().cfquery.dbdrivers.driver />
+		<cfreturn variables.udfs.sortArrayOfObjects(getConfig().cfquery.dbdrivers.driver, sortKeys, false, false) />
 	</cffunction>
 	
 	<cffunction name="getDriverInfo" access="public" output="false" returntype="struct" 

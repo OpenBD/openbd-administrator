@@ -28,9 +28,12 @@
 	<cfset init() />
 
 	<cffunction name="init" access="package" output="false" returntype="any" hint="Constructor">
-		<cfset variables.api.version = "0.1a" />
-		<cfset variables.api.builddate = "20080710" />
-
+		<cfset variables.api.version = "1.0" />
+		<cfset variables.api.builddate = "20081001" />
+		
+		<!--- instantiate the udfs cfc here so it's avaialble everywhere --->
+		<cfset variables.udfs = createObject("component", "bluedragon.adminapi.utils.UDFs") />
+		
 		<!--- Grab some JVM specific information (no guessing or hacks) --->
 		<cfset variables.separator.path = getJVMProperty("path.separator") />
 		<cfset variables.separator.file = getJVMProperty("file.separator") />
@@ -38,9 +41,9 @@
 		<!--- Frequently used messages, should probably be moved to some internationalization routine (later, much later) --->
 		<cfset variables.msg.NotImplemented = "Not Implemented Yet" />
 		
-		<cfset variables.msg.compatibility.NotImplemented = "Not implemented yet by OpenBD AdminAPI compatibility layer" />
-		<cfset variables.msg.compatibility.Unsupported = "Unsupported by OpenBD AdminAPI Compatibility Layer" />
-
+		<cfset variables.msg.compatibility.NotImplemented = "Not yet implemented in OpenBD AdminAPI compatibility layer" />
+		<cfset variables.msg.compatibility.Unsupported = "Unsupported by OpenBD AdminAPI compatibility layer" />
+		
 		<cfreturn this />
 	</cffunction>
 

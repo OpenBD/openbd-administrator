@@ -31,12 +31,19 @@
 			hint="Returns an array containing defined search collections">
 		<cfset var searchCollections = arrayNew(1) />
 		<cfset var localConfig = getConfig() />
+		<cfset var sortKeys = arrayNew(1) />
+		<cfset var sortKey = structNew() />
 		
 		<!--- check to see if the cfcollection node exists --->
 		<cfif NOT structKeyExists(localConfig, "cfcollection") OR NOT structKeyExists(localConfig.cfcollection, "collection")>
 			<cfthrow message="No search collections defined" type="bluedragon.adminapi.searchcollections" />
 		<cfelse>
-			<cfreturn localConfig.cfcollection.collection />
+			<!--- set the sorting information --->
+			<cfset sortKey.keyName = "name" />
+			<cfset sortKey.sortOrder = "ascending" />
+			<cfset arrayAppend(sortKeys, sortKey) />
+			
+			<cfreturn variables.udfs.sortArrayOfObjects(localConfig.cfcollection.collection, sortKeys, false, false) />
 		</cfif>
 	</cffunction>
 	

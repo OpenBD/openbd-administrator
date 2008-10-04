@@ -37,7 +37,7 @@
 <h4>CFML Compatibility and Enhancements</h4>
 
 The Open BlueDragon steering committee is hard at work producing documentation that is specific to Open BlueDragon. In the mean time, 
-please refer to the following documentation covering New Atlanta BlueDragon 7 for information on CFML compatibility and language 
+please refer to the following documentation covering New Atlanta BlueDragon 7 for general information concerning CFML compatibility and language 
 enhancements.
 
 <ul>

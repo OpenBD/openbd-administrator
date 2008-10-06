@@ -245,8 +245,6 @@
 		</cfif>
 		
 		<cfif not StructKeyExists(localConfig.cfquery, "dbdrivers")>
-			got here
-			<cfabort />
 			<!--- add the dbdrivers node with the default drivers that should be shipping with OpenBD --->
 			<cfscript>
 				localConfig.cfquery.dbdrivers = structNew();

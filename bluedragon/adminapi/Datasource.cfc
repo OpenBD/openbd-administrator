@@ -159,7 +159,7 @@
 		</cfif>
 		
 		<!--- Return entire data source array, unless a data source name is specified --->
-		<cfif NOT IsDefined("arguments.dsn") or arguments.dsn is "">
+		<cfif NOT StructKeyExists(arguments, "dsn") or arguments.dsn is "">
 			<!--- set the sorting information --->
 			<cfset sortKey.keyName = "name" />
 			<cfset sortKey.sortOrder = "ascending" />
@@ -174,7 +174,7 @@
 					<cfreturn returnArray />
 				</cfif>
 			</cfloop>
-			<cfthrow message="#arguments.dsn# not registered as a datasource" type="bluedragon.adminapi.datasource">
+			<cfthrow message="#arguments.dsn# not registered as a datasource" type="bluedragon.adminapi.datasource" />
 		</cfif>
 	</cffunction>
 	
@@ -205,11 +205,13 @@
 	
 	<cffunction name="deleteDatasource" access="public" output="false" returntype="void" hint="Delete the specified data source">
 		<cfargument name="dsn" required="true" type="string" hint="The name of the data source to be deleted" />
+		
 		<cfset var localConfig = getConfig() />
+		<cfset var dsnIndex = 0 />
 
 		<!--- Make sure there are datasources --->
 		<cfif (NOT StructKeyExists(localConfig, "cfquery")) OR (NOT StructKeyExists(localConfig.cfquery, "datasource"))>
-			<cfthrow message="No datasources defined" type="bluedragon.adminapi.datasource">		
+			<cfthrow message="No datasources defined" type="bluedragon.adminapi.datasource" />		
 		</cfif>
 
 		<cfloop index="dsnIndex" from="1" to="#ArrayLen(localConfig.cfquery.datasource)#">
@@ -219,7 +221,8 @@
 				<cfreturn />
 			</cfif>
 		</cfloop>
-		<cfthrow message="#arguments.dsn# not registered as a datasource" type="bluedragon.adminapi.datasource">
+		
+		<cfthrow message="#arguments.dsn# not registered as a datasource" type="bluedragon.adminapi.datasource" />
 	</cffunction>
 	
 	<cffunction name="getRegisteredDrivers" access="public" output="false" returntype="array" 
@@ -231,11 +234,19 @@
 		<cfset var sortKeys = arrayNew(1) />
 		<cfset var sortKey = structNew() />
 		
+		<cfif not structKeyExists(localConfig, "cfquery")>
+			<cfset localConfig.cfquery = structNew() />
+		</cfif>
+		
 		<cfif arguments.resetDrivers>
-			<cfset StructDelete(localConfig.cfquery, "dbdrivers", false) />
+			<cfif structKeyExists(localConfig.cfquery, "dbdrivers")>
+				<cfset StructDelete(localConfig.cfquery, "dbdrivers", false) />
+			</cfif>
 		</cfif>
 		
 		<cfif not StructKeyExists(localConfig.cfquery, "dbdrivers")>
+			got here
+			<cfabort />
 			<!--- add the dbdrivers node with the default drivers that should be shipping with OpenBD --->
 			<cfscript>
 				localConfig.cfquery.dbdrivers = structNew();

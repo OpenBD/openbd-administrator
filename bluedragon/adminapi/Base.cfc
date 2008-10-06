@@ -63,6 +63,7 @@
 		<cfargument name="currentConfig" type="struct" required="true" 
 				hint="The configuration struct, which is a struct representation of bluedragon.xml" />
 		
+		<!--- TODO: IMPLEMENT SECURITY --->
 		<!--- <cfif isAdminUser()> --->
 			<cflock scope="Server" type="exclusive" timeout="5">
 				<cfset admin.server = duplicate(arguments.currentConfig) />

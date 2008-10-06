@@ -42,6 +42,7 @@
 			Application.searchCollections = createObject("component", "bluedragon.adminapi.SearchCollections");
 			Application.serverSettings = createObject("component", "bluedragon.adminapi.ServerSettings");
 			Application.variableSettings = createObject("component", "bluedragon.adminapi.VariableSettings");
+			Application.webServices = createObject("component", "bluedragon.adminapi.WebServices");
 			
 			Application.adminConsoleVersion = "1.0";
 			Application.adminConsoleBuildDate = LSDateFormat(createDate(2008,10,01)) & " " & LSTimeFormat(createTime(11,15,00));

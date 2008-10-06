@@ -26,12 +26,12 @@
 	<cfset dbdrivers = arrayNew(1) />
 	<cfset datasources = arrayNew(1) />
 
-	<cftry>
+	<!--- <cftry> --->
 		<cfset dbdrivers = Application.datasource.getRegisteredDrivers() />
-		<cfcatch type="any">
+		<!--- <cfcatch type="any">
 			<cfset dbDriverRetrievalMessage = CFCATCH.Message />
 		</cfcatch>
-	</cftry>
+	</cftry> --->
 	
 	<cftry>
 		<cfset datasources = Application.datasource.getDatasources() />

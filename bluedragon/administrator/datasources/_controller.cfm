@@ -397,6 +397,45 @@
 		</cfcase>
 		
 		<!--- WEB SERVICES --->
+		<cfcase value="processWebServiceForm">
+			<cfparam name="args.name" type="string" default="" />
+			<cfparam name="args.wsdl" type="string" default="" />
+			<cfparam name="args.username" type="string" default="" />
+			<cfparam name="args.password" type="string" default="" />
+
+			<cfset errorFields = arrayNew(2) />
+			<cfset errorFieldsIndex = 1 />
+			
+			<!--- validate the form data --->
+			<cfif trim(args.name) is "">
+				<cfset errorFields[errorFieldsIndex][1] = "name" />
+				<cfset errorFields[errorFieldsIndex][2] = "The value of Web Service Name cannot be blank" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
+			
+			<cfif trim(args.wsdl) is "" or not isValid("url", trim(args.wsdl))>
+				<cfset errorFields[errorFieldsIndex][1] = "wsdl" />
+				<cfset errorFields[errorFieldsIndex][2] = "The value of WSDL URL cannot be blank" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
+
+			<cfif arrayLen(errorFields) neq 0>
+				<!--- TODO: add nicer functionality so the entire form gets repopulated on error --->
+				<cfset session.errorFields = errorFields />
+				<cflocation url="webservices.cfm" addtoken="false" />
+			<cfelse>
+				<cfset structDelete(session, "message", false) />
+				<cfset structDelete(session, "errorFields", false)>
+				<!--- No errors on the required fields so create/modify the web service.
+						If it's a create, need to check to see if the web service already exists. --->
+				<cfif args.webServiceAction is "create" and Application.webServices.webServiceExists(args.name)>
+					<cfset session.message = "A datasource with that name already exists." />
+					<cflocation url="webservices.cfm" addtoken="false" />
+				<cfelse>
+					<!--- process the web service form --->
+				</cfif>
+			</cfif>
+		</cfcase>
 		
 		<!--- DEFAULT CASE -- NO VALID ACTION SPECIFIED --->
 		<cfdefaultcase>

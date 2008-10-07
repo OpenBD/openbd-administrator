@@ -22,8 +22,23 @@
 --->
 <cfsilent>
 	<cfparam name="webServiceRetrievalMessage" type="string" default="" />
+	<cfparam name="webServiceFormMessage" type="string" default="" />
 	<cfparam name="webServices" type="array" default="#arrayNew(1)#" />
-
+	<cfparam name="webServiceAction" type="string" default="create" />
+	<cfparam name="formActionText" type="string" default="Add" />
+	
+	<cfif structKeyExists(session, "webService")>
+		<cfset webService = session.webService />
+		<cfset webServiceAction = "update" />
+		<cfset webServiceAction = "Edit" />
+	<cfelse>
+		<cfset webService = structNew() />
+		<cfset webService.name = "" />
+		<cfset webService.wsdl = "" />
+		<cfset webService.username = "" />
+		<cfset webService.password = "" />
+	</cfif>
+	
 	<cftry>
 		<cfset webServices = Application.webServices.getWebServices() />
 		
@@ -71,37 +86,38 @@
 			}
 		</script>
 		
-		<h3>Web Services</h3>
-
-		<h3>Add a Web Service</h3>
+		<h3>#formActionText# Web Service</h3>
 		
 		<form name="webServiceForm" action="_controller.cfm?action=processWebServiceForm" method="post" onsubmit="javascript:return validate(this);">
 		<table border="0">
 			<tr>
 				<td>Web Service Name</td>
-				<td><input type="text" name="name" size="30" maxlength="50" /></td>
+				<td><input type="text" name="name" size="30" maxlength="50" value="#webService.name#" /></td>
 			</tr>
 			<tr>
 				<td>WSDL URL</td>
-				<td><input type="text" name="wsdl" size="30" /></td>
+				<td><input type="text" name="wsdl" size="30" value="#webService.wsdl#" /></td>
 			</tr>
 			<tr>
 				<td>User Name</td>
-				<td><input type="text" name="username" size="30" maxlength="100" /></td>
+				<td><input type="text" name="username" size="30" maxlength="100" value="#webService.username#" /></td>
 			</tr>
 			<tr>
 				<td>Password</td>
-				<td><input type="password" name="password" size="30" maxlength="100" /></td>
+				<td><input type="password" name="password" size="30" maxlength="100" value="#webService.password#" /></td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
-				<td><input type="submit" name="submit" value="Add Web Service" /></td>
+				<td><input type="submit" name="submit" value="#formActionText# Web Service" /></td>
 			</tr>
 		</table>
+			<input type="hidden" name="webServiceAction" value="#webServiceAction#" />
 		</form>
 		
 		<hr noshade="true" />
-		
+
+		<h3>Web Services</h3>
+
 		<cfif webServiceRetrievalMessage is not ""><p class="message">#webServiceRetrievalMessage#</p></cfif>
 		
 		<cfif arrayLen(webServices) eq 0>

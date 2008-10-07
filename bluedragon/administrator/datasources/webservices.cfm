@@ -22,6 +22,7 @@
 --->
 <cfsilent>
 	<cfparam name="webServiceRetrievalMessage" type="string" default="" />
+	<cfparam name="webServices" type="array" default="#arrayNew(1)#" />
 
 	<cftry>
 		<cfset webServices = Application.webServices.getWebServices() />
@@ -48,14 +49,11 @@
 	<cfoutput>
 		<script type="text/javascript">
 			function validate(f) {
-				var dsn = f.dsn.value;
-				var dbType = f.dbType.value;
-				// TODO: add a trim function here to check for dsns with only spaces
-				if (f.dsn.value.length == 0) {
-					alert("Please enter the datasource name");
+				if (f.name.value.length == 0) {
+					alert("Please enter the web service name");
 					return false;
-				} else if (f.dbType.value == "") {
-					alert("Please select the database type");
+				} else if (f.wsdl.value.length == 0) {
+					alert("Please enter the WSDL URL for the web service");
 					return false;
 				} else {
 					return true;
@@ -74,6 +72,35 @@
 		</script>
 		
 		<h3>Web Services</h3>
+
+		<h3>Add a Web Service</h3>
+		
+		<form name="webServiceForm" action="_controller.cfm?action=processWebServiceForm" method="post" onsubmit="javascript:return validate(this);">
+		<table border="0">
+			<tr>
+				<td>Web Service Name</td>
+				<td><input type="text" name="name" size="30" maxlength="50" /></td>
+			</tr>
+			<tr>
+				<td>WSDL URL</td>
+				<td><input type="text" name="wsdl" size="30" /></td>
+			</tr>
+			<tr>
+				<td>User Name</td>
+				<td><input type="text" name="username" size="30" maxlength="100" /></td>
+			</tr>
+			<tr>
+				<td>Password</td>
+				<td><input type="password" name="password" size="30" maxlength="100" /></td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td><input type="submit" name="submit" value="Add Web Service" /></td>
+			</tr>
+		</table>
+		</form>
+		
+		<hr noshade="true" />
 		
 		<cfif webServiceRetrievalMessage is not ""><p class="message">#webServiceRetrievalMessage#</p></cfif>
 		
@@ -121,35 +148,6 @@
 			</tr>
 		</table>
 		</cfif>
-
-		<hr noshade="true" />
-		
-		<h3>Add a Web Service</h3>
-		
-		<form name="webServiceForm" action="_controller.cfm?action=processWebServiceForm" method="post" onsubmit="javascript:return validate(this);">
-		<table border="0">
-			<tr>
-				<td>Web Service Name</td>
-				<td><input type="text" name="name" size="30" maxlength="50" /></td>
-			</tr>
-			<tr>
-				<td>WSDL URL</td>
-				<td><input type="text" name="wsdl" size="30" /></td>
-			</tr>
-			<tr>
-				<td>User Name</td>
-				<td><input type="text" name="username" size="30" maxlength="100" /></td>
-			</tr>
-			<tr>
-				<td>Password</td>
-				<td><input type="password" name="password" size="30" maxlength="100" /></td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td><input type="submit" name="submit" value="Add Web Service" /></td>
-			</tr>
-		</table>
-		</form>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "webServiceRetrievalMessage", false) />

@@ -396,9 +396,7 @@
 			<cfset session.searchCollectionStatus = Application.searchCollections.getCollectionStatus(args.name) />
 		</cfcase>
 		
-		<!--- SCHEDULED TASKS --->
-		<cfcase value="processScheduledTaskForm">
-		</cfcase>
+		<!--- WEB SERVICES --->
 		
 		<!--- DEFAULT CASE -- NO VALID ACTION SPECIFIED --->
 		<cfdefaultcase>

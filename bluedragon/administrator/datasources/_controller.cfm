@@ -402,7 +402,7 @@
 			<cfparam name="args.wsdl" type="string" default="" />
 			<cfparam name="args.username" type="string" default="" />
 			<cfparam name="args.password" type="string" default="" />
-
+			
 			<cfset errorFields = arrayNew(2) />
 			<cfset errorFieldsIndex = 1 />
 			
@@ -418,7 +418,7 @@
 				<cfset errorFields[errorFieldsIndex][2] = "The value of WSDL URL cannot be blank" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
-
+			
 			<cfif arrayLen(errorFields) neq 0>
 				<!--- TODO: add nicer functionality so the entire form gets repopulated on error --->
 				<cfset session.errorFields = errorFields />
@@ -429,7 +429,7 @@
 				<!--- No errors on the required fields so create/modify the web service.
 						If it's a create, need to check to see if the web service already exists. --->
 				<cfif args.webServiceAction is "create" and Application.webServices.webServiceExists(args.name)>
-					<cfset session.message = "A datasource with that name already exists." />
+					<cfset session.message = "A web service with that name already exists." />
 					<cflocation url="webservices.cfm" addtoken="false" />
 				<cfelse>
 					<!--- process the web service form --->
@@ -443,6 +443,45 @@
 					</cftry>
 				</cfif>
 			</cfif>
+
+			<cfset session.message = "The web service was processed successfully" />
+			<cflocation url="webservices.cfm" addtoken="false" />
+		</cfcase>
+		
+		<cfcase value="verifyWebService">
+			<cfparam name="args.name" type="string" default="" />
+		</cfcase>
+		
+		<cfcase value="deleteWebService">
+			<cfparam name="args.name" type="string" default="" />
+			
+			<cfset errorFields = arrayNew(2) />
+			<cfset errorFieldsIndex = 1 />
+			
+			<cfif trim(args.name) is "">
+				<cfset errorFields[errorFieldsIndex][1] = "name" />
+				<cfset errorFields[errorFieldsIndex][2] = "No web service name was provided to delete" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
+			
+			<cfif arrayLen(errorFields) neq 0>
+				<cfset session.errorFields = errorFields />
+				<cflocation url="webservices.cfm" addtoken="false" />
+			<cfelse>
+				<cfset structDelete(session, "message", false) />
+				<cfset structDelete(session, "errorFields", false) />
+				
+				<cftry>
+					<cfset Application.webServices.deleteWebService(args.name) />
+					<cfcatch type="bluedragon.adminapi.webservices">
+						<cfset session.message = CFCATCH.Message />
+						<cflocation url="webservices.cfm" addtoken="false" />
+					</cfcatch>
+				</cftry>
+			</cfif>
+			
+			<cfset session.message = "The web service was deleted successfully" />
+			<cflocation url="webservices.cfm" addtoken="false" />
 		</cfcase>
 		
 		<!--- DEFAULT CASE -- NO VALID ACTION SPECIFIED --->

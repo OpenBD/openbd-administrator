@@ -30,9 +30,9 @@
 	<cffunction name="setWebService" access="public" output="false" returntype="void" hint="Creates or updates a web service">
 		<cfargument name="name" type="string" required="true" hint="OpenBD web service name" />
 		<cfargument name="wsdl" type="string" required="true" hint="WSDL URL" />
-		<cfargument name="action" type="string" required="true" hint="The action to perform (create or update)" />
 		<cfargument name="username" type="string" required="false" default="" hint="Web service user name" />
 		<cfargument name="password" type="string" required="false" default="" hint="Web service password" />
+		<cfargument name="action" type="string" required="true" hint="The action to perform (create or update)" />
 		<cfargument name="existingWebServiceName" type="string" required="false" default="" hint="The existing web service name; used on updates" />
 		
 		<cfset var localConfig = getConfig() />
@@ -45,6 +45,11 @@
 			<cfset localConfig.webservices = ArrayNew(1) />
 		</cfif>
 
+		<!--- if the web service already exists and this isn't an update, throw an error --->
+		<cfif arguments.action is "create" and webServiceExists(arguments.name)>
+			<cfthrow message="A web service with that name already exists" type="bluedragon.adminapi.webservices" />
+		</cfif>
+		
 		<!--- try to hit the web service and throw error if we can't --->
 		<cftry>
 			<cfobject name="testWS" type="webservice" webservice="#trim(arguments.wsdl)#" 
@@ -53,11 +58,6 @@
 				<cfrethrow />
 			</cfcatch>
 		</cftry>
-		
-		<!--- if the web service already exists and this isn't an update, throw an error --->
-		<cfif arguments.action is "create" and webServiceExists(arguments.name)>
-			<cfthrow message="The web service already exists" type="bluedragon.adminapi.webservices" />
-		</cfif>
 		
 		<!--- if this is an update, delete the existing web service --->
 		<cfif arguments.action is "update">
@@ -157,7 +157,7 @@
 		</cfif>
 
 		<cfloop index="webServiceIndex" from="1" to="#ArrayLen(localConfig.webservices)#">
-			<cfif localConfig.webservices[dsnIndex].name EQ arguments.webservice>
+			<cfif localConfig.webservices[webServiceIndex].name EQ arguments.webservice>
 				<cfset ArrayDeleteAt(localConfig.webservices, webServiceIndex) />
 				<cfset setConfig(localConfig) />
 				<cfreturn />

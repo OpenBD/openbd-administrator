@@ -1,0 +1,1 @@
+<cfobject name="test" type="webservice" webservice="http://www.weather.gov/forecasts/xml/DWMLgen/wsdl/ndfdXML.wsdl" />

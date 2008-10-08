@@ -77,16 +77,24 @@
 			
 			function removeWebService(webService) {
 				if(confirm("Are you sure you want to remove this web service?")) {
-					location.replace("_controller.cfm?action=removeWebService&webService=" + webService);
+					location.replace("_controller.cfm?action=deleteWebService&name=" + webService);
 				}
 			}
 			
+			function verifyWebService(webService) {
+				location.replace("_controller.cfm?action=verifyWebService&name=" + webService);
+			}
+			
 			function verifyAllWebServices() {
-				location.replace("_controller.cfm?action=verifyWebService")
+				location.replace("_controller.cfm?action=verifyWebService");
 			}
 		</script>
 		
 		<h3>#formActionText# Web Service</h3>
+		
+		<cfif structKeyExists(session, "message") and session.message is not "">
+			<p class="message">#session.message#</p>
+		</cfif>
 		
 		<form name="webServiceForm" action="_controller.cfm?action=processWebServiceForm" method="post" onsubmit="javascript:return validate(this);">
 		<table border="0">
@@ -159,7 +167,7 @@
 			</tr>
 		</cfloop>
 			<tr bgcolor="##dedede">
-				<td colspan="5">
+				<td colspan="6">
 					<input type="button" name="verifyAll" value="Verify All Web Services" onclick="javascript:verifyAllWebServices()" />
 				</td>
 			</tr>

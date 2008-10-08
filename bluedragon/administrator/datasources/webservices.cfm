@@ -28,9 +28,9 @@
 	<cfparam name="formActionText" type="string" default="Add" />
 	
 	<cfif structKeyExists(session, "webService")>
-		<cfset webService = session.webService />
+		<cfset webService = session.webService[1] />
 		<cfset webServiceAction = "update" />
-		<cfset webServiceAction = "Edit" />
+		<cfset formActionText = "Update" />
 	<cfelse>
 		<cfset webService = structNew() />
 		<cfset webService.name = "" />
@@ -44,7 +44,7 @@
 		
 		<!--- if session.webServiceStatus exists, either one or all webservices are being verified so add that info to 
 				the webservices --->
-		<!--- <cfif structKeyExists(session, "webServiceStatus")>
+		<cfif structKeyExists(session, "webServiceStatus")>
 			<cfloop index="i" from="1" to="#arrayLen(session.webServiceStatus)#">
 				<cfloop index="j" from="1" to="#arrayLen(webServices)#">
 					<cfif session.webServiceStatus[i].name is webServices[j].name>
@@ -53,7 +53,7 @@
 					</cfif>
 				</cfloop>
 			</cfloop>
-		</cfif> --->
+		</cfif>
 		
 		<cfcatch type="any">
 			<cfset webServiceRetrievalMessage = CFCATCH.Message />
@@ -123,6 +123,12 @@
 			<input type="hidden" name="existingWebServiceName" value="#webService.name#" />
 		</form>
 		
+		<p>
+			<strong>NOTE:</strong> If Open BlueDragon throws an internal error while attempting to add a web service, and the stack trace begins with 
+			"java.lang.NoClassDefFoundError: sun/tools/javac/Main", this indicates that you do not have Java's tools.jar in your classpath. 
+			Either add the appropriate tools.jar to your classpath or copy tools.jar to Open BlueDragon's WEB-INF/lib directory.
+		</p>
+		
 		<hr noshade="true" />
 
 		<h3>Web Services</h3>
@@ -144,14 +150,14 @@
 		<cfloop index="i" from="1" to="#arrayLen(webServices)#">
 			<tr <cfif not structKeyExists(webServices[i], "verified")>bgcolor="##ffffff"<cfelseif webServices[i].verified>bgcolor="##ccffcc"<cfelseif not webServices[i].verified>bgcolor="##ffff99"</cfif>>
 				<td width="100">
-					<a href="_controller.cfm?action=editWebService&webService=#webServices[i].name#" alt="Edit Web Service" title="Edit Web Service"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
-					<a href="_controller.cfm?action=verifyWebService&webService=#webServices[i].name#" alt="Verify Web Service" title="Verify Web Service"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
+					<a href="_controller.cfm?action=editWebService&name=#webServices[i].name#" alt="Edit Web Service" title="Edit Web Service"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
+					<a href="_controller.cfm?action=verifyWebService&name=#webServices[i].name#" alt="Verify Web Service" title="Verify Web Service"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
 					<a href="javascript:void(0);" onclick="javascript:removeWebService('#webServices[i].name#');" alt="Remove Web Service" title="Remove Web Service"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
 				</td>
 				<td><cfif structKeyExists(webServices[i], "displayname")>#webServices[i].displayname#<cfelse>#webServices[i].name#</cfif></td>
 				<td>#webServices[i].wsdl#</td>
 				<td>#webServices[i].username#</td>
-				<td>#webServices[i].password#</td>
+				<td><cfif webServices[i].password is not "">#repeatString("*", 8)#</cfif></td>
 				<td width="200">
 					<cfif structKeyExists(webServices[i], "verified")>
 						<cfif webServices[i].verified>
@@ -172,10 +178,13 @@
 				</td>
 			</tr>
 		</table>
+		
+		<p><strong>NOTE:</strong> Verifying a web service will also refresh its WSDL.</p>
 		</cfif>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "webServiceRetrievalMessage", false) />
 	<cfset structDelete(session, "errorFields", false) />
+	<cfset structDelete(session, "webService", false) />
 	<cfset structDelete(session, "webServiceStatus", false) />
 </cfsavecontent>

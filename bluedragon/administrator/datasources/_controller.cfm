@@ -41,6 +41,8 @@
 		structDelete(session, "errorFields", false);
 		structDelete(session, "datasourceStatus", false);
 		structDelete(session, "searchCollection", false);
+		structDelete(session, "webService", false);
+		structDelete(session, "webServiceStatus", false);
 	</cfscript>
 	
 	<cfswitch expression="#args.action#">
@@ -402,6 +404,8 @@
 			<cfparam name="args.wsdl" type="string" default="" />
 			<cfparam name="args.username" type="string" default="" />
 			<cfparam name="args.password" type="string" default="" />
+			<cfparam name="args.webServiceAction" type="string" default="" />
+			<cfparam name="args.existingWebServiceName" type="string" default="" />
 			
 			<cfset errorFields = arrayNew(2) />
 			<cfset errorFieldsIndex = 1 />
@@ -416,6 +420,12 @@
 			<cfif trim(args.wsdl) is "" or not isValid("url", trim(args.wsdl))>
 				<cfset errorFields[errorFieldsIndex][1] = "wsdl" />
 				<cfset errorFields[errorFieldsIndex][2] = "The value of WSDL URL cannot be blank" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
+			
+			<cfif args.webServiceAction is "">
+				<cfset errorFields[errorFieldsIndex][1] = "action" />
+				<cfset errorFields[errorFieldsIndex][2] = "No valid action was specified" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
@@ -448,8 +458,64 @@
 			<cflocation url="webservices.cfm" addtoken="false" />
 		</cfcase>
 		
+		<cfcase value="editWebService">
+			<cfparam name="args.name" type="string" default="" />
+
+			<cfset errorFields = arrayNew(2) />
+			<cfset errorFieldsIndex = 1 />
+			
+			<cfif trim(args.name) is "">
+				<cfset errorFields[errorFieldsIndex][1] = "name" />
+				<cfset errorFields[errorFieldsIndex][2] = "No web service name was provided to edit" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
+			
+			<cfif arrayLen(errorFields) neq 0>
+				<cfset session.errorFields = errorFields />
+				<cflocation url="webservices.cfm" addtoken="false" />
+			<cfelse>
+				<cfset structDelete(session, "message", false) />
+				<cfset structDelete(session, "errorFields", false) />
+				
+				<cftry>
+					<cfset session.webService = Application.webServices.getWebServices(args.name) />
+					<cfcatch type="bluedragon.adminapi.webservices">
+						<cfset session.message = CFCATCH.Message />
+						<cflocation url="webservices.cfm" addtoken="false" />
+					</cfcatch>
+				</cftry>
+			</cfif>
+
+			<cflocation url="webservices.cfm" addtoken="false" />
+		</cfcase>
+		
+		
 		<cfcase value="verifyWebService">
 			<cfparam name="args.name" type="string" default="" />
+			
+			<cfset session.webServiceStatus = arrayNew(1) />
+			
+			<!--- if args.name is not "" then we're verifying a single web service; otherwise verify all --->
+			<cfif args.name is not "">
+				<cfset webServices = Application.webServices.getWebServices(args.name) />
+			<cfelse>
+				<cfset webServices = Application.webServices.getWebServices() />
+			</cfif>
+			
+			<cfloop index="i" from="1" to="#arrayLen(webServices)#">
+				<cfset session.webServiceStatus[i].name = webServices[i].name />
+				
+				<cftry>
+					<cfset session.webServiceStatus[i].verified = Application.webServices.verifyWebService(webServices[i].name) />
+					<cfset session.webServiceStatus[i].message = "" />
+					<cfcatch type="bluedragon.adminapi.webservices">
+						<cfset session.webServiceStatus[i].verified = false />
+						<cfset session.webServiceStatus[i].message = CFCATCH.Message />
+					</cfcatch>
+				</cftry>
+			</cfloop>
+			
+			<cflocation url="webservices.cfm" addtoken="false" />
 		</cfcase>
 		
 		<cfcase value="deleteWebService">

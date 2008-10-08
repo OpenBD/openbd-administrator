@@ -41,19 +41,21 @@
 		<cfset var testWS = "" />
 		
 		<!--- make sure configuration structure exists, otherwise build it --->
-		<cfif NOT StructKeyExists(localConfig, "webservices")>
-			<cfset localConfig.webservices = ArrayNew(1) />
+		<cfif NOT StructKeyExists(localConfig, "webservices") or NOT StructKeyExists(localConfig.webservices, "webservice")>
+			<cfset localConfig.webservices.webservice = ArrayNew(1) />
 		</cfif>
 
 		<!--- if the web service already exists and this isn't an update, throw an error --->
-		<cfif arguments.action is "create" and webServiceExists(arguments.name)>
+		<cfif arguments.action is "create" and webServiceExists(arguments.name) 
+				or (arguments.action is "update" and arguments.name is not arguments.existingWebServiceName)>
 			<cfthrow message="A web service with that name already exists" type="bluedragon.adminapi.webservices" />
 		</cfif>
 		
 		<!--- try to hit the web service and throw error if we can't --->
 		<cftry>
 			<cfobject name="testWS" type="webservice" webservice="#trim(arguments.wsdl)#" 
-					username="#arguments.username#" password="#arguments.password#" />
+					username="#arguments.username#" password="#arguments.password#" 
+					refreshWSDL="true" />
 			<cfcatch type="any">
 				<cfrethrow />
 			</cfcatch>
@@ -65,20 +67,21 @@
 			<cfset localConfig = getConfig() />
 			
 			<!--- if we're editing the only remaining web service, need to recreate the web service struture --->
-			<cfif NOT StructKeyExists(localConfig, "webservices")>
-				<cfset localConfig.webservices = ArrayNew(1) />
+			<cfif NOT StructKeyExists(localConfig, "webservices") or NOT StructKeyExists(localConfig.webservices, "webservice")>
+				<cfset localConfig.webservices.webservice = ArrayNew(1) />
 			</cfif>
 		</cfif>
 		
 		<!--- build up the web service info --->
 		<cfscript>
 			webservice.name = trim(lcase(arguments.name));
+			webservice.displayname = trim(arguments.name);
 			webservice.wsdl = trim(arguments.wsdl);
 			webservice.username = trim(arguments.username);
 			webservice.password = trim(arguments.password);
 			
 			// prepend the new datasource to the localconfig array
-			arrayPrepend(localConfig.webservices, structCopy(webservice));
+			arrayPrepend(localConfig.webservices.webservice, structCopy(webservice));
 			
 			// update the config
 			setConfig(localConfig);
@@ -96,23 +99,23 @@
 		<cfset var sortKey = structNew() />
 		
 		<!--- Make sure there are web services --->
-		<cfif NOT StructKeyExists(localConfig, "webservices")>
+		<cfif NOT StructKeyExists(localConfig, "webservices") or NOT StructKeyExists(localconfig.webservices, "webservice")>
 			<cfthrow message="No registered web services" type="bluedragon.adminapi.webservices" />
 		</cfif>
 		
 		<!--- Return entire web service array, unless a web service is specified --->
-		<cfif NOT StructKeyExists(arguments, "webservice") or arguments.webservice is "">
+		<cfif NOT StructKeyExists(arguments, "webService") or arguments.webservice is "">
 			<!--- set the sorting information --->
 			<cfset sortKey.keyName = "name" />
 			<cfset sortKey.sortOrder = "ascending" />
 			<cfset arrayAppend(sortKeys, sortKey) />
 	
-			<cfreturn variables.udfs.sortArrayOfObjects(localConfig.webservices, sortKeys, false, false) />
+			<cfreturn variables.udfs.sortArrayOfObjects(localConfig.webservices.webservice, sortKeys, false, false) />
 		<cfelse>
 			<cfset returnArray = ArrayNew(1) />
-			<cfloop index="webServiceIndex" from="1" to="#ArrayLen(localConfig.webservices)#">
-				<cfif localConfig.webservices[webServiceIndex].name EQ arguments.webService>
-					<cfset returnArray[1] = Duplicate(localConfig.webservices[dsnIndex]) />
+			<cfloop index="webServiceIndex" from="1" to="#ArrayLen(localConfig.webservices.webservice)#">
+				<cfif localConfig.webservices.webservice[webServiceIndex].name EQ arguments.webService>
+					<cfset returnArray[1] = Duplicate(localConfig.webservices.webservice[webServiceIndex]) />
 					<cfreturn returnArray />
 				</cfif>
 			</cfloop>
@@ -132,8 +135,8 @@
 			<!--- no web services at all, so this one doesn't exist ---->
 			<cfset webServiceExists = false />
 		<cfelse>
-			<cfloop index="i" from="1" to="#ArrayLen(localConfig.webservices)#">
-				<cfif localConfig.webservices[i].name is arguments.webService>
+			<cfloop index="i" from="1" to="#ArrayLen(localConfig.webservices.webservice)#">
+				<cfif localConfig.webservices.webservice[i].name is trim(lcase(arguments.webService))>
 					<cfset webServiceExists = true />
 					<cfbreak />
 				<cfelse>
@@ -156,9 +159,9 @@
 			<cfthrow message="No web services defined" type="bluedragon.adminapi.webservices" />		
 		</cfif>
 
-		<cfloop index="webServiceIndex" from="1" to="#ArrayLen(localConfig.webservices)#">
-			<cfif localConfig.webservices[webServiceIndex].name EQ arguments.webservice>
-				<cfset ArrayDeleteAt(localConfig.webservices, webServiceIndex) />
+		<cfloop index="webServiceIndex" from="1" to="#ArrayLen(localConfig.webservices.webservice)#">
+			<cfif localConfig.webservices.webservice[webServiceIndex].name EQ arguments.webservice>
+				<cfset ArrayDeleteAt(localConfig.webservices.webservice, webServiceIndex) />
 				<cfset setConfig(localConfig) />
 				<cfreturn />
 			</cfif>
@@ -172,12 +175,13 @@
 		
 		<cfset var verified = false />
 		<cfset var theWebService = getWebServices(arguments.webservice).get(0) />
-		<cfset var test = "" />
+		<cfset var testWS = "" />
 		
 		<!--- try to hit the web service and throw error if we can't --->
 		<cftry>
-			<cfobject name="test" type="webservice" webservice="#theWebService.wsdl#" 
-					username="#theWebService.username#" password="#theWebService.password#" />
+			<cfobject name="testWS" type="webservice" webservice="#theWebService.wsdl#" 
+					username="#theWebService.username#" password="#theWebService.password#" 
+					refreshWSDL="true" />
 			<cfset verified = true />
 			<cfcatch type="any">
 				<cfrethrow />

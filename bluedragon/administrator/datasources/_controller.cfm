@@ -434,7 +434,8 @@
 				<cfelse>
 					<!--- process the web service form --->
 					<cftry>
-						<cfset Application.webServices.setWebService(args.name, args.wsdl, args.username, args.password, args.)>
+						<cfset Application.webServices.setWebService(args.name, args.wsdl, args.username, args.password, 
+																		args.webServiceAction, args.existingWebServiceName) />
 						<cfcatch type="bluedragon.adminapi.webservices">
 							<cfset session.message = CFCATCH.Message />
 							<cflocation url="webservices.cfm" addtoken="false" />

@@ -38,7 +38,7 @@
 		<cfset var localConfig = getConfig() />
 		<cfset var webService = structNew() />
 		<cfset var webServiceVerified = false />
-		<cfset var test = "" />
+		<cfset var testWS = "" />
 		
 		<!--- make sure configuration structure exists, otherwise build it --->
 		<cfif NOT StructKeyExists(localConfig, "webservices")>
@@ -47,7 +47,7 @@
 
 		<!--- try to hit the web service and throw error if we can't --->
 		<cftry>
-			<cfobject name="test" type="webservice" webservice="#trim(arguments.wsdl)#" 
+			<cfobject name="testWS" type="webservice" webservice="#trim(arguments.wsdl)#" 
 					username="#arguments.username#" password="#arguments.password#" />
 			<cfcatch type="any">
 				<cfrethrow />
@@ -73,7 +73,6 @@
 		<!--- build up the web service info --->
 		<cfscript>
 			webservice.name = trim(lcase(arguments.name));
-			webservice.displayname = trim(arguments.name);
 			webservice.wsdl = trim(arguments.wsdl);
 			webservice.username = trim(arguments.username);
 			webservice.password = trim(arguments.password);

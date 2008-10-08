@@ -112,6 +112,7 @@
 			</tr>
 		</table>
 			<input type="hidden" name="webServiceAction" value="#webServiceAction#" />
+			<input type="hidden" name="existingWebServiceName" value="#webService.name#" />
 		</form>
 		
 		<hr noshade="true" />

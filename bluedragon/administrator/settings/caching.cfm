@@ -35,6 +35,15 @@
 	</cftry>
 	
 	<cftry>
+		<cfset numContentInCache = Application.caching.getNumContentInCache() />
+		<cfset numContentCacheHits = Application.caching.getContentCacheHits() />
+		<cfset numContentCacheMisses = Application.caching.getContentCacheMisses() />
+		<cfcatch type="bluedragon.adminapi.caching">
+			<cfset contentCacheMessage = CFCATCH.Message />
+		</cfcatch>
+	</cftry>
+	
+	<cftry>
 		<cfset numFilesInCache = Application.caching.getNumFilesInCache() />
 		<cfcatch type="bluedragon.adminapi.caching">
 			<cfset fileCacheMessage = CFCATCH.Message />
@@ -43,6 +52,8 @@
 	
 	<cftry>
 		<cfset numQueriesInCache = Application.caching.getNumQueriesInCache() />
+		<cfset numQueryCacheHits = Application.caching.getQueryCacheHits() />
+		<cfset numQueryCacheMisses = Application.caching.getQueryCacheMisses() />
 		<cfcatch type="bluedragon.adminapi.caching">
 			<cfset queryCacheMessage = CFCATCH.Message />
 		</cfcatch>
@@ -90,37 +101,49 @@
 		</cfif>
 		
 		<!--- TODO: need to implement getting the content cache count and let the user flush all caches --->
-		<form name="cacheStatusForm" action="" method="post" onsubmit="">
+		<form name="cacheStatusForm" action="_controller.cfm?action=processFlushCacheForm" method="post" onsubmit="">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr bgcolor="##dedede">
-				<td colspan="3"><strong>Cache Status</strong></td>
+				<td colspan="5"><strong>Cache Status</strong></td>
+			</tr>
+			<tr bgcolor="##dedede">
+				<td><strong>Cache</strong></td>
+				<td><strong>Size</strong></td>
+				<td><strong>Hits</strong></td>
+				<td><strong>Misses</strong></td>
+				<td><strong>Flush</strong></td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right" width="200">Files in Cache</td>
+				<td bgcolor="##f0f0f0" align="right" width="200">File</td>
 				<td bgcolor="##ffffff" width="300">#numFilesInCache#</td>
-				<td bgcolor="##f0f0f0" align="center">
-					<input type="checkbox" name="flushCache" value="fileCache" />
-				</td>
-			</tr>
-			<tr>
-				<td bgcolor="##f0f0f0" align="right">Queries in Cache</td>
-				<td bgcolor="##ffffff">#numQueriesInCache#</td>
-				<td bgcolor="##f0f0f0" align="center">
-					<input type="checkbox" name="flushCache" value="queryCache" />
-				</td>
-			</tr>
-			<tr>
-				<td bgcolor="##f0f0f0" align="right">Content in Cache</td>
+				<td bgcolor="##ffffff"></td>
 				<td bgcolor="##ffffff"></td>
 				<td bgcolor="##f0f0f0" align="center">
-					<input type="checkbox" name="flushCache" value="contentCache" />
+					<input type="checkbox" name="cacheToFlush" value="file" />
+				</td>
+			</tr>
+			<tr>
+				<td bgcolor="##f0f0f0" align="right">Query</td>
+				<td bgcolor="##ffffff">#numQueriesInCache#</td>
+				<td bgcolor="##ffffff">#numQueryCacheHits#</td>
+				<td bgcolor="##ffffff">#numQueryCacheMisses#</td>
+				<td bgcolor="##f0f0f0" align="center">
+					<input type="checkbox" name="cacheToFlush" value="query" />
+				</td>
+			</tr>
+			<tr>
+				<td bgcolor="##f0f0f0" align="right">Content</td>
+				<td bgcolor="##ffffff">#numContentInCache#</td>
+				<td bgcolor="##ffffff">#numContentCacheHits#</td>
+				<td bgcolor="##ffffff">#numContentCacheMisses#</td>
+				<td bgcolor="##f0f0f0" align="center">
+					<input type="checkbox" name="cacheToFlush" value="content" />
 				</td>
 			</tr>
 			<tr>
 			</tr>
 			<tr bgcolor="##dedede">
-				<td colspan="2">&nbsp;</td>
-				<td><input type="submit" name="submit" value="Flush Checked Caches" /></td>
+				<td colspan="5" align="right"><input type="submit" name="submit" value="Flush Checked Caches" /></td>
 			</tr>
 		</table>
 		</form>

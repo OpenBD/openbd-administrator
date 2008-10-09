@@ -231,6 +231,35 @@
 			</cfif>
 		</cfcase>
 		
+		<cfcase value="processFlushCacheForm">
+			<cfparam name="args.cacheToFlush" type="string" default="" />
+			
+			<cfset errorFields = arrayNew(2) />
+			<cfset errorFieldsIndex = 1 />
+			
+			<cfif args.cacheToFlush is "">
+				<cfset errorFields[errorFieldsIndex][1] = "cacheToFlush" />
+				<cfset errorFields[errorFieldsIndex][2] = "No cache to flush was selected" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
+			
+			<cfif arrayLen(errorFields) gt 0>
+				<cfset session.errorFields = errorFields />
+				<cflocation url="caching.cfm" addtoken="false" />
+			<cfelse>
+				<cftry>
+					<cfset Application.caching.flushCaches(args.cacheToFlush) />
+					<cfcatch type="bluedragon.adminapi.caching">
+						<cfset session.message = CFCATCH.Message />
+						<cflocation url="caching.cfm" addtoken="false" />
+					</cfcatch>
+				</cftry>
+			</cfif>
+			
+			<cfset session.message = "The selected caches were flushed successfully." />
+			<cflocation url="caching.cfm" addtoken="false" />
+		</cfcase>
+		
 		<!--- VARIABLES --->
 		<cfcase value="processVariableForm">
 			<cfset errorFields = arrayNew(2) />

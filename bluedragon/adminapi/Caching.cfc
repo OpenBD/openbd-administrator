@@ -113,7 +113,16 @@
 	
 	<cffunction name="getNumQueriesInCache" access="public" output="false" returntype="numeric" 
 			hint="Returns the number of queries in the cache">
-		<cfreturn createObject("java", "com.naryx.tagfusion.cfm.sql.cfQUERY").activeQueryCache.getNumberQueries() />
+		<cfset var numQueriesCached = 0 />
+		
+		<cftry>
+			<cfset numQueriesCached = createObject("java", "com.naryx.tagfusion.cfm.sql.cfQUERY").activeQueryCache.getNumberQueries() />
+			<cfcatch type="any">
+				<!--- use default of 0 -- typically this error will mean that the query cache doesn't exist yet --->
+			</cfcatch>
+		</cftry>
+		
+		<cfreturn numQueriesCached  />
 	</cffunction>
 	
 </cfcomponent>

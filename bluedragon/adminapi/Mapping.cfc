@@ -107,7 +107,8 @@
 		</cfif>
 		
 		<!--- Build Mapping Struct --->
-		<cfset mapping.name = arguments.name />
+		<cfset mapping.name = LCase(arguments.name) />
+		<cfset mapping.displayname = arguments.name />
 		<cfset mapping.directory = arguments.directory />
 
 		<!--- Prepend it to the Mapping array --->

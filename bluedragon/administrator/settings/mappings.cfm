@@ -30,6 +30,7 @@
 	<cfelse>
 		<cfset mapping = structNew() />
 		<cfset mapping.name = "" />
+		<cfset mapping.displayname = "" />
 		<cfset mapping.directory = "" />
 		<cfset mappingAction = "create" />
 	</cfif>
@@ -87,7 +88,7 @@
 					<a href="_controller.cfm?action=verifyMapping&name=#mappings[i].name#" alt="Verify Mapping" title="Verify Mapping"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
 					<a href="javascript:void(0);" onclick="javascript:deleteMapping('#mappings[i].name#');" alt="Delete Mapping" title="Delete Mapping"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
 				</td>
-				<td>#mappings[i].name#</td>
+				<td><cfif structKeyExists(mappings[i], "displayname")>#mappings[i].displayname#<cfelse>#mappings[i].name#</cfif></td>
 				<td>#mappings[i].directory#</td>
 			</tr>
 		</cfloop>
@@ -113,7 +114,7 @@
 			<tr>
 				<td align="right" bgcolor="##f0f0f0">Logical Path</td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="name" size="40" value="#mapping.name#" />
+					<input type="text" name="name" size="40" value="<cfif structKeyExists(mapping, 'displayname')>#mapping.displayname#<cfelse>#mapping.name#</cfif>" />
 				</td>
 			</tr>
 			<tr>

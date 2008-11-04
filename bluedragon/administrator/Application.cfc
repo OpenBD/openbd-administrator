@@ -56,6 +56,77 @@
 	<cffunction name="onRequestStart" access="public" output="false" returntype="boolean">
 		<cfargument name="thePage" type="string" required="true" />
 		
+		<!--- handle the allow/deny IP addresses --->
+		<cfset var allowedIPs = Application.administrator.getAllowedIPs() />
+		<cfset var allowedIP = "" />
+		<cfset var deniedIPs = Application.administrator.getDeniedIPs() />
+		<cfset var deniedIP = "" />
+		<cfset var allow = false />
+		<cfset var remoteAddrOctets = "" />
+		<cfset var allowedIPOctets = "" />
+		<cfset var deniedIPOctets = "" />
+		<cfset var octetMatchCount = 0 />
+		<cfset var i = 0 />
+
+		<!--- never deny localhost for safety's sake --->
+ 		<cfif CGI.REMOTE_ADDR is not "127.0.0.1" and (allowedIPs is not "" or deniedIPs is not "")>
+			<!--- check denied IPs first--these take precedence over allows --->
+			<cfif deniedIPs is not "">
+				<!--- if it's an exact match, obviously we abort --->
+				<cfif listFind(deniedIPs, CGI.REMOTE_ADDR, ",")>
+					<cfabort />
+				<!--- if there are wildcards, need to check further --->
+				<cfelseif listContains(deniedIPs, "*", ",")>
+					<cfloop list="#deniedIPs#" index="deniedIP">
+						<cfset octetMatchCount = 0 />
+						
+						<cfif listFind(deniedIP, "*", ".") neq 0>
+							<cfset remoteAddrOctets = listToArray(CGI.REMOTE_ADDR, ".") />
+							<cfset deniedIPOctets = listToArray(deniedIP, ".") />
+							
+							<cfloop index="i" from="1" to="#arrayLen(deniedIPOctets)#">
+								<cfif remoteAddrOctets[i] eq deniedIPOctets[i] 
+										or deniedIPOctets[i] is "*">
+									<cfset octetMatchCount = octetMatchCount + 1 />
+								</cfif>
+							</cfloop>
+							
+							<cfif octetMatchCount eq arrayLen(deniedIPOctets)>
+								<cfabort />
+							</cfif>
+						</cfif>
+					</cfloop>
+				</cfif>
+			</cfif>
+			
+			<!--- check allow IPs --->
+			<cfif allowedIPs is not "">
+				<cfif listContains(allowedIPs, "*", ",")>
+					<cfloop list="#allowedIPs#" index="allowedIP">
+						<cfset octetMatchCount = 0 />
+						
+						<cfif listFind(allowedIP, "*", ".") neq 0>
+							<cfset remoteAddrOctets = listToArray(CGI.REMOTE_ADDR, ".") />
+							<cfset allowedIPOctets = listToArray(allowedIP, ".") />
+							
+							<cfloop index="i" from="1" to="#arrayLen(allowedIPOctets)#">
+								<cfif remoteAddrOctets[i] eq allowedIPOctets[i] 
+										or allowedIPOctets[i] is "*">
+									<cfset octetMatchCount = octetMatchCount + 1 />
+								</cfif>
+							</cfloop>
+							
+							<cfif octetMatchCount neq arrayLen(allowedIPOctets)>
+								<cfabort />
+							</cfif>
+						</cfif>
+					</cfloop>
+				<cfelseif not listFind(allowedIPs, CGI.REMOTE_ADDR, ",")>
+					<cfabort />
+				</cfif>
+			</cfif>
+		</cfif>
+		
 		<cfscript>
 			// reload the application scope cfcs
 			if (not structKeyExists(Application, "inited") or not Application.inited or structKeyExists(url, "reload")) {

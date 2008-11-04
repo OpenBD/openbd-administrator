@@ -25,8 +25,65 @@
 		output="false" 
 		extends="Base" 
 		hint="Manages administrator security - OpenBD Admin API">
-
-	<cffunction access="public" name="login" output="false" returntype="boolean">
+	
+	<cffunction name="setPassword" access="public" output="false" returntype="void" 
+			hint="Sets the administrator password">
+		<cfargument name="password" type="string" required="true" hint="The password" />
+		
+		<cfset var localConfig = getConfig() />
+		
+		<cfset localConfig.system.password = arguments.password />
+		
+		<cfset setConfig(localConfig) />
+	</cffunction>
+	
+	<cffunction name="setAllowedIPs" access="public" output="false" returntype="void" 
+			hint="Sets the IP addresses allowed to access the admin API">
+		<cfargument name="allowedIPs" type="string" required="true" hint="The allowed IPs" />
+		
+		<cfset var localConfig = getConfig() />
+		
+		<cfset localConfig.system.allowedips = arguments.allowedIPs />
+		
+		<cfset setConfig(localConfig) />
+	</cffunction>
+	
+	<cffunction name="getAllowedIPs" access="public" output="false" returntype="string" 
+			hint="Returns the list of IP addresses allowed to access the admin API">
+		<cfset var localConfig = getConfig() />
+		
+		<cfif not structKeyExists(localConfig.system, "allowedips")>
+			<cfset localConfig.system.allowedips = "" />
+			<cfset setConfig(localConfig) />
+		</cfif>
+		
+		<cfreturn localConfig.system.allowedips />
+	</cffunction>
+	
+	<cffunction name="setDeniedIPs" access="public" output="false" returntype="void" 
+			hint="Sets the IP addresses not allowed to access the admin API">
+		<cfargument name="deniedIPs" type="string" required="true" hint="The denied IPs" />
+		
+		<cfset var localConfig = getConfig() />
+		
+		<cfset localConfig.system.deniedips = arguments.deniedIPs />
+		
+		<cfset setConfig(localConfig) />
+	</cffunction>
+	
+	<cffunction name="getDeniedIPs" access="public" output="false" returntype="string" 
+			hint="Returns the list of IP addresses not allowed to access the admin API">
+		<cfset var localConfig = getConfig() />
+		
+		<cfif not structKeyExists(localConfig.system, "deniedips")>
+			<cfset localConfig.system.deniedips = "" />
+			<cfset setConfig(localConfig) />
+		</cfif>
+		
+		<cfreturn localConfig.system.deniedips />
+	</cffunction>
+	
+	<cffunction name="login" access="public" output="false" returntype="boolean">
 		<cfargument name="adminPassword" type="string" required="true">
 		
 <!---
@@ -45,7 +102,7 @@
 		<cfreturn TRUE>
 	</cffunction>
 
-	<cffunction access="public" name="logout" output="false" returntype="boolean">
+	<cffunction name="logout" access="public" output="false" returntype="boolean">
 		<cfset setSessionPassword("") />
 		<cfreturn TRUE>
 	</cffunction>

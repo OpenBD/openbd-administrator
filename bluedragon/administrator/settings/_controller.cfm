@@ -40,6 +40,114 @@
 	</cfloop>
 	
 	<cfswitch expression="#args.action#">
+		<!--- SECURITY --->
+		<cfcase value="processAdminConsolePasswordForm">
+			<cfset errorFields = arrayNew(2) />
+			<cfset errorFieldsIndex = 1 />
+			
+			<cfif not trim(args.password) is trim(args.confirmPassword)>
+				<cfset errorFields[errorFieldsIndex][1] = "confirmPassword" />
+				<cfset errorFields[errorFieldsIndex][2] = "The password fields do not match" />
+			</cfif>
+			
+			<cfif arrayLen(errorFields) neq 0>
+				<cfset session.errorFields = errorFields />
+				<cflocation url="security.cfm" addtoken="false" />
+			<cfelse>
+				<cftry>
+					<cfset Application.administrator.setPassword(trim(args.password)) />
+					<cfcatch type="bluedragon.adminapi.administrator">
+						<cfset session.message = CFCATCH.Message />
+						<cflocation url="security.cfm" addtoken="false" />
+					</cfcatch>
+				</cftry>
+
+				<cfset session.message = "The password was updated successfully." />
+				<cflocation url="security.cfm" addtoken="false" />
+			</cfif>
+		</cfcase>
+		
+		<cfcase value="processIPAddressForm">
+			<cfset errorFields = arrayNew(2) />
+			<cfset errorFieldsIndex = 1 />
+			
+			<!--- do some basic validation on the IP addresses --->
+			<cfset args.allowIPs = trim(args.allowIPs) />
+			<cfset args.denyIPs = trim(args.denyIPs) />
+			
+			<cfif args.allowIPs is not "">
+				<cfloop list="#args.allowIPs#" index="theIP" delimiters=",">
+					<cfif find("*", theIP) neq 0>
+						<cfset ipParts = listToArray(theIP, ".") />
+						
+						<cfloop index="i" from="1" to="#arrayLen(ipParts)#">
+							<cfif isNumeric(ipParts[i])>
+								<cfif ipParts[i] lt 0 or ipParts[i] gt 255>
+									<cfset errorFields[errorFieldsIndex][1] = "allowIPs" />
+									<cfset errorFields[errorFieldsIndex][2] = "One of the allowed IPs is not valid" />
+								</cfif>
+							</cfif>
+						</cfloop>
+					<cfelse>
+						<cftry>
+							<cfset inetAddress = createObject("java", "java.net.InetAddress").getByName(theIP)>
+							<cfcatch type="any">
+								<cfset errorFields[errorFieldsIndex][1] = "allowIPs" />
+								<cfset errorFields[errorFieldsIndex][2] = "One of the allowed IPs is not valid" />
+							</cfcatch>
+						</cftry>
+					</cfif>
+				</cfloop>
+			</cfif>
+			
+			<cfif args.denyIPs is not "">
+				<cfloop list="#args.denyIPs#" index="theIP" delimiters=",">
+					<cfif find("*", theIP) neq 0>
+						<cfset ipParts = listToArray(theIP, ".") />
+						
+						<cfloop index="i" from="1" to="#arrayLen(ipParts)#">
+							<cfif isNumeric(ipParts[i])>
+								<cfif ipParts[i] lt 0 or ipParts[i] gt 255>
+									<cfset errorFields[errorFieldsIndex][1] = "denyIPs" />
+									<cfset errorFields[errorFieldsIndex][2] = "One of the denied IPs is not valid" />
+								</cfif>
+							</cfif>
+						</cfloop>
+					<cfelse>
+						<cftry>
+							<cfset inetAddress = createObject("java", "java.net.InetAddress").getByName(theIP)>
+							<cfcatch type="any">
+								<cfset errorFields[errorFieldsIndex][1] = "denyIPs" />
+								<cfset errorFields[errorFieldsIndex][2] = "One of the denied IPs is not valid" />
+							</cfcatch>
+						</cftry>
+					</cfif>
+				</cfloop>
+			</cfif>
+			
+			<cfif arrayLen(errorFields) neq 0>
+				<cfset session.errorFields = errorFields />
+				<cflocation url="security.cfm" addtoken="false" />
+			<cfelse>
+				<cftry>
+					<cfif args.allowIPs is not "">
+						<cfset Application.administrator.setAllowedIPs(args.allowIPs) />
+					</cfif>
+					
+					<cfif args.denyIPs is not "">
+						<cfset Application.administrator.setDeniedIPs(args.denyIPs) />
+					</cfif>
+					<cfcatch type="bluedragon.adminapi.administrator">
+						<cfset session.message = CFCATCH.Message />
+						<cflocation url="security.cfm" addtoken="false" />
+					</cfcatch>
+				</cftry>
+
+				<cfset session.message = "The IP addresses were updated successfully." />
+				<cflocation url="security.cfm" addtoken="false" />
+			</cfif>
+		</cfcase>
+		
 		<!--- SERVER SETTINGS --->
 		<cfcase value="processServerSettingsForm">
 			<cfset errorFields = arrayNew(2) />

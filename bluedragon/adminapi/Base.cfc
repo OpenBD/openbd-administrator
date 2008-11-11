@@ -47,67 +47,33 @@
 		<cfreturn this />
 	</cffunction>
 
-	<cffunction name="getSessionPassword" access="private" output="false" returntype="string" 
-			hint="Returns the session password">
-		<cfreturn Decrypt(ToString(ToBinary(cookie.bdauthorization_)), "00CE55488350C475DC8A9FEAE82743FA") />
-	</cffunction>
-
-	<cffunction name="setSessionPassword" access="package" output="false" returntype="void" 
-			hint="Sets the session password">
-		<cfargument name="adminPassword" type="string" required="true" hint="The administrator password" />
-		<cfset cookie.bdauthorization_ = ToBase64(Encrypt(arguments.adminPassword, "00CE55488350C475DC8A9FEAE82743FA")) />
-	</cffunction>
-	
-	<cffunction name="setConfig" access="package" output="false" returntype="void" 
+	<cffunction name="setConfig" access="package" output="false" returntype="void" roles="admin" 
 			hint="Sets the server configuration and tells OpenBD to refresh its settings">
 		<cfargument name="currentConfig" type="struct" required="true" 
 				hint="The configuration struct, which is a struct representation of bluedragon.xml" />
 		
-		<!--- TODO: IMPLEMENT SECURITY --->
-		<!--- <cfif isAdminUser()> --->
-			<cflock scope="Server" type="exclusive" timeout="5">
-				<cfset admin.server = duplicate(arguments.currentConfig) />
-				<cfset admin.server.openbdadminapi.lastupdated = DateFormat(now(), "dd/mmm/yyyy") & " " & TimeFormat(now(), "HH:mm:ss") />
-				<cfset admin.server.openbdadminapi.version = api.version />
-				
-				<cfset xmlConfig = createObject("java", "com.naryx.tagfusion.xmlConfig.xmlCFML").init(admin) />
-				<cfset success = createObject("java", "com.naryx.tagfusion.cfm.engine.cfEngine").writeXmlFile(xmlConfig) />
-
-				<!--- <cfadmin password="#getSessionPassword()#" action="write"> --->
-			</cflock>
-<!---
-		<cfelse>
-			<cfthrow message="Not Authorized" type="bluedragon.adminapi">
-		</cfif>
---->
+		<cflock scope="Server" type="exclusive" timeout="5">
+			<cfset admin.server = duplicate(arguments.currentConfig) />
+			<cfset admin.server.openbdadminapi.lastupdated = DateFormat(now(), "dd/mmm/yyyy") & " " & TimeFormat(now(), "HH:mm:ss") />
+			<cfset admin.server.openbdadminapi.version = api.version />
+			
+			<cfset xmlConfig = createObject("java", "com.naryx.tagfusion.xmlConfig.xmlCFML").init(admin) />
+			<cfset success = createObject("java", "com.naryx.tagfusion.cfm.engine.cfEngine").writeXmlFile(xmlConfig) />
+		</cflock>
 	</cffunction>
 
 	<cffunction name="getConfig" access="package" output="false" returntype="struct" 
 			hint="Returns a struct representation of the OpenBD server configuration (bluedragon.xml)">
 		<cfset var admin = "" />
 		
-		<!---<cfif isAdminUser()> --->
-			<cflock scope="Server" type="readonly" timeout="5">
-				<cfset admin = createObject("java", "com.naryx.tagfusion.cfm.engine.cfEngine").getConfig().getCFMLData() />
-				<!--- <cfadmin password="#getSessionPassword()#" action="read"> --->
-			</cflock>
-<!---			
-		<cfelse>
-			<cfthrow message="Not Authorized" type="bluedragon.adminapi">
-		</cfif>
---->
+		<cflock scope="Server" type="readonly" timeout="5">
+			<cfset admin = createObject("java", "com.naryx.tagfusion.cfm.engine.cfEngine").getConfig().getCFMLData() />
+		</cflock>
+
 		<cfreturn admin.server />
 	</cffunction>
 
-	<cffunction name="isAdminUser" access="package" output="false" returntype="boolean" 
-			hint="Returns a boolean indicating whether or not an admin user is logged in">
-		<cfif getSessionPassword() EQ "">
-			<cfreturn false />
-		</cfif>
-		<cfreturn true />
-	</cffunction>
-
-	<cffunction name="getJVMProperty" access="package" output="false" returntype="any" 
+	<cffunction name="getJVMProperty" access="public" output="false" returntype="any" 
 			hint="Retrieves a specific JVM property">
 		<cfargument name="propertyName" type="string" required="true" hint="The JVM property to return" />
 		
@@ -137,11 +103,5 @@
 		<cfset adminAPIInfo.builddate = variables.api.builddate />
 		
 		<cfreturn structCopy(adminAPIInfo) />
-	</cffunction>
-
-	<cffunction name="dump" access="package" output="true" returntype="void" 
-			hint="Dumps whatever variable is passed in">
-		<cfargument name="value" type="any" required="true" hint="The variable to dump" />
-		<cfdump var="#arguments.value#" />
 	</cffunction>
 </cfcomponent>

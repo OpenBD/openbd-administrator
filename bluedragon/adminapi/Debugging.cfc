@@ -27,7 +27,7 @@
 		hint="Manages debugging and logging settings - OpenBD Admin API">
 	
 	<!--- DEBUGGING --->
-	<cffunction name="getDebugSettings" access="public" output="false" returntype="struct" 
+	<cffunction name="getDebugSettings" access="public" output="false" returntype="struct" roles="admin" 
 			hint="Returns a struct containing the current debug settings">
 		<cfset var localConfig = getConfig() />
 		<cfset var doSetConfig = false />
@@ -197,7 +197,7 @@
 		<cfreturn debugSettings />
 	</cffunction>
 	
-	<cffunction name="saveDebugSettings" access="public" output="false" returntype="void" 
+	<cffunction name="saveDebugSettings" access="public" output="false" returntype="void" roles="admin" 
 			hint="Saves the basic debug settings">
 		<cfargument name="debug" type="boolean" required="true" hint="Enables/disables 'extended error reporting' is enabled" />
 		<cfargument name="runtimelogging" type="boolean" required="true" hint="Enables/disables logging of runtime errors to a file" />
@@ -221,7 +221,7 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="setDebugOutputSettings" access="public" output="false" returntype="void" 
+	<cffunction name="setDebugOutputSettings" access="public" output="false" returntype="void" roles="admin" 
 			hint="Saves the debug output settings">
 		<cfargument name="executiontimes" type="boolean" required="true" hint="Enables/disables output of execution times" />
 		<cfargument name="highlight" type="numeric" required="true" hint="Number of milliseconds above which to highlight the execution time in the debug output" />
@@ -275,7 +275,7 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="setDebugVariablesSettings" access="public" output="false" returntype="void" 
+	<cffunction name="setDebugVariablesSettings" access="public" output="false" returntype="void" roles="admin" 
 			hint="Saves the debug variables settings">
 		<cfargument name="local" type="boolean" required="true" hint="" />
 		<cfargument name="url" type="boolean" required="true" hint="" />
@@ -319,7 +319,7 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="getDebugIPAddresses" access="public" output="false" returntype="array" 
+	<cffunction name="getDebugIPAddresses" access="public" output="false" returntype="array" roles="admin" 
 			hint="Returns an array containing the current debug IP addresses">
 		<cfset var localConfig = getConfig() />
 		<cfset var doSetConfig = false />
@@ -347,7 +347,7 @@
 		<cfreturn ipAddresses />
 	</cffunction>
 	
-	<cffunction name="addDebugIPAddresses" access="public" output="false" returntype="void" 
+	<cffunction name="addDebugIPAddresses" access="public" output="false" returntype="void" roles="admin" 
 			hint="Adds IP address(es) to the debug IP address list. Can be a single IP address or a comma-delimited list.">
 		<cfargument name="ipAddresses" type="string" required="true" hint="Single or comma-delimited list of IP addresses to add" />
 		
@@ -377,12 +377,12 @@
 		<cfset setConfig(localConfig) />
 	</cffunction>
 	
-	<cffunction name="addLocalIPAddress" access="public" output="false" returntype="void" 
+	<cffunction name="addLocalIPAddress" access="public" output="false" returntype="void" roles="admin" 
 			hint="Adds the local IP address to the debug IP address list">
 		<cfset addDebugIPAddresses(CGI.REMOTE_ADDR) />
 	</cffunction>
 	
-	<cffunction name="removeDebugIPAddresses" access="public" output="false" returntype="void" 
+	<cffunction name="removeDebugIPAddresses" access="public" output="false" returntype="void" roles="admin" 
 			hint="Removes IP address(es) from the debug IP address list. Can be a single IP address or a comma-delimited list.">
 		<cfargument name="ipAddresses" type="string" required="true" hint="Single or comma-delimited list of IP addresses to remove" />
 		
@@ -414,7 +414,7 @@
 	</cffunction>
 	
 	<!--- LOGGING --->
-	<cffunction name="getLogFiles" access="public" output="false" returntype="array" 
+	<cffunction name="getLogFiles" access="public" output="false" returntype="array" roles="admin" 
 			hint="Returns an array containing the paths to available log files">
 		<cfset var logFiles = arrayNew(1) />
 		<cfset var logFile = structNew() />
@@ -518,7 +518,7 @@
 		<cfreturn logFiles />
 	</cffunction>
 	
-	<cffunction name="archiveLogFile" access="public" output="false" returntype="void" 
+	<cffunction name="archiveLogFile" access="public" output="false" returntype="void" roles="admin" 
 			hint="Renames the active log file to ${LOG_FILE}.log.1, deletes ${LOG_FILE}.log.10, and shifts all other log files back a number">
 		<cfargument name="logFile" type="string" required="true" hint="The log file to archive" />
 		
@@ -552,7 +552,7 @@
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="deleteLogFile" access="public" output="false" returntype="void" 
+	<cffunction name="deleteLogFile" access="public" output="false" returntype="void" roles="admin" 
 			hint="Deletes a log file">
 		<cfargument name="logFile" type="string" required="true" hint="The log file to delete" />
 		
@@ -563,7 +563,7 @@
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="getLogFilePath" access="public" output="false" returntype="string" 
+	<cffunction name="getLogFilePath" access="public" output="false" returntype="string" roles="admin" 
 			hint="Returns the directory path for a given log file">
 		<cfargument name="logFile" type="string" required="true" hint="The log file name" />
 		
@@ -595,7 +595,7 @@
 		<cfreturn logFilePath />
 	</cffunction>
 	
-	<cffunction name="getLogFileLines" access="public" output="false" returntype="struct" 
+	<cffunction name="getLogFileLines" access="public" output="false" returntype="struct" roles="admin" 
 			hint="Returns a struct containing the elements totalLineCount, which is the total number of lines in the log file, and logFileLines, which is an array of log file lines retrieved using the start line and number of lines to display">
 		<cfargument name="logFile" type="string" required="true" hint="The name of the log file" />
 		<cfargument name="startLine" type="numeric" required="false" default="1" hint="The starting line" />
@@ -635,7 +635,7 @@
 		<cfreturn logFileData />
 	</cffunction>
 	
-	<cffunction name="getRuntimeErrorLogs" access="public" output="false" returntype="query" 
+	<cffunction name="getRuntimeErrorLogs" access="public" output="false" returntype="query" roles="admin" 
 			hint="Returns a query object containing all the files in the runtime error log directory (/WEB-INF/bluedragon/work/temp/rtelogs)">
 		<cfset var rteLogs = 0 />
 		
@@ -654,7 +654,7 @@
 		<cfreturn rteLogs />
 	</cffunction>
 	
-	<cffunction name="deleteRuntimeErrorLog" access="public" output="false" returntype="void" 
+	<cffunction name="deleteRuntimeErrorLog" access="public" output="false" returntype="void" roles="admin" 
 			hint="Deletes a runtime error log file">
 		<cfargument name="rteLog" type="string" required="true" hint="The runtime error log file to delete" />
 		

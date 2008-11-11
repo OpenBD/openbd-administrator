@@ -26,7 +26,7 @@
 		extends="Base" 
 		hint="Manage font directories - OpenBD Admin API">
 
-	<cffunction name="getFontDirectories" access="public" output="false" returntype="array" 
+	<cffunction name="getFontDirectories" access="public" output="false" returntype="array" roles="admin" 
 			hint="Returns an array containing the defined font directories">
 		<cfset var localConfig = getConfig() />
 		<cfset var returnArray = ArrayNew(1) />
@@ -45,7 +45,7 @@
 		<cfreturn returnArray />
 	</cffunction>
 
-	<cffunction name="setFontDirectory" access="public" output="false" returntype="void" 
+	<cffunction name="setFontDirectory" access="public" output="false" returntype="void" roles="admin" 
 				hint="Creates font directory">
 		<cfargument name="fontDirectory" type="string" required="true" hint="The physical path to the font directory" />
 		<cfargument name="action" type="string" required="false" default="create" hint="Font directory action (create or update)" />
@@ -93,7 +93,7 @@
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="verifyFontDirectory" access="public" output="false" returntype="void" 
+	<cffunction name="verifyFontDirectory" access="public" output="false" returntype="void" roles="admin" 
 			hint="Verifies the font direcotry by running cfdirectory on the physical path">
 		<cfargument name="fontDirectory" type="string" required="true" hint="The font directory to verify" />
 		
@@ -109,7 +109,8 @@
 		</cftry>
 	</cffunction>
 
-	<cffunction name="deleteFontDirectory" access="public" output="false" returntype="void" hint="Deletes the specified font directory">
+	<cffunction name="deleteFontDirectory" access="public" output="false" returntype="void" roles="admin" 
+			hint="Deletes the specified font directory">
 		<cfargument name="fontDirectory" required="true" type="string" hint="The font directory to delete" />
 		
 		<cfset var localConfig = getConfig() />

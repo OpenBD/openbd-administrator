@@ -26,7 +26,7 @@
 		extends="Base" 
 		hint="Manages administrator security - OpenBD Admin API">
 	
-	<cffunction name="setPassword" access="public" output="false" returntype="void" 
+	<cffunction name="setPassword" access="public" output="false" returntype="void" roles="admin" 
 			hint="Sets the administrator password">
 		<cfargument name="password" type="string" required="true" hint="The password" />
 		
@@ -37,7 +37,12 @@
 		<cfset setConfig(localConfig) />
 	</cffunction>
 	
-	<cffunction name="setAllowedIPs" access="public" output="false" returntype="void" 
+	<cffunction name="getPassword" access="private" output="false" returntype="void" 
+			hint="Returns the administrator password">
+		<cfreturn getConfig().system.password />
+	</cffunction>
+	
+	<cffunction name="setAllowedIPs" access="public" output="false" returntype="void" roles="admin" 
 			hint="Sets the IP addresses allowed to access the admin API">
 		<cfargument name="allowedIPs" type="string" required="true" hint="The allowed IPs" />
 		
@@ -60,7 +65,7 @@
 		<cfreturn localConfig.system.allowedips />
 	</cffunction>
 	
-	<cffunction name="setDeniedIPs" access="public" output="false" returntype="void" 
+	<cffunction name="setDeniedIPs" access="public" output="false" returntype="void" roles="admin" 
 			hint="Sets the IP addresses not allowed to access the admin API">
 		<cfargument name="deniedIPs" type="string" required="true" hint="The denied IPs" />
 		
@@ -83,28 +88,21 @@
 		<cfreturn localConfig.system.deniedips />
 	</cffunction>
 	
-	<cffunction name="login" access="public" output="false" returntype="boolean">
-		<cfargument name="adminPassword" type="string" required="true">
+	<cffunction name="login" access="public" output="false" returntype="boolean" 
+			hint="Processes login attempts and returns a boolean indicating whether or not the login was successful">
+		<cfargument name="password" type="string" required="true" hint="The password provided by the user" />
 		
-<!---
-		<cflock scope="server" type="readonly" timeout="10">
-			<cftry>
-			<cfadmin password="#arguments.adminPassword#" action="read">
-			<cfcatch type="any">
-				<cfset setSessionPassword("") />
-				<cfreturn FALSE />
-			</cfcatch>
-			</cftry>
-		</cflock>
---->
-		<cfset setSessionPassword(arguments.adminPassword) />
+		<cfset var success = false />
 		
-		<cfreturn TRUE>
+		<cfif compareNoCase(arguments.password, getPassword()) eq 0>
+			<cfset success = true />
+		</cfif>
+		
+		<cfreturn success />
 	</cffunction>
 
-	<cffunction name="logout" access="public" output="false" returntype="boolean">
-		<cfset setSessionPassword("") />
-		<cfreturn TRUE>
+	<cffunction name="logout" access="public" output="false" returntype="void" hint="Logs the user out">
+		<cflogout />
 	</cffunction>
 
 </cfcomponent>

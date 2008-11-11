@@ -27,7 +27,7 @@
 		extends="Base" 
 		hint="Manages search collections - OpenBD Admin API">
 	
-	<cffunction name="getSearchCollections" access="public" output="false" returntype="array" 
+	<cffunction name="getSearchCollections" access="public" output="false" returntype="array" roles="admin" 
 			hint="Returns an array containing defined search collections">
 		<cfset var searchCollections = arrayNew(1) />
 		<cfset var localConfig = getConfig() />
@@ -47,7 +47,7 @@
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="getSearchCollection" access="public" output="false" returntype="struct" 
+	<cffunction name="getSearchCollection" access="public" output="false" returntype="struct" roles="admin" 
 			hint="Returns a struct containing details about a search collection">
 		<cfargument name="name" type="string" required="true" hint="The name of the search collection to retrieve" />
 		
@@ -77,7 +77,7 @@
 		<cfthrow message="A search collection with that name does not exist" type="bluedragon.adminapi.searchcollections" />
 	</cffunction>
 	
-	<cffunction name="createSearchCollection" access="public" output="false" returntype="void" 
+	<cffunction name="createSearchCollection" access="public" output="false" returntype="void" roles="admin" 
 			hint="Creates a search collection">
 		<cfargument name="name" type="string" required="true" hint="The name of the search collection" />
 		<cfargument name="path" type="string" required="true" hint="The path where the search collection will be stored" />
@@ -89,14 +89,14 @@
 				language="#arguments.language#" />
 	</cffunction>
 	
-	<cffunction name="deleteSearchCollection" access="public" output="false" returntype="void" 
+	<cffunction name="deleteSearchCollection" access="public" output="false" returntype="void" roles="admin" 
 			hint="Deletes a search collection by name">
 		<cfargument name="name" type="string" required="true" hint="The name of the collection to delete" />
 
 		<cfcollection action="delete" collection="#arguments.name#" />
 	</cffunction>
 	
-	<cffunction name="indexSearchCollection" access="public" output="false" returntype="struct" 
+	<cffunction name="indexSearchCollection" access="public" output="false" returntype="struct" roles="admin" 
 			hint="Indexes a search collection and returns the status struct from the cfindex call">
 		<cfargument name="collection" type="string" required="true" hint="The name of the collection on which to perform the index" />
 		<cfargument name="action" type="string" required="true" hint="The indexing action to be performed" />
@@ -122,12 +122,12 @@
 		<cfreturn status />
 	</cffunction>
 	
-	<cffunction name="getSupportedLanguages" access="public" output="false" returntype="array" 
+	<cffunction name="getSupportedLanguages" access="public" output="false" returntype="array" roles="admin" 
 			hint="Returns an array containing the supported languages for collections">
 		<cfreturn createObject("java", "com.naryx.tagfusion.search.lucene.AnalyzerFactory").getSupportedLanguages() />
 	</cffunction>
 	
-	<cffunction name="getIndexableFileExtensions" access="public" output="false" returntype="array" 
+	<cffunction name="getIndexableFileExtensions" access="public" output="false" returntype="array" roles="admin" 
 			hint="Returns the file extensions from each of the available document handlers">
 		<cfset var documentHandlers = createObject("java", "com.naryx.tagfusion.search.SearchProps").getPropValue("com.naryx.tagfusion.search.DocumentHandler") />
 		<cfset var fileExtensions = arrayNew(1) />

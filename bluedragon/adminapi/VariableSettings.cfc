@@ -26,7 +26,7 @@
 		extends="Base" 
 		hint="Manages variable settings - OpenBD Admin API">
 
-	<cffunction name="getVariableSettings" access="public" output="false" returntype="struct" 
+	<cffunction name="getVariableSettings" access="public" output="false" returntype="struct" roles="admin" 
 			hint="Returns an array containing the current variable settings">
 		<cfset var localConfig = getConfig() />
 		<cfset var doSetConfig = false />
@@ -59,7 +59,7 @@
 		<cfreturn structCopy(localConfig.cfapplication) />
 	</cffunction>
 	
-	<cffunction name="setVariableSettings" access="public" output="false" returntype="void" 
+	<cffunction name="setVariableSettings" access="public" output="false" returntype="void" roles="admin" 
 			hint="Saves the variable settings">
 		<cfargument name="j2eesession" type="boolean" required="true" hint="Enables/disables J2EE session variables" />
 		<cfargument name="appTimeoutDays" type="numeric" required="true" hint="Application timeout days" />

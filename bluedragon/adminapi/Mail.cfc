@@ -26,7 +26,7 @@
 		extends="Base" 
 		hint="Manages mail settings - OpenBD Admin API">
 
-	<cffunction name="getMailSettings" access="public" output="false" returntype="struct" 
+	<cffunction name="getMailSettings" access="public" output="false" returntype="struct" roles="admin" 
 			hint="Returns a struct containing the mail settings">
 		<cfset var localConfig = getConfig() />
 		<cfset var doSetConfig = false />
@@ -54,7 +54,8 @@
 		<cfreturn localConfig.cfmail />
 	</cffunction>
 	
-	<cffunction name="setMailSettings" access="public" output="false" returntype="void" hint="Saves mail settings">
+	<cffunction name="setMailSettings" access="public" output="false" returntype="void" roles="admin" 
+			hint="Saves mail settings">
 		<cfargument name="timeout" type="numeric" required="true" hint="The connection timeout in seconds" />
 		<cfargument name="threads" type="numeric" required="true" hint="The number of threads to be used by cfmail" />
 		<cfargument name="interval" type="numeric" required="true" hint="The spool polling interval in seconds" />
@@ -72,7 +73,7 @@
 		</cfscript>
  	</cffunction>
 	
-	<cffunction name="getMailServers" access="public" output="false" returntype="array" 
+	<cffunction name="getMailServers" access="public" output="false" returntype="array" roles="admin" 
 			hint="Returns specific mail server information or all the registered mail servers">
 		<cfargument name="mailServer" type="string" required="false" default="" hint="The mail server to retrieve" />
 		
@@ -153,7 +154,8 @@
 		<cfreturn mailServers />
 	</cffunction>
 
-	<cffunction name="setMailServer" access="public" output="false" returntype="void" hint="Creates or updates a mail server">
+	<cffunction name="setMailServer" access="public" output="false" returntype="void" roles="admin" 
+			hint="Creates or updates a mail server">
 		<cfargument name="smtpserver" type="string" required="true" hint="The SMTP server DNS name or IP address" />
 		<cfargument name="smtpport" type="numeric" required="false" hint="The SMTP port" />
 		<cfargument name="username" type="string" required="false" default="" hint="The SMTP server user name" />
@@ -239,7 +241,7 @@
 		<cfset setConfig(localConfig) />
 	</cffunction>
 	
-	<cffunction name="deleteMailServer" access="public" output="false" returntype="void" 
+	<cffunction name="deleteMailServer" access="public" output="false" returntype="void" roles="admin" 
 			hint="Deletes a mail server from the list of available mail servers">
 		<cfargument name="mailServer" type="string" required="true" hint="The mail server to delete from the list of available mail servers" />
 		
@@ -255,7 +257,7 @@
 		<cfset setConfig(localConfig) />
 	</cffunction>
 	
-	<cffunction name="getSpooledMailCount" access="public" output="false" returntype="numeric" 
+	<cffunction name="getSpooledMailCount" access="public" output="false" returntype="numeric" roles="admin" 
 			hint="Returns the number of files currently in the mail spool. If this returns -1 it means an error occurred while reading the spool directory.">
 		<cfset var spoolCount = 0 />
 		<cfset var spoolDirList = 0 />

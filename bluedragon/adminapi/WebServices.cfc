@@ -27,7 +27,8 @@
 		hint="Manages web services - OpenBD Admin API">
 	
 	<!--- PUBLIC METHODS --->
-	<cffunction name="setWebService" access="public" output="false" returntype="void" hint="Creates or updates a web service">
+	<cffunction name="setWebService" access="public" output="false" returntype="void" roles="admin" 
+			hint="Creates or updates a web service">
 		<cfargument name="name" type="string" required="true" hint="OpenBD web service name" />
 		<cfargument name="wsdl" type="string" required="true" hint="WSDL URL" />
 		<cfargument name="username" type="string" required="false" default="" hint="Web service user name" />
@@ -54,8 +55,7 @@
 		<!--- try to hit the web service and throw error if we can't --->
 		<cftry>
 			<cfobject name="testWS" type="webservice" webservice="#trim(arguments.wsdl)#" 
-					username="#arguments.username#" password="#arguments.password#" 
-					refreshWSDL="true" />
+					username="#arguments.username#" password="#arguments.password#" />
 			<cfcatch type="any">
 				<cfrethrow />
 			</cfcatch>
@@ -88,7 +88,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="getWebServices" access="public" output="false" returntype="array" 
+	<cffunction name="getWebServices" access="public" output="false" returntype="array" roles="admin" 
 			hint="Returns an array containing all the web services or a specified web service">
 		<cfargument name="webService" type="string" required="false" default="" hint="The name of the web service to return" />
 		
@@ -123,7 +123,7 @@
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="webServiceExists" access="public" output="false" returntype="boolean" 
+	<cffunction name="webServiceExists" access="public" output="false" returntype="boolean" roles="admin" 
 				hint="Returns a boolean indicating whether or not a web service with the specified name exists">
 		<cfargument name="webService" type="string" required="true" hint="The web service name to check" />
 		
@@ -148,7 +148,8 @@
 		<cfreturn webServiceExists />
 	</cffunction>
 	
-	<cffunction name="deleteWebService" access="public" output="false" returntype="void" hint="Delete the specified web service">
+	<cffunction name="deleteWebService" access="public" output="false" returntype="void" roles="admin" 
+			hint="Deletes the specified web service">
 		<cfargument name="webService" required="true" type="string" hint="The name of the web service to be deleted" />
 		
 		<cfset var localConfig = getConfig() />
@@ -170,7 +171,8 @@
 		<cfthrow message="#arguments.webService# not registered as a web service" type="bluedragon.adminapi.webservices" />
 	</cffunction>
 	
-	<cffunction name="verifyWebService" access="public" output="false" returntype="boolean" hint="Verifies a web service">
+	<cffunction name="verifyWebService" access="public" output="false" returntype="boolean" roles="admin" 
+			hint="Verifies a web service">
 		<cfargument name="webService" type="string" required="true" hint="Web service name to verify" />
 		
 		<cfset var verified = false />
@@ -180,8 +182,7 @@
 		<!--- try to hit the web service and throw error if we can't --->
 		<cftry>
 			<cfobject name="testWS" type="webservice" webservice="#theWebService.wsdl#" 
-					username="#theWebService.username#" password="#theWebService.password#" 
-					refreshWSDL="true" />
+					username="#theWebService.username#" password="#theWebService.password#" />
 			<cfset verified = true />
 			<cfcatch type="any">
 				<cfrethrow />

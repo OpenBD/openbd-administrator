@@ -72,7 +72,6 @@
 						If you are sorting instantiated cfcs on private properties set this to true. 
 						In the latter case this function will try to access the properties
 						by calling the method get<propertyname>() on the objects ">
-						
 	
 			<!--- a struct to hold variables local to this function --->
 			<cfset var locals = structNew()>
@@ -186,7 +185,6 @@
 					</cfif>
 	
 				</cfloop><!--- End of loop over elements in arrayToReturn --->
-	
 	
 				<!--- at this point locals.insertPosition holds the correct position, where the current 
 				element in the array to sort (argument) should be put --->

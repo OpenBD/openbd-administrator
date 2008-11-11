@@ -67,7 +67,11 @@
 		<cfset var deniedIPOctets = "" />
 		<cfset var octetMatchCount = 0 />
 		<cfset var i = 0 />
-
+		
+		<cfif not structKeyExists(Application, "inited") or not Application.inited or structKeyExists(url, "reload")>
+			<cfset onApplicationStart() />
+		</cfif>
+		
 		<!--- never deny localhost for safety's sake --->
  		<cfif CGI.REMOTE_ADDR is not "127.0.0.1" and (allowedIPs is not "" or deniedIPs is not "")>
 			<!--- check denied IPs first--these take precedence over allows --->
@@ -127,20 +131,29 @@
 			</cfif>
 		</cfif>
 		
-		<cfscript>
-			// reload the application scope cfcs
-			if (not structKeyExists(Application, "inited") or not Application.inited or structKeyExists(url, "reload")) {
-				onApplicationStart();
-			}
+		<cfif (getAuthUser() is "" or not isUserInRole("admin")) 
+				and listLast(CGI.SCRIPT_NAME, "/") is not "login.cfm" 
+				and listLast(CGI.SCRIPT_NAME, "/") is not "_loginController.cfm">
+			<cfset contextPath = getPageContext().getRequest().getContextPath() />
 			
-			return true;
-		</cfscript>
+			<cfif contextPath is "/">
+				<cfset contextPath = "" />
+			</cfif>
+			
+			<cflocation url="#contextPath#/bluedragon/administrator/login.cfm" />
+		</cfif>
+		
+		<cfreturn true />
 	</cffunction>
 	
 	<cffunction name="onRequestEnd" access="public" output="true" returntype="void">
 		<cfargument name="thePage" type="string" required="true" />
 		
-		<cfinclude template="/bluedragon/administrator/template.cfm" />
+		<cfif listLast(CGI.SCRIPT_NAME, "/") is "login.cfm">
+			<cfinclude template="/bluedragon/administrator/blankTemplate.cfm" />
+		<cfelse>
+			<cfinclude template="/bluedragon/administrator/template.cfm" />
+		</cfif>
 	</cffunction>
 	
 </cfcomponent>

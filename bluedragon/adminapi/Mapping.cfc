@@ -26,7 +26,7 @@
 		extends="Base" 
 		hint="Manage mappings - OpenBD Admin API">
 
-	<cffunction name="getMappings" access="public" output="false" returntype="array" 
+	<cffunction name="getMappings" access="public" output="false" returntype="array" roles="admin" 
 			hint="Returns array of mappings which equate logical paths to directory paths">
 		<cfargument name="mapName" required="false" type="string" hint="The mapping to retrieve" />
 		
@@ -60,7 +60,7 @@
 		</cfif>
 	</cffunction>
 
-	<cffunction name="setMapping" access="public" output="false" returntype="void" 
+	<cffunction name="setMapping" access="public" output="false" returntype="void" roles="admin" 
 				hint="Creates a mapping, equating a logical path to a directory path">
 		<cfargument name="name" type="string" required="true" hint="Logical path name" />
 		<cfargument name="directory" type="string" required="true" hint="Directory path name" />
@@ -117,7 +117,7 @@
 		<cfset setConfig(localConfig) />
 	</cffunction>
 	
-	<cffunction name="verifyMapping" access="public" output="false" returntype="void" 
+	<cffunction name="verifyMapping" access="public" output="false" returntype="void" roles="admin" 
 			hint="Verifies the mapping by running cfdirectory on both the physical and logical paths">
 		<cfargument name="mappingName" type="string" required="true" hint="The mapping to verify" />
 		
@@ -157,7 +157,8 @@
 		</cftry>
 	</cffunction>
 
-	<cffunction name="deleteMapping" access="public" output="false" returntype="void" hint="Delete the specified mapping">
+	<cffunction name="deleteMapping" access="public" output="false" returntype="void" roles="admin" 
+			hint="Deletes the specified mapping">
 		<cfargument name="mapName" required="true" type="string" hint="The mapping to delete" />
 		
 		<cfset var localConfig = getConfig() />

@@ -27,7 +27,7 @@
 		hint="Manages server settings - OpenBD Admin API">
 	
 	<!--- PUBLIC METHODS --->
-	<cffunction name="setServerSettings" access="public" output="false" returntype="void" 
+	<cffunction name="setServerSettings" access="public" output="false" returntype="void" roles="admin" 
 			hint="Saves updated server settings">
 		<cfargument name="buffersize" type="numeric" required="true" hint="Response buffer size - 0 indicates to buffer the entire page" />
 		<cfargument name="whitespacecomp" type="boolean" required="true" hint="Apply whitespace compression" />
@@ -153,7 +153,7 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="getServerSettings" access="public" output="false" returntype="struct" 
+	<cffunction name="getServerSettings" access="public" output="false" returntype="struct" roles="admin" 
 			hint="Returns a struct containing the current server setting values">
 		<cfset var localConfig = getConfig() />
 		<cfset var updateConfig = false />
@@ -186,7 +186,7 @@
 		<cfreturn structCopy(localConfig.system) />
 	</cffunction>
 	
-	<cffunction name="revertToPreviousSettings" access="public" output="false" returntype="void" 
+	<cffunction name="revertToPreviousSettings" access="public" output="false" returntype="void" roles="admin" 
 			hint="Reverts to the previous server settings by replacing bluedragon.xml with 'lastfile' from the config file">
 		<cfset var localConfig = getConfig() />
 		<cfset var lastFile = "" />
@@ -201,7 +201,7 @@
 		<!--- TODO: finish implementing reverting to previous settings --->
 	</cffunction>
 	
-	<cffunction name="getServerStartTime" access="public" output="false" returntype="date" 
+	<cffunction name="getServerStartTime" access="public" output="false" returntype="date" roles="admin" 
 			hint="Returns the server start time as a date object">
 		<cfset var startTimeMS = createObject("java", "com.naryx.tagfusion.cfm.engine.cfEngine").thisInstance.startTime />
 		<cfset var startTime = dateAdd("s", startTimeMS / 1000, dateConvert("utc2local", "01/01/1970 00:00:00.000")) />
@@ -209,7 +209,7 @@
 		<cfreturn startTime />
 	</cffunction>
 	
-	<cffunction name="getServerUpTime" access="public" output="false" returntype="any" 
+	<cffunction name="getServerUpTime" access="public" output="false" returntype="any" roles="admin" 
 			hint="Returns the server uptime either in seconds, or as a struct containing days, hours, minutes, and seconds">
 		<cfargument name="returnAs" type="string" required="false" default="seconds" />
 		

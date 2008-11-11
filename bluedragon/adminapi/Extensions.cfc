@@ -27,7 +27,8 @@
 		hint="Manages customtags and CFXs - OpenBD Admin API">
 	
 	<!--- CUSTOM TAG PATHS --->
-	<cffunction name="getCustomTagPaths" access="public" output="false" returntype="array" hint="Returns an array of paths to customtags">
+	<cffunction name="getCustomTagPaths" access="public" output="false" returntype="array" roles="admin" 
+			hint="Returns an array of paths to customtags">
 		<cfset var localConfig = getConfig() />
 		<cfset var customTagPaths = arrayNew(1) />
 
@@ -42,7 +43,8 @@
 		<cfreturn customTagPaths />
 	</cffunction>
 
-	<cffunction name="setCustomTagPath" access="public" output="false" returntype="void" hint="Defines a new path to customtags">
+	<cffunction name="setCustomTagPath" access="public" output="false" returntype="void" roles="admin" 
+			hint="Defines a new path to customtags">
 		<cfargument name="path" type="string" required="true" hint="Custom tag path" />
 		<cfargument name="customTagPathAction" type="string" required="true" hint="The action to perform (create or edit)" />
 		
@@ -83,7 +85,8 @@
 		<cfset setConfig(localConfig) />
 	</cffunction>
 
-	<cffunction name="deleteCustomTagPath" access="public" output="false" returntype="void" hint="Deletes a custom tag path">
+	<cffunction name="deleteCustomTagPath" access="public" output="false" returntype="void" roles="admin" 
+			hint="Deletes a custom tag path">
 		<cfargument name="path" type="string" required="true" hint="Custom tag path to delete" />
 		<cfset var localConfig = getConfig() />
 		<cfset var listIndex = "" />
@@ -105,7 +108,8 @@
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="verifyCustomTagPath" access="public" output="false" returntype="void" hint="Verifies a custom tag path by running directoryexists() on the path">
+	<cffunction name="verifyCustomTagPath" access="public" output="false" returntype="void" roles="admin" 
+			hint="Verifies a custom tag path by running directoryexists() on the path">
 		<cfargument name="path" type="string" required="true" hint="Custom tag path to verify" />
 		
 		<cfset var localConfig = getConfig() />
@@ -135,7 +139,8 @@
 	</cffunction>
 	
 	<!--- CFX TAGS --->
-	<cffunction name="getCPPCFX" access="public" output="false" returntype="array" hint="List the names of all registered C++ CFX tags or a specified C++ CFX tag">
+	<cffunction name="getCPPCFX" access="public" output="false" returntype="array" roles="admin" 
+			hint="List the names of all registered C++ CFX tags or a specified C++ CFX tag">
 		<cfargument name="cfxname" required="false" type="string" hint="Specifies a CFX tag name" />
 		<cfset var localConfig = getConfig() />
 		<cfset var cfxIndex = "" />
@@ -167,7 +172,8 @@
 		</cfif>
 	</cffunction>
 
-	<cffunction name="setCPPCFX" access="public" output="false" returntype="void" hint="Registers a C++ CFX">
+	<cffunction name="setCPPCFX" access="public" output="false" returntype="void" roles="admin" 
+			hint="Registers a C++ CFX">
 		<cfargument name="displayname" type="string" required="true" hint="Name of CFX tag to show in the Administrator" />
 		<cfargument name="module" type="string" required="true" hint="Library module that implments the interface" />
 		<cfargument name="description" type="string" required="true" hint="Description of CFX tag" />
@@ -226,7 +232,8 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="deleteCPPCFX" access="public" output="false" returntype="void" hint="Delete a C++ CFX tag">
+	<cffunction name="deleteCPPCFX" access="public" output="false" returntype="void" roles="admin" 
+			hint="Delete a C++ CFX tag">
 		<cfargument name="cfxname" required="true" type="string" hint="Specifies a CFX tag name" />
 		<cfset var localConfig = getConfig() />
 		<cfset var cfxIndex = "" />
@@ -246,7 +253,8 @@
 		<cfthrow message="#arguments.cfxname# not registered as a C++ CFX" type="bluedragon.adminapi.extensions">
 	</cffunction>
 
-	<cffunction name="getJavaCFX" access="public" output="false" returntype="array" hint="List the names of all registered Java CFX tags or a specified Java CFX tag">
+	<cffunction name="getJavaCFX" access="public" output="false" returntype="array" roles="admin" 
+			hint="List the names of all registered Java CFX tags or a specified Java CFX tag">
 		<cfargument name="cfxname" required="false" type="string" hint="Specifies a CFX tag name" />
 		<cfset var localConfig = getConfig() />
 		<cfset var cfxIndex = "" />
@@ -278,7 +286,8 @@
 		</cfif>
 	</cffunction>
 
-	<cffunction name="setJavaCFX" access="public" output="false" returntype="void" hint="Registers a Java CFX">
+	<cffunction name="setJavaCFX" access="public" output="false" returntype="void" roles="admin" 
+			hint="Registers a Java CFX">
 		<cfargument name="displayname" type="string" required="true" hint="Name of CFX tag to show in the Administrator" />
 		<cfargument name="class" type="string" required="true" hint="Class name (minus .class) that implments the interface" />
 		<cfargument name="description" type="string" required="true" hint="Description of CFX tag" />
@@ -326,7 +335,8 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="deleteJavaCFX" access="public" output="false" returntype="void" hint="Delete a Java CFX tag">
+	<cffunction name="deleteJavaCFX" access="public" output="false" returntype="void" roles="admin" 
+			hint="Delete a Java CFX tag">
 		<cfargument name="cfxname" required="true" type="string" hint="Specifies a CFX tag name" />
 		<cfset var localConfig = getConfig() />
 		<cfset var cfxIndex = "" />
@@ -346,7 +356,7 @@
 		<cfthrow message="#arguments.cfxname# not registered as a Java CFX" type="bluedragon.adminapi.extensions">
 	</cffunction>
 	
-	<cffunction name="verifyCFXTag" access="public" output="false" returntype="void" 
+	<cffunction name="verifyCFXTag" access="public" output="false" returntype="void" roles="admin" 
 			hint="Verifies a CFX tag by instantiating the Java class or doing a file read on the specified DLL">
 		<cfargument name="cfxname" required="true" type="string" hint="The CFX tag name" />
 		<cfargument name="type" required="true" type="string" hint="The type of CFX tag to verify (java or cpp)" />

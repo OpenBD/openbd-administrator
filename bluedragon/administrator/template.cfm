@@ -51,7 +51,7 @@
 
 <div id="header">
   <div class="left">
-    <p><a href="http://www.openbluedragon.org/">OpenBD<span class="alt">Admin</span></a></p>
+    <a href="http://www.openbluedragon.org"><img src="#contextPath#/bluedragon/administrator/images/openBD-204.jpg" border="0" height="40" width="204" /></a>
   </div>
 
   <div class="right">
@@ -64,7 +64,7 @@
   <div class="subheader">
     <span class="hidden">Navigation:</span>
     <a href="#contextPath#/bluedragon/administrator/index.cfm">Home</a> |
-    <a href="#contextPath#/bluedragon/administrator/logout.cfm">Logout</a>
+    <a href="#contextPath#/bluedragon/administrator/_loginController.cfm?action=logout">Logout</a>
     <!--- <a class="highlight" href="index.html">Other</a> --->
   </div>
 </div>
@@ -76,7 +76,7 @@
   <div>	
     <p class="title">Server</p>
 	<ul>
-		<li><a href="#contextPath#/bluedragon/administrator/settings/security.cfm">Security</a></li>
+		<li<cfif theSection is "settings" and thePage is "security.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/settings/security.cfm">Security</a></li>
 		<li<cfif theSection is "settings" and listFind("systeminfo.cfm,jvmproperties.cfm", thePage) neq 0> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/settings/systeminfo.cfm">System Information</a></li>
 		<li<cfif theSection is "settings" and thePage is "index.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/settings/index.cfm">Settings</a></li>
 		<li<cfif theSection is "settings" and thePage is "caching.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/settings/caching.cfm">Caching</a></li>

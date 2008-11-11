@@ -1,4 +1,4 @@
-<cfquery name="test2" datasource="test">
+<cfquery name="test2" datasource="m2cms" cachename="test">
 	select * 
 	from Person
 </cfquery>

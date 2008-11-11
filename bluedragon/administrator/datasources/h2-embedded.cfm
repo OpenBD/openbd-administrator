@@ -1,0 +1,187 @@
+<!---
+	Copyright (C) 2008 - Open BlueDragon Project - http://www.openbluedragon.org
+	
+	Contributing Developers:
+	Matt Woodward - matt@mattwoodward.com
+
+	This file is part of of the Open BlueDragon Administrator.
+
+	The Open BlueDragon Administrator is free software: you can redistribute 
+	it and/or modify it under the terms of the GNU General Public License 
+	as published by the Free Software Foundation, either version 3 of the 
+	License, or (at your option) any later version.
+
+	The Open BlueDragon Administrator is distributed in the hope that it will 
+	be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+	of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+	General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License 
+	along with the Open BlueDragon Administrator.  If not, see 
+	<http://www.gnu.org/licenses/>.
+--->
+<cfsavecontent variable="request.content">
+<cfoutput>
+	<cfparam name="url.dsn" type="string" default="" />
+	<cfparam name="url.action" type="string" default="create" />
+	
+	<cfif not structKeyExists(session, "datasource")>
+		<cfset session.message = "An error occurred while processing the datasource action." />
+		<cflocation url="index.cfm" addtoken="false" />
+	</cfif>
+	
+	<cfset dsinfo = session.datasource[1] />
+	
+	<script type="text/javascript">
+		function showHideAdvSettings() {
+			var advSettings = document.getElementById('advancedSettings');
+			var advSettingsButton = document.getElementById('advSettingsButton');
+			
+			if (advSettings.style.visibility == 'visible') {
+				advSettingsButton.value = 'Show Advanced Settings';
+				advSettings.style.display= 'none';
+				advSettings.style.visibility = 'hidden';
+			} else {
+				advSettingsButton.value = 'Hide Advanced Settings';
+				advSettings.style.display = 'inline';
+				advSettings.style.visibility = 'visible';
+			}
+		}
+		
+		function validate(f) {
+			var ok = true;
+			
+			if (f.name.value.length == 0) {
+				alert("Please enter the datasource name");
+				ok = false;
+			} else if (f.databasename.value.length == 0) {
+				alert("Please enter the database name");
+				ok = false;
+			} else if (f.server.value.length == 0) {
+				alert("Please enter the database server");
+				ok = false;
+			} else if (f.port.value.length == 0) {
+				alert("Please enter the database server port");
+				ok = false;
+			}
+			
+			return ok;
+		}
+	</script>
+	<h3>Configure Datasource - H2 Embedded</h3>
+	<br />
+	<cfif structKeyExists(session, "message")>
+	<p style="color:red;font-weight:bold;">#session.message#</p>
+	</cfif>
+
+	<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
+		<p class="message">The following errors occurred:</p>
+		<ul>
+		<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
+			<li>#session.errorFields[i][2]#</li>
+		</cfloop>
+		</ul>
+	</cfif>
+	
+	<!--- TODO: need explanatory tooltips/mouseovers on all these settings, esp. 'per request connections' which 
+			from my understanding is the opposite of Adobe CF's description 'maintain connections across client requests'--->
+	<form name="datasourceForm" action="_controller.cfm?action=processDatasourceForm" method="post" onsubmit="return validate(this);">
+	<table border="0">
+		<tr>
+			<td>OpenBD Datasource Name</td>
+			<td><input name="name" type="text" size="30" maxlength="50" value="#dsinfo.name#" /></td>
+		</tr>
+		<tr>
+			<td>Database Name</td>
+			<td><input name="databasename" type="text" size="30" maxlength="250" value="#dsinfo.databasename#" /></td>
+		</tr>
+		<tr>
+			<td>Database Server</td>
+			<td><input name="server" type="text" size="30" maxlength="250" value="#dsinfo.server#" /></td>
+		</tr>
+		<tr>
+			<td>Server Port</td>
+			<td><input name="port" type="text" size="6" maxlength="5" value="#dsinfo.port#" /></td>
+		</tr>
+		<tr>
+			<td>User Name</td>
+			<td><input name="username" type="text" size="30" maxlength="50" value="#dsinfo.username#" /></td>
+		</tr>
+		<tr>
+			<td>Password</td>
+			<td><input name="password" type="password" size="30" maxlength="16" value="#dsinfo.password#" /></td>
+		</tr>
+		<tr>
+			<td valign="top">Description</td>
+			<td valign="top">
+				<textarea name="description" rows="4" cols="40"><cfif structKeyExists(dsinfo, "description")>#dsinfo.description#</cfif></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input type="button" id="advSettingsButton" name="showAdvSettings" value="Show Advanced Settings" onclick="javascript:showHideAdvSettings();" />
+			</td>
+			<td align="right">
+				<input type="submit" name="submit" value="Submit" />
+				<input type="button" name="cancel" value="Cancel" onclick="javascript:location.replace('index.cfm');" />
+			</td>
+		</tr>
+	</table>
+	<div id="advancedSettings" style="display:none;visibility:hidden;">
+	<br />
+	<table border="0">
+		<tr>
+			<td valign="top">Initialization String</td>
+			<td valign="top"><textarea name="initstring" rows="4" cols="40"></textarea></td>
+		</tr>
+		<tr>
+			<td valign="top">SQL Operations</td>
+			<td valign="top">
+				<table border="0">
+					<tr>
+						<td><input type="checkbox" name="sqlselect" value="true"<cfif dsinfo.sqlselect> checked="true"</cfif> />SELECT</td>
+						<td><input type="checkbox" name="sqlinsert" value="true"<cfif dsinfo.sqlinsert> checked="true"</cfif> />INSERT</td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" name="sqlupdate" value="true"<cfif dsinfo.sqlupdate> checked="true"</cfif> />UPDATE</td>
+						<td><input type="checkbox" name="sqldelete" value="true"<cfif dsinfo.sqldelete> checked="true"</cfif> />DELETE</td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" name="sqlstoredprocedures" value="true"<cfif dsinfo.sqlstoredprocedures> checked="true"</cfif> />Stored Procedures</td>
+						<td>&nbsp;</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>Per-Request Connections</td>
+			<td><input type="checkbox" name="perrequestconnections" value="true"<cfif dsinfo.perrequestconnections> checked="true"</cfif> /></td>
+		</tr>
+		<tr>
+			<td>Maximum Connections</td>
+			<td><input type="text" name="maxconnections" size="4" maxlength="4" value="#dsinfo.maxconnections#" /></td>
+		</tr>
+		<tr>
+			<td>Connection Timeout</td>
+			<td><input type="text" name="connectiontimeout" size="4" maxlength="4" value="#dsinfo.connectiontimeout#" /></td>
+		</tr>
+		<tr>
+			<td>Login Timeout</td>
+			<td><input type="text" name="logintimeout" size="4" maxlength="4" value="#dsinfo.logintimeout#" /></td>
+		</tr>
+		<tr>
+			<td>Connection Retries</td>
+			<td><input type="text" name="connectionretries" size="4" maxlength="4" value="#dsinfo.connectionretries#" /></td>
+		</tr>
+		<!--- TODO: add "use unicode" checkbox or make user add that into the init string? --->
+	</table>
+	</div>
+		<input type="hidden" name="drivername" value="#dsinfo.drivername#" />
+		<input type="hidden" name="datasourceAction" value="#url.action#" />
+		<input type="hidden" name="existingDatasourceName" value="#dsinfo.name#" />
+	</form>
+</cfoutput>
+<cfset structDelete(session, "message", false) />
+<cfset structDelete(session, "datasource", false) />
+<cfset structDelete(session, "errorFields", false) />
+</cfsavecontent>

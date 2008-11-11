@@ -27,7 +27,8 @@
 		hint="Manages datasources - OpenBD Admin API">
 	
 	<!--- PUBLIC METHODS --->
-	<cffunction name="setDatasource" access="public" output="false" returntype="void" hint="Creates or updates a datasource">
+	<cffunction name="setDatasource" access="public" output="false" returntype="void" roles="admin" 
+			hint="Creates or updates a datasource">
 		<cfargument name="name" type="string" required="true" hint="OpenBD Datasource Name" />
 		<cfargument name="databasename" type="string" required="false" default="" hint="Database name on the database server" />
 		<cfargument name="server" type="string" required="false" default="" hint="Database server host name or IP address" />
@@ -143,7 +144,7 @@
 		</cftry>
 	</cffunction>
 
-	<cffunction name="getDatasources" access="public" output="false" returntype="array" 
+	<cffunction name="getDatasources" access="public" output="false" returntype="array" roles="admin" 
 			hint="Returns an array containing all the data sources or a specified data source">
 		<cfargument name="dsn" type="string" required="false" default="" hint="The name of the datasource to return" />
 		
@@ -178,7 +179,7 @@
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="datasourceExists" access="public" output="false" returntype="boolean" 
+	<cffunction name="datasourceExists" access="public" output="false" returntype="boolean" roles="admin" 
 				hint="Returns a boolean indicating whether or not a datasource with the specified name exists">
 		<cfargument name="dsn" type="string" required="true" hint="The datasource name to check" />
 		
@@ -203,7 +204,8 @@
 		<cfreturn dsnExists />
 	</cffunction>
 	
-	<cffunction name="deleteDatasource" access="public" output="false" returntype="void" hint="Delete the specified data source">
+	<cffunction name="deleteDatasource" access="public" output="false" returntype="void" roles="admin" 
+			hint="Delete the specified data source">
 		<cfargument name="dsn" required="true" type="string" hint="The name of the data source to be deleted" />
 		
 		<cfset var localConfig = getConfig() />
@@ -225,8 +227,8 @@
 		<cfthrow message="#arguments.dsn# not registered as a datasource" type="bluedragon.adminapi.datasource" />
 	</cffunction>
 	
-	<cffunction name="getRegisteredDrivers" access="public" output="false" returntype="array" 
-			hint="Returns an array containing all the database drivers that are 'known' to OpenBD. If the node doesn't exist in the XML we'll create it and populate it with the standard driver information. Note we can't guarantee the user will have the drivers installed/in their classpath but that should throw an error if they try to add a datasource that uses a driver they don't have.">
+	<cffunction name="getRegisteredDrivers" access="public" output="false" returntype="array" roles="admin" 
+			hint="Returns an array containing all the database drivers that are 'known' to OpenBD. If the node doesn't exist in the XML it is created and populated with the standard driver information. Note this does not guarantee the user will have the drivers installed in their classpath but an error will be thrown if they try to add a datasource that uses a driver that is not in the classpath.">
 		<cfargument name="resetDrivers" type="boolean" required="false" default="false" />
 		
 		<cfset var localConfig = getConfig() />
@@ -322,7 +324,7 @@
 		<cfreturn variables.udfs.sortArrayOfObjects(getConfig().cfquery.dbdrivers.driver, sortKeys, false, false) />
 	</cffunction>
 	
-	<cffunction name="getDriverInfo" access="public" output="false" returntype="struct" 
+	<cffunction name="getDriverInfo" access="public" output="false" returntype="struct" roles="admin" 
 			hint="Returns a struct containing the information for a particular driver. Currently this is pulled by the driver config page but this can be expanded to get the driver info by other attributes.">
 		<cfargument name="datasourceconfigpage" type="string" required="false" default="" />
 		<cfargument name="drivername" type="string" required="false" default="" />
@@ -350,7 +352,8 @@
 		<cfreturn driverInfo />
 	</cffunction>
 	
-	<cffunction name="verifyDatasource" access="public" output="false" returntype="boolean" hint="Verifies a datasource">
+	<cffunction name="verifyDatasource" access="public" output="false" returntype="boolean" roles="admin" 
+			hint="Verifies a datasource">
 		<cfargument name="dsn" type="string" required="true" hint="Datasource name to verify" />
 		
 		<cfset var verified = false />
@@ -434,7 +437,7 @@
 	</cffunction>
 	
 	<!--- PRIVATE METHODS --->
-	<cffunction name="formatJDBCURL" access="private" output="false" returntype="string" 
+	<cffunction name="formatJDBCURL" access="private" output="false" returntype="string" roles="admin" 
 			hint="Formats a JDBC URL for a specific database driver type">
 		<cfargument name="drivername" type="string" required="true" hint="The name of the database driver class" />
 		<cfargument name="server" type="string" required="true" hint="The database server name or IP address" />
@@ -444,21 +447,31 @@
 		<cfset var jdbcURL = "" />
 		
 		<cfswitch expression="#arguments.drivername#">
+			<!--- h2 embedded --->
+			<cfcase value="org.h2.Driver">
+				<!--- url format: jdbc:h2:/path_to_database --->
+				<cfset jdbcURL = "jdbc:h2:" />
+			</cfcase>
+			
+			<!--- mysql --->
 			<cfcase value="com.mysql.jdbc.Driver">
 				<!--- url format: jdbc:mysql://[host][,failoverhost...][:port]/[database][?propertyName1][=propertyValue1][&propertyName2][=propertyValue2] --->
 				<cfset jdbcURL = "jdbc:mysql://#arguments.server#:#arguments.port#/#arguments.database#" />
 			</cfcase>
 			
+			<!--- sql server -- microsoft driver --->
 			<cfcase value="com.microsoft.sqlserver.jdbc.SQLServerDriver">
 				<!--- url format: jdbc:sqlserver://[serverName[\instanceName][:portNumber]][;property=value[;property=value]] --->
 				<cfset jdbcURL = "jdbc:sqlserver://#arguments.server#:#arguments.port#;databaseName=#arguments.database#" />
 			</cfcase>
 			
+			<!--- sql server -- jtds driver --->
 			<cfcase value="net.sourceforge.jtds.jdbc.Driver">
 				<!--- url format: jdbc:jtds:<server_type>://<server>[:<port>][/<database>][;<property>=<value>[;...]] --->
 				<cfset jdbcURL = "jdbc:jtds:sqlserver://#arguments.server#:#arguments.port#/#arguments.database#" />
 			</cfcase>
 			
+			<!--- postgres --->
 			<cfcase value="org.postgresql.Driver">
 				<!--- url format: jdbc:postgresql://host:port/database --->
 				<cfset jdbcURL = "jdbc:postgresql://#arguments.server#:#arguments.port#/#arguments.database#" />
@@ -472,7 +485,7 @@
 		<cfreturn jdbcURL />
 	</cffunction>
 	
-	<cffunction name="registerDriver" access="private" output="false" returntype="boolean" 
+	<cffunction name="registerDriver" access="private" output="false" returntype="boolean" roles="admin" 
 			hint="Registers a driver class to make sure it exists and is available in the classpath">
 		<cfargument name="class" type="string" required="true" hint="JDBC class name" />
 	

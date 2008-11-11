@@ -26,7 +26,7 @@
 		extends="Base" 
 		hint="Manages chart settings - OpenBD Admin API">
 
-	<cffunction name="getChartSettings" access="public" output="false" returntype="struct" 
+	<cffunction name="getChartSettings" access="public" output="false" returntype="struct" roles="admin" 
 			hint="Returns a struct containing the chart settings">
 		<cfset var localConfig = getConfig() />
 		
@@ -41,7 +41,7 @@
 		<cfreturn structCopy(localConfig.cfchart) />
 	</cffunction>
 	
-	<cffunction name="setChartSettings" access="public" output="false" returntype="void" 
+	<cffunction name="setChartSettings" access="public" output="false" returntype="void" roles="admin" 
 			hint="Saves the chart settings">
 		<cfargument name="cachesize" type="numeric" required="true" hint="Maximum number of charts to store in the cache" />
 		<cfargument name="storage" type="string" required="true" hint="Storage location for charts" />

@@ -26,7 +26,7 @@
 		extends="Base" 
 		hint="Manages scheduled tasks - OpenBD Admin API">
 
-	<cffunction name="getScheduledTasks" access="public" output="false" returntype="array" 
+	<cffunction name="getScheduledTasks" access="public" output="false" returntype="array" roles="admin" 
 			hint="Returns an array of scheduled tasks, or a specific scheduled task based on the task name passed in">
 		<cfargument name="task" type="string" required="false" hint="The name of the scheduled task to retrieve" />
 		
@@ -60,7 +60,7 @@
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="setScheduledTask" access="public" output="false" returntype="void" 
+	<cffunction name="setScheduledTask" access="public" output="false" returntype="void" roles="admin" 
 			hint="Creates or updates a scheduled task">
 		<cfargument name="task" type="string" required="true" hint="The scheduled task name" />
 		<cfargument name="url" type="string" required="true" hint="The URL the scheduled task will call" />
@@ -177,7 +177,7 @@
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="scheduledTaskExists" access="public" output="false" returntype="boolean" 
+	<cffunction name="scheduledTaskExists" access="public" output="false" returntype="boolean" roles="admin" 
 			hint="Returns a boolean indicating whether or not a scheduled task with the name passed in exists">
 		<cfargument name="task" type="string" required="true" hint="The name of the scheduled task to run" />
 		
@@ -200,13 +200,14 @@
 		<cfreturn exists />
 	</cffunction>
 	
-	<cffunction name="runScheduledTask" access="public" output="false" returntype="void" hint="Runs a scheduled task">
+	<cffunction name="runScheduledTask" access="public" output="false" returntype="void" roles="admin" 
+			hint="Runs a scheduled task">
 		<cfargument name="task" type="string" required="true" hint="The name of the scheduled task to run" />
 		
 		<cfschedule action="run" task="#arguments.task#" />
 	</cffunction>
 	
-	<cffunction name="deleteScheduledTask" access="public" output="false" returntype="void" 
+	<cffunction name="deleteScheduledTask" access="public" output="false" returntype="void" roles="admin" 
 			hint="Deletes a scheduled task">
 		<cfargument name="task" type="string" required="true" hint="The name of the scheduled task to delete" />
 		

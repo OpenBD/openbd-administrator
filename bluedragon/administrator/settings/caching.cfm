@@ -100,7 +100,6 @@
 			</ul>
 		</cfif>
 		
-		<!--- TODO: need to implement getting the content cache count and let the user flush all caches --->
 		<form name="cacheStatusForm" action="_controller.cfm?action=processFlushCacheForm" method="post" onsubmit="">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr bgcolor="##dedede">
@@ -116,8 +115,8 @@
 			<tr>
 				<td bgcolor="##f0f0f0" align="right" width="200">File</td>
 				<td bgcolor="##ffffff" width="300">#numFilesInCache#</td>
-				<td bgcolor="##ffffff"></td>
-				<td bgcolor="##ffffff"></td>
+				<td bgcolor="##ffffff">N/A</td>
+				<td bgcolor="##ffffff">N/A</td>
 				<td bgcolor="##f0f0f0" align="center">
 					<input type="checkbox" name="cacheToFlush" value="file" />
 				</td>
@@ -149,7 +148,6 @@
 		</form>
 		
 		<br /><br />
-		
 		
 		<form name="fileCacheForm" action="_controller.cfm?action=processFileCacheForm" method="post" onsubmit="javascript:return validateFileCacheForm(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
@@ -195,6 +193,11 @@
 			</tr>
 		</table>
 		</form>
+		<p><strong>Information Concerning Caching</strong></p>
+		
+		<ul>
+			<li>Hit and miss statistics for file caching are not tracked</li>
+		</ul>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "errorFields", false) />

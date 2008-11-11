@@ -153,7 +153,8 @@
 					Enable purging of data that is&nbsp;
 					<input type="text" name="clientexpiry" size="3" maxlength="3" value="#variableSettings.clientexpiry#" />&nbsp;
 					days old<br />
-					<input type="checkbox" name="cf5clientdata" value="true"<cfif variableSettings.cf5clientdata> checked="true"</cfif> />ColdFusion 5-compatible client data
+					<input type="checkbox" name="cf5clientdata" value="true"<cfif variableSettings.cf5clientdata> checked="true"</cfif> />ColdFusion 5-compatible client data 
+					<img src="../images/arrow_refresh_small.png" width="16" height="16" alt="Requires Server Restart" title="Requires Server Restart" />
 				</td>
 			</tr>
 			<tr>
@@ -184,6 +185,10 @@
 			</tr>
 		</table>
 		</form>
+		<p><strong>Information Concerning Variable Settings</strong></p>
+		<ul>
+			<li>Changing the "ColdFusion 5-compatible client data" setting requires a server restart</li>
+		</ul>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "errorFields", false) />

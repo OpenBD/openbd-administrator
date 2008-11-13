@@ -206,7 +206,7 @@
 			<li>If you are using Microsoft SQL Server 2000, you must use the jTDS driver. The Microsoft driver does not support SQL Server 2000.</li>
 			<li>
 				<a href="http://www.h2database.com" target="_blank">H2</a> is an open source, Java-based embedded database that allows for the easy creation of databases 
-				all from within the OpenBD administrator. To create a new H2 database, simply create the datasource and if the H2 database doesn't exist, it will be created. 
+				from within the OpenBD administrator. To create a new H2 database, simply create the datasource and if the H2 database doesn't exist, it will be created. 
 				You may also create datasources pointing to existing H2 embedded databases.
 			</li>
 			<li>Deleting an H2 Embedded datasource does <em>not</em> delete the database files. These files must be deleted manually.</li>

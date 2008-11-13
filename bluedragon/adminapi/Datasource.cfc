@@ -258,6 +258,18 @@
 				localConfig.cfquery.dbdrivers = structNew();
 				localConfig.cfquery.dbdrivers.driver = arrayNew(1);
 				
+				// h2 (provider: h2)
+				dbDriverInfo.name = "h2 embedded (h2)";
+				dbDriverInfo.datasourceconfigpage = "h2-embedded.cfm";
+				dbDriverInfo.version = "";
+				dbDriverInfo.drivername = "org.h2.Driver";
+				dbDriverInfo.driverdescription = "H2 Embedded (H2)";
+				dbDriverInfo.jdbctype = "4";
+				dbDriverInfo.provider = "H2";
+				dbDriverInfo.defaultport = "";
+				
+				arrayAppend(localConfig.cfquery.dbdrivers.driver, structCopy(dbDriverInfo));
+				
 				// mysql (provider: mysql)
 				dbDriverInfo.name = "mysql 4/5";
 				dbDriverInfo.datasourceconfigpage = "mysql5.cfm";

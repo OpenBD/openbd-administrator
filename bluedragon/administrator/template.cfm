@@ -91,7 +91,7 @@
   <div>
 	<p class="title">Data &amp; Services</p>
 	<ul>
-		<li<cfif theSection is "datasources" and thePage is "index.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/index.cfm">Datasources</a></li>
+		<li<cfif theSection is "datasources" and listFind("index.cfm,h2-embedded.cfm,sqlserver-jtds.cfm,sqlserver2005-ms.cfm,mysql5.cfm,other.cfm,postgresql.cfm", thePage) neq 0> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/index.cfm">Datasources</a></li>
 		<!--- TODO: implement runtime state page --->
 		<!--- <li<cfif theSection is "datasources" and thePage is "runtimestate.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/runtimestate.cfm">Runtime State</a></li> --->
 		<li<cfif theSection is "datasources" and thePage is "collections.cfm"> class="highlight"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/collections.cfm">Search Collections</a></li>

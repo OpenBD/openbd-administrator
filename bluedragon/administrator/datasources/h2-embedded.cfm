@@ -20,8 +20,7 @@
 	along with the Open BlueDragon Administrator.  If not, see 
 	<http://www.gnu.org/licenses/>.
 --->
-<cfsavecontent variable="request.content">
-<cfoutput>
+<cfsilent>
 	<cfparam name="url.dsn" type="string" default="" />
 	<cfparam name="url.action" type="string" default="create" />
 	
@@ -31,7 +30,48 @@
 	</cfif>
 	
 	<cfset dsinfo = session.datasource[1] />
+	<cfset dsinfo.filepath = "" />
+	<cfset dsinfo.mode = "H2Native" />
+	<cfset dsinfo.ignorecase = true />
 	
+	<cfif dsinfo.hoststring is not "">
+		<cfset dsinfo.filepath = listFirst(dsinfo.hoststring, ";") />
+		<cfset dsinfo.filepath = right(dsinfo.filepath, len(dsinfo.filepath) - 8) />
+		<cfset dsinfo.filepath = left(dsinfo.filepath, len(dsinfo.filepath) - (len(dsinfo.databasename) + 1)) />
+		
+		<cfif dsinfo.filepath is expandPath("/WEB-INF/bluedragon/h2databases")>
+			<cfset dsinfo.filepath = "" />
+		</cfif>
+		
+		<cfset modeStart = findNoCase("MODE=", dsinfo.hoststring) />
+		
+		<cfif modeStart neq 0>
+			<cfset modeEnd = find(";", dsinfo.hoststring, modeStart) />
+			
+			<cfif modeEnd eq 0>
+				<cfset modeEnd = len(dsinfo.hoststring) />
+			</cfif>
+			
+			<cfset dsinfo.mode = mid(dsinfo.hoststring, modeStart, modeEnd - modeStart) />
+			<cfset dsinfo.mode = right(dsinfo.mode, len(dsinfo.mode) - 5) />
+		</cfif>
+		
+		<cfset ignoreCaseStart = findNoCase("IGNORECASE=", dsinfo.hoststring) />
+		
+		<cfif ignoreCaseStart neq 0>
+			<cfset ignoreCaseEnd = find(";", dsinfo.hoststring, ignoreCaseStart) />
+			
+			<cfif ignoreCaseEnd eq 0>
+				<cfset ignoreCaseEnd = len(dsinfo.hoststring) />
+			</cfif>
+			
+			<cfset dsinfo.ignorecase = mid(dsinfo.hoststring, ignoreCaseStart, ignoreCaseEnd - ignoreCaseStart) />
+			<cfset dsinfo.ignorecase = right(dsinfo.ignorecase, len(dsinfo.ignorecase) - 11) />
+		</cfif>
+	</cfif>
+</cfsilent>
+<cfsavecontent variable="request.content">
+<cfoutput>
 	<script type="text/javascript">
 		function showHideAdvSettings() {
 			var advSettings = document.getElementById('advancedSettings');
@@ -92,16 +132,39 @@
 			<td><input name="name" type="text" size="30" maxlength="50" value="#dsinfo.name#" /></td>
 		</tr>
 		<tr>
-			<td>Database Name</td>
-			<td><input name="databasename" type="text" size="30" maxlength="250" value="#dsinfo.databasename#" /></td>
+			<td valign="top">Database Name</td>
+			<td valign="top">
+				<input name="databasename" type="text" size="30" maxlength="250" value="#dsinfo.databasename#" /><br />
+				<em>(Minimum 3 characters. The database will be created if it doesn't exist.)</em>
+			</td>
 		</tr>
 		<tr>
-			<td>Database Server</td>
-			<td><input name="server" type="text" size="30" maxlength="250" value="#dsinfo.server#" /></td>
+			<td valign="top">File Path</td>
+			<td valign="top">
+				<input name="filepath" type="text" size="30" value="#dsinfo.filepath#" /><br />
+				<em>(Leave blank for default path. Do not include database name.)</em>
+			</td>
 		</tr>
 		<tr>
-			<td>Server Port</td>
-			<td><input name="port" type="text" size="6" maxlength="5" value="#dsinfo.port#" /></td>
+			<td>Compatibility Mode</td>
+			<td>
+				<select name="mode">
+					<option value="H2Native"<cfif dsinfo.mode is "H2Native"> selected="true"</cfif>>None (H2 Native)</option>
+					<option value="Derby"<cfif dsinfo.mode is "Derby"> selected="true"</cfif>>Derby</option>
+					<option value="HSQLDB"<cfif dsinfo.mode is "HSQLDB"> selected="true"</cfif>>HSQLDB</option>
+					<option value="MSSQLServer"<cfif dsinfo.mode is "MSSQLServer"> selected="true"</cfif>>Microsoft SQL Server</option>
+					<option value="MySQL"<cfif dsinfo.mode is "MySQL"> selected="true"</cfif>>MySQL</option>
+					<option value="Oracle"<cfif dsinfo.mode is "Oracle"> selected="true"</cfif>>Oracle</option>
+					<option value="PostgreSQL"<cfif dsinfo.mode is "PostgreSQL"> selected="true"</cfif>>PostgreSQL</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Case Sensitive?</td>
+			<td>
+				<input type="radio" name="ignorecase" value="false"<cfif not dsinfo.ignorecase> checked="true"</cfif> />Yes&nbsp;
+				<input type="radio" name="ignorecase" value="true"<cfif dsinfo.ignorecase> checked="true"</cfif> />No
+			</td>
 		</tr>
 		<tr>
 			<td>User Name</td>
@@ -179,6 +242,7 @@
 		<input type="hidden" name="drivername" value="#dsinfo.drivername#" />
 		<input type="hidden" name="datasourceAction" value="#url.action#" />
 		<input type="hidden" name="existingDatasourceName" value="#dsinfo.name#" />
+		<input type="hidden" name="dbtype" value="h2embedded" />
 	</form>
 </cfoutput>
 <cfset structDelete(session, "message", false) />

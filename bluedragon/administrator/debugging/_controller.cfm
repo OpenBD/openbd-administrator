@@ -295,6 +295,19 @@
 			<cflocation url="runtimeerrors.cfm" addtoken="false" />
 		</cfcase>
 		
+		<cfcase value="deleteAllRuntimeErrorLogs">
+			<cftry>
+				<cfset Application.debugging.deleteAllRuntimeErrorLogs() />
+				<cfcatch type="any">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="runtimeerrors.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+
+			<cfset session.message = "The runtime error logs were deleted successfully." />
+			<cflocation url="runtimeerrors.cfm" addtoken="false" />
+		</cfcase>
+		
 		<!--- SCHEDULED TASKS --->
 		<cfcase value="processScheduledTaskForm">
 			<cfset errorFields = arrayNew(2) />

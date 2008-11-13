@@ -159,7 +159,9 @@
 			<li>Spooled Mail: #spoolCount# messages</li>
 			<li>Undelivered Mail: #undeliveredCount# messages</li>
 			<!--- TODO: make sure moving the mail to the spool actually works --->
-			<li><a href="_controller.cfm?action=respoolUndeliveredMail">Move All Undelivered Mail to Spool</a></li>
+		<cfif undeliveredCount gt 0>
+			<li><a href="_controller.cfm?action=respoolUndeliveredMail">Move Undelivered Mail to Spool</a></li>
+		</cfif>
 		</ul>
 		
 		<cfif arrayLen(mailServers) eq 0>

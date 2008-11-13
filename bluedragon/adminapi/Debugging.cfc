@@ -664,4 +664,17 @@
 			<cfthrow type="bluedragon.adminapi.debugging" message="The file attempting to be deleted no longer exists" />
 		</cfif>
 	</cffunction>
+	
+	<cffunction name="deleteAllRuntimeErrorLogs" access="public" output="false" returntype="void" roles="admin" 
+			hint="Deletes all runtime error logs">
+		<cfset var errorLogs = "" />
+		
+		<cfdirectory action="list" directory="#expandPath('/WEB-INF/bluedragon/work/temp/rtelogs/')#" filter="*.html" name="errorLogs" />
+		
+		<cfloop query="errorLogs">
+			<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/temp/rtelogs/#errorLogs.name#"))>
+				<cffile action="delete" file="#expandPath('/WEB-INF/bluedragon/work/temp/rtelogs/#errorLogs.name#')#" />
+			</cfif>
+		</cfloop>
+	</cffunction>
 </cfcomponent>

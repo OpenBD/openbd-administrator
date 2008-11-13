@@ -134,7 +134,7 @@
 						<option value="#dbdrivers[i].datasourceconfigpage#">#dbdrivers[i].driverdescription#</option>
 					</cfloop>
 					</select>&nbsp;
-					<a href="javascript:void(0);" onclick="javascript:resetDBDrivers()">Reset Database Drivers</a>
+					<a href="javascript:void(0);" onclick="javascript:resetDBDrivers()" alt="Reset Database Drivers" title="Reset Database Drivers"><img src="../images/database_gear.png" border="0" width="16" height="16" /></a>
 				</td>
 			</tr>
 			<tr>
@@ -193,6 +193,24 @@
 			</tr>
 		</table>
 		</cfif>
+		
+		<p><strong>Information Concerning Datasources and Database Drivers</strong></p>
+		
+		<ul>
+			<li>Use the "Reset Database Drivers" link to reset the available database drivers to the default drivers that ship with OpenBD.</li>
+			<li>
+				If you do not see the database you wish to use listed, obtain JDBC drivers for the database, place the JDBC driver JAR file in OpenBD's 
+				/WEB-INF/lib directory, and then use the "Other" database type to configure the datasource.
+			</li>
+			<li>If you are using Microsoft SQL Server 2005, you may create a datasource using either the jTDS driver or the Microsoft driver.</li>
+			<li>If you are using Microsoft SQL Server 2000, you must use the jTDS driver. The Microsoft driver does not support SQL Server 2000.</li>
+			<li>
+				<a href="http://www.h2database.com" target="_blank">H2</a> is an open source, Java-based embedded database that allows for the easy creation of databases 
+				all from within the OpenBD administrator. To create a new H2 database, simply create the datasource and if the H2 database doesn't exist, it will be created. 
+				You may also create datasources pointing to existing H2 embedded databases.
+			</li>
+			<li>Deleting an H2 Embedded datasource does <em>not</em> delete the database files. These files must be deleted manually.</li>
+		</ul>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "dbDriverRetrievalMessage", false) />

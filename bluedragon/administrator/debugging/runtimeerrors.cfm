@@ -77,6 +77,12 @@
 			function downloadLogFile(rteLog) {
 				window.open("downloadrtelog.cfm?rteLog=" + rteLog);
 			}
+			
+			function deleteAllRTEs() {
+				if(confirm("Are you sure you want to delete ALL runtime error logs?")) {
+					location.replace("_controller.cfm?action=deleteAllRuntimeErrorLogs");
+				}
+			}
 		</script>
 		
 		<h3>Runtime Error Logs</h3>
@@ -95,7 +101,10 @@
 				<td colspan="4">
 					<table border="0" width="100%" cellpadding="0" cellspacing="0">
 						<tr>
-							<td><strong>Runtime Errors #url.start# - #endLog# of #logFiles.RecordCount#</strong></td>
+							<td>
+								<strong>Runtime Errors #url.start# - #endLog# of #logFiles.RecordCount#</strong>&nbsp;
+								<a href="javascript:void(0)" onclick="javascript:deleteAllRTEs();" alt="Delete All Runtime Error Logs" title="Delete All Runtime Error Logs"><img src="../images/folder_delete.png" height="16" width="16" border="0" /></a>
+							</td>
 							<td align="right">
 								<table border="0" cellpadding="0" cellspacing="0">
 									<tr>

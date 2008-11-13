@@ -130,7 +130,8 @@
 			<cfparam name="args.name" type="string" default="" />
 			<cfparam name="args.databasename" type="string" default="" />
 			<cfparam name="args.server" type="string" default="" />
-			<cfparam name="args.port" type="string" default="" />
+			<cfparam name="args.port" type="numeric" default="0" />
+			<cfparam name="args.filepath" type="string" default="" />
 			<cfparam name="args.sqlselect" type="boolean" default="false" />
 			<cfparam name="args.sqlinsert" type="boolean" default="false" />
 			<cfparam name="args.sqlupdate" type="boolean" default="false" />
@@ -164,9 +165,17 @@
 					<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 				</cfif>
 				
-				<cfif trim(args.port) is "" or not isNumeric(trim(form.port))>
+				<cfif trim(args.port) is "" or not isNumeric(trim(args.port))>
 					<cfset errorFields[errorFieldsIndex][1] = "port" />
 					<cfset errorFields[errorFieldsIndex][2] = "The value of Server Port cannot be blank and must be numeric" />
+					<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+				</cfif>
+			</cfif>
+			
+			<cfif args.dbtype is "h2embedded">
+				<cfif trim(args.databasename) is "" or len(trim(args.databasename)) lt 3>
+					<cfset errorFields[errorFieldsIndex][1] = "databasename" />
+					<cfset errorFields[errorFieldsIndex][2] = "The value of Database name cannot be blank, and must be 3 characters or longer" />
 					<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 				</cfif>
 			</cfif>
@@ -194,11 +203,11 @@
 				<cfelse>
 					<cftry>
 						<cfswitch expression="#args.dbtype#">
-							<!--- known jdbc driver types --->
+							<!--- known client/server jdbc driver types --->
 							<cfcase value="">
 								<cfset Application.datasource.setDatasource(args.name, args.databasename, args.server, 
 																				args.port, args.username, args.password, 
-																				"", args.description, 
+																				"", "", args.description, 
 																				args.initstring, args.connectiontimeout, 
 																				args.connectionretries, args.logintimeout, 
 																				args.maxconnections, args.perrequestconnections, 
@@ -207,10 +216,23 @@
 																				args.datasourceAction, args.existingDatasourceName) />
 							</cfcase>
 							
+							<!--- h2 embedded --->
+							<cfcase value="h2embedded">
+								<cfset Application.datasource.setDatasource(args.name, args.databasename, "", 0, 
+																			args.username, args.password, "", args.filepath, 
+																			args.description, args.initstring, args.connectiontimeout, 
+																			args.connectionretries, args.logintimeout, 
+																			args.maxconnections, args.perrequestconnections, 
+																			args.sqlselect, args.sqlinsert, args.sqlupdate, args.sqldelete, 
+																			args.sqlstoredprocedures, args.drivername, 
+																			args.datasourceAction, args.existingDatasourceName, "", 
+																			args.mode, args.ignorecase) />
+							</cfcase>
+							
 							<!--- 'other' jdbc driver --->
 							<cfcase value="other">
 								<cfset Application.datasource.setDatasource(args.name, "", "", 0, args.username, 
-																				args.password, args.hoststring, args.description, 
+																				args.password, args.hoststring, "", args.description, 
 																				args.initstring, args.connectiontimeout, 
 																				args.connectionretries, args.logintimeout, 
 																				args.maxconnections, args.perrequestconnections, 

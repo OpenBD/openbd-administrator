@@ -37,6 +37,7 @@
 		<cfargument name="password" type="string" required="false" default="" hint="Database password" />
 		<cfargument name="hoststring" type="string" required="false" default="" 
 				hint="JDBC URL for 'other' database types. Databasename, server, and port arguments are ignored if a hoststring is provided." />
+		<cfargument name="filepath" type="string" required="false" default="" hint="File path for file-based databases (H2, etc.)" />
 		<cfargument name="description" type="string" required="false" default="" hint="A description of this data source" />
 		<cfargument name="initstring" type="string" required="false" default="" hint="Additional initialization settings" />
 		<cfargument name="connectiontimeout" type="numeric" required="false" default="120" hint="Number of seconds OpenBD maintains an unused connection before it is destroyed" />
@@ -53,6 +54,8 @@
 		<cfargument name="action" type="string" required="false" default="create" hint="Action to take on the datasource (create or update)" />
 		<cfargument name="existingDatasourceName" type="string" required="false" default="" hint="The existing (old) datasource name so we know what to delete if this is an update" />
 		<cfargument name="verificationQuery" type="string" required="false" default="" hint="Custom verification query for 'other' driver types" />
+		<cfargument name="h2Mode" type="string" required="false" default="" hint="Compatibility mode for H2 database" />
+		<cfargument name="h2IgnoreCase" type="boolean" required="false" default="true" hint="Boolean indicating whether or not H2 ignores case" />
 		
 		<cfset var localConfig = getConfig() />
 		<cfset var defaultSettings = structNew() />
@@ -89,24 +92,27 @@
 			</cfif>
 		</cfif>
 		
-		<!--- TODO: figure out how to incorporate file-based databases like the dreaded Access, Derby, etc. --->
-		
 		<cfif arguments.hoststring is "">
 			<!--- if we don't have a port, use the defaults for the database type --->
 			<cfif arguments.port eq 0>
 				<cfset defaultSettings = getDriverInfo(arguments.drivername) />
-				<cfset arguments.port = defaultSettings.port />
+				
+				<cfif structKeyExists(defaultSettings, "port")>
+					<cfset arguments.port = defaultSettings.port />
+				</cfif>
 			</cfif>
 	
 			<cfset datasourceSettings.hoststring = formatJDBCURL(trim(arguments.drivername), trim(arguments.server), 
-																trim(arguments.port), trim(arguments.databasename)) />
+																trim(arguments.port), trim(arguments.databasename), 
+																arguments.filepath, trim(arguments.username), trim(arguments.password), 
+																arguments.h2Mode, arguments.h2IgnoreCase) />
 		<cfelse>
 			<cfset arguments.port = "" />
 			<cfset datasourceSettings.hoststring = trim(arguments.hoststring) />
 			<cfset datasourceSettings.verificationquery = trim(arguments.verificationQuery) />
 		</cfif>
 		
-		<!--- build up the universal datasource settings --->
+		<!--- build up the universal datasource settings (even though some of these aren't used for file-based databases) --->
 		<cfscript>
 			datasourceSettings.name = trim(lcase(arguments.name));
 			datasourceSettings.displayname = arguments.name;
@@ -392,8 +398,8 @@
 				</cftry>
 			</cfcase>
 			
-			<!--- sql server --->
-			<cfcase value="com.microsoft.sqlserver.jdbc.SQLServerDriver,net.sourceforge.jtds.jdbc.Driver" delimiters=",">
+			<!--- sql server, h2 --->
+			<cfcase value="com.microsoft.sqlserver.jdbc.SQLServerDriver,net.sourceforge.jtds.jdbc.Driver,org.h2.Driver" delimiters=",">
 				<cftry>
 					<cfset dbcon = driverManager.getConnection(datasource.hoststring, datasource.username, datasource.password) />
 					<cfset stmt = dbcon.createStatement() />
@@ -443,14 +449,53 @@
 		<cfargument name="server" type="string" required="true" hint="The database server name or IP address" />
 		<cfargument name="port" type="numeric" required="true" hint="The database server port" />
 		<cfargument name="database" type="string" required="true" hint="The database name" />
+		<cfargument name="filepath" type="string" required="false" default="" hint="The file path for a file-based database" />
+		<cfargument name="username" type="string" required="false" default="" 
+				hint="Database user name if one is to be included as part of the connection string. Mostly used for file-based databases." />
+		<cfargument name="password" type="string" required="false" default="" 
+				hint="Database password if one is to be included as part of the connection string. Mostly used for file-based databases." />
+		<cfargument name="h2Mode" type="string" required="false" default="" hint="Compatibility mode for H2" />
+		<cfargument name="h2IgnoreCase" type="boolean" required="false" default="true" 
+				hint="Boolean indicating whether or not H2 should ignore case" />
 		
 		<cfset var jdbcURL = "" />
 		
 		<cfswitch expression="#arguments.drivername#">
 			<!--- h2 embedded --->
 			<cfcase value="org.h2.Driver">
+				<!--- if the filepath is "" then use the default, and create it if it doesn't exist --->
+				<cfif arguments.filepath is "">
+					<cfif not directoryExists(expandPath("/WEB-INF/bluedragon/h2databases"))>
+						<cfdirectory action="create" directory="#expandPath('/WEB-INF/bluedragon/h2databases')#" />
+					</cfif>
+					
+					<cfset arguments.filepath = expandPath("/WEB-INF/bluedragon/h2databases") />
+				<cfelse>
+					<!--- make sure the directory provided exists and throw an error if it doesn't; 
+							probably best not to create it automatically in case it was just a typo, etc. --->
+					<cfif not directoryExists(arguments.filepath)>
+						<cfthrow message="The file path provided does not exist" type="bluedragon.adminapi.datasource" />
+					</cfif>
+				</cfif>
+
+				<cfif right(arguments.filepath, 1) is "/" or right(arguments.filepath, 1) is "\">
+					<cfset arguments.filepath = left(arguments.filepath, len(arguments.filepath) - 1) />
+				</cfif>
+
 				<!--- url format: jdbc:h2:/path_to_database --->
-				<cfset jdbcURL = "jdbc:h2:" />
+				<cfset jdbcURL = "jdbc:h2:#arguments.filepath#/#arguments.database#;IGNORECASE=#arguments.h2IgnoreCase#" />
+				
+				<cfif arguments.h2Mode is not "H2Native">
+					<cfset jdbcURL = jdbcURL & ";MODE=#arguments.h2Mode#" />
+				</cfif>
+				
+				<cfif arguments.username is not "">
+					<cfset jdbcURL = jdbcURL & ";USER=#arguments.username#" />
+				</cfif>
+				
+				<cfif arguments.password is not "">
+					<cfset jdbcURL = jdbcURL & ";PASSWORD=#arguments.password#" />
+				</cfif>
 			</cfcase>
 			
 			<!--- mysql --->

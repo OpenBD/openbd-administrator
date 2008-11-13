@@ -331,8 +331,10 @@
 		
 		<cfif undeliveredMail.RecordCount gt 0>
 			<cfloop query="undeliveredMail">
-				<cffile action="move" source="#expandPath('/WEB-INF/bluedragon/work/cfmail/undelivered/#undeliveredMail.name#')#" 
-						destination="#expandPath('/WEB-INF/bluedragon/work/cfmail/spool/#undeliveredMail.name#')#" />
+				<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/cfmail/undelivered/#undeliveredMail.name#"))>
+					<cffile action="move" source="#expandPath('/WEB-INF/bluedragon/work/cfmail/undelivered/#undeliveredMail.name#')#" 
+							destination="#expandPath('/WEB-INF/bluedragon/work/cfmail/spool/#undeliveredMail.name#')#" />
+				</cfif>
 			</cfloop>
 		</cfif>
 	</cffunction>

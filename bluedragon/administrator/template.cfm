@@ -51,7 +51,7 @@
 
 <div id="header">
   <div class="left">
-    <a href="http://www.openbluedragon.org"><img src="#contextPath#/bluedragon/administrator/images/openBD-204.jpg" border="0" height="40" width="204" /></a>
+    <a href="#contextPath#/bluedragon/administrator/index.cfm"><img src="#contextPath#/bluedragon/administrator/images/openBD-204.jpg" border="0" height="40" width="204" /></a>
   </div>
 
   <div class="right">

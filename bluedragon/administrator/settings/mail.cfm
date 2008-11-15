@@ -132,14 +132,14 @@
 			<p class="message">It appears that you do not hava JavaMail installed.</p>
 			
 			<p>
-				Some Java application severs, such as <a href="http://tomcat.apache.org/">Tomcat</a>, do not ship with JavaMail. 
+				Some Java application severs, such as <a href="http://tomcat.apache.org/" target="_blank">Tomcat</a>, do not ship with JavaMail. 
 				Without JavaMail installed, Open BlueDragon is unable to send mail.
 			</p>
 			
 			<p>
-				Please download <a href="http://java.sun.com/products/javamail/downloads/index.html">JavaMail</a> and place 
+				Please download <a href="http://java.sun.com/products/javamail/downloads/index.html" target="_blank">JavaMail</a> and place 
 				mail.jar in your classpath (either in your application server's shared lib directory, or in Open BlueDragon's 
-				/WEB-INF/lib directory), and restart Open BlueDragon to enable mail functionality.
+				/WEB-INF/lib directory), then restart Open BlueDragon to enable mail functionality.
 			</p>
 		</cfif>
 

@@ -187,7 +187,7 @@
 		</form>
 		<p><strong>Information Concerning Variable Settings</strong></p>
 		<ul>
-			<li>Changing the "ColdFusion 5-compatible client data" setting requires a server restart</li>
+			<li>Changing the "ColdFusion 5-compatible client data" setting requires Open BlueDragon to be restarted.</li>
 		</ul>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />

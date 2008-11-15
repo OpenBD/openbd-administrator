@@ -123,12 +123,6 @@
 			<input type="hidden" name="existingWebServiceName" value="#webService.name#" />
 		</form>
 		
-		<p>
-			<strong>NOTE:</strong> If Open BlueDragon throws an internal error while attempting to add a web service, and the stack trace begins with 
-			"java.lang.NoClassDefFoundError: sun/tools/javac/Main", this indicates that you do not have Java's tools.jar in your classpath. 
-			Either add the appropriate tools.jar to your classpath or copy tools.jar to Open BlueDragon's WEB-INF/lib directory.
-		</p>
-		
 		<hr noshade="true" />
 
 		<h3>Web Services</h3>
@@ -178,9 +172,17 @@
 				</td>
 			</tr>
 		</table>
-		
-		<p><strong>NOTE:</strong> Verifying a web service will also refresh its WSDL.</p>
 		</cfif>
+		
+		<p><strong>Information Concerning Web Services</strong></p>
+		
+		<ul>
+			<li>
+				If Open BlueDragon throws an internal error while attempting to add a web service, and the stack trace begins with 
+				"java.lang.NoClassDefFoundError: sun/tools/javac/Main", this indicates that you do not have Java's tools.jar in your classpath. 
+				Either add the appropriate tools.jar to your classpath or copy tools.jar to Open BlueDragon's WEB-INF/lib directory.
+			</li>
+		</ul>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "webServiceRetrievalMessage", false) />

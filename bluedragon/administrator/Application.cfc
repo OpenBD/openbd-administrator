@@ -28,7 +28,12 @@
 	</cfscript>
 	
 	<cffunction name="onApplicationStart" access="public" output="false" returntype="boolean">
+		<cfset var localConfig = 0 />
+		
 		<cfscript>
+			var localConfig = 0;
+			var resetConfig = false;
+			
 			Application.administrator = createObject("component", "bluedragon.adminapi.Administrator");
 			Application.caching = createObject("component", "bluedragon.adminapi.Caching");
 			Application.chart = createObject("component", "bluedragon.adminapi.Chart");
@@ -45,7 +50,11 @@
 			Application.webServices = createObject("component", "bluedragon.adminapi.WebServices");
 			
 			Application.adminConsoleVersion = "1.0";
-			Application.adminConsoleBuildDate = LSDateFormat(createDate(2008,10,01)) & " " & LSTimeFormat(createTime(11,15,00));
+			Application.adminConsoleBuildDate = LSDateFormat(createDate(2008,11,14)) & " " & LSTimeFormat(createTime(17,41,00));
+			
+			// Need to make sure the basic security nodes exist in bluedragon.xml. Other potential missing nodes
+			// are handled as the related pages within the administrator are hit.
+			Application.administrator.setInitialSecurity();
 			
 			Application.inited = true;
 			

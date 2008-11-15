@@ -26,6 +26,39 @@
 		extends="Base" 
 		hint="Manages administrator security - OpenBD Admin API">
 	
+	<cffunction name="setInitialSecurity" access="public" output="false" returntype="void" 
+			hint="Sets the initial password to 'admin' if the password node doesn't exist in bluedragon.xml. Also creates allowedips and deniedips nodes.">
+		<cfset var localConfig = getConfig() />
+		<cfset var doSetConfig = false />
+		
+		<cfif not structKeyExists(localConfig.system, "password")>
+			<cfset localConfig.system.password = "admin" />
+			<cfset doSetConfig = true />
+		</cfif>
+		
+		<cfif not structKeyExists(localConfig.system, "allowedips")>
+			<cfset localConfig.system.allowedips = "" />
+			<cfset doSetConfig = true />
+		</cfif>
+		
+		<cfif not structKeyExists(localConfig.system, "deniedips")>
+			<cfset localConfig.system.deniedips = "" />
+			<cfset doSetConfig = true />
+		</cfif>
+		
+		<cfif doSetConfig>
+			<!--- need to log in briefly to be able to call setConfig() --->
+			<cflogin>
+				<cfloginuser name="Administrator" password="admin" roles="admin" />
+			</cflogin>
+			
+			<cfset setConfig(localConfig) />
+			
+			<!--- log right back out --->
+			<cflogout />
+		</cfif>
+	</cffunction>
+	
 	<cffunction name="setPassword" access="public" output="false" returntype="void" roles="admin" 
 			hint="Sets the administrator password">
 		<cfargument name="password" type="string" required="true" hint="The password" />

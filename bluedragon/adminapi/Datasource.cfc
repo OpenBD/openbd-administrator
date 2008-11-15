@@ -318,6 +318,18 @@
 				
 				arrayAppend(localConfig.cfquery.dbdrivers.driver, structCopy(dbDriverInfo));
 				
+				// oracle (provider: oracle)
+				dbDriverInfo.name = "oracle (oracle)";
+				dbDriverInfo.datasourceconfigpage = "oracle.cfm";
+				dbDriverInfo.version = "10.2.0.4";
+				dbDriverInfo.drivername = "oracle.jdbc.OracleDriver";
+				dbDriverInfo.driverdescription = "Oracle (Oracle)";
+				dbDriverInfo.jdbctype = "4";
+				dbDriverInfo.provider = "Oracle";
+				dbDriverInfo.defaultport = "1521";
+				
+				arrayAppend(localConfig.cfquery.dbdrivers.driver, structCopy(dbDriverInfo));
+				
 				// "other" (user-configured jdbc)
 				dbDriverInfo.name = "other";
 				dbDriverInfo.datasourceconfigpage = "other.cfm";
@@ -399,6 +411,23 @@
 					<cfset dbcon = driverManager.getConnection(datasource.hoststring, datasource.username, datasource.password) />
 					<cfset stmt = dbcon.createStatement() />
 					<cfset rs = stmt.executeQuery("SELECT NOW()") />
+					
+					<cfif rs.next()>
+						<cfset verified = true />
+					</cfif>
+					<cfcatch type="any">
+						<cfthrow message="Could not verify datasource: #CFCATCH.Message#" 
+								type="bluedragon.adminapi.datasource" />
+					</cfcatch>
+				</cftry>
+			</cfcase>
+			
+			<!--- oracle --->
+			<cfcase value="oracle.jdbc.OracleDriver">
+				<cftry>
+					<cfset dbcon = driverManager.getConnection(datasource.hoststring, datasource.username, datasource.password) />
+					<cfset stmt = dbcon.createStatement() />
+					<cfset rs = stmt.executeQuery("SELECT SYSDATE FROM DUAL") />
 					
 					<cfif rs.next()>
 						<cfset verified = true />
@@ -494,8 +523,9 @@
 					<cfset arguments.filepath = left(arguments.filepath, len(arguments.filepath) - 1) />
 				</cfif>
 
-				<!--- url format: jdbc:h2:/path_to_database --->
-				<cfset jdbcURL = "jdbc:h2:#arguments.filepath#/#arguments.database#;IGNORECASE=#arguments.h2IgnoreCase#" />
+				<!--- url format: jdbc:h2:/path_to_database;AUTO_SERVER=TRUE ... --->
+				<!--- note that AUTO_SERVER=TRUE is necessary in order for the embedded database to respond to multiple threads --->
+				<cfset jdbcURL = "jdbc:h2:#arguments.filepath#/#arguments.database#;AUTO_SERVER=TRUE;IGNORECASE=#arguments.h2IgnoreCase#" />
 				
 				<cfif arguments.h2Mode is not "H2Native">
 					<cfset jdbcURL = jdbcURL & ";MODE=#arguments.h2Mode#" />
@@ -510,12 +540,6 @@
 				</cfif>
 			</cfcase>
 			
-			<!--- mysql --->
-			<cfcase value="com.mysql.jdbc.Driver">
-				<!--- url format: jdbc:mysql://[host][,failoverhost...][:port]/[database][?propertyName1][=propertyValue1][&propertyName2][=propertyValue2] --->
-				<cfset jdbcURL = "jdbc:mysql://#arguments.server#:#arguments.port#/#arguments.database#" />
-			</cfcase>
-			
 			<!--- sql server -- microsoft driver --->
 			<cfcase value="com.microsoft.sqlserver.jdbc.SQLServerDriver">
 				<!--- url format: jdbc:sqlserver://[serverName[\instanceName][:portNumber]][;property=value[;property=value]] --->
@@ -526,6 +550,18 @@
 			<cfcase value="net.sourceforge.jtds.jdbc.Driver">
 				<!--- url format: jdbc:jtds:<server_type>://<server>[:<port>][/<database>][;<property>=<value>[;...]] --->
 				<cfset jdbcURL = "jdbc:jtds:sqlserver://#arguments.server#:#arguments.port#/#arguments.database#" />
+			</cfcase>
+			
+			<!--- mysql --->
+			<cfcase value="com.mysql.jdbc.Driver">
+				<!--- url format: jdbc:mysql://[host][,failoverhost...][:port]/[database][?propertyName1][=propertyValue1][&propertyName2][=propertyValue2] --->
+				<cfset jdbcURL = "jdbc:mysql://#arguments.server#:#arguments.port#/#arguments.database#" />
+			</cfcase>
+			
+			<!--- oracle --->
+			<cfcase value="oracle.jdbc.OracleDriver">
+				<!--- url format: jdbc:oracle:thin:@server:port:SID --->
+				<cfset jdbcURL = "jdbc:oracle:thin:@#arguments.server#:#arguments.port#:#arguments.database#" />
 			</cfcase>
 			
 			<!--- postgres --->

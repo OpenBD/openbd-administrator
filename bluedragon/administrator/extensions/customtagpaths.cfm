@@ -90,9 +90,18 @@
 		<cfloop index="i" from="1" to="#arrayLen(customTagPaths)#">
 			<tr bgcolor="##ffffff">
 				<td width="100">
-					<a href="javascript:void(0);" onclick="javascript:editCustomTagPath('#customTagPaths[i]#')" alt="Edit Custom Tag Path" title="Edit Custom Tag Path"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
-					<a href="_controller.cfm?action=verifyCustomTagPath&directory=#customTagPaths[i]#" alt="Verify Custom Tag Path" title="Verify Custom Tag Path"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
-					<a href="javascript:void(0);" onclick="javascript:deleteCustomTagPath('#customTagPaths[i]#');" alt="Delete Custom Tag Path" title="Delete Custom Tag Path"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
+					<a href="javascript:void(0);" onclick="javascript:editCustomTagPath('#customTagPaths[i]#')" 
+						alt="Edit Custom Tag Path" title="Edit Custom Tag Path">
+						<img src="../images/pencil.png" border="0" width="16" height="16" />
+					</a>
+					<a href="_controller.cfm?action=verifyCustomTagPath&directory=#customTagPaths[i]#" alt="Verify Custom Tag Path" 
+						title="Verify Custom Tag Path">
+						<img src="../images/accept.png" border="0" width="16" height="16" />
+					</a>
+					<a href="javascript:void(0);" onclick="javascript:deleteCustomTagPath('#customTagPaths[i]#');" 
+						alt="Delete Custom Tag Path" title="Delete Custom Tag Path">
+						<img src="../images/cancel.png" border="0" width="16" height="16" />
+					</a>
 				</td>
 				<td>#customTagPaths[i]#</td>
 			</tr>
@@ -111,22 +120,23 @@
 		
 		<br />
 		
-		<form name="customTagPathForm" action="_controller.cfm?action=processCustomTagPathForm" method="post" onsubmit="javascript:return validate(this);">
+		<form name="customTagPathForm" action="_controller.cfm?action=processCustomTagPathForm" method="post" 
+				onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr>
 				<td colspan="2" bgcolor="##dedede"><strong><span id="actionHeader">Add a</span> Custom Tag Path</strong></td>
 			</tr>
 			<tr>
-				<td align="right" bgcolor="##f0f0f0">Custom Tag Path</td>
+				<td align="right" bgcolor="##f0f0f0"><label for="directory">Custom Tag Path</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="directory" size="40" value="#customTagPath#" />
+					<input type="text" name="directory" id="directory" size="40" value="#customTagPath#" tabindex="1" />
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
 				<td>
-					<input type="button" name="reset" value="Reset" onclick="javascript:resetCustomTagPathForm();" />
-					<input type="submit" name="submit" value="Submit" />
+					<input type="button" name="reset" value="Reset" onclick="javascript:resetCustomTagPathForm();" tabindex="2" />
+					<input type="submit" name="submit" value="Submit" tabindex="3" />
 				</td>
 			</tr>
 		</table>

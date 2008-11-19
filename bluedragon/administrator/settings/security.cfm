@@ -59,21 +59,21 @@
 				<td colspan="2"><strong>Allowed IP Addresses</strong> (comma-delimited, * for wildcard)</td>
 			</tr>
 			<tr>
-				<td align="right" bgcolor="##f0f0f0">Allow IPs</td>
+				<td align="right" bgcolor="##f0f0f0"><label for="allowIPs">Allow IPs</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="allowIPs" size="70" value="#allowedIPs#" />
+					<input type="text" name="allowIPs" id="allowIPs" size="70" value="#allowedIPs#" tabindex="1" />
 				</td>
 			</tr>
 			<tr>
-				<td align="right" bgcolor="##f0f0f0">Deny IPs</td>
+				<td align="right" bgcolor="##f0f0f0"><label for="denyIPs">Deny IPs</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="denyIPs" size="70" value="#deniedIPs#" />
+					<input type="text" name="denyIPs" id="denyIPs" size="70" value="#deniedIPs#" tabindex="2" />
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" name="submit" value="Submit" />
+					<input type="submit" name="submit" value="Submit" tabindex="3" />
 				</td>
 			</tr>
 		</table>
@@ -82,27 +82,28 @@
 		<br />
 		<br />
 
-		<form name="adminConsolePassword" action="_controller.cfm?action=processAdminConsolePasswordForm" method="post" onsubmit="javascript:return validatePasswordForm(this);">
+		<form name="adminConsolePassword" action="_controller.cfm?action=processAdminConsolePasswordForm" method="post" 
+				onsubmit="javascript:return validatePasswordForm(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr bgcolor="##dedede">
 				<td colspan="2"><strong>Administration Console Password</strong></td>
 			</tr>
 			<tr>
-				<td align="right" bgcolor="##f0f0f0">New Password</td>
+				<td align="right" bgcolor="##f0f0f0"><label for="password">New Password</label></td>
 				<td bgcolor="##ffffff">
-					<input type="password" name="password" size="30" maxlength="30" />
+					<input type="password" name="password" id="password" size="30" maxlength="30" tabindex="4" />
 				</td>
 			</tr>
 			<tr>
-				<td align="right" bgcolor="##f0f0f0">Confirm Password</td>
+				<td align="right" bgcolor="##f0f0f0"><label for="confirmPassword">Confirm Password</label></td>
 				<td bgcolor="##ffffff">
-					<input type="password" name="confirmPassword" size="30" maxlength="30" />
+					<input type="password" name="confirmPassword" id="confirmPassword" size="30" maxlength="30" tabindex="5" />
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" name="submit" value="Submit" />
+					<input type="submit" name="submit" value="Submit" tabindex="6" />
 				</td>
 			</tr>
 		</table>

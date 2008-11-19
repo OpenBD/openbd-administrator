@@ -114,25 +114,29 @@
 		
 		<br /><br />
 		
-		<form name="addCollection" action="_controller.cfm?action=createSearchCollection" method="post" onsubmit="javascript:return validateAddCollectionForm(this);">
+		<form name="addCollection" action="_controller.cfm?action=createSearchCollection" method="post" 
+				onsubmit="javascript:return validateAddCollectionForm(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr bgcolor="##dedede">
 				<td colspan="2"><strong>Add Search Collection</strong></td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0">Collection Name</td>
-				<td bgcolor="##ffffff"><input type="text" name="name" size="50" maxlength="50" /></td>
-			</tr>
-			<tr>
-				<td bgcolor="##f0f0f0">Collection Path</td>
+				<td bgcolor="##f0f0f0"><label for="name">Collection Name</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="path" size="50" value="#expandPath('/WEB-INF/bluedragon/work/cfcollection')#" />
+					<input type="text" name="name" id="name" size="50" maxlength="50" tabindex="1" />
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0">Language</td>
+				<td bgcolor="##f0f0f0"><label for="path">Collection Path</label></td>
 				<td bgcolor="##ffffff">
-					<select name="language">
+					<input type="text" name="path" id="path" size="50" 
+							value="#expandPath('/WEB-INF/bluedragon/work/cfcollection')#" tabindex="2" />
+				</td>
+			</tr>
+			<tr>
+				<td bgcolor="##f0f0f0"><label for="language">Language</label></td>
+				<td bgcolor="##ffffff">
+					<select name="language" id="language" tabindex="3">
 					<cfloop index="i" from="1" to="#arrayLen(supportedLanguages)#">
 						<option value="#supportedLanguages[i]#"<cfif supportedLanguages[i] is "english"> selected="true"</cfif>>#supportedLanguages[i]#</option>
 					</cfloop>
@@ -142,13 +146,15 @@
 			<tr>
 				<td bgcolor="##f0f0f0">Store Document Body</td>
 				<td bgcolor="##ffffff">
-					<input type="radio" name="storebody" value="true" />Yes&nbsp;
-					<input type="radio" name="storebody" value="false" checked="true" />No
+					<input type="radio" name="storebody" id="storebodyTrue" value="true" tabindex="4" />
+					<label for="storebodyTrue">Yes</label>&nbsp;
+					<input type="radio" name="storebody" id="storebodyFalse" value="false" checked="true" tabindex="5" />
+					<label for="storebodyFalse">No</label>
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
-				<td><input type="submit" name="submit" value="Create Collection" /></td>
+				<td><input type="submit" name="submit" value="Create Collection" tabindex="6" /></td>
 			</tr>
 		</table>
 		</form>

@@ -108,7 +108,8 @@
 			</ul>
 		</cfif>
 		
-		<form name="variableForm" action="_controller.cfm?action=processVariableForm" method="post" onsubmit="javascript:return validate(this);">
+		<form name="variableForm" action="_controller.cfm?action=processVariableForm" method="post" 
+				onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr bgcolor="##dedede">
 				<td colspan="2"><strong>Update Variable Settings</strong></td>
@@ -116,32 +117,52 @@
 			<tr>
 				<td bgcolor="##f0f0f0" align="right">Use J2EE Sessions</td>
 				<td bgcolor="##ffffff">
-					<input type="radio" name="j2eesession" value="true"<cfif variableSettings.j2eesession> checked="true"</cfif> /> Yes&nbsp;
-					<input type="radio" name="j2eesession" value="false"<cfif not variableSettings.j2eesession> checked="true"</cfif> />No
+					<input type="radio" name="j2eesession" id="j2eesessionTrue" value="true"
+							<cfif variableSettings.j2eesession> checked="true"</cfif> tabindex="1" />
+					<label for="j2eesessionTrue">Yes</label>&nbsp;
+					<input type="radio" name="j2eesession" id="j2eesessionFalse" value="false"
+							<cfif not variableSettings.j2eesession> checked="true"</cfif> tabindex="2" />
+					<label for="j2eesessionFalse">No</label>
 				</td>
 			</tr>
 			<tr>
 				<td bgcolor="##f0f0f0" align="right">Default Application Timeout</td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="appTimeoutDays" size="3" maxlength="2" value="#listFirst(applicationTimeout)#"> days&nbsp;
-					<input type="text" name="appTimeoutHours" size="3" maxlength="2" value="#listGetAt(applicationTimeout, 2)#"> hours&nbsp;
-					<input type="text" name="appTimeoutMinutes" size="3" maxlength="2" value="#listGetAt(applicationTimeout, 3)#"> mins&nbsp;
-					<input type="text" name="appTimeoutSeconds" size="3" maxlength="2" value="#listLast(applicationTimeout)#"> secs
+					<input type="text" name="appTimeoutDays" id="appTimeoutDays" size="3" maxlength="2" 
+							value="#listFirst(applicationTimeout)#" tabindex="3" />
+					&nbsp;<label for="appTimeoutDays">days</label>&nbsp;
+					<input type="text" name="appTimeoutHours" id="appTimeoutHours" size="3" maxlength="2" 
+							value="#listGetAt(applicationTimeout, 2)#" tabindex="4" />
+					&nbsp;<label for="appTimeoutHours">hours</label>&nbsp;
+					<input type="text" name="appTimeoutMinutes" id="appTimeoutMinutes" size="3" maxlength="2" 
+							value="#listGetAt(applicationTimeout, 3)#" tabindex="5" />
+					&nbsp;<label for="appTimeoutMinutes">mins</label>&nbsp;
+					<input type="text" name="appTimeoutSeconds" id="appTimeoutSeconds" size="3" maxlength="2" 
+							value="#listLast(applicationTimeout)#" tabindex="6" />
+					&nbsp;<label for="appTimeoutSeconds">secs</label>
 				</td>
 			</tr>
 			<tr>
 				<td bgcolor="##f0f0f0" align="right">Default Session Timeout</td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="sessionTimeoutDays" size="3" maxlength="2" value="#listFirst(sessionTimeout)#"> days&nbsp;
-					<input type="text" name="sessionTimeoutHours" size="3" maxlength="2" value="#listGetAt(sessionTimeout, 2)#"> hours&nbsp;
-					<input type="text" name="sessionTimeoutMinutes" size="3" maxlength="2" value="#listGetAt(sessionTimeout, 3)#"> mins&nbsp;
-					<input type="text" name="sessionTimeoutSeconds" size="3" maxlength="2" value="#listLast(sessionTimeout)#"> secs
+					<input type="text" name="sessionTimeoutDays" id="sessionTimeoutDays" size="3" maxlength="2" 
+							value="#listFirst(sessionTimeout)#" tabindex="7" />
+					&nbsp;<label for="sessionTimeoutDays">days</label>&nbsp;
+					<input type="text" name="sessionTimeoutHours" id="sessionTimeoutHours" size="3" maxlength="2" 
+							value="#listGetAt(sessionTimeout, 2)#" tabindex="8" />
+					&nbsp;<label for="sessionTimeoutHours">hours</label>&nbsp;
+					<input type="text" name="sessionTimeoutMinutes" id="sessionTimeoutMinutes" size="3" maxlength="2" 
+							value="#listGetAt(sessionTimeout, 3)#" tabindex="9" />
+					&nbsp;<label for="sessionTimeoutMinutes">mins</label>&nbsp;
+					<input type="text" name="sessionTimeoutSeconds" id="sessionTimeoutSeconds" size="3" maxlength="2" 
+							value="#listLast(sessionTimeout)#" tabindex="10" />
+					&nbsp;<label for="sessionTimeoutSeconds">secs</label>
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right" valign="top">Client Variable Storage</td>
+				<td bgcolor="##f0f0f0" align="right" valign="top"><label for="clientstorage">Client Variable Storage</label></td>
 				<td bgcolor="##ffffff">
-					<select name="clientstorage">
+					<select name="clientstorage" id="clientstorage" tabindex="11">
 						<option value="cookie"<cfif variableSettings.clientstorage is "cookie"> selected="true"</cfif>>Cookies</option>
 					<cfif arrayLen(datasources) gt 0>
 						<cfloop index="i" from="1" to="#arrayLen(datasources)#">
@@ -149,18 +170,22 @@
 						</cfloop>
 					</cfif>
 					</select><br />
-					<input type="checkbox" name="clientpurgeenabled" value="true"<cfif variableSettings.clientpurgeenabled> checked="true"</cfif> />
-					Enable purging of data that is&nbsp;
-					<input type="text" name="clientexpiry" size="3" maxlength="3" value="#variableSettings.clientexpiry#" />&nbsp;
-					days old<br />
-					<input type="checkbox" name="cf5clientdata" value="true"<cfif variableSettings.cf5clientdata> checked="true"</cfif> />ColdFusion 5-compatible client data 
+					<input type="checkbox" name="clientpurgeenabled" id="clientpurgeenabled" value="true"
+							<cfif variableSettings.clientpurgeenabled> checked="true"</cfif> tabindex="12" />
+					<label for="clientpurgeenabled">Enable purging of data that is</label>&nbsp;
+					<input type="text" name="clientexpiry" id="clientexpiry" size="3" maxlength="3" 
+							value="#variableSettings.clientexpiry#" tabindex="13" />
+					&nbsp;<label for="clientexpiry">days old</label><br />
+					<input type="checkbox" name="cf5clientdata" id="cf5clientdata" value="true"
+							<cfif variableSettings.cf5clientdata> checked="true"</cfif> tabindex="14" />
+					<label for="cf5clientdata">ColdFusion 5-compatible client data</label>&nbsp;
 					<img src="../images/arrow_refresh_small.png" width="16" height="16" alt="Requires Server Restart" title="Requires Server Restart" />
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right">CFCHART Storage</td>
+				<td bgcolor="##f0f0f0" align="right"><label for="cfchartstorage">CFCHART Storage</label></td>
 				<td bgcolor="##ffffff">
-					<select name="cfchartstorage">
+					<select name="cfchartstorage" id="cfchartstorage" tabindex="15">
 						<option value="file"<cfif chartSettings.storage is "file"> selected="true"</cfif>>File</option>
 						<option value="session"<cfif chartSettings.storage is "session"> selected="true"</cfif>>Session</option>
 					<cfif arrayLen(datasources) gt 0>
@@ -174,14 +199,15 @@
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right">CFCHART Cache Size</td>
+				<td bgcolor="##f0f0f0" align="right"><label for="cfchartcachesize">CFCHART Cache Size</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="cfchartcachesize" size="5" maxlength="4" value="#chartSettings.cachesize#" /> charts
+					<input type="text" name="cfchartcachesize" id="cfchartcachesize" size="5" maxlength="4" 
+							value="#chartSettings.cachesize#" tabindex="16" /> charts
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
-				<td><input type="submit" name="submit" value="Submit" /></td>
+				<td><input type="submit" name="submit" value="Submit" tabindex="17" /></td>
 			</tr>
 		</table>
 		</form>

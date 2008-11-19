@@ -84,9 +84,15 @@
 		<cfloop index="i" from="1" to="#arrayLen(mappings)#">
 			<tr bgcolor="##ffffff">
 				<td width="100">
-					<a href="_controller.cfm?action=editMapping&name=#mappings[i].name#" alt="Edit Mapping" title="Edit Mapping"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
-					<a href="_controller.cfm?action=verifyMapping&name=#mappings[i].name#" alt="Verify Mapping" title="Verify Mapping"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
-					<a href="javascript:void(0);" onclick="javascript:deleteMapping('#mappings[i].name#');" alt="Delete Mapping" title="Delete Mapping"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
+					<a href="_controller.cfm?action=editMapping&name=#mappings[i].name#" alt="Edit Mapping" title="Edit Mapping">
+						<img src="../images/pencil.png" border="0" width="16" height="16" />
+					</a>
+					<a href="_controller.cfm?action=verifyMapping&name=#mappings[i].name#" alt="Verify Mapping" title="Verify Mapping">
+						<img src="../images/accept.png" border="0" width="16" height="16" />
+					</a>
+					<a href="javascript:void(0);" onclick="javascript:deleteMapping('#mappings[i].name#');" alt="Delete Mapping" title="Delete Mapping">
+						<img src="../images/cancel.png" border="0" width="16" height="16" />
+					</a>
 				</td>
 				<td><cfif structKeyExists(mappings[i], "displayname")>#mappings[i].displayname#<cfelse>#mappings[i].name#</cfif></td>
 				<td>#mappings[i].directory#</td>
@@ -106,27 +112,30 @@
 		
 		<br />
 		
-		<form name="mappingForm" action="_controller.cfm?action=processMappingForm" method="post" onsubmit="javascript:return validate(this);">
+		<form name="mappingForm" action="_controller.cfm?action=processMappingForm" method="post" 
+				onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr bgcolor="##dedede">
 				<td colspan="2"><strong><cfif mappingAction is "create">Add a<cfelse>Edit</cfif> Mapping</strong></td>
 			</tr>
 			<tr>
-				<td align="right" bgcolor="##f0f0f0">Logical Path</td>
+				<td align="right" bgcolor="##f0f0f0"><label for="name">Logical Path</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="name" size="40" value="<cfif structKeyExists(mapping, 'displayname')>#mapping.displayname#<cfelse>#mapping.name#</cfif>" />
+					<input type="text" name="name" id="name" size="40" 
+							value="<cfif structKeyExists(mapping, 'displayname')>#mapping.displayname#<cfelse>#mapping.name#</cfif>" 
+							tabindex="1" />
 				</td>
 			</tr>
 			<tr>
-				<td align="right" bgcolor="##f0f0f0">Directory Path</td>
+				<td align="right" bgcolor="##f0f0f0"><label for="directory">Directory Path</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="directory" size="40" value="#mapping.directory#" />
+					<input type="text" name="directory" id="directory" size="40" value="#mapping.directory#" tabindex="2" />
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" name="submit" value="Submit" />
+					<input type="submit" name="submit" value="Submit" tabindex="3" />
 				</td>
 			</tr>
 		</table>

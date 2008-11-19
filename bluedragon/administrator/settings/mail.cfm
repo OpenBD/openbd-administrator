@@ -132,14 +132,14 @@
 			<p class="message">It appears that you do not hava JavaMail installed.</p>
 			
 			<p>
-				Some Java application severs, such as <a href="http://tomcat.apache.org/" target="_blank">Tomcat</a>, do not ship with JavaMail. 
-				Without JavaMail installed, Open BlueDragon is unable to send mail.
+				Some Java application severs, such as <a href="http://tomcat.apache.org/" target="_blank">Tomcat</a>, do not ship 
+				with JavaMail. Without JavaMail installed, Open BlueDragon is unable to send mail.
 			</p>
 			
 			<p>
-				Please download <a href="http://java.sun.com/products/javamail/downloads/index.html" target="_blank">JavaMail</a> and place 
-				mail.jar in your classpath (either in your application server's shared lib directory, or in Open BlueDragon's 
-				/WEB-INF/lib directory), then restart Open BlueDragon to enable mail functionality.
+				Please download <a href="http://java.sun.com/products/javamail/downloads/index.html" target="_blank">JavaMail</a> 
+				and place mail.jar in your classpath (either in your application server's shared lib directory, or in 
+				Open BlueDragon's /WEB-INF/lib directory), then restart Open BlueDragon to enable mail functionality.
 			</p>
 		</cfif>
 
@@ -183,13 +183,23 @@
 		<cfloop index="i" from="1" to="#arrayLen(mailServers)#">
 			<tr <cfif not structKeyExists(mailServers[i], "verified")>bgcolor="##ffffff"<cfelseif mailServers[i].verified>bgcolor="##ccffcc"<cfelseif not mailServers[i].verified>bgcolor="##ffff99"</cfif>>
 				<td width="100">
-					<a href="_controller.cfm?action=editMailServer&mailServer=#mailServers[i].smtpserver#" alt="Edit Mail Server" title="Edit Mail Server"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
-					<a href="_controller.cfm?action=verifyMailServer&mailServer=#mailServers[i].smtpserver#" alt="Verify Mail Server" title="Verify Mail Server"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
-					<a href="javascript:void(0);" onclick="javascript:removeMailServer('#mailServers[i].smtpserver#');" alt="Remove Mail Server" title="Remove Mail Server"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
+					<a href="_controller.cfm?action=editMailServer&mailServer=#mailServers[i].smtpserver#" 
+						alt="Edit Mail Server" title="Edit Mail Server">
+						<img src="../images/pencil.png" border="0" width="16" height="16" />
+					</a>
+					<a href="_controller.cfm?action=verifyMailServer&mailServer=#mailServers[i].smtpserver#" 
+						alt="Verify Mail Server" title="Verify Mail Server">
+						<img src="../images/accept.png" border="0" width="16" height="16" />
+					</a>
+					<a href="javascript:void(0);" onclick="javascript:removeMailServer('#mailServers[i].smtpserver#');" 
+						alt="Remove Mail Server" title="Remove Mail Server">
+						<img src="../images/cancel.png" border="0" width="16" height="16" />
+					</a>
 				</td>
 				<td>
 					<cfif i eq 1>
-						<img src="../images/asterisk_yellow.png" height="16" width="16" alt="Primary Mail Server" title="Primary Mail Server" />
+						<img src="../images/asterisk_yellow.png" height="16" width="16" alt="Primary Mail Server" 
+							title="Primary Mail Server" />
 					</cfif>
 					#mailServers[i].smtpserver#
 				</td>
@@ -204,9 +214,11 @@
 				<td width="200">
 					<cfif structKeyExists(mailServers[i], "verified")>
 						<cfif mailServers[i].verified>
-							<img src="../images/tick.png" width="16" height="16" alt="Mail Server Verified" title="Mail Server Verified" />
+							<img src="../images/tick.png" width="16" height="16" alt="Mail Server Verified" 
+								title="Mail Server Verified" />
 						<cfelseif not mailServers[i].verified>
-							<img src="../images/exclamation.png" width="16" height="16" alt="Mail Server Verification Failed" title="Mail Server Verification Failed" /><br />
+							<img src="../images/exclamation.png" width="16" height="16" alt="Mail Server Verification Failed" 
+								title="Mail Server Verification Failed" /><br />
 							#mailServers[i].message#
 						</cfif>
 					<cfelse>
@@ -217,7 +229,8 @@
 		</cfloop>
 			<tr bgcolor="##dedede">
 				<td colspan="5">
-					<input type="button" name="verifyAll" value="Verify All Mail Servers" onclick="javascript:verifyAllMailServers()" />
+					<input type="button" name="verifyAll" id="verifyAll" value="Verify All Mail Servers" 
+							onclick="javascript:verifyAllMailServers()" tabindex="1" />
 				</td>
 			</tr>
 		</table>
@@ -229,51 +242,56 @@
 			<p class="message">#mailMessage#</p>
 		</cfif>
 		
-		<form name="mailServerForm" action="_controller.cfm?action=processMailServerForm" method="post" onsubmit="javascript:return validateMailServerForm(this);">
+		<form name="mailServerForm" action="_controller.cfm?action=processMailServerForm" method="post" 
+				onsubmit="javascript:return validateMailServerForm(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr bgcolor="##dedede">
 				<td colspan="2"><strong>#mailServerFormActionHeader# Mail Server</strong></td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right">SMTP Server</td>
+				<td bgcolor="##f0f0f0" align="right"><label for="smtpserver">SMTP Server</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="smtpserver" size="40" value="#mailServer.smtpserver#" />
+					<input type="text" name="smtpserver" id="smtpserver" size="40" value="#mailServer.smtpserver#" tabindex="2" />
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right">SMTP Port</td>
+				<td bgcolor="##f0f0f0" align="right"><label for="smtpport">SMTP Port</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="smtpport" size="3" maxlength="5" value="#mailServer.smtpport#" />
+					<input type="text" name="smtpport" id="smtpport" size="3" maxlength="5" value="#mailServer.smtpport#" 
+							tabindex="3" />
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right">User Name</td>
+				<td bgcolor="##f0f0f0" align="right"><label for="username">User Name</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="username" size="40" value="#mailServer.username#" />
+					<input type="text" name="username" id="username" size="40" value="#mailServer.username#" 
+							tabindex="4" />
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right">Password</td>
+				<td bgcolor="##f0f0f0" align="right"><label for="password">Password</label></td>
 				<td bgcolor="##ffffff">
-					<input type="password" name="password" size="40" value="#mailServer.password#" />
+					<input type="password" name="password" id="password" size="40" value="#mailServer.password#" 
+							tabindex="5" />
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right">Primary</td>
+				<td bgcolor="##f0f0f0" align="right"><label for="isPrimary">Primary</label></td>
 				<td bgcolor="##ffffff">
-					<input type="checkbox" name="isPrimary" value="true"<cfif mailServer.isPrimary> checked="true"</cfif> />&nbsp;
+					<input type="checkbox" name="isPrimary" id="isPrimary" value="true"
+							<cfif mailServer.isPrimary> checked="true"</cfif> tabindex="6" />&nbsp;
 					(Note: if only one mail server is defined, it will always be primary)
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right">Test Connection</td>
+				<td bgcolor="##f0f0f0" align="right"><label for="testConnection">Test Connection</label></td>
 				<td bgcolor="##ffffff">
-					<input type="checkbox" name="testConnection" value="true" />
+					<input type="checkbox" name="testConnection" id="testConnection" value="true" tabindex="7" />
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
-				<td><input type="submit" name="submit" value="Submit" /></td>
+				<td><input type="submit" name="submit" value="Submit" tabindex="8" /></td>
 			</tr>
 		</table>
 			<input type="hidden" name="mailServerAction" value="#mailServerAction#">
@@ -282,33 +300,37 @@
 		
 		<br /><br />
 		
-		<form name="mailSettingsForm" action="_controller.cfm?action=processMailSettingsForm" method="post" onsubmit="javascript:return validateMailSettingsForm(this);">
+		<form name="mailSettingsForm" action="_controller.cfm?action=processMailSettingsForm" method="post" 
+				onsubmit="javascript:return validateMailSettingsForm(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr bgcolor="##dedede">
 				<td colspan="2"><strong>Global Mail Settings</strong> (these settings apply to all registered mail servers)</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right">Timeout</td>
+				<td bgcolor="##f0f0f0" align="right"><label for="timeout">Timeout</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="timeout" size="3" maxlength="3" value="#mailSettings.timeout#" /> seconds
+					<input type="text" name="timeout" id="timeout" size="3" maxlength="3" value="#mailSettings.timeout#" 
+							tabindex="9" /> seconds
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right">Mail Threads</td>
+				<td bgcolor="##f0f0f0" align="right"><label for="threads">Mail Threads</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="threads" size="3" maxlength="3" value="#mailSettings.threads#" />
+					<input type="text" name="threads" id="threads" size="3" maxlength="3" value="#mailSettings.threads#" 
+							tabindex="10" />
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right">Spool Interval</td>
+				<td bgcolor="##f0f0f0" align="right"><label for="interval">Spool Interval</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="interval" size="3" maxlength="5" value="#mailSettings.interval#" /> seconds
+					<input type="text" name="interval" id="interval" size="3" maxlength="5" value="#mailSettings.interval#" 
+							tabindex="11" /> seconds
 				</td>
 			</tr>
 			<tr>
-				<td align="right" bgcolor="##f0f0f0">Default CFMAIL Character Set</td>
+				<td align="right" bgcolor="##f0f0f0"><label for="charset">Default CFMAIL Character Set</label></td>
 				<td bgcolor="##ffffff">
-					<select name="charset">
+					<select name="charset" id="charset" tabindex="12">
 					<cfloop collection="#charsets#" item="charset">
 						<option value="#charset#"<cfif mailSettings.charset is charset> selected="true"</cfif>>#charset#</option>
 					</cfloop>
@@ -317,7 +339,7 @@
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
-				<td><input type="submit" name="submit" value="Submit" /></td>
+				<td><input type="submit" name="submit" value="Submit" tabindex="13" /></td>
 			</tr>
 		</table>
 		</form>

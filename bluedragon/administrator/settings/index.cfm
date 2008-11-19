@@ -81,41 +81,51 @@
 			</ul>
 		</cfif>
 				
-		<form name="serverSettings" action="_controller.cfm?action=processServerSettingsForm" method="post" onsubmit="javascript:return validate(this);">
+		<form name="serverSettings" action="_controller.cfm?action=processServerSettingsForm" method="post" 
+				onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr bgcolor="##dedede">
 				<td colspan="2"><strong>Update Server Settings</strong></td>
 			</tr>
 			<tr>
-				<td align="right" bgcolor="##f0f0f0">Response Buffer Size</td>
+				<td align="right" bgcolor="##f0f0f0"><label for="buffersize">Response Buffer Size</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="buffersize" size="3" value="#serverSettings.buffersize#"<cfif serverSettings.buffersize eq 0> readOnly="true"</cfif> /> KB&nbsp;
-					<input type="checkbox" name="bufferentirepage" value="1" onclick="javascript:updateBufferSettings();"<cfif serverSettings.buffersize eq 0> checked="true"</cfif> />Buffer Entire Page
+					<input type="text" name="buffersize" id="buffersize" size="3" value="#serverSettings.buffersize#"
+							<cfif serverSettings.buffersize eq 0> readOnly="true"</cfif> tabindex="1" /> KB&nbsp;
+					<input type="checkbox" name="bufferentirepage" id="bufferentirepage" value="1" 
+							onclick="javascript:updateBufferSettings();"<cfif serverSettings.buffersize eq 0> checked="true"</cfif> 
+							tabindex="2" /><label for="bufferentirepage">Buffer Entire Page</label>
 				</td>
 			</tr>
 			<tr>
 				<td align="right" bgcolor="##f0f0f0">Whitespace Compression</td>
 				<td bgcolor="##ffffff">
-					<input type="radio" name="whitespacecomp" value="true"<cfif serverSettings.whitespacecomp> checked="true"</cfif> />Yes&nbsp;
-					<input type="radio" name="whitespacecomp" value="false"<cfif not serverSettings.whitespacecomp> checked="true"</cfif> />No
+					<input type="radio" name="whitespacecomp" id="whitespacecompTrue" value="true"
+							<cfif serverSettings.whitespacecomp> checked="true"</cfif> tabindex="3" />
+					<label for="whitespacecompTrue">Yes</label>&nbsp;
+					<input type="radio" name="whitespacecomp" id="whitespacecompFalse" value="false"
+							<cfif not serverSettings.whitespacecomp> checked="true"</cfif> tabindex="4" />
+					<label for="whitespacecompFalse">No</label>
 				</td>
 			</tr>
 			<tr>
-				<td align="right" bgcolor="##f0f0f0">Default Error Handler</td>
+				<td align="right" bgcolor="##f0f0f0"><label for="errorhandler">Default Error Handler</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="errorhandler" size="40" value="#serverSettings.errorhandler#" />
+					<input type="text" name="errorhandler" id="errorhandler" size="40" value="#serverSettings.errorhandler#" 
+							tabindex="5" />
 				</td>
 			</tr>
 			<tr>
-				<td align="right" bgcolor="##f0f0f0">Missing Template Handler</td>
+				<td align="right" bgcolor="##f0f0f0"><label for="missingtemplatehandler">Missing Template Handler</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="missingtemplatehandler" size="40" value="#serverSettings.missingtemplatehandler#" />
+					<input type="text" name="missingtemplatehandler" id="missingtemplatehandler" size="40" 
+							value="#serverSettings.missingtemplatehandler#" tabindex="6" />
 				</td>
 			</tr>
 			<tr>
-				<td align="right" bgcolor="##f0f0f0">Default Character Set</td>
+				<td align="right" bgcolor="##f0f0f0"><label for="defaultcharset">Default Character Set</label></td>
 				<td bgcolor="##ffffff">
-					<select name="defaultcharset">
+					<select name="defaultcharset" id="defaultcharset" tabindex="6">
 					<cfloop collection="#charsets#" item="charset">
 						<option value="#charset#"<cfif serverSettings.defaultcharset is charset> selected="true"</cfif>>#charset#</option>
 					</cfloop>
@@ -125,32 +135,38 @@
 			<tr>
 				<td align="right" bgcolor="##f0f0f0">Global Script Protection</td>
 				<td bgcolor="##ffffff">
-					<input type="radio" name="scriptprotect" value="true"<cfif serverSettings.scriptprotect> checked="true"</cfif> /> Yes&nbsp;
-					<input type="radio" name="scriptprotect" value="false"<cfif not serverSettings.scriptprotect> checked="true"</cfif> /> No
+					<input type="radio" name="scriptprotect" id="scriptprotectTrue" value="true"
+							<cfif serverSettings.scriptprotect> checked="true"</cfif> tabindex="7" />
+					<label for="scriptprotectTrue">Yes</label>&nbsp;
+					<input type="radio" name="scriptprotect" id="scriptprotectFalse" value="false"
+							<cfif not serverSettings.scriptprotect> checked="true"</cfif> tabindex="8" />
+					<label for="scriptprotectFalse">No</label>
 				</td>
 			</tr>
 			<tr>
-				<td align="right" bgcolor="##f0f0f0">Default CFFORM Script Source Location</td>
+				<td align="right" bgcolor="##f0f0f0"><label for="scriptsrc">Default CFFORM Script Source Location</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="scriptsrc" size="40" value="#serverSettings.scriptsrc#" />
+					<input type="text" name="scriptsrc" id="scriptsrc" size="40" value="#serverSettings.scriptsrc#" tabindex="9" />
 				</td>
 			</tr>
 			<tr>
-				<td align="right" bgcolor="##f0f0f0">Temp Directory Location</td>
+				<td align="right" bgcolor="##f0f0f0"><label for="tempdirectory">Temp Directory Location</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="tempdirectory" size="40" value="#serverSettings.tempdirectory#" />
+					<input type="text" name="tempdirectory" id="tempdirectory" size="40" value="#serverSettings.tempdirectory#" 
+							tabindex="10" />
 				</td>
 			</tr>
 			<tr>
-				<td align="right" bgcolor="##f0f0f0">Base ColdFusion Component (CFC)</td>
+				<td align="right" bgcolor="##f0f0f0"><label for="componentcfc">Base ColdFusion Component (CFC)</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="componentcfc" size="40" value="#serverSettings['component-cfc']#" />
+					<input type="text" name="componentcfc" id="componentcfc" size="40" value="#serverSettings['component-cfc']#" 
+							tabindex="11" />
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" name="submit" value="Submit" />
+					<input type="submit" name="submit" value="Submit" tabindex="12" />
 				</td>
 			</tr>
 		</table>

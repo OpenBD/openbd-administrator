@@ -78,9 +78,18 @@
 		<cfloop index="i" from="1" to="#arrayLen(fontDirs)#">
 			<tr bgcolor="##ffffff">
 				<td width="100">
-					<a href="javascript:void(0);" onclick="javascript:editFontDir('#fontDirs[i]#')" alt="Edit Font Directory" title="Edit Font Directory"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
-					<a href="_controller.cfm?action=verifyFontDirectory&fontDir=#fontDirs[i]#" alt="Verify Font Directory" title="Verify Font Directory"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
-					<a href="javascript:void(0);" onclick="javascript:removeFontDir('#fontDirs[i]#');" alt="Remove Font Directory" title="Remove Font Directory"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
+					<a href="javascript:void(0);" onclick="javascript:editFontDir('#fontDirs[i]#')" alt="Edit Font Directory" 
+						title="Edit Font Directory">
+						<img src="../images/pencil.png" border="0" width="16" height="16" />
+					</a>
+					<a href="_controller.cfm?action=verifyFontDirectory&fontDir=#fontDirs[i]#" alt="Verify Font Directory" 
+						title="Verify Font Directory">
+						<img src="../images/accept.png" border="0" width="16" height="16" />
+					</a>
+					<a href="javascript:void(0);" onclick="javascript:removeFontDir('#fontDirs[i]#');" alt="Remove Font Directory" 
+						title="Remove Font Directory">
+						<img src="../images/cancel.png" border="0" width="16" height="16" />
+					</a>
 				</td>
 				<td>#fontDirs[i]#</td>
 			</tr>
@@ -99,21 +108,22 @@
 			</ul>
 		</cfif>
 		
-		<form name="fontDirForm" action="_controller.cfm?action=processFontDirForm" method="post" onsubmit="javascript:return validate(this);">
+		<form name="fontDirForm" action="_controller.cfm?action=processFontDirForm" method="post" 
+				onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr bgcolor="##dedede">
 				<td colspan="2"><strong><cfif fontDirAction is "create">Add a<cfelse>Edit</cfif> Font Directory</strong></td>
 			</tr>
 			<tr>
-				<td align="right" bgcolor="##f0f0f0">Font Directory</td>
+				<td align="right" bgcolor="##f0f0f0"><label for="fontDir">Font Directory</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="fontDir" size="40" value="" />
+					<input type="text" name="fontDir" id="fontDir" size="40" value="" tabindex="1" />
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" name="submit" value="Submit" />
+					<input type="submit" name="submit" value="Submit" tabindex="2" />
 				</td>
 			</tr>
 		</table>

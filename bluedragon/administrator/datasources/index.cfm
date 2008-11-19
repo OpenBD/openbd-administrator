@@ -40,7 +40,8 @@
 		<cfloop index="i" from="1" to="#arrayLen(datasources)#">
 			<cfif structKeyExists(datasources[i], "drivername")>
 				<cftry>
-					<cfset datasources[i].driverdescription = Application.datasource.getDriverInfo(drivername = datasources[i].drivername).driverdescription />
+					<cfset datasources[i].driverdescription = 
+							Application.datasource.getDriverInfo(drivername = datasources[i].drivername).driverdescription />
 					<cfcatch type="any">
 						<!--- assume there's a drivername in one of the datasource nodes that we can't pull data on --->
 						<cfset datasources[i].driverdescription = "Other" />
@@ -119,16 +120,17 @@
 			</ul>
 		</cfif>
 		
-		<form name="addDatasource" action="_controller.cfm?action=addDatasource" method="post" onsubmit="javascript:return validate(this);">
+		<form name="addDatasource" action="_controller.cfm?action=addDatasource" method="post" 
+				onsubmit="javascript:return validate(this);">
 		<table border="0">
 			<tr>
-				<td>Datasource Name</td>
-				<td><input type="text" name="dsn" size="30" maxlength="50" /></td>
+				<td><label for="dsn">Datasource Name</label></td>
+				<td><input type="text" name="dsn" id="dsn" size="30" maxlength="50" tabindex="1" /></td>
 			</tr>
 			<tr>
-				<td>Database Type</td>
+				<td><label for="datasourceconfigpage">Database Type</label></td>
 				<td>
-					<select name="datasourceconfigpage">
+					<select name="datasourceconfigpage" id="datasourceconfigpage" tabindex="2">
 						<option value="" selected="true">- select -</option>
 					<cfloop index="i" from="1" to="#arrayLen(dbdrivers)#">
 						<option value="#dbdrivers[i].datasourceconfigpage#">#dbdrivers[i].driverdescription#</option>
@@ -139,7 +141,7 @@
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
-				<td><input type="submit" name="submit" value="Add Datasource" /></td>
+				<td><input type="submit" name="submit" value="Add Datasource" tabindex="3" /></td>
 			</tr>
 		</table>
 		</form>

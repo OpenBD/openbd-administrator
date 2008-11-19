@@ -85,22 +85,31 @@
 		<form action="_controller.cfm?action=processJavaCFXForm" method="post" onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="600">
 			<tr>
-				<td bgcolor="##f0f0f0"><strong>Tag Name</strong></td>
-				<td bgcolor="##ffffff"><input type="text" name="name" size="40" value="#cfxTag.displayname#" /></td>
+				<td bgcolor="##f0f0f0"><strong><label for="name">Tag Name</label></strong></td>
+				<td bgcolor="##ffffff">
+					<input type="text" name="name" id="name" size="40" value="#cfxTag.displayname#" tabindex="1" />
+				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0"><strong>Class Name</strong></td>
-				<td bgcolor="##ffffff"><input type="text" name="class" size="40" value="#cfxTag.class#" /></td>
+				<td bgcolor="##f0f0f0"><strong><label for="class">Class Name</label></strong></td>
+				<td bgcolor="##ffffff">
+					<input type="text" name="class" id="class" size="40" value="#cfxTag.class#" tabindex="2" />
+				</td>
 			</tr>
 			<tr>
-				<td valign="top" bgcolor="##f0f0f0"><strong>Description</strong></td>
+				<td valign="top" bgcolor="##f0f0f0"><strong><label for="description">Description</label></strong></td>
 				<td valign="top" bgcolor="##ffffff">
-					<textarea name="description" cols="40" rows="6">#cfxTag.description#</textarea>
+					<textarea name="description" id="description" cols="40" rows="6" tabindex="3">#cfxTag.description#</textarea>
 				</td>
 			</tr>
 			<tr bgcolor="##f0f0f0">
-				<td align="right"><input type="button" name="cancel" value="Cancel" onclick="javascript:location.replace('cfxtags.cfm');"></td>
-				<td><input type="submit" name="submit" value="#submitButtonAction# Java CFX Tag" /></td>
+				<td align="right">
+					<input type="button" name="cancel" id="cancel" value="Cancel" 
+							onclick="javascript:location.replace('cfxtags.cfm');" tabindex="4" />
+				</td>
+				<td>
+					<input type="submit" name="submit" id="submit" value="#submitButtonAction# Java CFX Tag" tabindex="5" />
+				</td>
 			</tr>
 		</table>
 			<input type="hidden" name="existingCFXName" value="#cfxTag.name#" />

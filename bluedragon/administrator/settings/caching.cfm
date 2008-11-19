@@ -62,6 +62,27 @@
 <cfsavecontent variable="request.content">
 	<cfoutput>
 		<script type="text/javascript">
+			function validateCacheStatusForm(f) {
+				var cbxCount = 0;
+				
+				for (var i = 0; i < f.cacheToFlush.length; i++) {
+					if (f.cacheToFlush[i].checked) {
+						cbxCount++;
+					}
+				}
+				
+				if (cbxCount == 0) {
+					alert("Please select at least one cache to flush");
+					return false;
+				} else {
+					if(confirm("Are you sure you want to flush the selected caches?")) {
+						return true;
+					} else {
+						return false;
+					}
+				}
+			}
+			
 			function validateFileCacheForm(f) {
 				if (f.maxfiles.value != parseInt(f.maxfiles.value)) {
 					alert("Please enter a numeric value for file cache size. If no caching is desired, please enter 0.");
@@ -100,7 +121,8 @@
 			</ul>
 		</cfif>
 		
-		<form name="cacheStatusForm" action="_controller.cfm?action=processFlushCacheForm" method="post" onsubmit="">
+		<form name="cacheStatusForm" action="_controller.cfm?action=processFlushCacheForm" method="post" 
+				onsubmit="javascript:return validateCacheStatusForm(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr bgcolor="##dedede">
 				<td colspan="5"><strong>Cache Status</strong></td>
@@ -113,83 +135,91 @@
 				<td><strong>Flush</strong></td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right" width="200">File</td>
+				<td bgcolor="##f0f0f0" align="right" width="200"><label for="cacheToFlushFile">File</label></td>
 				<td bgcolor="##ffffff" width="300">#numFilesInCache#</td>
 				<td bgcolor="##ffffff">N/A</td>
 				<td bgcolor="##ffffff">N/A</td>
 				<td bgcolor="##f0f0f0" align="center">
-					<input type="checkbox" name="cacheToFlush" value="file" />
+					<input type="checkbox" name="cacheToFlush" id="cacheToFlushFile" value="file" tabindex="1" />
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right">Query</td>
+				<td bgcolor="##f0f0f0" align="right"><label for="cacheToFlushQuery">Query</label></td>
 				<td bgcolor="##ffffff">#numQueriesInCache#</td>
 				<td bgcolor="##ffffff">#numQueryCacheHits#</td>
 				<td bgcolor="##ffffff">#numQueryCacheMisses#</td>
 				<td bgcolor="##f0f0f0" align="center">
-					<input type="checkbox" name="cacheToFlush" value="query" />
+					<input type="checkbox" name="cacheToFlush" id="cacheToFlushQuery" value="query" tabindex="2" />
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right">Content</td>
+				<td bgcolor="##f0f0f0" align="right"><label for="cacheToFlushContent">Content</label></td>
 				<td bgcolor="##ffffff">#numContentInCache#</td>
 				<td bgcolor="##ffffff">#numContentCacheHits#</td>
 				<td bgcolor="##ffffff">#numContentCacheMisses#</td>
 				<td bgcolor="##f0f0f0" align="center">
-					<input type="checkbox" name="cacheToFlush" value="content" />
+					<input type="checkbox" name="cacheToFlush" id="cacheToFlushContent" value="content" tabindex="3" />
 				</td>
 			</tr>
 			<tr>
 			</tr>
 			<tr bgcolor="##dedede">
-				<td colspan="5" align="right"><input type="submit" name="submit" value="Flush Checked Caches" /></td>
+				<td colspan="5" align="right"><input type="submit" name="submit" value="Flush Checked Caches" tabindex="4" /></td>
 			</tr>
 		</table>
 		</form>
 		
 		<br /><br />
 		
-		<form name="fileCacheForm" action="_controller.cfm?action=processFileCacheForm" method="post" onsubmit="javascript:return validateFileCacheForm(this);">
+		<form name="fileCacheForm" action="_controller.cfm?action=processFileCacheForm" method="post" 
+				onsubmit="javascript:return validateFileCacheForm(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr bgcolor="##dedede">
 				<td colspan="2"><strong>File Cache Settings</strong></td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right">File Cache Size</td>
+				<td bgcolor="##f0f0f0" align="right"><label for="maxfiles">File Cache Size</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="maxfiles" size="5" maxlength="4" value="#cachingSettings.file.maxfiles#" /> files
+					<input type="text" name="maxfiles" id="maxfiles" size="5" maxlength="4" 
+							value="#cachingSettings.file.maxfiles#" tabindex="5" /> files
 				</td>
 			</tr>
 			<tr>
 				<td bgcolor="##f0f0f0" align="right">Trust Cache</td>
 				<td bgcolor="##ffffff">
-					<input type="radio" name="trustcache" value="true"<cfif cachingSettings.file.trustcache> checked="true"</cfif> /> Yes&nbsp;
-					<input type="radio" name="trustcache" value="false"<cfif not cachingSettings.file.trustcache> checked="true"</cfif> /> No&nbsp;
+					<input type="radio" name="trustcache" id="trustcacheTrue" value="true"
+						<cfif cachingSettings.file.trustcache> checked="true"</cfif> tabindex="6" />
+					<label for="trustcacheTrue">Yes</label>&nbsp;
+					<input type="radio" name="trustcache" id="trustcacheFalse" value="false"
+							<cfif not cachingSettings.file.trustcache> checked="true"</cfif> tabindex="7" />
+					<label for="trustcacheFalse">No</label>&nbsp;
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
-				<td><input type="submit" name="submit" value="Submit" /></td>
+				<td><input type="submit" name="submit" value="Submit" tabindex="8" /></td>
 			</tr>
 		</table>
 		</form>
 		
 		<br /><br />
 		
-		<form name="queryCacheForm" action="_controller.cfm?action=processQueryCacheForm" method="post" onsubmit="javascript:return validateQueryCacheForm(this);">
+		<form name="queryCacheForm" action="_controller.cfm?action=processQueryCacheForm" method="post" 
+				onsubmit="javascript:return validateQueryCacheForm(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr bgcolor="##dedede">
 				<td colspan="2"><strong>Query Cache Settings</strong></td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right">Query Cache Size</td>
+				<td bgcolor="##f0f0f0" align="right"><label for="cachecount">Query Cache Size</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="cachecount" size="5" maxlength="4" value="#cachingSettings.cfquery.cachecount#" /> queries
+					<input type="text" name="cachecount" id="cachecount" size="5" maxlength="4" 
+							value="#cachingSettings.cfquery.cachecount#" tabindex="9" /> queries
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
-				<td><input type="submit" name="submit" value="Submit" /></td>
+				<td><input type="submit" name="submit" value="Submit" tabindex="10" /></td>
 			</tr>
 		</table>
 		</form>
@@ -197,6 +227,11 @@
 		
 		<ul>
 			<li>Hit and miss statistics for file caching are not tracked</li>
+			<li>
+				If the query cache statistics do not appear to be correct, this is likely because 
+				you are running a pre-1.0 version of the OpenBD engine. The underlying caching code 
+				was changed for 1.0 so cache statistics on pre-1.0 versions of OpenBD are not reported.
+			</li>
 		</ul>
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />

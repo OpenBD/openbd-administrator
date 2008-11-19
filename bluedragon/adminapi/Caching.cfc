@@ -187,12 +187,30 @@
 	
 	<cffunction name="getQueryCacheHits" access="public" output="false" returntype="numeric" roles="admin" 
 			hint="Returns the number of hits against the query cache">
-		<cfreturn createObject("java", "com.naryx.tagfusion.cfm.cache.CacheFactory").getCacheEngine("QUERY").getStatsHits() />
+		<cfset var queryCacheHits = 0 />
+		
+		<cftry>
+			<cfset queryCacheHits = createObject("java", "com.naryx.tagfusion.cfm.cache.CacheFactory").getCacheEngine("QUERY").getStatsHits() />
+			<cfcatch type="any">
+				<!--- this likely means they're on an older version of the engine--just return 0 --->
+			</cfcatch>
+		</cftry>
+		
+		<cfreturn queryCacheHits />
 	</cffunction>
 	
 	<cffunction name="getQueryCacheMisses" access="public" output="false" returntype="numeric" roles="admin" 
 			hint="Returns the number of misses against the query cache">
-		<cfreturn createObject("java", "com.naryx.tagfusion.cfm.cache.CacheFactory").getCacheEngine("QUERY").getStatsMisses() />
+		<cfset var queryCacheMisses = 0 />
+		
+		<cftry>
+			<cfset queryCacheMisses = createObject("java", "com.naryx.tagfusion.cfm.cache.CacheFactory").getCacheEngine("QUERY").getStatsMisses() />
+			<cfcatch type="any">
+				<!--- this likely means they're on an older version of the engine--just return 0 --->
+			</cfcatch>
+		</cftry>
+		
+		<cfreturn queryCacheMisses />
 	</cffunction>
 	
 	<cffunction name="flushQueryCache" access="public" output="false" returntype="void" roles="admin" 

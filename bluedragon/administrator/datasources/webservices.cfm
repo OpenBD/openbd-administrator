@@ -96,27 +96,38 @@
 			<p class="message">#session.message#</p>
 		</cfif>
 		
-		<form name="webServiceForm" action="_controller.cfm?action=processWebServiceForm" method="post" onsubmit="javascript:return validate(this);">
+		<form name="webServiceForm" action="_controller.cfm?action=processWebServiceForm" method="post" 
+				onsubmit="javascript:return validate(this);">
 		<table border="0">
 			<tr>
-				<td>Web Service Name</td>
-				<td><input type="text" name="name" size="30" maxlength="50" value="#webService.name#" /></td>
+				<td><label for="name">Web Service Name</label></td>
+				<td>
+					<input type="text" name="name" id="name" size="30" maxlength="50" value="#webService.name#" tabindex="1" />
+				</td>
 			</tr>
 			<tr>
-				<td>WSDL URL</td>
-				<td><input type="text" name="wsdl" size="30" value="#webService.wsdl#" /></td>
+				<td><label for="wsdl">WSDL URL</label></td>
+				<td>
+					<input type="text" name="wsdl" id="wsdl" size="30" value="#webService.wsdl#" tabindex="2" />
+				</td>
 			</tr>
 			<tr>
-				<td>User Name</td>
-				<td><input type="text" name="username" size="30" maxlength="100" value="#webService.username#" /></td>
+				<td><label for="username">User Name</label></td>
+				<td>
+					<input type="text" name="username" id="username" size="30" maxlength="100" 
+							value="#webService.username#" tabindex="3" />
+				</td>
 			</tr>
 			<tr>
-				<td>Password</td>
-				<td><input type="password" name="password" size="30" maxlength="100" value="#webService.password#" /></td>
+				<td><label for="password">Password</label></td>
+				<td>
+					<input type="password" name="password" id="password" size="30" maxlength="100" 
+							value="#webService.password#" tabindex="4" />
+				</td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
-				<td><input type="submit" name="submit" value="#formActionText# Web Service" /></td>
+				<td><input type="submit" name="submit" value="#formActionText# Web Service" tabindex="5" /></td>
 			</tr>
 		</table>
 			<input type="hidden" name="webServiceAction" value="#webServiceAction#" />
@@ -144,9 +155,18 @@
 		<cfloop index="i" from="1" to="#arrayLen(webServices)#">
 			<tr <cfif not structKeyExists(webServices[i], "verified")>bgcolor="##ffffff"<cfelseif webServices[i].verified>bgcolor="##ccffcc"<cfelseif not webServices[i].verified>bgcolor="##ffff99"</cfif>>
 				<td width="100">
-					<a href="_controller.cfm?action=editWebService&name=#webServices[i].name#" alt="Edit Web Service" title="Edit Web Service"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
-					<a href="_controller.cfm?action=verifyWebService&name=#webServices[i].name#" alt="Verify Web Service" title="Verify Web Service"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
-					<a href="javascript:void(0);" onclick="javascript:removeWebService('#webServices[i].name#');" alt="Remove Web Service" title="Remove Web Service"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
+					<a href="_controller.cfm?action=editWebService&name=#webServices[i].name#" alt="Edit Web Service" 
+						title="Edit Web Service">
+						<img src="../images/pencil.png" border="0" width="16" height="16" />
+					</a>
+					<a href="_controller.cfm?action=verifyWebService&name=#webServices[i].name#" alt="Verify Web Service" 
+						title="Verify Web Service">
+						<img src="../images/accept.png" border="0" width="16" height="16" />
+					</a>
+					<a href="javascript:void(0);" onclick="javascript:removeWebService('#webServices[i].name#');" 
+						alt="Remove Web Service" title="Remove Web Service">
+						<img src="../images/cancel.png" border="0" width="16" height="16" />
+					</a>
 				</td>
 				<td><cfif structKeyExists(webServices[i], "displayname")>#webServices[i].displayname#<cfelse>#webServices[i].name#</cfif></td>
 				<td>#webServices[i].wsdl#</td>
@@ -155,9 +175,11 @@
 				<td width="200">
 					<cfif structKeyExists(webServices[i], "verified")>
 						<cfif webServices[i].verified>
-							<img src="../images/tick.png" width="16" height="16" alt="Web Service Verified" title="Web Service Verified" />
+							<img src="../images/tick.png" width="16" height="16" alt="Web Service Verified" 
+								title="Web Service Verified" />
 						<cfelseif not datasources[i].verified>
-							<img src="../images/exclamation.png" width="16" height="16" alt="Web Service Verification Failed" title="Web Service Verification Failed" /><br />
+							<img src="../images/exclamation.png" width="16" height="16" alt="Web Service Verification Failed" 
+								title="Web Service Verification Failed" /><br />
 							#webServices[i].message#
 						</cfif>
 					<cfelse>
@@ -168,7 +190,8 @@
 		</cfloop>
 			<tr bgcolor="##dedede">
 				<td colspan="6">
-					<input type="button" name="verifyAll" value="Verify All Web Services" onclick="javascript:verifyAllWebServices()" />
+					<input type="button" name="verifyAll" value="Verify All Web Services" 
+							onclick="javascript:verifyAllWebServices()" tabindex="6" />
 				</td>
 			</tr>
 		</table>

@@ -90,33 +90,48 @@
 		<form action="_controller.cfm?action=processCPPCFXForm" method="post" onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="600">
 			<tr>
-				<td bgcolor="##f0f0f0"><strong>Tag Name</strong></td>
-				<td bgcolor="##ffffff"><input type="text" name="name" size="40" value="#cfxTag.displayname#" /></td>
+				<td bgcolor="##f0f0f0"><strong><label for="name">Tag Name</label></strong></td>
+				<td bgcolor="##ffffff">
+					<input type="text" name="name" id="name" size="40" value="#cfxTag.displayname#" tabindex="1" />
+				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0"><strong>Module Name</strong></td>
-				<td bgcolor="##ffffff"><input type="text" name="module" size="40" value="#cfxTag.module#" /></td>
+				<td bgcolor="##f0f0f0"><strong><label for="module">Module Name</label></strong></td>
+				<td bgcolor="##ffffff">
+					<input type="text" name="module" id="module" size="40" value="#cfxTag.module#" tabindex="2" />
+				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0"><strong>Function Name</strong></td>
-				<td bgcolor="##ffffff"><input type="text" name="function" size="40" value="#cfxTag.function#" /></td>
+				<td bgcolor="##f0f0f0"><strong><label for="function">Function Name</label></strong></td>
+				<td bgcolor="##ffffff">
+					<input type="text" name="function" id="function" size="40" value="#cfxTag.function#" tabindex="3" />
+				</td>
 			</tr>
 			<tr>
 				<td bgcolor="##f0f0f0"><strong>Keep Loaded</strong></td>
 				<td bgcolor="##ffffff">
-					<input type="radio" name="keeploaded" value="true"<cfif cfxTag.keeploaded> checked="true"</cfif> />Yes&nbsp;
-					<input type="radio" name="keeploaded" value="false"<cfif not cfxTag.keeploaded> checked="true"</cfif> />No
+					<input type="radio" name="keeploaded" id="keeploadedTrue" value="true"
+							<cfif cfxTag.keeploaded> checked="true"</cfif> tabindex="4" />
+					<label for="keeploadedTrue">Yes</label>&nbsp;
+					<input type="radio" name="keeploaded" id="keeploadedFalse" value="false"
+							<cfif not cfxTag.keeploaded> checked="true"</cfif> tabindex="5" />
+					<label for="keeploadedFalse">No</label>
 				</td>
 			</tr>
 			<tr>
-				<td valign="top" bgcolor="##f0f0f0"><strong>Description</strong></td>
+				<td valign="top" bgcolor="##f0f0f0"><strong><label for="description">Description</label></strong></td>
 				<td valign="top" bgcolor="##ffffff">
-					<textarea name="description" cols="40" rows="6">#cfxTag.description#</textarea>
+					<textarea name="description" id="description" cols="40" rows="6" tabindex="6">#cfxTag.description#</textarea>
 				</td>
 			</tr>
 			<tr bgcolor="##f0f0f0">
-				<td align="right"><input type="button" name="cancel" value="Cancel" onclick="javascript:location.replace('cfxtags.cfm');"></td>
-				<td><input type="submit" name="submit" value="#submitButtonAction# C++ CFX Tag" /></td>
+				<td align="right">
+					<input type="button" name="cancel" id="cancel" value="Cancel" 
+							onclick="javascript:location.replace('cfxtags.cfm');" tabindex="7" />
+				</td>
+				<td>
+					<input type="submit" name="submit" id="submit" value="#submitButtonAction# C++ CFX Tag" tabindex="8" />
+				</td>
 			</tr>
 		</table>
 			<input type="hidden" name="existingCFXName" value="#cfxTag.name#" />

@@ -71,7 +71,6 @@
 				<td><strong>Last Updated</strong></td>
 			</tr>
 		<cfloop index="i" from="1" to="#arrayLen(logFiles)#">
-			<!--- TODO: need to sort alphabetically --->
 			<tr bgcolor="##ffffff">
 				<td width="100">
 					<a href="viewlogfile.cfm?logFile=#logFiles[i].name#" alt="View Log File" title="View Log File"><img src="../images/page_find.png" border="0" width="16" height="16" /></a>

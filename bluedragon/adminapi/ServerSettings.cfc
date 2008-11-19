@@ -159,6 +159,16 @@
 		<cfset var updateConfig = false />
 		
 		<!--- some of the server settings may not be present in the xml file, so add the ones that don't exist --->
+		<cfif not structKeyExists(localConfig.system, "assert")>
+			<cfset localConfig.system.assert = "false" />
+			<cfset updateConfig = true />
+		</cfif>
+		
+		<cfif not structKeyExists(localConfig.system, "component-cfc")>
+			<cfset localConfig.system["component-cfc"] = "/WEB-INF/bluedragon/component.cfc" />
+			<cfset updateConfig = true />
+		</cfif>
+		
 		<cfif not structKeyExists(localConfig.system, "scriptprotect")>
 			<cfset localConfig.system.scriptprotect = "false" />
 			<cfset updateConfig = true />
@@ -169,13 +179,8 @@
 			<cfset updateConfig = true />
 		</cfif>
 		
-		<cfif not structKeyExists(localConfig.system, "assert")>
-			<cfset localConfig.system.assert = "false" />
-			<cfset updateConfig = true />
-		</cfif>
-		
-		<cfif not structKeyExists(localConfig.system, "component-cfc")>
-			<cfset localConfig.system["component-cfc"] = "/WEB-INF/bluedragon/component.cfc" />
+		<cfif not structKeyExists(localConfig.system, "tempdirectory")>
+			<cfset localConfig.system.tempdirectory = "/WEB-INF/bluedragon/work/temp" />
 			<cfset updateConfig = true />
 		</cfif>
 		

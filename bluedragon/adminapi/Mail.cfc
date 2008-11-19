@@ -32,13 +32,18 @@
 		<cfset var doSetConfig = false />
 		
 		<!--- some of the mail settings may not exist --->
-		<cfif not structKeyExists(localConfig.cfmail, "threads")>
-			<cfset localConfig.cfmail.threads = "1" />
+		<cfif not structKeyExists(localConfig.cfmail, "charset")>
+			<cfset localConfig.cfmail.charset = getDefaultCharset() />
 			<cfset doSetConfig = true />
 		</cfif>
 		
-		<cfif not structKeyExists(localConfig.cfmail, "charset")>
-			<cfset localConfig.cfmail.charset = getDefaultCharset() />
+		<cfif not structKeyExists(localConfig.cfmail, "interval")>
+			<cfset localConfig.cfmail.interval = "240" />
+			<cfset doSetConfig = true />
+		</cfif>
+		
+		<cfif not structKeyExists(localConfig.cfmail, "threads")>
+			<cfset localConfig.cfmail.threads = "1" />
 			<cfset doSetConfig = true />
 		</cfif>
 		

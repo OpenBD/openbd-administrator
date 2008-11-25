@@ -555,7 +555,7 @@
 			<!--- mysql --->
 			<cfcase value="com.mysql.jdbc.Driver">
 				<!--- url format: jdbc:mysql://[host][,failoverhost...][:port]/[database][?propertyName1][=propertyValue1][&propertyName2][=propertyValue2] --->
-				<cfset jdbcURL = "jdbc:mysql://#arguments.server#:#arguments.port#/#arguments.database#" />
+				<cfset jdbcURL = "jdbc:mysql://#arguments.server#:#arguments.port#/#arguments.database#?cacheResultSetMetadata=true" />
 			</cfcase>
 			
 			<!--- oracle --->

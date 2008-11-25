@@ -32,6 +32,14 @@
 				return false;
 			}
 			
+			if (f.password.value.length == 0) {
+				if(confirm("Are you sure you want to set a blank password?")) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+			
 			return true;
 		}
 	</script>

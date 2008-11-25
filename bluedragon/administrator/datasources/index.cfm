@@ -153,7 +153,7 @@
 		<cfif datasourceRetrievalMessage is not ""><p class="message">#datasourceRetrievalMessage#</p></cfif>
 		
 		<cfif arrayLen(datasources) eq 0>
-			<p><strong><em>No dataources configured</em></strong></p>
+			<p><strong><em>No datasources configured</em></strong></p>
 		<cfelse>
 		<table border="0" width="100%" cellpadding="2" cellspacing="1" bgcolor="##999999">
 			<tr bgcolor="##dedede">
@@ -164,7 +164,6 @@
 				<td><strong>Status</strong></td>
 			</tr>
 		<cfloop index="i" from="1" to="#arrayLen(datasources)#">
-			<!--- TODO: need to sort alphabetically --->
 			<tr <cfif not structKeyExists(datasources[i], "verified")>bgcolor="##ffffff"<cfelseif datasources[i].verified>bgcolor="##ccffcc"<cfelseif not datasources[i].verified>bgcolor="##ffff99"</cfif>>
 				<td width="100">
 					<a href="_controller.cfm?action=editDatasource&dsn=#datasources[i].name#" alt="Edit Datasource" title="Edit Datasource"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>

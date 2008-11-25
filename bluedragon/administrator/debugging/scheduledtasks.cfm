@@ -378,6 +378,5 @@
 	</cfoutput>
 	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "scheduledTask", false) />
-	<!--- TODO: make sure we're clearing out error fields on all pages where used --->
 	<cfset structDelete(session, "errorFields", false) />
 </cfsavecontent>

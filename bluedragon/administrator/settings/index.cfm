@@ -59,13 +59,18 @@
 					location.replace("_controller.cfm?action=revertToPreviousSettings");
 				}
 			}
+			
+			function confirmReload() {
+				if(confirm("Are you sure you want to reload the current configuration settings?")) {
+					location.replace("_controller.cfm?action=reloadCurrentSettings");
+				}
+			}
 		</script>
 		
 		<h3>Server Settings</h3>
 		
 		<p>
 			Settings last updated #serverSettings.lastupdated#<br />
-			<a href="javascript:void(0);" onclick="javascript:confirmRevert();">Revert to previous settings</a>
 		</p>
 		
 		<cfif structKeyExists(session, "message") and session.message is not "">
@@ -85,7 +90,17 @@
 				onsubmit="javascript:return validate(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 			<tr bgcolor="##dedede">
-				<td colspan="2"><strong>Update Server Settings</strong></td>
+				<td colspan="2">
+					<strong>Update Server Settings</strong>&nbsp;
+					<a href="javascript:void(0);" onclick="javascript:confirmRevert();" alt="Revert to Previous Settings" 
+						title="Revert to Previous Settings">
+						<img src="../images/arrow_undo.png" height="16" width="16" border="0" />
+					</a>&nbsp;
+					<a href="javascript:void(0);" onclick="javascript:confirmReload();" alt="Reload Current Settings" 
+						title="Reload Current Settings">
+						<img src="../images/arrow_refresh.png" height="16" width="16" border="0" />
+					</a>
+				</td>
 			</tr>
 			<tr>
 				<td align="right" bgcolor="##f0f0f0"><label for="buffersize">Response Buffer Size</label></td>
@@ -183,6 +198,27 @@
 			<li>
 				A path beginning with "/" is interpreted as a relative path from the web application root directory, which 
 				may be a subdirectory of the WEB-INF directory.
+			</li>
+		</ul>
+
+		<p><strong>Important Information Concerning Configuration Settings</strong></p>
+		<ul>
+			<li>
+				Clicking "Revert to Previous Settings" will reload all OpenBD configuration settings using the XML 
+				configuration file that is one revision older than the current file.
+			</li>
+			<li>
+				Clicking "Reload Current Settings" will force a reload of all OpenBD configuration settings from 
+				the current bluedragon.xml configuration file. One use for this function is if the bluedragon.xml 
+				file is manually replaced with a different bluedragon.xml file, OpenBD will need to be forced 
+				to reload the configuration settings. Using this function avoids having to restart OpenBD, other than 
+				if a specific configuration setting requires a server restart.
+			</li>
+			<li>
+				If the configuration settings are changed using either the "Revert to Previous" or "Reload Current" functions, 
+				and one of the settings within the updated configuration file requires a server restart to take effect 
+				(e.g. "ColdFusion 5-compatible client data" on the variables settings page), using these functions will 
+				not eliminate the need for a server restart.
 			</li>
 		</ul>
 		

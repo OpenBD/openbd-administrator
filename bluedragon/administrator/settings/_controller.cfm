@@ -218,6 +218,19 @@
 			<cflocation url="index.cfm" addtoken="false" />
 		</cfcase>
 		
+		<cfcase value="reloadCurrentSettings">
+			<cftry>
+				<cfset Application.serverSettings.reloadCurrentSettings() />
+				<cfcatch type="bluedragon.adminapi.serversettings">
+					<cfset session.message = CFCATCH.Message />
+					<cflocation url="index.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cfset session.message = "The current server settings have been reloaded." />
+			<cflocation url="index.cfm" addtoken="false" />
+		</cfcase>
+		
 		<!--- MAPPINGS --->
 		<cfcase value="editMapping">
 			<cfset session.mapping = Application.mapping.getMappings(args.name) />

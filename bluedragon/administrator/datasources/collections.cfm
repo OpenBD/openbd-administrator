@@ -23,7 +23,7 @@
 <cfsilent>
 	<!--- TODO: enable "info" button to get status, or get document count to display in list of collections --->
 	<!--- TODO: build simple query screen to allow users to run simple queries against collections from within the admin console --->
-	<!--- TODO: investiage integration with Luke (http://www.getopt.org/luke/) to allow better insight into collections --->
+	<!--- TODO: investigate integration with Luke (http://www.getopt.org/luke/) to allow better insight into collections --->
 	<cfparam name="searchCollectionsMessage" type="string" default="" />
 
 	<cfset supportedLanguages = arrayNew(1) />

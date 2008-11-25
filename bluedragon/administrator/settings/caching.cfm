@@ -103,7 +103,7 @@
 		</script>
 		
 		<h3>Caching</h3>
-		
+		<cfdump var="#CacheGetAll()#" />
 		<cfif structKeyExists(session, "message") and session.message is not "">
 			<p class="message">#session.message#</p>
 		</cfif>

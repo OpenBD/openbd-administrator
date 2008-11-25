@@ -206,6 +206,11 @@
 		<!--- TODO: finish implementing reverting to previous settings --->
 	</cffunction>
 	
+	<cffunction name="reloadCurrentSettings" access="public" output="false" returntype="void" roles="admin" 
+			hint="Reloads the current configuration settings contained in bluedragon.xml">
+		<cfset setConfig(getConfig()) />
+	</cffunction>
+	
 	<cffunction name="getServerStartTime" access="public" output="false" returntype="date" roles="admin" 
 			hint="Returns the server start time as a date object">
 		<cfset var startTimeMS = createObject("java", "com.naryx.tagfusion.cfm.engine.cfEngine").thisInstance.startTime />

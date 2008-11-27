@@ -43,7 +43,7 @@
 		<cfelse>
 			<cfset dsinfo.filepath = right(dsinfo.filepath, len(dsinfo.filepath) - 13) />
 		</cfif>
-
+		
 		<cfset dsinfo.filepath = left(dsinfo.filepath, len(dsinfo.filepath) - (len(dsinfo.databasename) + 1)) />
 		
 		<cfif dsinfo.filepath is expandPath("/WEB-INF/bluedragon/h2databases")>

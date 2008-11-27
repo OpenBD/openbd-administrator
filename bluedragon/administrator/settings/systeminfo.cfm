@@ -105,5 +105,4 @@
 			</tr>
 		</table>
 	</cfoutput>
-	<cfset structDelete(session, "message", false) />
 </cfsavecontent>

@@ -48,8 +48,13 @@ body {
 }				/* printed to paper                    */
 
 
-.message {
+.error {
 	color: 			red;
+	font-weight: 	bold;
+}
+
+.info {
+	color: 			#003399;
 	font-weight: 	bold;
 }
 

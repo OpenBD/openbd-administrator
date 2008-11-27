@@ -128,7 +128,6 @@
   <a href="index.html">Home</a> &raquo;
   <a href="index.html">Other</a> &raquo;
 </div> --->
-
 #request.content#
 
 <br id="endmain" />

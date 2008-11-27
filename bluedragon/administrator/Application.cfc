@@ -28,12 +28,7 @@
 	</cfscript>
 	
 	<cffunction name="onApplicationStart" access="public" output="false" returntype="boolean">
-		<cfset var localConfig = 0 />
-		
 		<cfscript>
-			var localConfig = 0;
-			var resetConfig = false;
-			
 			Application.administrator = createObject("component", "bluedragon.adminapi.Administrator");
 			Application.caching = createObject("component", "bluedragon.adminapi.Caching");
 			Application.chart = createObject("component", "bluedragon.adminapi.Chart");
@@ -157,6 +152,11 @@
 	
 	<cffunction name="onRequestEnd" access="public" output="true" returntype="void">
 		<cfargument name="thePage" type="string" required="true" />
+		
+		<!--- clear out any lingering session data that's already been output --->
+		<cfset structDelete(session, "message", false) />
+		<cfset structDelete(session, "messageType", false) />
+		<cfset structDelete(session, "errorFields", false) />
 		
 		<cfif listLast(CGI.SCRIPT_NAME, "/") is "login.cfm">
 			<cfinclude template="/bluedragon/administrator/blankTemplate.cfm" />

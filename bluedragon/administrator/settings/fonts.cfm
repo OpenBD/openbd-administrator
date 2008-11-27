@@ -29,6 +29,7 @@
 		<cfset fontDirs = Application.fonts.getFontDirectories() />
 		<cfcatch type="bluedragon.adminapi.fonts">
 			<cfset fontsMessage = CFCATCH.Message />
+			<cfset fontsMessageType = "error" />
 		</cfcatch>
 	</cftry>
 </cfsilent>
@@ -62,11 +63,11 @@
 		<h3>Font Directories</h3>
 		
 		<cfif structKeyExists(session, "message") and session.message is not "">
-			<p class="message">#session.message#</p>
+			<p class="#session.messageType#">#session.message#</p>
 		</cfif>
 		
 		<cfif fontsMessage is not "">
-			<p class="message">#fontsMessage#</p>
+			<p class="#fontsMessageType#">#fontsMessage#</p>
 		</cfif>
 
 		<cfif arrayLen(fontDirs) gt 0>
@@ -100,7 +101,7 @@
 		<br />
 		
 		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
-			<p class="message">The following errors occurred:</p>
+			<p class="error">The following errors occurred:</p>
 			<ul>
 			<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
 				<li>#session.errorFields[i][2]#</li>
@@ -146,7 +147,5 @@
 			</li>
 		</ul>
 	</cfoutput>
-	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "fontDir", false) />
-	<cfset structDelete(session, "errorFields", false) />
 </cfsavecontent>

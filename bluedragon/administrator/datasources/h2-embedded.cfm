@@ -37,7 +37,13 @@
 	
 	<cfif dsinfo.hoststring is not "">
 		<cfset dsinfo.filepath = listFirst(dsinfo.hoststring, ";") />
-		<cfset dsinfo.filepath = right(dsinfo.filepath, len(dsinfo.filepath) - 8) />
+		
+		<cfif findNoCase(":file:/", dsinfo.filepath) eq 0>
+			<cfset dsinfo.filepath = right(dsinfo.filepath, len(dsinfo.filepath) - 8) />
+		<cfelse>
+			<cfset dsinfo.filepath = right(dsinfo.filepath, len(dsinfo.filepath) - 13) />
+		</cfif>
+
 		<cfset dsinfo.filepath = left(dsinfo.filepath, len(dsinfo.filepath) - (len(dsinfo.databasename) + 1)) />
 		
 		<cfif dsinfo.filepath is expandPath("/WEB-INF/bluedragon/h2databases")>

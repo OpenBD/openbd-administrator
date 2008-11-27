@@ -73,8 +73,8 @@
 			Settings last updated #serverSettings.lastupdated#<br />
 		</p>
 		
-		<cfif structKeyExists(session, "message") and session.message is not "">
-			<p class="#session.messageType#">#session.message#</p>
+		<cfif structKeyExists(session, "message") and session.message.text is not "">
+			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
 		
 		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>

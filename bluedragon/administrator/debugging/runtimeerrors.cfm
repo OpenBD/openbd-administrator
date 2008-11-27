@@ -31,6 +31,7 @@
 		<cfset logFiles = Application.debugging.getRuntimeErrorLogs() />
 		<cfcatch type="any">
 			<cfset logFilesMessage = CFCATCH.Message />
+			<cfset logFilesMessageType = "error" />
 		</cfcatch>
 	</cftry>
 	
@@ -87,11 +88,13 @@
 		
 		<h3>Runtime Error Logs</h3>
 		
-		<cfif structKeyExists(session, "message") and session.message is not "">
-			<p class="message">#session.message#</p>
+		<cfif structKeyExists(session, "message") and session.message.text is not "">
+			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
 		
-		<cfif logFilesMessage is not ""><p class="message">#logFilesMessage#</p></cfif>
+		<cfif logFilesMessage is not "">
+			<p class="#logFilesMessageType#">#logFilesMessage#</p>
+		</cfif>
 		
 		<cfif not IsQuery(logFiles) or logFiles.RecordCount eq 0>
 			<p><strong><em>No runtime error logs available</em></strong></p>
@@ -164,5 +167,4 @@
 		</table>
 		</cfif>
 	</cfoutput>
-	<cfset structDelete(session, "message", false) />
 </cfsavecontent>

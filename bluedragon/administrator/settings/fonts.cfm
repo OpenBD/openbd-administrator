@@ -62,8 +62,8 @@
 		
 		<h3>Font Directories</h3>
 		
-		<cfif structKeyExists(session, "message") and session.message is not "">
-			<p class="#session.messageType#">#session.message#</p>
+		<cfif structKeyExists(session, "message") and session.message.text is not "">
+			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
 		
 		<cfif fontsMessage is not "">

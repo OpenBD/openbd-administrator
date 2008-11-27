@@ -57,6 +57,7 @@
 		
 		<cfcatch type="any">
 			<cfset webServiceRetrievalMessage = CFCATCH.Message />
+			<cfset webServiceRetrievalMessageType = "error" />
 		</cfcatch>
 	</cftry>
 </cfsilent>
@@ -92,8 +93,8 @@
 		
 		<h3>#formActionText# Web Service</h3>
 		
-		<cfif structKeyExists(session, "message") and session.message is not "">
-			<p class="message">#session.message#</p>
+		<cfif structKeyExists(session, "message") and session.message.text is not "">
+			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
 		
 		<form name="webServiceForm" action="_controller.cfm?action=processWebServiceForm" method="post" 
@@ -138,7 +139,9 @@
 
 		<h3>Web Services</h3>
 
-		<cfif webServiceRetrievalMessage is not ""><p class="message">#webServiceRetrievalMessage#</p></cfif>
+		<cfif webServiceRetrievalMessage is not "">
+			<p class="#webServiceRetrievalMessageType#">#webServiceRetrievalMessage#</p>
+		</cfif>
 		
 		<cfif arrayLen(webServices) eq 0>
 			<p><strong><em>No web services configured</em></strong></p>
@@ -207,9 +210,7 @@
 			</li>
 		</ul>
 	</cfoutput>
-	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "webServiceRetrievalMessage", false) />
-	<cfset structDelete(session, "errorFields", false) />
 	<cfset structDelete(session, "webService", false) />
 	<cfset structDelete(session, "webServiceStatus", false) />
 </cfsavecontent>

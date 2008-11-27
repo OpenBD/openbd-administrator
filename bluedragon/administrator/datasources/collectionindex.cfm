@@ -33,6 +33,7 @@
 		<cfset fileExtensions = arrayToList(Application.searchCollections.getIndexableFileExtensions()) />
 		<cfcatch type="any">
 			<cfset searchCollectionsMessage = CFCATCH.Message />
+			<cfset searchCollectionsMessageType = "error" />
 		</cfcatch>
 	</cftry>
 </cfsilent>
@@ -51,12 +52,12 @@
 		
 		<h3>Create/Update Index for Search Collection "#session.searchCollection.name#"</h3>
 		
-		<cfif structKeyExists(session, "message") and session.message is not "">
-			<p class="message">#session.message#</p>
+		<cfif structKeyExists(session, "message") and session.message.text is not "">
+			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
 		
 		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
-			<p class="message">The following errors occurred:</p>
+			<p class="error">The following errors occurred:</p>
 			<ul>
 			<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
 				<li>#session.errorFields[i][2]#</li>
@@ -64,7 +65,7 @@
 			</ul>
 		</cfif>
 
-		<cfif searchCollectionsMessage is not ""><p class="message">#searchCollectionsMessage#</p></cfif>
+		<cfif searchCollectionsMessage is not ""><p class="#searchCollectionsMessageType#">#searchCollectionsMessage#</p></cfif>
 		
 		<form name="directoryIndexForm" action="_controller.cfm?action=indexSearchCollection" method="post" 
 				onSubmit="return validateDirectoryIndexForm(this);">
@@ -135,8 +136,6 @@
 		</form>
 	</cfoutput>
 		
-	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "searchCollectionMessage", false) />
 	<cfset structDelete(session, "searchCollection", false) />
-	<cfset structDelete(session, "errorFields", false) />
 </cfsavecontent>

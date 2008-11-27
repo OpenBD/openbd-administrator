@@ -112,7 +112,8 @@
 			<cfparam name="args.dsn" type="string" default="" />
 			
 			<cfif trim(args.dsn) is "">
-				<cfset session.message = "Please select a valid datasource to edit" />
+				<cfset session.message.text = "Please select a valid datasource to edit" />
+				<cfset session.message.type = "error" />
 				<cflocation url="index.cfm" addtoken="false" />
 			<cfelse>
 				<cfset session.datasource = Application.datasource.getDatasources(args.dsn) />
@@ -198,7 +199,8 @@
 				<!--- No errors on the required fields so create/modify the datasource.
 						If it's a create, need to check to see if the datasource already exists. --->
 				<cfif args.datasourceAction is "create" and Application.datasource.datasourceExists(args.name)>
-					<cfset session.message = "A datasource with that name already exists." />
+					<cfset session.message.text = "A datasource with that name already exists." />
+					<cfset session.message.type = "error" />
 					<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
 				<cfelse>
 					<cftry>
@@ -243,12 +245,14 @@
 							</cfcase>
 						</cfswitch>
 						<cfcatch type="bluedragon.adminapi.datasource">
-							<cfset session.message = CFCATCH.Message />
+							<cfset session.message.text = CFCATCH.Message />
+							<cfset session.message.type = "error" />
 							<cflocation url="index.cfm" addtoken="false" />
 						</cfcatch>
 					</cftry>
 					
-					<cfset session.message = "The datasource was #args.datasourceAction#d successfully." />
+					<cfset session.message.text = "The datasource was #args.datasourceAction#d successfully." />
+					<cfset session.message.type = "info" />
 					<cflocation url="index.cfm" addtoken="false" />
 				</cfif>
 			</cfif>
@@ -286,18 +290,21 @@
 		<cfcase value="removeDatasource">
 			<!--- make sure the datasource exists --->
 			<cfif not Application.datasource.datasourceExists(args.dsn)>
-				<cfset session.message = "The datasource you attempted to remove does not exist." />
+				<cfset session.message.text = "The datasource you attempted to remove does not exist." />
+				<cfset session.message.type = "error" />
 				<cflocation url="index.cfm" addtoken="false" />
 			<cfelse>
 				<cftry>
 					<cfset Application.datasource.deleteDatasource(args.dsn) />
 					<cfcatch type="bluedragon.adminapi.datasource">
-						<cfset session.message = CFCATCH.Message />
+						<cfset session.message.text = CFCATCH.Message />
+						<cfset session.message.type = "error" />
 						<cflocation url="index.cfm" addtoken="false" />
 					</cfcatch>
 				</cftry>
 				
-				<cfset session.message = "The datasource was removed successfully." />
+				<cfset session.message.text = "The datasource was removed successfully." />
+				<cfset session.message.type = "info" />
 				<cflocation url="index.cfm" addtoken="false" />
 			</cfif>
 		</cfcase>
@@ -306,12 +313,14 @@
 			<cftry>
 				<cfset Application.datasource.getRegisteredDrivers(true) />
 				<cfcatch type="bluedragon.adminapi.datasource">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="index.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The database drivers were reset successfully." />
+			<cfset session.message.text = "The database drivers were reset successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="index.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -347,12 +356,14 @@
 					<cfset Application.searchCollections.createSearchCollection(args.name, args.path, 
 																				args.language, args.storebody) />
 					<cfcatch type="bluedragon.adminapi.searchcollections">
-						<cfset session.message = CFCATCH.Message />
+						<cfset session.message.text = CFCATCH.Message />
+						<cfset session.message.type = "error" />
 						<cflocation url="collections.cfm" addtoken="false" />
 					</cfcatch>
 				</cftry>
 				
-				<cfset session.message = "The collection was created successfully" />
+				<cfset session.message.text = "The collection was created successfully" />
+				<cfset session.message.type = "info" />
 				<cflocation url="collections.cfm" addtoken="false" />
 			</cfif>
 		</cfcase>
@@ -361,7 +372,8 @@
 			<cftry>
 				<cfset session.searchCollection = Application.searchCollections.getSearchCollection(args.name) />
 				<cfcatch type="bluedragon.adminapi.searchcollections">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="collections.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
@@ -393,13 +405,15 @@
 																											args.key, args.language) />
 					</cfif>
 					<cfcatch type="bluedragon.adminapi.searchcollections">
-						<cfset session.message = CFCATCH.Message />
+						<cfset session.message.text = CFCATCH.Message />
+						<cfset session.message.type = "error" />
 						<cflocation url="_controller.cfm?action=showIndexForm&name=#args.name#" addtoken="false" />
 					</cfcatch>
 				</cftry>
 			</cfif>
 			
-			<cfset session.message = "The collection was indexed successfully: #collectionIndexStatus.inserted# documents inserted, #collectionIndexStatus.updated# documents updated, #collectionIndexStatus.deleted# documents deleted." />
+			<cfset session.message.text = "The collection was indexed successfully: #collectionIndexStatus.inserted# documents inserted, #collectionIndexStatus.updated# documents updated, #collectionIndexStatus.deleted# documents deleted." />
+			<cfset session.message.type = "info" />
 			<cflocation url="collections.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -407,12 +421,14 @@
 			<cftry>
 				<cfset Application.searchCollections.deleteSearchCollection(args.name) />
 				<cfcatch type="bluedragon.adminapi.searchcollections">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="collections.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The collection was deleted successfully" />
+			<cfset session.message.text = "The collection was deleted successfully" />
+			<cfset session.message.type = "info" />
 			<cflocation url="collections.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -461,7 +477,8 @@
 				<!--- No errors on the required fields so create/modify the web service.
 						If it's a create, need to check to see if the web service already exists. --->
 				<cfif args.webServiceAction is "create" and Application.webServices.webServiceExists(args.name)>
-					<cfset session.message = "A web service with that name already exists." />
+					<cfset session.message.text = "A web service with that name already exists." />
+					<cfset session.message.type = "error" />
 					<cflocation url="webservices.cfm" addtoken="false" />
 				<cfelse>
 					<!--- process the web service form --->
@@ -469,14 +486,16 @@
 						<cfset Application.webServices.setWebService(args.name, args.wsdl, args.username, args.password, 
 																		args.webServiceAction, args.existingWebServiceName) />
 						<cfcatch type="bluedragon.adminapi.webservices">
-							<cfset session.message = CFCATCH.Message />
+							<cfset session.message.text = CFCATCH.Message />
+							<cfset session.message.type = "error" />
 							<cflocation url="webservices.cfm" addtoken="false" />
 						</cfcatch>
 					</cftry>
 				</cfif>
 			</cfif>
 
-			<cfset session.message = "The web service was processed successfully" />
+			<cfset session.message.text = "The web service was processed successfully" />
+			<cfset session.message.type = "info" />
 			<cflocation url="webservices.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -502,7 +521,8 @@
 				<cftry>
 					<cfset session.webService = Application.webServices.getWebServices(args.name) />
 					<cfcatch type="bluedragon.adminapi.webservices">
-						<cfset session.message = CFCATCH.Message />
+						<cfset session.message.text = CFCATCH.Message />
+						<cfset session.message.type = "error" />
 						<cflocation url="webservices.cfm" addtoken="false" />
 					</cfcatch>
 				</cftry>
@@ -562,19 +582,22 @@
 				<cftry>
 					<cfset Application.webServices.deleteWebService(args.name) />
 					<cfcatch type="bluedragon.adminapi.webservices">
-						<cfset session.message = CFCATCH.Message />
+						<cfset session.message.text = CFCATCH.Message />
+						<cfset session.message.type = "error" />
 						<cflocation url="webservices.cfm" addtoken="false" />
 					</cfcatch>
 				</cftry>
 			</cfif>
 			
-			<cfset session.message = "The web service was deleted successfully" />
+			<cfset session.message.text = "The web service was deleted successfully" />
+			<cfset session.message.type = "info" />
 			<cflocation url="webservices.cfm" addtoken="false" />
 		</cfcase>
 		
 		<!--- DEFAULT CASE -- NO VALID ACTION SPECIFIED --->
 		<cfdefaultcase>
-			<cfset session.message = "Invalid action" />
+			<cfset session.message.text = "Invalid action" />
+			<cfset session.message.type = "error" />
 			<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
 		</cfdefaultcase>
 	</cfswitch>

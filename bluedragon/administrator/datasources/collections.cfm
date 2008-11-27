@@ -34,6 +34,7 @@
 		<cfset searchCollections = Application.searchCollections.getSearchCollections() />
 		<cfcatch type="any">
 			<cfset searchCollectionsMessage = CFCATCH.Message />
+			<cfset searchCollectionsMessageType = "error" />
 		</cfcatch>
 	</cftry>
 </cfsilent>
@@ -63,12 +64,12 @@
 		
 		<h3>Search Collections</h3>
 		
-		<cfif structKeyExists(session, "message") and session.message is not "">
-			<p class="message">#session.message#</p>
+		<cfif structKeyExists(session, "message") and session.message.text is not "">
+			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
 		
 		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
-			<p class="message">The following errors occurred:</p>
+			<p class="error">The following errors occurred:</p>
 			<ul>
 			<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
 				<li>#session.errorFields[i][2]#</li>
@@ -76,7 +77,7 @@
 			</ul>
 		</cfif>
 
-		<cfif searchCollectionsMessage is not ""><p class="message">#searchCollectionsMessage#</p></cfif>
+		<cfif searchCollectionsMessage is not ""><p class="#searchCollectionsMessageType#">#searchCollectionsMessage#</p></cfif>
 		
 		<cfif arrayLen(searchCollections) eq 0>
 			<p><strong><em>No search collections configured</em></strong></p>
@@ -160,7 +161,5 @@
 		</form>
 	</cfoutput>
 		
-	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "searchCollectionMessage", false) />
-	<cfset structDelete(session, "errorFields", false) />
 </cfsavecontent>

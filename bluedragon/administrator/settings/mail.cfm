@@ -123,8 +123,8 @@
 			}
 		</script>
 		
-		<cfif structKeyExists(session, "message") and session.message is not "">
-			<p class="#session.messageType#">#session.message#</p>
+		<cfif structKeyExists(session, "message") and session.message.text is not "">
+			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
 
 		<cfif not mailAvailable>
@@ -133,8 +133,8 @@
 			<p class="error">It appears that you do not hava JavaMail installed.</p>
 			
 			<p>
-				Some Java application severs, such as <a href="http://tomcat.apache.org/" target="_blank">Tomcat</a>, do not ship 
-				with JavaMail. Without JavaMail installed, Open BlueDragon is unable to send mail.
+				Some Java application severs, such as <a href="http://tomcat.apache.org/" target="_blank">Apache Tomcat</a>, 
+				do not ship with JavaMail. Without JavaMail installed, Open BlueDragon is unable to send mail.
 			</p>
 			
 			<p>

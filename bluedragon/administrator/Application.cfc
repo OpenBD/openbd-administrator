@@ -155,7 +155,6 @@
 		
 		<!--- clear out any lingering session data that's already been output --->
 		<cfset structDelete(session, "message", false) />
-		<cfset structDelete(session, "messageType", false) />
 		<cfset structDelete(session, "errorFields", false) />
 		
 		<cfif listLast(CGI.SCRIPT_NAME, "/") is "login.cfm">

@@ -66,6 +66,7 @@
 		
 		<cfcatch type="bluedragon.adminapi.debugging">
 			<cfset logFileMessage = CFCATCH.Message />
+			<cfset logFileMessageType = "error" />
 		</cfcatch>
 	</cftry>
 </cfsilent>
@@ -73,12 +74,12 @@
 	<cfoutput>
 		<h3>View Log File - #url.logFile#</h3>
 		
-		<cfif structKeyExists(session, "message") and session.message is not "">
-			<p class="message">#session.message#</p>
+		<cfif structKeyExists(session, "message") and session.message.text is not "">
+			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
 		
 		<cfif logFileMessage is not "">
-			<p class="message">#logFileMessage#</p>
+			<p class="#logFileMessageType#">#logFileMessage#</p>
 		</cfif>
 		
 		<cfif arrayLen(logFileData.logFileLines) eq 0>
@@ -143,5 +144,4 @@
 		</table>
 		</cfif>
 	</cfoutput>
-	<cfset structDelete(session, "message", false) />
 </cfsavecontent>

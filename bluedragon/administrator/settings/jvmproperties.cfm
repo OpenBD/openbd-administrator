@@ -29,6 +29,7 @@
 		<cfset jvmProps = Application.serverSettings.getJVMProperties() />
 		<cfcatch type="any">
 			<cfset jvmMessage = CFCATCH.Message />
+			<cfset jvmMessageType = "error" />
 		</cfcatch>
 	</cftry>
 </cfsilent>
@@ -36,12 +37,12 @@
 	<cfoutput>
 		<h3>Java Virtual Machine (JVM) Properties</h3>
 		
-		<cfif structKeyExists(session, "message") and session.message is not "">
-			<p class="message">#session.message#</p>
+		<cfif structKeyExists(session, "message") and session.message.text is not "">
+			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
 		
 		<cfif jvmMessage is not "">
-			<p class="message">#jvmMessage#</p>
+			<p class="#jvmMessageType#">#jvmMessage#</p>
 		</cfif>
 		
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
@@ -57,5 +58,4 @@
 		</cfloop>
 		</table>
 	</cfoutput>
-	<cfset structDelete(session, "message", false) />
 </cfsavecontent>

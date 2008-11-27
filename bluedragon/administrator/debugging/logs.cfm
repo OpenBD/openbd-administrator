@@ -29,6 +29,7 @@
 		<cfset logFiles = Application.debugging.getLogFiles() />
 		<cfcatch type="any">
 			<cfset logFilesMessage = CFCATCH.Message />
+			<cfset logFilesMessageType = "error" />
 		</cfcatch>
 	</cftry>
 </cfsilent>
@@ -54,11 +55,13 @@
 		
 		<h3>Log Files</h3>
 		
-		<cfif structKeyExists(session, "message") and session.message is not "">
-			<p class="message">#session.message#</p>
+		<cfif structKeyExists(session, "message") and session.message.text is not "">
+			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
 		
-		<cfif logFilesMessage is not ""><p class="message">#logFilesMessage#</p></cfif>
+		<cfif logFilesMessage is not "">
+			<p class="#logFilesMessageType#">#logFilesMessage#</p>
+		</cfif>
 		
 		<cfif arrayLen(logFiles) eq 0>
 			<p><strong><em>No log files available</em></strong></p>
@@ -87,5 +90,4 @@
 		</table>
 		</cfif>
 	</cfoutput>
-	<cfset structDelete(session, "message", false) />
 </cfsavecontent>

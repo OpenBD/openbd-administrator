@@ -26,7 +26,6 @@
 	<!--- clear out old session stuff --->
 	<cfset structDelete(session, "errorFields", false) />
 	<cfset structDelete(session, "message", false) />
-	<cfset structDelete(session, "messageType", false) />
 	<cfset structDelete(session, "mapping", false) />
 	
 	<!--- stick everything in form and url into a struct for easy reference --->
@@ -58,14 +57,14 @@
 				<cftry>
 					<cfset Application.administrator.setPassword(trim(args.password)) />
 					<cfcatch type="bluedragon.adminapi.administrator">
-						<cfset session.message = CFCATCH.Message />
-						<cfset session.messageType = "error" />
+						<cfset session.message.text = CFCATCH.Message />
+						<cfset session.message.type = "error" />
 						<cflocation url="security.cfm" addtoken="false" />
 					</cfcatch>
 				</cftry>
 
-				<cfset session.message = "The password was updated successfully." />
-				<cfset session.messageType = "info" />
+				<cfset session.message.text = "The password was updated successfully." />
+				<cfset session.message.type = "info" />
 				<cflocation url="security.cfm" addtoken="false" />
 			</cfif>
 		</cfcase>
@@ -136,14 +135,14 @@
 					<cfset Application.administrator.setAllowedIPs(args.allowIPs) />
 					<cfset Application.administrator.setDeniedIPs(args.denyIPs) />
 					<cfcatch type="bluedragon.adminapi.administrator">
-						<cfset session.message = CFCATCH.Message />
-						<cfset session.messageType = "error" />
+						<cfset session.message.text = CFCATCH.Message />
+						<cfset session.message.type = "error" />
 						<cflocation url="security.cfm" addtoken="false" />
 					</cfcatch>
 				</cftry>
 
-				<cfset session.message = "The IP addresses were updated successfully." />
-				<cfset session.messageType = "info" />
+				<cfset session.message.text = "The IP addresses were updated successfully." />
+				<cfset session.message.type = "info" />
 				<cflocation url="security.cfm" addtoken="false" />
 			</cfif>
 		</cfcase>
@@ -195,14 +194,14 @@
 																			args.scriptprotect, args.scriptsrc, args.tempdirectory, 
 																			args.componentcfc) />
 					<cfcatch type="bluedragon.adminapi.serversettings">
-						<cfset session.message = CFCATCH.Message />
-						<cfset session.messageType = "error" />
+						<cfset session.message.text = CFCATCH.Message />
+						<cfset session.message.type = "error" />
 						<cflocation url="index.cfm" addtoken="false" />
 					</cfcatch>
 				</cftry>
 
-				<cfset session.message = "The server settings were saved successfully." />
-				<cfset session.messageType = "info" />
+				<cfset session.message.text = "The server settings were saved successfully." />
+				<cfset session.message.type = "info" />
 				<cflocation url="index.cfm" addtoken="false" />
 			</cfif>
 		</cfcase>
@@ -211,14 +210,14 @@
 			<cftry>
 				<cfset Application.serverSettings.revertToPreviousSettings() />
 				<cfcatch type="bluedragon.adminapi.serversettings">
-					<cfset session.message = CFCATCH.Message />
-					<cfset session.messageType = "error" />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="index.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The previous server settings have been restored." />
-			<cfset session.messageType = "info" />
+			<cfset session.message.text = "The previous server settings have been restored." />
+			<cfset session.message.type = "info" />
 			<cflocation url="index.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -226,14 +225,14 @@
 			<cftry>
 				<cfset Application.serverSettings.reloadCurrentSettings() />
 				<cfcatch type="bluedragon.adminapi.serversettings">
-					<cfset session.message = CFCATCH.Message />
-					<cfset session.messageType = "error" />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="index.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The current server settings have been reloaded." />
-			<cfset session.messageType = "info" />
+			<cfset session.message.text = "The current server settings have been reloaded." />
+			<cfset session.message.type = "info" />
 			<cflocation url="index.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -267,14 +266,14 @@
 					<cfset Application.mapping.setMapping(args.name, args.directory, 
 															args.mappingAction, args.existingMappingName) />
 					<cfcatch type="bluedragon.adminapi.mapping">
-						<cfset session.message = CFCATCH.Message />
-						<cfset session.messageType = "error" />
+						<cfset session.message.text = CFCATCH.Message />
+						<cfset session.message.type = "error" />
 						<cflocation url="mappings.cfm" addtoken="false" />
 					</cfcatch>
 				</cftry>
 				
-				<cfset session.message = "The mapping was #args.mappingAction#d successfully." />
-				<cfset session.messageType = "info" />
+				<cfset session.message.text = "The mapping was #args.mappingAction#d successfully." />
+				<cfset session.message.type = "info" />
 				<cflocation url="mappings.cfm" addtoken="false" />
 			</cfif>
 		</cfcase>
@@ -283,14 +282,14 @@
 			<cftry>
 				<cfset Application.mapping.verifyMapping(args.name) />
 				<cfcatch type="bluedragon.adminapi.mapping">
-					<cfset session.message = CFCATCH.Message />
-					<cfset session.messageType = "error" />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="mappings.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The mapping verified successfully." />
-			<cfset session.messageType = "info" />
+			<cfset session.message.text = "The mapping verified successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="mappings.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -298,14 +297,14 @@
 			<cftry>
 				<cfset Application.mapping.deleteMapping(args.name) />
 				<cfcatch type="bluedragon.adminapi.mapping">
-					<cfset session.message = CFCATCH.Message />
-					<cfset session.messageType = "error" />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="mappings.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 
-			<cfset session.message =  "The mapping was deleted successfully."/>
-			<cfset session.messageType = "info" />
+			<cfset session.message.text =  "The mapping was deleted successfully."/>
+			<cfset session.message.type = "info" />
 			<cflocation url="mappings.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -327,14 +326,14 @@
 				<cftry>
 					<cfset Application.caching.setFileCacheSettings(args.maxfiles, args.trustcache) />
 					<cfcatch type="bluedragon.adminapi.caching">
-						<cfset session.message = CFCATCH.Message />
-						<cfset session.messageType = "error" />
+						<cfset session.message.text = CFCATCH.Message />
+						<cfset session.message.type = "error" />
 						<cflocation url="caching.cfm" addtoken="false" />
 					</cfcatch>
 				</cftry>
 				
-				<cfset session.message = "The file cache settings were updated successfully." />
-				<cfset session.messageType = "info" />
+				<cfset session.message.text = "The file cache settings were updated successfully." />
+				<cfset session.message.type = "info" />
 				<cflocation url="caching.cfm" addtoken="false" />
 			</cfif>
 		</cfcase>
@@ -356,14 +355,14 @@
 				<cftry>
 					<cfset Application.caching.setQueryCacheSettings(args.cachecount) />
 					<cfcatch type="bluedragon.adminapi.caching">
-						<cfset session.message = CFCATCH.Message />
-						<cfset session.messageType = "error" />
+						<cfset session.message.text = CFCATCH.Message />
+						<cfset session.message.type = "error" />
 						<cflocation url="caching.cfm" addtoken="false" />
 					</cfcatch>
 				</cftry>
 				
-				<cfset session.message = "The query cache settings were updated successfully." />
-				<cfset session.messageType = "info" />
+				<cfset session.message.text = "The query cache settings were updated successfully." />
+				<cfset session.message.type = "info" />
 				<cflocation url="caching.cfm" addtoken="false" />
 			</cfif>
 		</cfcase>
@@ -387,15 +386,15 @@
 				<cftry>
 					<cfset Application.caching.flushCaches(args.cacheToFlush) />
 					<cfcatch type="bluedragon.adminapi.caching">
-						<cfset session.message = CFCATCH.Message />
-						<cfset session.messageType = "error" />
+						<cfset session.message.text = CFCATCH.Message />
+						<cfset session.message.type = "error" />
 						<cflocation url="caching.cfm" addtoken="false" />
 					</cfcatch>
 				</cftry>
 			</cfif>
 			
-			<cfset session.message = "The selected caches were flushed successfully." />
-			<cfset session.messageType = "info" />
+			<cfset session.message.text = "The selected caches were flushed successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="caching.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -488,8 +487,8 @@
 																			args.clientpurgeenabled, args.clientexpiry, 
 																			args.cf5clientdata) />
 				<cfcatch type="bluedragon.adminapi.variableSettings">
-					<cfset session.message = CFCATCH.Message />
-					<cfset session.messageType = "error" />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="variables.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
@@ -497,14 +496,14 @@
 			<cftry>
 				<cfset Application.chart.setChartSettings(args.cfchartcachesize, args.cfchartstorage) />
 				<cfcatch type="bluedragon.adminapi.chart">
-					<cfset session.message = CFCATCH.Message />
-					<cfset session.messageType = "error" />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="variables.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The variable settings were updated successfully." />
-			<cfset session.messageType = "info" />
+			<cfset session.message.text = "The variable settings were updated successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="variables.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -539,14 +538,14 @@
 														args.isPrimary, args.testConnection, 
 														args.existingSMTPServer, args.mailServerAction) />
 				<cfcatch type="bluedragon.adminapi.mail">
-					<cfset session.message = CFCATCH.Message />
-					<cfset session.messageType = "error" />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="mail.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The mail server was saved successfully." />
-			<cfset session.messageType = "info" />
+			<cfset session.message.text = "The mail server was saved successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="mail.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -581,14 +580,14 @@
 				<cfset Application.mail.setMailSettings(args.timeout, args.threads, args.interval, 
 														args.charset) />
 				<cfcatch type="bluedragon.adminapi.mail">
-					<cfset session.message = CFCATCH.Message />
-					<cfset session.messageType = "error" />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="mail.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The mail settings were saved successfully." />
-			<cfset session.messageType = "info" />
+			<cfset session.message.text = "The mail settings were saved successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="mail.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -596,8 +595,8 @@
 			<cftry>
 				<cfset session.mailServer = Application.mail.getMailServers(args.mailServer) />
 				<cfcatch type="any">
-					<cfset session.message = CFCATCH.Message />
-					<cfset session.messageType = "error" />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 				</cfcatch>
 			</cftry>
 			
@@ -649,14 +648,14 @@
 			<cftry>
 				<cfset Application.mail.deleteMailServer(args.mailServer) />
 				<cfcatch type="bluedragon.adminapi.mail">
-					<cfset session.message = CFCATCH.Message />
-					<cfset session.messageType = "error" />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="mail.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The mail server was removed successfully." />
-			<cfset session.messageType = "info" />
+			<cfset session.message.text = "The mail server was removed successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="mail.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -664,14 +663,14 @@
 			<cftry>
 				<cfset Application.mail.respoolUndeliveredMail() />
 				<cfcatch type="bluedragon.adminapi.mail">
-					<cfset session.message = CFCATCH.Message />
-					<cfset session.messageType = "error" />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="mail.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The undelivered mail was respooled successfully." />
-			<cfset session.messageType = "info" />
+			<cfset session.message.text = "The undelivered mail was respooled successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="mail.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -694,14 +693,14 @@
 			<cftry>
 				<cfset Application.fonts.setFontDirectory(args.fontDir, args.fontDirAction, args.existingFontDir) />
 				<cfcatch type="bluedragon.adminapi.fonts">
-					<cfset session.message = CFCATCH.Message />
-					<cfset session.messageType = "error" />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="fonts.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The font directory was processed successfully." />
-			<cfset session.messageType = "info" />
+			<cfset session.message.text = "The font directory was processed successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="fonts.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -709,14 +708,14 @@
 			<cftry>
 				<cfset Application.fonts.verifyFontDirectory(args.fontDir) />
 				<cfcatch type="any">
-					<cfset session.message = CFCATCH.Message />
-					<cfset session.messageType = "error" />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="fonts.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The font directory was verified successfully." />
-			<cfset session.messageType = "info" />
+			<cfset session.message.text = "The font directory was verified successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="fonts.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -724,21 +723,21 @@
 			<cftry>
 				<cfset Application.fonts.deleteFontDirectory(args.fontDir) />
 				<cfcatch type="any">
-					<cfset session.message = CFCATCH.Message />
-					<cfset session.messageType = "error" />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="fonts.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The font directory was removed successfully." />
-			<cfset session.messageType = "info" />
+			<cfset session.message.text = "The font directory was removed successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="fonts.cfm" addtoken="false" />
 		</cfcase>
 		
 		<!--- DEFAULT CASE --->
 		<cfdefaultcase>
-			<cfset session.message = "Invalid action" />
-			<cfset session.messageType = "error" />
+			<cfset session.message.text = "Invalid action" />
+			<cfset session.message.type = "error" />
 			<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
 		</cfdefaultcase>
 	</cfswitch>

@@ -30,6 +30,7 @@
 		<cfset dbdrivers = Application.datasource.getRegisteredDrivers() />
 		<cfcatch type="any">
 			<cfset dbDriverRetrievalMessage = CFCATCH.Message />
+			<cfset dbDriverRetrievalMessageType = "error" />
 		</cfcatch>
 	</cftry>
 	
@@ -67,6 +68,7 @@
 		
 		<cfcatch type="any">
 			<cfset datasourceRetrievalMessage = CFCATCH.Message />
+			<cfset datasourceRetrievalMessageType = "error" />
 		</cfcatch>
 	</cftry>
 </cfsilent>
@@ -107,12 +109,12 @@
 		
 		<h3>Add Datasource</h3>
 		
-		<cfif structKeyExists(session, "message") and session.message is not "">
-			<p class="message">#session.message#</p>
+		<cfif structKeyExists(session, "message") and session.message.text is not "">
+			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
 		
 		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
-			<p class="message">The following errors occurred:</p>
+			<p class="error">The following errors occurred:</p>
 			<ul>
 			<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
 				<li>#session.errorFields[i][2]#</li>
@@ -150,7 +152,7 @@
 		<!--- TODO: put setting to auto-configure ODBC datasources here? this would only be applicable to windows --->
 		<h3>Datasources</h3>
 		
-		<cfif datasourceRetrievalMessage is not ""><p class="message">#datasourceRetrievalMessage#</p></cfif>
+		<cfif datasourceRetrievalMessage is not ""><p class="#datasourceRetrievalMessageType#">#datasourceRetrievalMessage#</p></cfif>
 		
 		<cfif arrayLen(datasources) eq 0>
 			<p><strong><em>No datasources configured</em></strong></p>
@@ -213,8 +215,6 @@
 			<li>Deleting an H2 Embedded datasource does <em>not</em> delete the database files. These files must be deleted manually.</li>
 		</ul>
 	</cfoutput>
-	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "dbDriverRetrievalMessage", false) />
-	<cfset structDelete(session, "errorFields", false) />
 	<cfset structDelete(session, "datasourceStatus", false) />
 </cfsavecontent>

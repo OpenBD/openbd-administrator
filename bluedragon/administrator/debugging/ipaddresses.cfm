@@ -27,6 +27,7 @@
 		<cfset ipAddresses = Application.debugging.getDebugIPAddresses() />
 		<cfcatch type="bluedragon.adminapi.debugging">
 			<cfset debuggingMessage = CFCATCH.Message />
+			<cfset debuggingMessageType = "error" />
 		</cfcatch>
 	</cftry>
 </cfsilent>
@@ -55,16 +56,16 @@
 		
 		<h3>Debug IP Addresses</h3>
 		
-		<cfif structKeyExists(session, "message") and session.message is not "">
-			<p class="message">#session.message#</p>
+		<cfif structKeyExists(session, "message") and session.message.text is not "">
+			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
 		
 		<cfif ipAddressMessage is not "">
-			<p class="message">#ipAddressMessage#</p>
+			<p class="#ipAddressMessageType#">#ipAddressMessage#</p>
 		</cfif>
 
 		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
-			<p class="message">The following errors occurred:</p>
+			<p class="error">The following errors occurred:</p>
 			<ul>
 			<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
 				<li>#session.errorFields[i][2]#</li>
@@ -122,6 +123,4 @@
 		</table>
 		</form>
 	</cfoutput>
-	<cfset structDelete(session, "message", false) />
-	<cfset structDelete(session, "errorFields", false) />
 </cfsavecontent>

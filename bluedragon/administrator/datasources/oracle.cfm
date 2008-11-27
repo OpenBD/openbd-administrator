@@ -26,7 +26,8 @@
 	<cfparam name="url.action" type="string" default="create" />
 	
 	<cfif not structKeyExists(session, "datasource")>
-		<cfset session.message = "An error occurred while processing the datasource action." />
+		<cfset session.message.text = "An error occurred while processing the datasource action." />
+		<cfset session.message.type = "error" />
 		<cflocation url="index.cfm" addtoken="false" />
 	</cfif>
 	
@@ -70,12 +71,12 @@
 	</script>
 	<h3>Configure Datasource - Oracle (Oracle)</h3>
 	<br />
-	<cfif structKeyExists(session, "message")>
-	<p style="color:red;font-weight:bold;">#session.message#</p>
+	<cfif structKeyExists(session, "message") and session.message.text is not "">
+		<p class="#session.message.type#">#session.message.text#</p>
 	</cfif>
 
 	<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
-		<p class="message">The following errors occurred:</p>
+		<p class="error">The following errors occurred:</p>
 		<ul>
 		<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
 			<li>#session.errorFields[i][2]#</li>
@@ -234,7 +235,5 @@
 		<input type="hidden" name="existingDatasourceName" value="#dsinfo.name#" />
 	</form>
 </cfoutput>
-<cfset structDelete(session, "message", false) />
 <cfset structDelete(session, "datasource", false) />
-<cfset structDelete(session, "errorFields", false) />
 </cfsavecontent>

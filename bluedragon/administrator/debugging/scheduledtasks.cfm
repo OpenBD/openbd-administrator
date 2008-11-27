@@ -30,6 +30,7 @@
 		<cfset scheduledTasks = Application.scheduledTasks.getScheduledTasks() />
 		<cfcatch type="bluedragon.adminapi.scheduledtasks">
 			<cfset scheduledTaskMessage = CFCATCH.Message />
+			<cfset scheduledTaskMessageType = "error" />
 		</cfcatch>
 	</cftry>
 	
@@ -139,12 +140,12 @@
 		
 		<h3>Scheduled Tasks</h3>
 		
-		<cfif structKeyExists(session, "message") and session.message is not "">
-			<p class="message">#session.message#</p>
+		<cfif structKeyExists(session, "message") and session.message.text is not "">
+			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
 		
 		<cfif scheduledTaskMessage is not "">
-			<p class="message">#scheduledTaskMessage#</p>
+			<p class="#scheduledTaskMessageType#">#scheduledTaskMessage#</p>
 		</cfif>
 	
 		<cfif arrayLen(scheduledTasks) gt 0>
@@ -200,7 +201,7 @@
 		<br /><br />
 
 		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
-			<p class="message">The following errors occurred:</p>
+			<p class="error">The following errors occurred:</p>
 			<ul>
 			<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
 				<li>#session.errorFields[i][2]#</li>
@@ -376,7 +377,5 @@
 			<input type="hidden" name="existingScheduledTaskName" value="#scheduledTask.name#" />
 		</form>
 	</cfoutput>
-	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "scheduledTask", false) />
-	<cfset structDelete(session, "errorFields", false) />
 </cfsavecontent>

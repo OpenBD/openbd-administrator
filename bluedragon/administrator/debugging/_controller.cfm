@@ -63,12 +63,14 @@
 				<cfset Application.debugging.saveDebugSettings(args.debug, args.runtimelogging, 
 																args.enabled, args.assert) />
 				<cfcatch type="bluedragon.adminapi.debugging">
-					<cfset seession.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="index.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The debug settings were saved successfully." />
+			<cfset session.message.text = "The debug settings were saved successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="index.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -122,7 +124,8 @@
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The debug output settings were saved successfully." />
+			<cfset session.message.text = "The debug output settings were saved successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="index.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -186,7 +189,8 @@
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The debug variables settings were saved successfully." />
+			<cfset session.message.text = "The debug variables settings were saved successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="index.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -195,11 +199,14 @@
 			<cftry>
 				<cfset Application.debugging.addLocalIPAddress() />
 				<cfcatch type="bluedragon.adminapi.debugging">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="ipaddresses.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
+			<cfset session.message.text = "The local IP address was added." />
+			<cfset session.message.type = "info" />
 			<cflocation url="ipaddresses.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -221,11 +228,14 @@
 			<cftry>
 				<cfset Application.debugging.addDebugIPAddresses(args.ipaddress)>
 				<cfcatch type="bluedragon.adminapi.debugging">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="ipaddresses.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
+			<cfset session.message.text = "The IP addresses were successfully added." />
+			<cfset session.message.type = "info" />
 			<cflocation url="ipaddresses.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -247,11 +257,14 @@
 			<cftry>
 				<cfset Application.debugging.removeDebugIPAddresses(args.ipaddresses)>
 				<cfcatch type="bluedragon.adminapi.debugging">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="ipaddresses.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
-
+			
+			<cfset session.message.text = "The IP addresses were removed." />
+			<cfset session.message.type = "info" />
 			<cflocation url="ipaddresses.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -260,12 +273,14 @@
 			<cftry>
 				<cfset Application.debugging.archiveLogFile(args.logFile) />
 				<cfcatch type="bluedragon.adminapi.debugging">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="logs.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The log file was archived successfully." />
+			<cfset session.message.text = "The log file was archived successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="logs.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -273,12 +288,14 @@
 			<cftry>
 				<cfset Application.debugging.deleteLogFile(args.logFile) />
 				<cfcatch type="any">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="logs.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The log file was deleted successfully." />
+			<cfset session.message.text = "The log file was deleted successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="logs.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -286,12 +303,14 @@
 			<cftry>
 				<cfset Application.debugging.deleteRuntimeErrorLog(args.rteLog) />
 				<cfcatch type="any">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="runtimeerrors.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The runtime error log was deleted successfully." />
+			<cfset session.message.text = "The runtime error log was deleted successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="runtimeerrors.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -299,12 +318,14 @@
 			<cftry>
 				<cfset Application.debugging.deleteAllRuntimeErrorLogs() />
 				<cfcatch type="any">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="runtimeerrors.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 
-			<cfset session.message = "The runtime error logs were deleted successfully." />
+			<cfset session.message.text = "The runtime error logs were deleted successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="runtimeerrors.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -442,12 +463,14 @@
 				</cfif>
 				
 				<cfcatch type="bluedragon.adminapi.scheduledtasks">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="scheduledtasks.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The scheduled task was #args.scheduledTaskAction#d successfully" />
+			<cfset session.message.text = "The scheduled task was #args.scheduledTaskAction#d successfully" />
+			<cfset session.message.type = "info" />
 			<cflocation url="scheduledtasks.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -455,12 +478,14 @@
 			<cftry>
 				<cfset Application.scheduledTasks.runScheduledTask(args.name) />
 				<cfcatch type="bluedragon.adminapi.scheduledtasks">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="scheduledtasks.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 
-			<cfset session.message = "The scheduled task was run successfully." />
+			<cfset session.message.text = "The scheduled task was run successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="scheduledtasks.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -473,18 +498,21 @@
 			<cftry>
 				<cfset Application.scheduledTasks.deleteScheduledTask(args.name) />
 				<cfcatch type="bluedragon.adminapi.scheduledtasks">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="scheduledtasks.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The scheduled task was deleted successfully." />
+			<cfset session.message.text = "The scheduled task was deleted successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="scheduledtasks.cfm" addtoken="false" />
 		</cfcase>
 		
 		<!--- DEFAULT CASE --->
 		<cfdefaultcase>
-			<cfset session.message = "Invalid action" />
+			<cfset session.message.text = "Invalid action" />
+			<cfset session.message.type = "error" />
 			<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
 		</cfdefaultcase>
 	</cfswitch>

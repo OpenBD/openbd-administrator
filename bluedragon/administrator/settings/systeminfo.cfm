@@ -29,8 +29,8 @@
 	<cfoutput>
 		<h3>System Information</h3>
 		
-		<cfif structKeyExists(session, "message") and session.message is not "">
-			<p class="message">#session.message#</p>
+		<cfif structKeyExists(session, "message") and session.message.text is not "">
+			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
 		
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">

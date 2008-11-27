@@ -22,6 +22,7 @@
 --->
 <cfsilent>
 	<cfparam name="cfxTagMessage" type="string" default="" />
+	<cfparam name="cfxTagMessageType" type="string" default="" />
 	<cfparam name="cfxTag" type="struct" default="#structNew()#" />
 	<cfparam name="cfxTagAction" type="string" default="create" />
 	
@@ -65,16 +66,16 @@
 		
 		<h3>Java CFX Tag</h3>
 		
-		<cfif structKeyExists(session, "message") and session.message is not "">
-			<p class="message">#session.message#</p>
+		<cfif structKeyExists(session, "message") and session.message.text is not "">
+			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
 		
 		<cfif cfxTagMessage is not "">
-			<p class="message">#cfxTagMessage#</p>
+			<p class="#cfxTagMessageType#">#cfxTagMessage#</p>
 		</cfif>
 
 		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
-			<p class="message">The following errors occurred:</p>
+			<p class="error">The following errors occurred:</p>
 			<ul>
 			<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
 				<li>#session.errorFields[i][2]#</li>
@@ -116,6 +117,4 @@
 			<input type="hidden" name="cfxAction" value="#cfxAction#" />
 		</form>
 	</cfoutput>
-	<cfset structDelete(session, "message", false) />
-	<cfset structDelete(session, "errorFields", false) />
 </cfsavecontent>

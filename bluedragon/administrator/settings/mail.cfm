@@ -240,7 +240,7 @@
 		<br /><br />
 
 		<cfif mailMessage is not "">
-			<p class="message">#mailMessage#</p>
+			<p class="#mailMessageType#">#mailMessage#</p>
 		</cfif>
 		
 		<form name="mailServerForm" action="_controller.cfm?action=processMailServerForm" method="post" 

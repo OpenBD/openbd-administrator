@@ -34,12 +34,6 @@
 		<cfset args[formKey] = form[formKey] />
 	</cfloop>
 	
-	<!--- clear out any lingering session stuff --->
-	<cfscript>
-		structDelete(session, "message", false);
-		structDelete(session, "errorFields", false);
-	</cfscript>
-	
 	<cfswitch expression="#args.action#">
 		<!--- CUSTOM TAG PATHS --->
 		<cfcase value="processCustomTagPathForm">
@@ -60,12 +54,14 @@
 			<cftry>
 				<cfset Application.extensions.setCustomTagPath(args.directory, args.customTagPathAction) />
 				<cfcatch type="bluedragon.adminapi.extensions">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="customtagpaths.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The custom tag path was #args.customTagPathAction#d successfully" />
+			<cfset session.message.text = "The custom tag path was #args.customTagPathAction#d successfully" />
+			<cfset session.message.type = "info" />
 			<cflocation url="customtagpaths.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -73,12 +69,14 @@
 			<cftry>
 				<cfset Application.extensions.deleteCustomTagPath(args.directory) />
 				<cfcatch type="bluedragon.adminapi.extensions">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="customtagpaths.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The custom tag path was deleted successfully" />
+			<cfset session.message.text = "The custom tag path was deleted successfully" />
+			<cfset session.message.type = "info" />
 			<cflocation url="customtagpaths.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -86,12 +84,14 @@
 			<cftry>
 				<cfset Application.extensions.verifyCustomTagPath(args.directory) />
 				<cfcatch type="bluedragon.adminapi.extensions">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="customtagpaths.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The custom tag path was verified successfully." />
+			<cfset session.message.text = "The custom tag path was verified successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="customtagpaths.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -100,7 +100,8 @@
 			<cftry>
 				<cfset session.cfxTag = Application.extensions.getJavaCFX(args.cfxTag).get(0) />
 				<cfcatch type="bluedragon.adminapi.extensions">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="cfxtags.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
@@ -146,12 +147,14 @@
 															args.description, args.name, 
 															args.existingCFXName, args.cfxAction) />
 				<cfcatch type="bluedragon.adminapi.extensions">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="javacfx.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The Java CFX tag was saved successfully." />
+			<cfset session.message.text = "The Java CFX tag was saved successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="cfxtags.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -159,12 +162,14 @@
 			<cftry>
 				<cfset Application.extensions.deleteJavaCFX(args.name) />
 				<cfcatch type="bluedragon.adminapi.extensions">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="cfxtags.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The CFX tag was deleted successfully." />
+			<cfset session.message.text = "The CFX tag was deleted successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="cfxtags.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -172,7 +177,8 @@
 			<cftry>
 				<cfset session.cfxTag = Application.extensions.getCPPCFX(args.cfxTag).get(0) />
 				<cfcatch type="bluedragon.adminapi.extensions">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="cfxtags.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
@@ -225,12 +231,14 @@
 															args.keeploaded, args.function, 
 															args.existingCFXName, args.cfxAction) />
 				<cfcatch type="bluedragon.adminapi.extensions">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="cppcfx.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The C++ CFX tag was saved successfully." />
+			<cfset session.message.text = "The C++ CFX tag was saved successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="cfxtags.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -238,12 +246,14 @@
 			<cftry>
 				<cfset Application.extensions.deleteCPPCFX(args.name) />
 				<cfcatch type="bluedragon.adminapi.extensions">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="cfxtags.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message = "The CFX tag was deleted successfully." />
+			<cfset session.message.text = "The CFX tag was deleted successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="cfxtags.cfm" addtoken="false" />
 		</cfcase>
 		
@@ -251,18 +261,21 @@
 			<cftry>
 				<cfset Application.extensions.verifyCFXTag(args.name, args.type) />
 				<cfcatch type="bluedragon.adminapi.extensions">
-					<cfset session.message = CFCATCH.Message />
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
 					<cflocation url="cfxtags.cfm" addtoken="false" />
 				</cfcatch>
 			</cftry>
 
-			<cfset session.message = "The CFX tag was verified successfully." />
+			<cfset session.message.text = "The CFX tag was verified successfully." />
+			<cfset session.message.type = "info" />
 			<cflocation url="cfxtags.cfm" addtoken="false" />
 		</cfcase>
 		
 		<!--- DEFAULT CASE --->
 		<cfdefaultcase>
-			<cfset session.message = "Invalid action" />
+			<cfset session.message.text = "Invalid action" />
+			<cfset session.message.type = "error" />
 			<cflocation url="#CGI.HTTP_REFERER#" addtoken="false" />
 		</cfdefaultcase>
 	</cfswitch>

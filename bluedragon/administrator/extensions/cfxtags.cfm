@@ -30,6 +30,7 @@
 		<cfset cppTags = Application.extensions.getCPPCFX() />
 		<cfcatch type="bluedragon.adminapi.extensions">
 			<cfset cppTagsMessage = CFCATCH.Message />
+			<cfset cppTagsMessageType = "error" />
 		</cfcatch>
 	</cftry>
 	
@@ -37,6 +38,7 @@
 		<cfset javaTags = Application.extensions.getJavaCFX() />
 		<cfcatch type="bluedragon.adminapi.extensions">
 			<cfset javaTagsMessage = CFCATCH.Message />
+			<cfset javaTagsMessageType = "error" />
 		</cfcatch>
 	</cftry>
 </cfsilent>
@@ -56,16 +58,16 @@
 		
 		<h3>CFX Tags</h3>
 		
-		<cfif structKeyExists(session, "message") and session.message is not "">
-			<p class="message">#session.message#</p>
+		<cfif structKeyExists(session, "message") and session.message.text is not "">
+			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
 		
 		<cfif cppTagsMessage is not "">
-			<p class="message">#cppTagsMessage#</p>
+			<p class="#cppTagsMessageType#">#cppTagsMessage#</p>
 		</cfif>
 		
 		<cfif javaTagsMessage is not "">
-			<p class="message">#javaTagsMessage#</p>
+			<p class="#javaTagsMessageType#">#javaTagsMessage#</p>
 		</cfif>
 		
 		<cfif arrayLen(cppTags) gt 0 or arrayLen(javaTags) gt 0>
@@ -114,6 +116,5 @@
 			<li><a href="cppcfx.cfm">Register C++ CFX Tag</a></li>
 		</ul>
 	</cfoutput>
-	<cfset structDelete(session, "message", false) />
 	<cfset structDelete(session, "cfxTag", false) />
 </cfsavecontent>

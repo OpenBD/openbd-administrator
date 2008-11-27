@@ -104,6 +104,7 @@
 		</script>
 		
 		<h3>Caching</h3>
+
 		<cfif structKeyExists(session, "message") and session.message.text is not "">
 			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
@@ -228,9 +229,9 @@
 		<ul>
 			<li>Hit and miss statistics for file caching are not tracked</li>
 			<li>
-				If the query cache statistics do not appear to be correct, this is likely because 
-				you are running a pre-1.0 version of the OpenBD engine. The underlying caching code 
-				was changed for 1.0 so cache statistics on pre-1.0 versions of OpenBD are not reported.
+				If the cache statistics are always all 0, this is likely because you are running a pre-1.0 version 
+				of the OpenBD engine. The underlying caching code was changed for 1.0 so cache statistics on 
+				pre-1.0 versions of OpenBD are not reported.
 			</li>
 		</ul>
 	</cfoutput>

@@ -103,22 +103,38 @@
 	<!--- CONTENT CACHE METHODS --->
 	<cffunction name="getNumContentInCache" access="public" output="false" returntype="numeric" roles="admin" 
 			hint="Returns the number of items in the content cache (i.e. created with <cfcachecontent>)">
-		<cfreturn createObject("java", "com.naryx.tagfusion.cfm.tag.ext.cfCACHECONTENT").getSize() />
+		<!--- throwing this in for pre-1.0 versions of openbd --->
+		<cftry>
+			<cfreturn CacheStats("cfcachecontent").size />
+			<cfcatch type="any">
+				<cfreturn 0 />
+			</cfcatch>
+		</cftry>
 	</cffunction>
 	
 	<cffunction name="getContentCacheHits" access="public" output="false" returntype="numeric" roles="admin" 
 			hint="Returns the number of hits in the content cache">
-		<cfreturn createObject("java", "com.naryx.tagfusion.cfm.tag.ext.cfCACHECONTENT").getHitCount() />
+		<cftry>
+			<cfreturn CacheStats("cfcachecontent").hits />
+			<cfcatch type="any">
+				<cfreturn 0 />
+			</cfcatch>
+		</cftry>
 	</cffunction>
 	
 	<cffunction name="getContentCacheMisses" access="public" output="false" returntype="numeric" roles="admin" 
 			hint="Returns the number of misses in the content cache">
-		<cfreturn createObject("java", "com.naryx.tagfusion.cfm.tag.ext.cfCACHECONTENT").getMissCount() />
+		<cftry>
+			<cfreturn CacheStats("cfcachecontent").misses />
+			<cfcatch type="any">
+				<cfreturn 0 />
+			</cfcatch>
+		</cftry>
 	</cffunction>
 	
 	<cffunction name="flushContentCache" access="public" output="false" returntype="void" roles="admin" 
 			hint="Flushes the content cache">
-		<cfset createObject("java", "com.naryx.tagfusion.cfm.tag.ext.cfCACHECONTENT").flushCache() />
+		<cfset CacheDeleteAll("cfcachecontent") />
 	</cffunction>
 	
 	<!--- FILE CACHE METHODS --->
@@ -142,12 +158,17 @@
 	
 	<cffunction name="getNumFilesInCache" access="public" output="false" returntype="numeric" roles="admin" 
 			hint="Returns the number of files in the file cache">
-		<cfreturn createObject("java", "com.naryx.tagfusion.cfm.file.cfmlFileCache").filesInCache() />
+		<cftry>
+			<cfreturn CacheStats("filecache").size />
+			<cfcatch type="any">
+				<cfreturn 0 />
+			</cfcatch>
+		</cftry>
 	</cffunction>
 	
 	<cffunction name="flushFileCache" access="public" output="false" returntype="void" roles="admin" 
 			hint="Flushes the file cache">
-		<cfset createObject("java", "com.naryx.tagfusion.cfm.file.cfmlFileCache").flushCache() />
+		<cfset CacheDeleteAll("filecache") />
 	</cffunction>
 	
 	<!--- QUERY CACHE METHODS --->
@@ -169,30 +190,32 @@
 	
 	<cffunction name="getNumQueriesInCache" access="public" output="false" returntype="numeric" roles="admin" 
 			hint="Returns the number of queries in the cache">
-		<cfset var numQueriesCached = 0 />
-		
-		<!--- <cfdump var="#createObject('java', 'com.naryx.tagfusion.cfm.engine.cfEngine').thisInstance.queryCache#" /> --->
-		<!--- <cfdump var="#createObject('java', 'com.naryx.tagfusion.cfm.cache.CacheFactory').getCacheEngine('QUERY')#" />
-		<cfabort /> --->
-		
-		<!--- <cftry> --->
-			<!--- <cfset numQueriesCached = createObject("java", "com.naryx.tagfusion.cfm.sql.cfQUERY").activeQueryCache.getNumberQueries() /> --->
-			<!--- <cfcatch type="any"> --->
-				<!--- use default of 0 -- typically this error will mean that the query cache doesn't exist yet --->
-			<!--- </cfcatch>
-		</cftry> --->
-		
-		<cfreturn numQueriesCached  />
+		<cftry>
+			<cfreturn CacheStats("query").size />
+			<cfcatch type="any">
+				<cfreturn 0 />
+			</cfcatch>
+		</cftry>
 	</cffunction>
 	
 	<cffunction name="getQueryCacheHits" access="public" output="false" returntype="numeric" roles="admin" 
 			hint="Returns the number of hits against the query cache">
-		<cfreturn CacheStats("query").hits />
+		<cftry>
+			<cfreturn CacheStats("query").hits />
+			<cfcatch type="any">
+				<cfreturn 0 />
+			</cfcatch>
+		</cftry>
 	</cffunction>
 	
 	<cffunction name="getQueryCacheMisses" access="public" output="false" returntype="numeric" roles="admin" 
 			hint="Returns the number of misses against the query cache">
-		<cfreturn CacheStats("query").misses />
+		<cftry>
+			<cfreturn CacheStats("query").misses />
+			<cfcatch type="any">
+				<cfreturn 0 />
+			</cfcatch>
+		</cftry>
 	</cffunction>
 	
 	<cffunction name="flushQueryCache" access="public" output="false" returntype="void" roles="admin" 

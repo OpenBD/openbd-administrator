@@ -38,7 +38,7 @@
 	<cfif dsinfo.hoststring is not "">
 		<cfset dsinfo.filepath = listFirst(dsinfo.hoststring, ";") />
 		
-		<cfif findNoCase(":file:/", dsinfo.filepath) eq 0>
+		<cfif findNoCase(":file:", dsinfo.filepath) eq 0>
 			<cfset dsinfo.filepath = right(dsinfo.filepath, len(dsinfo.filepath) - 8) />
 		<cfelse>
 			<cfset dsinfo.filepath = right(dsinfo.filepath, len(dsinfo.filepath) - 13) />

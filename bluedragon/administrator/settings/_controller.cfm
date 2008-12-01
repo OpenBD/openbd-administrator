@@ -221,7 +221,7 @@
 			<cflocation url="index.cfm" addtoken="false" />
 		</cfcase>
 		
-		<cfcase value="reloadCurrentSettings">
+		<cfcase value="reloadSettings">
 			<cftry>
 				<cfset Application.serverSettings.reloadCurrentSettings() />
 				<cfcatch type="bluedragon.adminapi.serversettings">

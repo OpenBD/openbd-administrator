@@ -52,6 +52,8 @@
 		<cfargument name="currentConfig" type="struct" required="true" 
 				hint="The configuration struct, which is a struct representation of bluedragon.xml" />
 		
+		<cfset var admin = structNew() />
+		
 		<cflock scope="Server" type="exclusive" timeout="5">
 			<cfset admin.server = duplicate(arguments.currentConfig) />
 			<cfset admin.server.openbdadminapi.lastupdated = DateFormat(now(), "dd/mmm/yyyy") & " " & TimeFormat(now(), "HH:mm:ss") />
@@ -64,7 +66,7 @@
 
 	<cffunction name="getConfig" access="package" output="false" returntype="struct" 
 			hint="Returns a struct representation of the OpenBD server configuration (bluedragon.xml)">
-		<cfset var admin = "" />
+		<cfset var admin = 0 />
 		
 		<cflock scope="Server" type="readonly" timeout="5">
 			<cfset admin = createObject("java", "com.naryx.tagfusion.cfm.engine.cfEngine").getConfig().getCFMLData() />

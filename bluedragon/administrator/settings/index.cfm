@@ -61,8 +61,8 @@
 			}
 			
 			function confirmReload() {
-				if(confirm("Are you sure you want to reload the current configuration settings?")) {
-					location.replace("_controller.cfm?action=reloadCurrentSettings");
+				if(confirm("Are you sure you want to reload the configuration settings?")) {
+					location.replace("_controller.cfm?action=reloadSettings");
 				}
 			}
 		</script>

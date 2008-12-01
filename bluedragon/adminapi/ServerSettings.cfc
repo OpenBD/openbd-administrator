@@ -195,6 +195,18 @@
 			hint="Reverts to the previous server settings by replacing bluedragon.xml with 'lastfile' from the config file">
 		<cfset var localConfig = getConfig() />
 		<cfset var lastFile = "" />
+		<cfset var filePath = "" />
+		<cfset var pathDelimiter = "" />
+		
+		<cfif find("/", localConfig.system.lastfile) neq 0>
+			<cfset pathDelimiter = "/" />
+		<cfelseif find("\", localConfig.system.lastfile) neq 0>
+			<cfset pathDelimiter = "\" />
+		<cfelse>
+			<cfthrow message="Could not reliably determine the file path for the configuration file." type="bluedragon.adminapi.serversettings" />
+		</cfif>
+
+		<cfset filePath = listDeleteAt(localConfig.system.lastfile, listLen(localConfig.system.lastFile, pathDelimiter), pathDelimiter) />
 		
 		<cftry>
 			<cffile action="read" file="#localConfig.system.lastfile#" variable="lastFile" />
@@ -203,12 +215,18 @@
 			</cfcatch>
 		</cftry>
 		
-		<!--- TODO: finish implementing reverting to previous settings --->
+		<cfif lastFile is not "">
+			<cffile action="write" file="#filePath##pathDelimiter#bluedragon.xml" output="#lastFile#" />
+		<cfelse>
+			<cfthrow message="Error reading the previous configuration file." type="bluedragon.adminapi.serversettings" />
+		</cfif>
+		
+		<cfset SystemConfigReload() />
 	</cffunction>
 	
-	<cffunction name="reloadCurrentSettings" access="public" output="false" returntype="void" roles="admin" 
-			hint="Reloads the current configuration settings contained in bluedragon.xml">
-		<cfset setConfig(getConfig()) />
+	<cffunction name="reloadSettings" access="public" output="false" returntype="void" roles="admin" 
+			hint="Reloads the configuration settings contained in bluedragon.xml">
+		<cfset SystemConfigReload() />
 	</cffunction>
 	
 	<cffunction name="getServerStartTime" access="public" output="false" returntype="date" roles="admin" 

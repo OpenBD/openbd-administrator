@@ -20,8 +20,7 @@
 	along with the Open BlueDragon Administrator.  If not, see 
 	<http://www.gnu.org/licenses/>.
 --->
-<cfsavecontent variable="request.content">
-<cfoutput>
+<cfsilent>
 	<cfparam name="url.dsn" type="string" default="" />
 	<cfparam name="url.action" type="string" default="create" />
 	
@@ -32,7 +31,9 @@
 	</cfif>
 	
 	<cfset dsinfo = session.datasource[1] />
-	
+</cfsilent>
+<cfsavecontent variable="request.content">
+<cfoutput>
 	<script type="text/javascript">
 		function showHideAdvSettings() {
 			var advSettings = document.getElementById('advancedSettings');

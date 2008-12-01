@@ -21,8 +21,16 @@
 	<http://www.gnu.org/licenses/>.
 --->
 <cfsilent>
+	<cfparam name="dbDriverRetrievalMessage" type="string" default="" />
 	<cfparam name="datasourceRetrievalMessage" type="string" default="" />
-
+	<cfparam name="autoconfigodbc" type="boolean" default="false" />
+	<cfparam name="autoConfigODBCRetrievalMessage" type="string" default="" />
+	<cfparam name="isWindows" type="boolean" default="false" />
+	
+	<cfif compareNoCase(left(Application.datasource.getJVMProperty("os.name"), 7), "windows") eq 0>
+		<cfset isWindows = true />
+	</cfif>
+	
 	<cfset dbdrivers = arrayNew(1) />
 	<cfset datasources = arrayNew(1) />
 
@@ -33,6 +41,16 @@
 			<cfset dbDriverRetrievalMessageType = "error" />
 		</cfcatch>
 	</cftry>
+	
+	<cfif isWindows>
+		<cftry>
+			<cfset autoconfigodbc = Application.datasource.getAutoConfigODBC() />
+			<cfcatch type="any">
+				<cfset autoConfigODBCRetrievalMessage = CFCATCH.Message />
+				<cfset autoConfigODBCRetrievalMessageType = "error" />
+			</cfcatch>
+		</cftry>
+	</cfif>
 	
 	<cftry>
 		<cfset datasources = Application.datasource.getDatasources() />
@@ -113,6 +131,10 @@
 			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
 		
+		<cfif dbDriverRetrievalMessage is not "">
+			<p class="#dbDriverRetrievalMessageType#">#dbDriverRetrievalMessage#</p>
+		</cfif>
+		
 		<cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
 			<p class="error">The following errors occurred:</p>
 			<ul>
@@ -149,7 +171,7 @@
 		</form>
 		
 		<hr noshade="true" />
-		<!--- TODO: put setting to auto-configure ODBC datasources here? this would only be applicable to windows --->
+
 		<h3>Datasources</h3>
 		
 		<cfif datasourceRetrievalMessage is not ""><p class="#datasourceRetrievalMessageType#">#datasourceRetrievalMessage#</p></cfif>
@@ -191,10 +213,43 @@
 		</cfloop>
 			<tr bgcolor="##dedede">
 				<td colspan="5">
-					<input type="button" name="verifyAll" value="Verify All Datasources" onclick="javascript:verifyAllDatasources()" />
+					<input type="button" name="verifyAll" value="Verify All Datasources" onclick="javascript:verifyAllDatasources()" 
+							tabindex="4" />
 				</td>
 			</tr>
 		</table>
+		</cfif>
+
+		<hr noshade="true" />
+		
+		<cfif isWindows>
+			<h3>ODBC Datasources</h3>
+			
+			<cfif autoConfigODBCRetrievalMessage is not "">
+				<p class="#autoConfigODBCRetrievalMessageType#">#autoConfigODBCRetrievalMessage#</p>
+			</cfif>
+			
+			<form name="odbcDatasourcesForm" action="_controller.cfm?action=setAutoConfigODBCDatasources" method="post">
+			<table border="0">
+				<tr>
+					<td><strong>Auto-Configure ODBC Datasources?</strong></td>
+					<td>
+						<input type="radio" name="autoconfigodbc" id="autoconfigodbcTrue" value="true" 
+								<cfif autoConfigODBC>checked="true"</cfif> tabindex="5" />
+						<label for="autoconfigodbcTrue">Yes</label>&nbsp;
+						<input type="radio" name="autoconfigodbc" id="autoconfigodbcFalse" value="false" 
+								<cfif not autoConfigODBC>checked="false"</cfif> tabindex="6" />
+						<label for="autoconfigodbcFalse">No</label>
+					</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td><input type="submit" name="submit" value="Submit" tabindex="7" /></td>
+				</tr>
+			</table>
+			</form>
+			
+			<hr noshade="true" />
 		</cfif>
 		
 		<p><strong>Information Concerning Datasources and Database Drivers</strong></p>
@@ -213,6 +268,16 @@
 				You may also create datasources pointing to existing H2 embedded databases.
 			</li>
 			<li>Deleting an H2 Embedded datasource does <em>not</em> delete the database files. These files must be deleted manually.</li>
+		<cfif isWindows>
+			<li>
+				ODBC datasources will be read into OpenBD as datasources if "Auto-Configure ODBC Datasources" is set to "Yes." 
+				Note that the user name and password will <em>not</em> be read into the OpenBD datasource. This information 
+				must be added by editing the datasource.
+			</li>
+			<li>
+				ODBC datasources will be treated as a datasource type of "other."
+			</li>
+		</cfif>
 		</ul>
 	</cfoutput>
 	<cfset structDelete(session, "dbDriverRetrievalMessage", false) />

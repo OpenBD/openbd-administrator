@@ -57,6 +57,7 @@
   <div class="right">
     <span class="hidden">Useful links:</span>
     <a href="http://www.openbluedragon.org" target="_blank">Open BlueDragon Web Site</a> | 
+	<a href="http://wiki.openbluedragon.org" target="_blank">Open BlueDragon Wiki</a> | 
     <a href="http://groups.google.com/group/openbd" target="_blank">Open BlueDragon Google Group</a> | 
 	<a href="http://code.google.com/p/openbluedragon-admin-app/" target="_blank">Open BlueDragon Admin Console Project</a>
   </div>

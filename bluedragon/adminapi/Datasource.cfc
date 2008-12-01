@@ -67,7 +67,7 @@
 		<cfif (NOT StructKeyExists(localConfig, "cfquery")) OR (NOT StructKeyExists(localConfig.cfquery, "datasource"))>
 			<cfset localConfig.cfquery.datasource = ArrayNew(1) />
 		</cfif>
-
+		
 		<!--- register the driver--this will tell us whether or not openbd can hit the driver --->
 		<cftry>
 			<cfset registerDriver(arguments.drivername) />
@@ -456,6 +456,23 @@
 				</cftry>
 			</cfcase>
 			
+			<!--- odbc datasource --->
+			<cfcase value="sun.jdbc.odbc.JdbcOdbcDriver">
+				<cftry>
+					<cfset dbcon = driverManager.getConnection(datasource.hoststring, datasource.username, datasource.password) />
+					<cfset stmt = dbcon.createStatement() />
+					<cfset rs = stmt.executeQuery("SELECT 1") />
+					
+					<cfif rs.next()>
+						<cfset verified = true />
+					</cfif>
+					<cfcatch type="any">
+						<cfthrow message="Could not verify datasource: #CFCATCH.Message#" 
+								type="bluedragon.adminapi.datasource" />
+					</cfcatch>
+				</cftry>
+			</cfcase>
+			
 			<!--- 'other' database types --->
 			<cfdefaultcase>
 				<!---try to use the custom verification query; otherwise throw an error --->
@@ -481,6 +498,32 @@
 		</cfswitch>
 		
 		<cfreturn verified />
+	</cffunction>
+	
+	<cffunction name="setAutoConfigODBC" access="public" output="false" returntype="void" roles="admin" 
+			hint="Sets the autoconfig-odbc setting">
+		<cfargument name="autoconfigodbc" type="boolean" required="true" />
+		
+		<cfset var localConfig = getConfig() />
+		
+		<cfset localConfig.cfquery["autoconfig-odbc"] = ToString(arguments.autoconfigodbc) />
+		
+		<cfset setConfig(structCopy(localConfig)) />
+	</cffunction>
+	
+	<cffunction name="getAutoConfigODBC" access="public" output="false" returntype="boolean" roles="admin" 
+			hint="Returns a boolean indicating the setting of autoconfig-odbc in the XML config file">
+		<cfset var localConfig = getConfig() />
+		<cfset var autoConfigODBC = false />
+		
+		<cfif not structKeyExists(localConfig.cfquery, "autoconfig-odbc")>
+			<cfset localConfig.cfquery["autoconfig-odbc"] = "false" />
+			<cfset setConfig(structCopy(localConfig)) />
+		<cfelse>
+			<cfset autoConfigODBC = localConfig.cfquery["autoconfig-odbc"] />
+		</cfif>
+		
+		<cfreturn autoConfigODBC />
 	</cffunction>
 	
 	<!--- PRIVATE METHODS --->

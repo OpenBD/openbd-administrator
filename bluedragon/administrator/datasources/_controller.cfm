@@ -324,6 +324,21 @@
 			<cflocation url="index.cfm" addtoken="false" />
 		</cfcase>
 		
+		<cfcase value="setAutoConfigODBCDatasources">
+			<cftry>
+				<cfset Application.datasource.setAutoConfigODBC(args.autoconfigodbc) />
+				<cfcatch type="any">
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
+					<cflocation url="index.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+			
+			<cfset session.message.text = "The auto-configure ODBC datasources settings was saved successfully." />
+			<cfset session.message.type = "info" />
+			<cflocation url="index.cfm" addtoken="false" />
+		</cfcase>
+		
 		<!--- SEARCH COLLECTIONS --->
 		<cfcase value="createSearchCollection">
 			<cfset errorFields = arrayNew(2) />

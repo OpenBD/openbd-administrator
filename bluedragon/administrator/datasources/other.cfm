@@ -20,8 +20,7 @@
 	along with the Open BlueDragon Administrator.  If not, see 
 	<http://www.gnu.org/licenses/>.
 --->
-<cfsavecontent variable="request.content">
-<cfoutput>
+<cfsilent>
 	<cfparam name="url.dsn" type="string" default="" />
 	<cfparam name="url.action" type="string" default="create" />
 	
@@ -33,6 +32,21 @@
 	
 	<cfset dsinfo = session.datasource[1] />
 	
+	<!--- for odbc datasources some settings won't exist --->
+	<cfif not structKeyExists(dsinfo, "initstring")>
+		<cfset dsinfo.initstring = "" />
+	</cfif>
+	
+	<cfif not structKeyExists(dsinfo, "perrequestconnections")>
+		<cfset dsinfo.perrequestconnections = false />
+	</cfif>
+	
+	<cfif not structKeyExists(dsinfo, "connectionretries")>
+		<cfset dsinfo.connectionretries = 0 />
+	</cfif>
+</cfsilent>
+<cfsavecontent variable="request.content">
+<cfoutput>
 	<script type="text/javascript">
 		function showHideAdvSettings() {
 			var advSettings = document.getElementById('advancedSettings');
@@ -227,7 +241,6 @@
 		</tr>
 	</table>
 	</div>
-		<input type="hidden" name="drivername" value="#dsinfo.drivername#" />
 		<input type="hidden" name="datasourceAction" value="#url.action#" />
 		<input type="hidden" name="existingDatasourceName" value="#dsinfo.name#" />
 		<input type="hidden" name="dbtype" value="other" />

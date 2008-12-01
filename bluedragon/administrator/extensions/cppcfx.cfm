@@ -138,5 +138,20 @@
 			<input type="hidden" name="existingCFXName" value="#cfxTag.name#" />
 			<input type="hidden" name="cfxAction" value="#cfxAction#" />
 		</form>
+		
+		<p><strong>Important Information Concerning C++ Custom Tags</strong></p>
+		
+		<ul>
+			<li>The path to the C++ module may be specified as a full path or a relative path.</li>
+			<li>
+				When specifying a full physical path on UNIX-based systems (including GNU/Linux and Mac OS X), you must place 
+				a "$" at the beginning of the path. For example:<br />
+				$/usr/local/myPath
+			</li>
+			<li>
+				A path beginning with "/" is interpreted as a relative path from the web application root directory, which 
+				may be a subdirectory of the WEB-INF directory.
+			</li>
+		</ul>
 	</cfoutput>
 </cfsavecontent>

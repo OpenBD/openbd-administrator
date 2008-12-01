@@ -91,7 +91,8 @@
 		<cfloop index="i" from="1" to="#arrayLen(customTagPaths)#">
 			<tr bgcolor="##ffffff">
 				<td width="100">
-					<a href="javascript:void(0);" onclick="javascript:editCustomTagPath('#customTagPaths[i]#')" 
+					<a href="javascript:void(0);" 
+						onclick="javascript:editCustomTagPath('#replace(customTagPaths[i], '\', '\\', 'all')#');" 
 						alt="Edit Custom Tag Path" title="Edit Custom Tag Path">
 						<img src="../images/pencil.png" border="0" width="16" height="16" />
 					</a>
@@ -99,7 +100,8 @@
 						title="Verify Custom Tag Path">
 						<img src="../images/accept.png" border="0" width="16" height="16" />
 					</a>
-					<a href="javascript:void(0);" onclick="javascript:deleteCustomTagPath('#customTagPaths[i]#');" 
+					<a href="javascript:void(0);" 
+						onclick="javascript:deleteCustomTagPath('#replace(customTagPaths[i], '\', '\\', 'all')#');" 
 						alt="Delete Custom Tag Path" title="Delete Custom Tag Path">
 						<img src="../images/cancel.png" border="0" width="16" height="16" />
 					</a>

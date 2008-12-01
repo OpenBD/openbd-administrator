@@ -76,7 +76,11 @@
 			</cfcatch>
 		</cftry>
 		
-		<cfset localConfig.cfmlcustomtags.mapping[1].directory = ListAppend(localConfig.cfmlcustomtags.mapping[1].directory, arguments.path, separator.path) />
+		<cfif not listFind(localConfig.cfmlcustomtags.mapping[1].directory, arguments.path, separator.path)>
+			<cfset localConfig.cfmlcustomtags.mapping[1].directory = ListAppend(localConfig.cfmlcustomtags.mapping[1].directory, arguments.path, separator.path) />
+		<cfelse>
+			<cfthrow message="The custom tag path already exists." type="bluedragon.adminapi.extensions" />
+		</cfif>
 
 		<cfset setConfig(localConfig) />
 	</cffunction>
@@ -186,11 +190,7 @@
 		</cfif>
 		
 		<!--- make sure we can read the module --->
-		<cfif left(arguments.module, 1) is "$">
-			<cfset tempFile = right(arguments.module, len(arguments.module) - 1) />
-		<cfelse>
-			<cfset tempFile = expandPath(arguments.module) />
-		</cfif>
+		<cfset tempFile = getFullPath(arguments.module) />
 		
 		<cftry>
 			<cffile action="read" file="#tempFile#" variable="temp" />

@@ -116,5 +116,11 @@
 			<input type="hidden" name="existingCFXName" value="#cfxTag.name#" />
 			<input type="hidden" name="cfxAction" value="#cfxAction#" />
 		</form>
+		
+		<p><strong>Important Information Concerning Java Custom Tags</strong></p>
+		
+		<ul>
+			<li>The Java class to be used as a custom tag must be in OpenBD's classpath prior to creating the custom tag.</li>
+		</ul>
 	</cfoutput>
 </cfsavecontent>

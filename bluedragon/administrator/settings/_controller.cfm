@@ -223,7 +223,7 @@
 		
 		<cfcase value="reloadSettings">
 			<cftry>
-				<cfset Application.serverSettings.reloadCurrentSettings() />
+				<cfset Application.serverSettings.reloadSettings() />
 				<cfcatch type="bluedragon.adminapi.serversettings">
 					<cfset session.message.text = CFCATCH.Message />
 					<cfset session.message.type = "error" />

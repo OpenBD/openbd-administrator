@@ -79,16 +79,18 @@
 		<cfloop index="i" from="1" to="#arrayLen(fontDirs)#">
 			<tr bgcolor="##ffffff">
 				<td width="100">
-					<a href="javascript:void(0);" onclick="javascript:editFontDir('#fontDirs[i]#')" alt="Edit Font Directory" 
-						title="Edit Font Directory">
+					<a href="javascript:void(0);" 
+						onclick="javascript:editFontDir('#replace(fontDirs[i], '\', '\\', 'all')#');" 
+						alt="Edit Font Directory" title="Edit Font Directory">
 						<img src="../images/pencil.png" border="0" width="16" height="16" />
 					</a>
 					<a href="_controller.cfm?action=verifyFontDirectory&fontDir=#fontDirs[i]#" alt="Verify Font Directory" 
 						title="Verify Font Directory">
 						<img src="../images/accept.png" border="0" width="16" height="16" />
 					</a>
-					<a href="javascript:void(0);" onclick="javascript:removeFontDir('#fontDirs[i]#');" alt="Remove Font Directory" 
-						title="Remove Font Directory">
+					<a href="javascript:void(0);" 
+						onclick="javascript:removeFontDir('#replace(fontDirs[i], '\', '\\', 'all')#');" 
+						alt="Remove Font Directory" title="Remove Font Directory">
 						<img src="../images/cancel.png" border="0" width="16" height="16" />
 					</a>
 				</td>

@@ -54,11 +54,7 @@
 		
 		<!--- need to make sure we can create a CFC if the user is setting component-cfc;
 				this can still totally hose things up but they can always fix it via the XML file directly --->
-		<cfif left(arguments["component-cfc"], 1) is "$">
-			<cfset tempPath = right(arguments["component-cfc"], len(arguments["component-cfc"]) - 1) />
-		<cfelse>
-			<cfset tempPath = expandPath(arguments["component-cfc"]) />
-		</cfif>
+		<cfset tempPath = getFullPath(arguments["component-cfc"]) />
 		
 		<cftry>
 			<cffile action="read" file="#tempPath#" variable="tempFile" />
@@ -72,11 +68,8 @@
 				Assuming it's just the openbd internals that need the $ to figure out how to handle
 				the paths so we'll chop that off if it exists here just for validation purposes. --->
 		<cfif arguments.errorhandler is not "">
-			<cfif left(arguments.errorhandler, 1) is "$">
-				<cfset tempPath = right(arguments.errorhandler, len(arguments.errorhandler) - 1) />
-			<cfelse>
-				<cfset tempPath = expandPath(arguments.errorhandler) />
-			</cfif>
+			<cfset tempPath = getFullPath(arguments.errorhandler) />
+
 			<cftry>
 				<cffile action="read" file="#tempPath#" variable="tempFile" />
 				<cfcatch type="any">
@@ -87,11 +80,8 @@
 		</cfif>
 		
 		<cfif arguments.missingtemplatehandler is not "">
-			<cfif left(arguments.missingtemplatehandler, 1) is "$">
-				<cfset tempPath = right(arguments.missingtemplatehandler, len(arguments.missingtemplatehandler) - 1) />
-			<cfelse>
-				<cfset tempPath = expandPath(arguments.missingtemplatehandler) />
-			</cfif>
+			<cfset tempPath = getFullPath(arguments.missingtemplatehandler) />
+
 			<cftry>
 				<cffile action="read" file="#tempPath#" variable="tempFile" />
 				<cfcatch type="any">
@@ -102,11 +92,8 @@
 		</cfif>
 		
 		<cfif arguments.tempdirectory is not "">
-			<cfif left(arguments.tempdirectory, 1) is "$">
-				<cfset tempPath = right(arguments.tempdirectory, len(arguments.tempdirectory) - 1) />
-			<cfelse>
-				<cfset tempPath = expandPath(arguments.tempdirectory) />
-			</cfif>
+			<cfset tempPath = getFullPath(arguments.tempdirectory) />
+
 			<cftry>
 				<cfif not directoryExists(tempPath)>
 					<cfthrow message="Cannot read the specified temp directory. Please verify this setting." 
@@ -120,11 +107,8 @@
 		</cfif>
 		
 		<cfif arguments.scriptsrc is not "">
-			<cfif left(arguments.scriptsrc, 1) is "$">
-				<cfset tempPath = right(arguments.scriptsrc, len(arguments.scriptsrc) - 1) />
-			<cfelse>
-				<cfset tempPath = expandPath(arguments.scriptsrc) />
-			</cfif>
+			<cfset tempPath = getFullPath(arguments.scriptsrc) />
+
 			<cftry>
 				<cfif not directoryExists(tempPath)>
 					<cfthrow message="Cannot read the specified script source directory. Please verify this setting." 

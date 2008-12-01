@@ -71,7 +71,7 @@
 		<cfset var localConfig = getConfig() />
 		<cfset var mapping = StructNew() />
 		<cfset var tempPath = "" />
-		
+
 		<!--- Make sure configuration structure exists, otherwise build it --->
 		<cfif (NOT StructKeyExists(localConfig, "cfmappings")) OR (NOT StructKeyExists(localConfig.cfmappings, "mapping"))>
 			<cfset localConfig.cfmappings.mapping = ArrayNew(1) />
@@ -79,12 +79,8 @@
 		
 		<!--- make sure we can hit the physical directory --->
 		<cftry>
-			<cfif left(arguments.directory, 1) is "$">
-				<cfset tempPath = right(arguments.directory, len(arguments.directory) - 1) />
-			<cfelse>
-				<cfset tempPath = expandPath(arguments.directory) />
-			</cfif>
-			
+			<cfset tempPath = getFullPath(arguments.directory) />
+
 			<cfif not directoryExists(tempPath)>
 				<cfthrow message="The directory specified is not accessible. Please verify that the directory exists and has the correct permissions." 
 						type="bluedragon.adminapi.mapping" />
@@ -128,11 +124,7 @@
 		
 		<!--- check the physical directory --->
 		<cftry>
-			<cfif left(mapping.directory, 1) is "$">
-				<cfset tempPath = right(mapping.directory, len(mapping.directory) - 1) />
-			<cfelse>
-				<cfset tempPath = expandPath(mapping.directory) />
-			</cfif>
+			<cfset tempPath = getFullPath(mapping.directory) />
 			
 			<cfif not directoryExists(tempPath)>
 				<cfthrow message="The directory specified is not accessible. Please verify that the directory exists and has the correct permissions." 

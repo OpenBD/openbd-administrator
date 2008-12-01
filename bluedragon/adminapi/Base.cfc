@@ -37,6 +37,12 @@
 		<!--- Grab some JVM specific information (no guessing or hacks) --->
 		<cfset variables.separator.path = getJVMProperty("path.separator") />
 		<cfset variables.separator.file = getJVMProperty("file.separator") />
+
+		<cfif compareNoCase(left(getJVMProperty("os.name"), 7), "windows") eq 0>
+			<cfset variables.isWindows = true />
+		<cfelse>
+			<cfset variables.isWindows = false />
+		</cfif>
 		
 		<!--- Frequently used messages, should probably be moved to some internationalization routine (later, much later) --->
 		<cfset variables.msg.NotImplemented = "Not Implemented Yet" />
@@ -100,6 +106,23 @@
 	<cffunction name="getFileSeparator" access="public" output="false" returntype="string" 
 			hint="Returns the platform-specific file separator">
 		<cfreturn getJVMProperty("file.separator") />
+	</cffunction>
+	
+	<cffunction name="getFullPath" access="public" output="false" returntype="string" 
+			hint="Returns a platform-specific full path based on the full or relative path passed in">
+		<cfargument name="thePath" type="string" required="true" />
+		
+		<cfset var fullPath = "" />
+		
+		<cfif left(arguments.thePath, 1) is "$">
+			<cfset fullPath = right(arguments.thePath, len(arguments.thePath) - 1) />
+		<cfelseif left(arguments.thePath, 1) is "/">
+			<cfset fullPath = expandPath(arguments.thePath) />
+		<cfelse>
+			<cfset fullPath = arguments.thePath />
+		</cfif>
+		
+		<cfreturn fullPath />
 	</cffunction>
 	
 	<cffunction name="getAdminAPIInfo" access="public" output="false" returntype="struct" 

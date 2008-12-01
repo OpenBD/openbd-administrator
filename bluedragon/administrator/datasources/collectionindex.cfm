@@ -135,6 +135,20 @@
 			<input type="hidden" name="collectionAction" value="refresh" />
 		</form>
 	</cfoutput>
+
+	<p><strong>Information Concerning Indexing Search Collections</strong></p>
+	
+	<ul>
+		<li>Search collections may be populated from either a directory path or a full URL.</li>
+		<li>
+			Use the Directory Index form to populate the collection using a directory path. Use the 
+			Web Site Index form to populate the collection from a starting URL.
+		</li>
+		<li>
+			A full physical path starting with "/" (on Unix-based systems) or a full drive path including drive letter 
+			(on Windows systems) may be specified for the directory path in the top form.
+		</li>
+	</ul>
 		
 	<cfset structDelete(session, "searchCollectionMessage", false) />
 	<cfset structDelete(session, "searchCollection", false) />

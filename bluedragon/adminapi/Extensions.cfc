@@ -64,11 +64,7 @@
 		
 		<!--- verify the custom tag path --->
 		<cftry>
-			<cfif left(arguments.path, 1) is "$">
-				<cfset tempPath = right(arguments.path, len(arguments.path) - 1) />
-			<cfelse>
-				<cfset tempPath = expandPath(arguments.path) />
-			</cfif>
+			<cfset tempPath = getFullPath(arguments.path) />
 			
 			<cfif not directoryExists(tempPath)>
 				<cfthrow message="The custom tag path specified is not accessible. Please verify that the directory exists and has the correct permissions." 
@@ -121,11 +117,7 @@
 
 		<!--- verify the custom tag path --->
 		<cftry>
-			<cfif left(arguments.path, 1) is "$">
-				<cfset tempPath = right(arguments.path, len(arguments.path) - 1) />
-			<cfelse>
-				<cfset tempPath = expandPath(arguments.path) />
-			</cfif>
+			<cfset tempPath = getFullPath(arguments.path) />
 			
 			<cfif not directoryExists(tempPath)>
 				<cfthrow message="The custom tag path specified is not accessible. Please verify that the directory exists and has the correct permissions." 

@@ -160,6 +160,19 @@
 		</table>
 		</form>
 	</cfoutput>
-		
+
+	<p><strong>Information Concerning Search Collections</strong></p>
+	
+	<ul>
+		<li>
+			Open BlueDragon's full-text indexing and search is built on 
+			<a href="http://lucene.apache.org/" target="_blank">Apache Lucene</a>.
+		</li>
+		<li>
+			A full physical path starting with "/" (on Unix-based systems) or a full drive path including drive letter 
+			(on Windows systems) may be specified for the collection path.
+		</li>
+	</ul>
+	
 	<cfset structDelete(session, "searchCollectionMessage", false) />
 </cfsavecontent>

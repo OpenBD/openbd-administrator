@@ -137,7 +137,10 @@
 		<ul>
 			<li>
 				A full physical path starting with "/" (on Unix-based systems) or a full drive path including drive letter 
-				(on Windows systems) may be specified. On Unix-based systems the common font folders include:<br />
+				(on Windows systems) may be specified.
+			</li>
+			<li>
+				On Unix-based systems the common font folders include:<br />
 				/usr/X/lib/X11/fonts/TrueType<br />
 				/usr/openwin/lib/X11/fonts/TrueType<br />
 				/usr/share/fonts/default/TrueType<br />

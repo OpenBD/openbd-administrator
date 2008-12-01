@@ -221,12 +221,12 @@
 			<cfthrow message="Error reading the previous configuration file." type="bluedragon.adminapi.serversettings" />
 		</cfif>
 		
-		<cfset SystemConfigReload() />
+		<cfset SystemReloadConfig() />
 	</cffunction>
 	
 	<cffunction name="reloadSettings" access="public" output="false" returntype="void" roles="admin" 
 			hint="Reloads the configuration settings contained in bluedragon.xml">
-		<cfset SystemConfigReload() />
+		<cfset SystemReloadConfig() />
 	</cffunction>
 	
 	<cffunction name="getServerStartTime" access="public" output="false" returntype="date" roles="admin" 

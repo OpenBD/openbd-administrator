@@ -121,7 +121,11 @@
 			}
 			
 			function verifyAllDatasources() {
-				location.replace("_controller.cfm?action=verifyDatasource")
+				location.replace("_controller.cfm?action=verifyDatasource");
+			}
+			
+			function refreshODBCDatasources() {
+				location.replace("_controller.cfm?action=refreshODBCDatasources");
 			}
 		</script>
 		
@@ -223,7 +227,13 @@
 		<hr noshade="true" />
 		
 		<cfif isWindows>
-			<h3>ODBC Datasources</h3>
+			<h3>
+				ODBC Datasources&nbsp;
+				<a href="javascript:void(0);" onclick="javascript:refreshODBCDatasources();" 
+					alt="Refresh ODBC Datasources" title="Refresh ODBC Datasources">
+					<img src="../images/arrow_refresh.png" width="16" height="16" border="0" />
+				</a>
+			</h3>
 			
 			<cfif autoConfigODBCRetrievalMessage is not "">
 				<p class="#autoConfigODBCRetrievalMessageType#">#autoConfigODBCRetrievalMessage#</p>

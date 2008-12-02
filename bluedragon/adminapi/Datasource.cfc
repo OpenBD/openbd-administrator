@@ -526,6 +526,11 @@
 		<cfreturn autoConfigODBC />
 	</cffunction>
 	
+	<cffunction name="refreshODBCDatasources" access="public" output="false" returntype="void" roles="admin" 
+			hint="Refreshes ODBC datasources on Windows">
+		<cfset createObject("java", "com.naryx.tagfusion.cfm.engine.cfEngine").autoConfigOdbcDataSources(true, getAutoConfigODBC()) />
+	</cffunction>
+	
 	<!--- PRIVATE METHODS --->
 	<cffunction name="formatJDBCURL" access="private" output="false" returntype="string" roles="admin" 
 			hint="Formats a JDBC URL for a specific database driver type">

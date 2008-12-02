@@ -334,7 +334,22 @@
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message.text = "The auto-configure ODBC datasources settings was saved successfully." />
+			<cfset session.message.text = "The auto-configure ODBC datasources setting was saved successfully." />
+			<cfset session.message.type = "info" />
+			<cflocation url="index.cfm" addtoken="false" />
+		</cfcase>
+		
+		<cfcase value="refreshODBCDatasources">
+			<cftry>
+				<cfset Application.datasource.refreshODBCDatasources() />
+				<cfcatch type="any">
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
+					<cflocation url="index.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+
+			<cfset session.message.text = "The ODBC datasources were refreshed successfully." />
 			<cfset session.message.type = "info" />
 			<cflocation url="index.cfm" addtoken="false" />
 		</cfcase>

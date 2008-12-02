@@ -549,11 +549,16 @@
 			<cfcase value="org.h2.Driver">
 				<!--- if the filepath is "" then use the default, and create it if it doesn't exist --->
 				<cfif arguments.filepath is "">
-					<cfif not directoryExists(expandPath("/WEB-INF/bluedragon/h2databases"))>
-						<cfdirectory action="create" directory="#expandPath('/WEB-INF/bluedragon/h2databases')#" />
+					<cfif variables.isMultiContextJetty>
+						<cfset arguments.filepath = 
+								"#getJVMProperty('jetty.home')##variables.separator.file#etc#variables.separator.file#openbd#variables.separator.file#h2databases" />
+					<cfelse>
+						<cfset arguments.filepath = expandPath("/WEB-INF/bluedragon/h2databases") />
 					</cfif>
 					
-					<cfset arguments.filepath = expandPath("/WEB-INF/bluedragon/h2databases") />
+					<cfif not directoryExists(arguments.filepath)>
+						<cfdirectory action="create" directory="#arguments.filepath#" />
+					</cfif>
 				<cfelse>
 					<!--- make sure the directory provided exists and throw an error if it doesn't; 
 							probably best not to create it automatically in case it was just a typo, etc. --->

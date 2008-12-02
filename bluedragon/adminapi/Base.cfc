@@ -132,7 +132,7 @@
 		<cfreturn fullPath />
 	</cffunction>
 	
-	<cffunction name="getIsMultContextJetty" access="public" output="false" returntype="boolean" roles="admin" 
+	<cffunction name="getIsMultiContextJetty" access="public" output="false" returntype="boolean" roles="admin" 
 			hint="Returns a boolean indicating whether or not this is running on the multi-context Jetty build">
 		<cfreturn variables.isMultiContextJetty />
 	</cffunction>

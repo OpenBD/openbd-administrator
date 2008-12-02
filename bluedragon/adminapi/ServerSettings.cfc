@@ -148,8 +148,14 @@
 			<cfset updateConfig = true />
 		</cfif>
 		
-		<cfif not structKeyExists(localConfig.system, "component-cfc")>
-			<cfset localConfig.system["component-cfc"] = "/WEB-INF/bluedragon/component.cfc" />
+		<cfif not structKeyExists(localConfig.system, "component-cfc") 
+				or left(localConfig.system["component-cfc"], 2) is "$.">
+			<cfif variables.isMultiContextJetty>
+				<cfset localConfig.system["component-cfc"] = 
+						"#getJVMProperty('jetty.home')##variables.separator.file#etc#variables.separator.file#openbd#variables.separator.file#component.cfc" />
+			<cfelse>
+				<cfset localConfig.system["component-cfc"] = "/WEB-INF/bluedragon/component.cfc" />
+			</cfif>
 			<cfset updateConfig = true />
 		</cfif>
 		
@@ -164,12 +170,17 @@
 		</cfif>
 		
 		<cfif not structKeyExists(localConfig.system, "tempdirectory")>
-			<cfset localConfig.system.tempdirectory = "/WEB-INF/bluedragon/work/temp" />
+			<cfif variables.isMultiContextJetty>
+				<cfset localConfig.system.tempdirectory = 
+						"#getJVMProperty('jetty.home')##variables.separator.file#logs#variables.separator.file#openbd#variables.separator.file#temp" />
+			<cfelse>
+				<cfset localConfig.system.tempdirectory = "/WEB-INF/bluedragon/work/temp" />
+			</cfif>
 			<cfset updateConfig = true />
 		</cfif>
 		
 		<cfif updateConfig>
-			<cfset setConfig(localConfig) />
+			<cfset setConfig(structCopy(localConfig)) />
 		</cfif>
 		
 		<cfreturn structCopy(localConfig.system) />
@@ -180,27 +191,34 @@
 		<cfset var localConfig = getConfig() />
 		<cfset var lastFile = "" />
 		<cfset var filePath = "" />
-		<cfset var pathDelimiter = "" />
-		
-		<cfif find("/", localConfig.system.lastfile) neq 0>
-			<cfset pathDelimiter = "/" />
-		<cfelseif find("\", localConfig.system.lastfile) neq 0>
-			<cfset pathDelimiter = "\" />
-		<cfelse>
-			<cfthrow message="Could not reliably determine the file path for the configuration file." type="bluedragon.adminapi.serversettings" />
-		</cfif>
+		<cfset var lastFileName = "" />
 
-		<cfset filePath = listDeleteAt(localConfig.system.lastfile, listLen(localConfig.system.lastFile, pathDelimiter), pathDelimiter) />
+		<cfif variables.isMultiContextJetty>
+			<cfset filePath = "#getJVMProperty('jetty.home')##variables.separator.file#etc#variables.separator.file#openbd" />
+		<cfelse>
+			<cfset filePath = expandPath("/WEB-INF/bluedragon") />
+		</cfif>
+		
+		<cfif find("\", localConfig.system.lastfile) neq 0>
+			<cfset lastFileName = listLast(localConfig.system.lastfile, "\") />
+		<cfelse>
+			<cfset lastFileName = listLast(localConfig.system.lastfile, "/") />
+		</cfif>
 		
 		<cftry>
-			<cffile action="read" file="#localConfig.system.lastfile#" variable="lastFile" />
+			<cffile action="read" file="#filePath##variables.separator.file##lastFileName#" variable="lastFile" />
 			<cfcatch type="any">
 				<cfthrow message="Could not read the previous configuration file." type="bluedragon.adminapi.serversettings" />
 			</cfcatch>
 		</cftry>
 		
 		<cfif lastFile is not "">
-			<cffile action="write" file="#filePath##pathDelimiter#bluedragon.xml" output="#lastFile#" />
+			<cftry>
+				<cffile action="write" file="#filePath##variables.separator.file#bluedragon.xml" output="#lastFile#" />
+				<cfcatch type="any">
+					<cfthrow message="Failed to write configuration file" type="bluedragon.adminapi.serversettings" />
+				</cfcatch>
+			</cftry>
 		<cfelse>
 			<cfthrow message="Error reading the previous configuration file." type="bluedragon.adminapi.serversettings" />
 		</cfif>

@@ -416,13 +416,21 @@
 	<!--- LOGGING --->
 	<cffunction name="getLogFiles" access="public" output="false" returntype="array" roles="admin" 
 			hint="Returns an array containing the paths to available log files">
+		<cfset var logFilePath = "" />
 		<cfset var logFiles = arrayNew(1) />
 		<cfset var logFile = structNew() />
 		<cfset var temp = "" />
 		
+		<!--- set the log file path --->
+		<cfif variables.isMultiContextJetty>
+			<cfset logFilePath = "#getJVMProperty('jetty.home')##variables.separator.file#logs#variables.separator.file#openbd" />
+		<cfelse>
+			<cfset logFilePath = expandPath("/WEB-INF/bluedragon/work") />
+		</cfif>
+		
 		<!--- add the standard log files if they exist --->
-		<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/bluedragon.log"))>
-			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work')#" name="temp" />
+		<cfif fileExists("#logFilePath##variables.separator.file#bluedragon.log")>
+			<cfdirectory action="list" directory="#logFilePath#" name="temp" />
 			
 			<cfquery name="temp" dbtype="query">
 				SELECT size, datelastmodified 
@@ -431,17 +439,17 @@
 			</cfquery>
 			
 			<cfset logFile.name = "bluedragon.log" />
-			<cfset logFile.fullpath = expandPath("/WEB-INF/bluedragon/work/bluedragon.log") />
+			<cfset logFile.fullpath = "#logFilePath##variables.separator.file#bluedragon.log" />
 			<cfset logFile.size = temp.size />
 			<cfset logFile.datelastmodified = LSDateFormat(temp.datelastmodified, "yyyy-mm-dd") & " " & LSTimeFormat(temp.datelastmodified, "HH:mm:ss") />
 			
 			<cfset arrayAppend(logFiles, logFile) />
 		</cfif>
 		
-		<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/cfmail/mail.log"))>
+		<cfif fileExists("#logFilePath##variables.separator.file#cfmail#variables.separator.file#mail.log")>
 			<cfset logFile = structNew() />
 			
-			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work/cfmail')#" name="temp" />
+			<cfdirectory action="list" directory="#logFilePath##variables.separator.file#cfmail" name="temp" />
 			
 			<cfquery name="temp" dbtype="query">
 				SELECT size, datelastmodified 
@@ -450,17 +458,17 @@
 			</cfquery>
 			
 			<cfset logFile.name = "mail.log" />
-			<cfset logFile.fullpath = expandPath("/WEB-INF/bluedragon/work/cfmail/mail.log") />
+			<cfset logFile.fullpath = "#logFilePath##variables.separator.file#cfmail#variables.separator.file#mail.log" />
 			<cfset logFile.size = temp.size />
 			<cfset logFile.datelastmodified = LSDateFormat(temp.datelastmodified, "yyyy-mm-dd") & " " & LSTimeFormat(temp.datelastmodified, "HH:mm:ss") />
 			
 			<cfset arrayAppend(logFiles, logFile) />
 		</cfif>
 		
-		<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/cfquerybatch/querybatch.log"))>
+		<cfif fileExists("#logFilePath##variables.separator.file#cfquerybatch#variables.separator.file#querybatch.log")>
 			<cfset logFile = structNew() />
 			
-			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work/cfquerybatch')#" name="temp" />
+			<cfdirectory action="list" directory="#logFilePath##variables.separator.file#cfquerybatch" name="temp" />
 			
 			<cfquery name="temp" dbtype="query">
 				SELECT size, datelastmodified 
@@ -469,17 +477,17 @@
 			</cfquery>
 			
 			<cfset logFile.name = "querybatch.log" />
-			<cfset logFile.fullpath = expandPath("/WEB-INF/bluedragon/work/cfquerybatch/querybatch.log") />
+			<cfset logFile.fullpath = "#logFilePath##variables.separator.file#cfquerybatch#variables.separator.file#querybatch.log" />
 			<cfset logFile.size = temp.size />
 			<cfset logFile.datelastmodified = LSDateFormat(temp.datelastmodified, "yyyy-mm-dd") & " " & LSTimeFormat(temp.datelastmodified, "HH:mm:ss") />
 			
 			<cfset arrayAppend(logFiles, logFile) />
 		</cfif>
 		
-		<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/cfschedule/schedule.log"))>
+		<cfif fileExists("#logFilePath##variables.separator.file#cfschedule#variables.separator.file#schedule.log")>
 			<cfset logFile = structNew() />
 			
-			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work/cfschedule')#" name="temp" />
+			<cfdirectory action="list" directory="#logFilePath##variables.separator.file#cfschedule" name="temp" />
 			
 			<cfquery name="temp" dbtype="query">
 				SELECT size, datelastmodified 
@@ -488,7 +496,7 @@
 			</cfquery>
 			
 			<cfset logFile.name = "schedule.log" />
-			<cfset logFile.fullpath = expandPath("/WEB-INF/bluedragon/work/cfschedule/schedule.log") />
+			<cfset logFile.fullpath = "#logFilePath##variables.separator.file#cfschedule#variables.separator.file#schedule.log" />
 			<cfset logFile.size = temp.size />
 			<cfset logFile.datelastmodified = LSDateFormat(temp.datelastmodified, "yyyy-mm-dd") & " " & LSTimeFormat(temp.datelastmodified, "HH:mm:ss") />
 			
@@ -496,8 +504,8 @@
 		</cfif>
 		
 		<!--- add custom log files --->
-		<cfif directoryExists(expandPath("/WEB-INF/bluedragon/work/cflog"))>
-			<cfdirectory action="list" directory="#expandPath('/WEB-INF/bluedragon/work/cflog')#" name="temp" />
+		<cfif directoryExists("#logFilePath##variables.separator.file#cflog")>
+			<cfdirectory action="list" directory="#logFilePath##variables.separator.file#cflog" name="temp" />
 			
 			<cfquery name="temp" dbtype="query">
 				SELECT name, size, datelastmodified 
@@ -508,7 +516,7 @@
 			<cfloop query="temp">
 				<cfset logFile = structNew() />
 				<cfset logFile.name = temp.name />
-				<cfset logFile.fullpath = expandPath("/WEB-INF/bluedragon/work/cflog/#temp.name#") />
+				<cfset logFile.fullpath = "#logFilePath##variables.separator.file#cflog#variables.separator.file##temp.name#" />
 				<cfset logFile.size = temp.size />
 				<cfset logFile.datelastmodified = LSDateFormat(temp.datelastmodified, "yyyy-mm-dd") & " " & LSTimeFormat(temp.datelastmodified, "HH:mm:ss") />
 				<cfset arrayAppend(logFiles, logFile) />
@@ -558,8 +566,8 @@
 		
 		<cfset var logFilePath = getLogFilePath(arguments.logFile) />
 		
-		<cfif fileExists("#logFilePath#/#arguments.logFile#")>
-			<cffile action="delete" file="#logFilePath#/#arguments.logFile#" />
+		<cfif fileExists("#logFilePath##variables.separator.file##arguments.logFile#")>
+			<cffile action="delete" file="#logFilePath##variables.separator.file##arguments.logFile#" />
 		</cfif>
 	</cffunction>
 	
@@ -568,27 +576,34 @@
 		<cfargument name="logFile" type="string" required="true" hint="The log file name" />
 		
 		<cfset var logFilePath = "" />
+
+		<!--- set the log file path --->
+		<cfif variables.isMultiContextJetty>
+			<cfset logFilePath = "#getJVMProperty('jetty.home')##variables.separator.file#logs#variables.separator.file#openbd" />
+		<cfelse>
+			<cfset logFilePath = expandPath("/WEB-INF/bluedragon/work") />
+		</cfif>
 		
 		<cfswitch expression="#arguments.logFile#">
 			<cfcase value="bluedragon.log">
-				<cfset logFilePath = expandPath("/WEB-INF/bluedragon/work") />
+				<cfset logFilePath = logFilePath />
 			</cfcase>
 			
 			<cfcase value="mail.log">
-				<cfset logFilePath = expandPath("/WEB-INF/bluedragon/work/cfmail") />
+				<cfset logFilePath = logFilePath & variables.separator.file & "cfmail" />
 			</cfcase>
 			
 			<cfcase value="querybatch.log">
-				<cfset logFilePath = expandPath("/WEB-INF/bluedragon/work/cfquerybatch") />
+				<cfset logFilePath = logFilePath & variables.separator.file & "cfquerybatch" />
 			</cfcase>
 			
 			<cfcase value="schedule.log">
-				<cfset logFilePath = expandPath("/WEB-INF/bluedragon/work/cfschedule") />
+				<cfset logFilePath = logFilePath & variables.separator.file & "cfschedule" />
 			</cfcase>
 			
 			<!--- for all other log files, assume they're in the default cflog directory --->
 			<cfdefaultcase>
-				<cfset logFilePath = expandPath("/WEB-INF/bluedragon/work/cflog") />
+				<cfset logFilePath = logFilePath & variables.separator.file & "cflog" />
 			</cfdefaultcase>
 		</cfswitch>
 		
@@ -603,7 +618,7 @@
 		
 		<cfset var logFileData = structNew() />
 		<cfset var logFileLines = arrayNew(1) />
-		<cfset var fileReader = createObject("java", "java.io.FileReader").init("#getLogFilePath(arguments.logFile)#/#arguments.logFile#") />
+		<cfset var fileReader = createObject("java", "java.io.FileReader").init("#getLogFilePath(arguments.logFile)##variables.separator.file##arguments.logFile#") />
 		<cfset var bufferedReader = createObject("java", "java.io.BufferedReader").init(fileReader) />
 		<cfset var lineNumberReader = createObject("java", "java.io.LineNumberReader").init(bufferedReader) />
 		<cfset var line = "" />
@@ -635,12 +650,28 @@
 		<cfreturn logFileData />
 	</cffunction>
 	
+	<cffunction name="getRuntimeErrorLogPath" access="public" output="false" returntype="string" roles="admin" 
+			hint="Returns the full path for the runtime error logs based on configuration and environment">
+		<cfset var rteLogPath = "" />
+		
+		<cfif variables.isMultiContextJetty>
+			<cfset rteLogPath = "#getJVMProperty('jetty.home')##variables.separator.file#logs#variables.separator.file#openbd" />
+		<cfelse>
+			<cfset rteLogPath = expandPath("/WEB-INF/bluedragon/work") />
+		</cfif>
+		
+		<cfset rteLogPath = rteLogPath & variables.separator.file & "temp#variables.separator.file#rtelogs" />
+		
+		<cfreturn rteLogPath />
+	</cffunction>
+	
 	<cffunction name="getRuntimeErrorLogs" access="public" output="false" returntype="query" roles="admin" 
 			hint="Returns a query object containing all the files in the runtime error log directory (/WEB-INF/bluedragon/work/temp/rtelogs)">
 		<cfset var rteLogs = 0 />
-		
-		<cfif directoryExists(expandPath("/WEB-INF/bluedragon/work/temp/rtelogs"))>
-			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work/temp/rtelogs')#" name="rteLogs" />
+		<cfset var rteLogFilePath = getRuntimeErrorLogPath() & variables.separator.file />
+
+		<cfif directoryExists(rteLogFilePath)>
+			<cfdirectory action="list" directory="#rteLogFilePath#" name="rteLogs" />
 			
 			<cfquery name="rteLogs" dbtype="query" >
 				SELECT * 
@@ -658,8 +689,10 @@
 			hint="Deletes a runtime error log file">
 		<cfargument name="rteLog" type="string" required="true" hint="The runtime error log file to delete" />
 		
-		<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/temp/rtelogs/#arguments.rteLog#"))>
-			<cffile action="delete" file="#expandPath('/WEB-INF/bluedragon/work/temp/rtelogs/#arguments.rteLog#')#" />
+		<cfset var logFilePath = getRuntimeErrorLogPath() & variables.separator.file />
+		
+		<cfif fileExists("#logFilePath##arguments.rteLog#")>
+			<cffile action="delete" file="#logFilePath##arguments.rteLog#" />
 		<cfelse>
 			<cfthrow type="bluedragon.adminapi.debugging" message="The file attempting to be deleted no longer exists" />
 		</cfif>
@@ -668,12 +701,13 @@
 	<cffunction name="deleteAllRuntimeErrorLogs" access="public" output="false" returntype="void" roles="admin" 
 			hint="Deletes all runtime error logs">
 		<cfset var errorLogs = "" />
-		
-		<cfdirectory action="list" directory="#expandPath('/WEB-INF/bluedragon/work/temp/rtelogs/')#" filter="*.html" name="errorLogs" />
+		<cfset var logFilePath = getRuntimeErrorLogPath() & variables.separator.file  />
+
+		<cfdirectory action="list" directory="#logFilePath#" filter="*.html" name="errorLogs" />
 		
 		<cfloop query="errorLogs">
-			<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/temp/rtelogs/#errorLogs.name#"))>
-				<cffile action="delete" file="#expandPath('/WEB-INF/bluedragon/work/temp/rtelogs/#errorLogs.name#')#" />
+			<cfif fileExists("#logFilePath##errorLogs.name#")>
+				<cffile action="delete" file="#logFilePath##errorLogs.name#" />
 			</cfif>
 		</cfloop>
 	</cffunction>

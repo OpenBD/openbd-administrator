@@ -31,15 +31,38 @@
 			hint="Returns an array of paths to customtags">
 		<cfset var localConfig = getConfig() />
 		<cfset var customTagPaths = arrayNew(1) />
+		<cfset var customTagPath = "" />
+		<cfset var i = 0 />
+		<cfset var updateConfig = false />
 
 		<!--- Make sure there are Custom Tag Paths defined --->
 		<cfif NOT StructKeyExists(localConfig, "cfmlcustomtags") OR NOT StructKeyExists(localConfig.cfmlcustomtags, "mapping")>
 			<cfthrow message="No Custom Tag Paths Defined" type="bluedragon.adminapi.extensions" />		
 		</cfif>
-	
+
+		
 		<!--- Return entire Custom Tag Path list as an array --->
-		<cfset customTagPaths = ListToArray(localConfig.cfmlcustomtags.mapping[1].directory, separator.path) />
-		<cfset arraySort(customTagPaths, "textnocase", "asc")>
+		<cfset customTagPaths = ListToArray(localConfig.cfmlcustomtags.mapping[1].directory, variables.separator.path) />
+
+		<!--- fix any odd paths on the multi-context jetty version --->
+		<cfif variables.isMultiContextJetty>
+			<cfloop index="i" from="1" to="#arrayLen(customTagPaths)#">
+				<cfif compareNoCase(customTagPaths[i], "$./webroot_cfmlapps/customtags") eq 0>
+					<cfset customTagPath = 
+							"#getJVMProperty('jetty.home')##variables.separator.file#webroot_cfmlapps#variables.separator.file#customtags" />
+					<cfset customTagPaths[i] = customTagPath />
+					<cfset updateConfig = true />
+				</cfif>
+			</cfloop>
+		</cfif>
+		
+		<cfif updateConfig>
+			<cfset localConfig.cfmlcustomtags.mapping[1].directory = arrayToList(customTagPaths, variables.separator.path) />
+			<cfset setConfig(structCopy(localConfig)) />
+		</cfif>
+		
+		<cfset arraySort(customTagPaths, "textnocase", "asc") />
+		
 		<cfreturn customTagPaths />
 	</cffunction>
 

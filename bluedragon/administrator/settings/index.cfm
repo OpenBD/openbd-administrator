@@ -44,7 +44,8 @@
 					alert("Buffer size must be numeric");
 					return false;
 				} else {
-					if (f.componentcfc.value != '/WEB-INF/bluedragon/component.cfc') {
+					var cfcfile = '#replace(serverSettings["component-cfc"], "\", "\\", "all")#';
+					if (f.componentcfc.value != cfcfile) {
 						if(confirm("Are you SURE you want to change the value of Base ColdFusion Component (CFC)?")) {
 							return true;
 						} else {

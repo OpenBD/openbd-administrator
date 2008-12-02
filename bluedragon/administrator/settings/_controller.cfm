@@ -231,7 +231,7 @@
 				</cfcatch>
 			</cftry>
 			
-			<cfset session.message.text = "The current server settings have been reloaded." />
+			<cfset session.message.text = "The server settings have been reloaded." />
 			<cfset session.message.type = "info" />
 			<cflocation url="index.cfm" addtoken="false" />
 		</cfcase>

@@ -20,6 +20,6 @@
 	along with the Open BlueDragon Administrator.  If not, see 
 	<http://www.gnu.org/licenses/>.
 --->
-<cfset fullPath = "#ExpandPath('/WEB-INF/bluedragon/work/temp/rtelogs')#/#url.rteLog#" />
+<cfset fullPath = Application.debugging.getRunTimeErrorLogPath() & Application.debugging.getFileSeparator() & url.rteLog />
 <cfheader name="Content-disposition" value="attachment;filename=#url.rteLog#" />
 <cfcontent type="text/plain" file="#fullPath#" />

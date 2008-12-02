@@ -24,9 +24,11 @@
 	<cfparam name="url.rteLog" type="string" default="" />
 	<cfparam name="logContents" type="string" default="" />
 	
+	<cfset rteLogPath = Application.debugging.getRunTimeErrorLogPath() & Application.debugging.getFileSeparator() />
+	
 	<cfif url.rteLog is not "">
-		<cfif fileExists(ExpandPath("/WEB-INF/bluedragon/work/temp/rtelogs/#url.rteLog#"))> --->
-			<cffile action="read" file="#ExpandPath('/WEB-INF/bluedragon/work/temp/rtelogs/#url.rteLog#')#" variable="logContents" />
+		<cfif fileExists("#rteLogPath##url.rteLog#")>
+			<cffile action="read" file="#rteLogPath##url.rteLog#" variable="logContents" />
 		</cfif>
 	</cfif>
 </cfsilent>

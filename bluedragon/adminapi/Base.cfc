@@ -31,10 +31,10 @@
 		<cfset variables.api.version = "1.0" />
 		<cfset variables.api.builddate = "20081114" />
 		
-		<!--- instantiate the udfs cfc here so it's avaialble everywhere --->
+		<!--- instantiate the udfs cfc here so it's available everywhere --->
 		<cfset variables.udfs = createObject("component", "bluedragon.adminapi.utils.UDFs") />
 		
-		<!--- Grab some JVM specific information (no guessing or hacks) --->
+		<!--- Grab some JVM specific information --->
 		<cfset variables.separator.path = getJVMProperty("path.separator") />
 		<cfset variables.separator.file = getJVMProperty("file.separator") />
 
@@ -42,6 +42,13 @@
 			<cfset variables.isWindows = true />
 		<cfelse>
 			<cfset variables.isWindows = false />
+		</cfif>
+
+		<cfif not directoryExists(expandPath("/WEB-INF")) and getJVMProperty("jetty.home") is not "" 
+				and getJVMProperty("jetty.home") is not "[null]">
+			<cfset variables.isMultiContextJetty = true />
+		<cfelse>
+			<cfset variables.isMultiContextJetty = false />
 		</cfif>
 		
 		<!--- Frequently used messages, should probably be moved to some internationalization routine (later, much later) --->
@@ -52,7 +59,7 @@
 		
 		<cfreturn this />
 	</cffunction>
-
+	
 	<cffunction name="setConfig" access="package" output="false" returntype="void" roles="admin" 
 			hint="Sets the server configuration and tells OpenBD to refresh its settings">
 		<cfargument name="currentConfig" type="struct" required="true" 
@@ -123,6 +130,11 @@
 		</cfif>
 		
 		<cfreturn fullPath />
+	</cffunction>
+	
+	<cffunction name="getIsMultContextJetty" access="public" output="false" returntype="boolean" roles="admin" 
+			hint="Returns a boolean indicating whether or not this is running on the multi-context Jetty build">
+		<cfreturn variables.isMultiContextJetty />
 	</cffunction>
 	
 	<cffunction name="getAdminAPIInfo" access="public" output="false" returntype="struct" 

@@ -121,6 +121,12 @@
 					location.replace("_controller.cfm?action=removeMailServer&mailServer=" + mailServer);
 				}
 			}
+			
+			function respoolUndeliveredMail() {
+				if(confirm("Are you sure you want to respool all undelivered mail?")) {
+					location.replace("_controller.cfm?action=respoolUndeliveredMail");
+				}
+			}
 		</script>
 		
 		<cfif structKeyExists(session, "message") and session.message.text is not "">
@@ -155,14 +161,18 @@
 		
 		<h3>Mail Status</h3>
 		
-		<!--- TODO: add functionality to let user view/manage spooled and undelivered mail --->
 		<ul>
 			<li>Spooled Mail: #spoolCount# messages</li>
-			<li>Undelivered Mail: #undeliveredCount# messages</li>
-			<!--- TODO: make sure moving the mail to the spool actually works --->
-		<cfif undeliveredCount gt 0>
-			<li><a href="_controller.cfm?action=respoolUndeliveredMail">Move Undelivered Mail to Spool</a></li>
-		</cfif>
+			<li>
+				Undelivered Mail: #undeliveredCount# messages
+				<cfif undeliveredCount gt 0>
+					&nbsp;
+					<a href="javascript:void(0);" onclick="javascript:respoolUndeliveredMail();" 
+							alt="Respool Undelivered Mail" title="Respool Undelivered Mail">
+						<img src="../images/email_go.png" height="16" width="16" border="0" />
+					</a>
+				</cfif>
+			</li>
 		</ul>
 		
 		<cfif arrayLen(mailServers) eq 0>

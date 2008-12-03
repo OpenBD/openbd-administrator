@@ -272,24 +272,6 @@
 		<cfset setConfig(localConfig) />
 	</cffunction>
 	
-	<cffunction name="getSpooledMailCount" access="public" output="false" returntype="numeric" 
-			hint="Returns the number of files currently in the mail spool. If this returns -1 it means an error occurred while reading the spool directory.">
-		<cfset var spoolCount = 0 />
-		<cfset var spoolDirList = 0 />
-
-		<cfset checkLoginStatus() />
-		
-		<cftry>
-			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work/cfmail/spool')#" name="spoolDirList" />
-			<cfset spoolCount = spoolDirList.RecordCount />
-			<cfcatch type="any">
-				<cfset spoolCount = -1 />
-			</cfcatch>
-		</cftry>
-		
-		<cfreturn spoolCount />
-	</cffunction>
-	
 	<cffunction name="verifyMailServer" access="public" output="false" 
 			hint="Verifies a mail server by connecting to the server via a JavaMail session">
 		<cfargument name="mailServer" type="string" required="true" hint="The mail server to verify, in format 'server', 'server:port', or 'user:pass@server:port'" />
@@ -326,15 +308,35 @@
 		</cftry>
 	</cffunction>
 	
-	<cffunction name="getUndeliveredMailCount" access="public" output="false" returntype="numeric" 
-			hint="Returns the number of files currently in the undelivered mail directory. If this returns -1 it means an error occurred while reading the undelivered directory.">
-		<cfset var undeliveredCount = 0 />
-		<cfset var undeliveredlDirList = 0 />
+	<cffunction name="getSpooledMailCount" access="public" output="false" returntype="numeric" 
+			hint="Returns the number of files currently in the mail spool. If this returns -1 it means an error occurred while reading the spool directory.">
+		<cfset var spoolCount = 0 />
+		<cfset var spoolDirList = 0 />
+		<cfset var mailSpoolPath = getMailSpoolPath() />
 
 		<cfset checkLoginStatus() />
 		
 		<cftry>
-			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work/cfmail/undelivered')#" name="undeliveredDirList" />
+			<cfdirectory action="list" directory="#mailSpoolPath#" name="spoolDirList" filter="*.email" />
+			<cfset spoolCount = spoolDirList.RecordCount />
+			<cfcatch type="any">
+				<cfset spoolCount = -1 />
+			</cfcatch>
+		</cftry>
+		
+		<cfreturn spoolCount />
+	</cffunction>
+	
+	<cffunction name="getUndeliveredMailCount" access="public" output="false" returntype="numeric" 
+			hint="Returns the number of files currently in the undelivered mail directory. If this returns -1 it means an error occurred while reading the undelivered directory.">
+		<cfset var undeliveredCount = 0 />
+		<cfset var undeliveredDirList = 0 />
+		<cfset var undeliveredMailPath = getUndeliveredMailPath() />
+
+		<cfset checkLoginStatus() />
+
+		<cftry>
+			<cfdirectory action="list" directory="#undeliveredMailPath#" name="undeliveredDirList" filter="*.email" />
 			<cfset undeliveredCount = undeliveredDirList.RecordCount />
 			<cfcatch type="any">
 				<cfset undeliveredCount = -1 />
@@ -347,18 +349,66 @@
 	<cffunction name="respoolUndeliveredMail" access="public" output="false" returntype="void" 
 			hint="Moves all the mail in the undelivered directory to the spool">
 		<cfset var undeliveredMail = 0 />
+		<cfset var undeliveredMailPath = getUndeliveredMailPath() />
+		<cfset var mailSpoolPath = getMailSpoolPath() />
 
 		<cfset checkLoginStatus() />
-		
-		<cfdirectory action="list" directory="#expandPath('/WEB-INF/bluedragon/work/cfmail/undelivered')#" name="undeliveredMail" filter="*.email" />
+
+		<cfdirectory action="list" directory="#undeliveredMailPath#" name="undeliveredMail" filter="*.email" />
 		
 		<cfif undeliveredMail.RecordCount gt 0>
 			<cfloop query="undeliveredMail">
-				<cfif fileExists(expandPath("/WEB-INF/bluedragon/work/cfmail/undelivered/#undeliveredMail.name#"))>
-					<cffile action="move" source="#expandPath('/WEB-INF/bluedragon/work/cfmail/undelivered/#undeliveredMail.name#')#" 
-							destination="#expandPath('/WEB-INF/bluedragon/work/cfmail/spool/#undeliveredMail.name#')#" />
+				<cfif fileExists("#undeliveredMailPath##variables.separator.file##undeliveredMail.name#")>
+					<cffile action="move" 
+							source="#undeliveredMailPath##variables.separator.file##undeliveredMail.name#" 
+							destination="#mailSpoolPath##variables.separator.file##undeliveredMail.name#" />
 				</cfif>
 			</cfloop>
 		</cfif>
+	</cffunction>
+	
+	<cffunction name="triggerMailSpool" access="public" output="false" returntype="void" 
+			hint="Triggers the mail spool by grabbing the first mail file in the spool, parsing it, and sending it using cfmail. Used mainly following a move of mail files to the spool.">
+		<cfset var mailFiles = 0 />
+		<cfset var mailFile = "" />
+		
+		<cfdirectory action="list" directory="#getMailSpoolPath()#" name="mailFiles" filter="*.email" />
+		
+		<cfif mailFiles.RecordCount gt 0>
+			<!--- grab the first file; if it's not there anymore, chances are that means the spool is active 
+					so just forget about priming things --->
+			<cfif fileExists(getMailSpoolPath() & variables.separator.file & mailFiles.name)>
+			</cfif>
+		</cfif>
+	</cffunction>
+	
+	<cffunction name="getMailSpoolPath" access="public" output="false" returntype="string" 
+			hint="Returns the mail spool path">
+		<cfset var mailSpoolPath = "" />
+		
+		<cfset checkLoginStatus() />
+
+		<cfif variables.isMultiContextJetty>
+			<cfset mailSpoolPath = "#getJVMProperty('jetty.home')##variables.separator.file#logs#variables.separator.file#openbd#variables.separator.file#cfmail#variables.separator.file#spool" />
+		<cfelse>
+			<cfset mailSpoolPath = expandPath("/WEB-INF/bluedragon/work/cfmail/spool") />
+		</cfif>
+		
+		<cfreturn mailSpoolPath />
+	</cffunction>
+	
+	<cffunction name="getUndeliveredMailPath" access="public" output="false" returntype="string" 
+			hint="Returns the undelievered mail path">
+		<cfset var undeliveredMailPath = "" />
+
+		<cfset checkLoginStatus() />
+		
+		<cfif variables.isMultiContextJetty>
+			<cfset undeliveredMailPath = "#getJVMProperty('jetty.home')##variables.separator.file#logs#variables.separator.file#openbd#variables.separator.file#cfmail#variables.separator.file#undelivered" />
+		<cfelse>
+			<cfset undeliveredMailPath = expandPath("/WEB-INF/bluedragon/work/cfmail/undelivered") />
+		</cfif>
+		
+		<cfreturn undeliveredMailPath />
 	</cffunction>
 </cfcomponent>

@@ -156,7 +156,9 @@
 					<label for="scriptprotectTrue">Yes</label>&nbsp;
 					<input type="radio" name="scriptprotect" id="scriptprotectFalse" value="false"
 							<cfif not serverSettings.scriptprotect> checked="true"</cfif> tabindex="8" />
-					<label for="scriptprotectFalse">No</label>
+					<label for="scriptprotectFalse">No</label>&nbsp;
+					<img src="../images/arrow_refresh_small.png" height="16" width="16" 
+							alt="Requires Server Restart" title="Requires Server Restart" />
 				</td>
 			</tr>
 			<tr>
@@ -218,8 +220,8 @@
 			<li>
 				If the configuration settings are changed using either the "Revert to Previous" or "Reload Current" functions, 
 				and one of the settings within the updated configuration file requires a server restart to take effect 
-				(e.g. "ColdFusion 5-compatible client data" on the variables settings page), using these functions will 
-				not eliminate the need for a server restart.
+				(e.g. "Global Script Protection" and "ColdFusion 5-compatible client data" on the variables settings page), 
+				using these functions will not eliminate the need for a server restart.
 			</li>
 		</ul>
 		

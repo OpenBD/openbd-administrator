@@ -36,9 +36,11 @@
 
 <h4>CFML Compatibility and Enhancements</h4>
 
-The <a href="http://www.openbluedragon.org/about.cfm" target="_blank">Open BlueDragon steering committee</a> is hard at work producing documentation that 
-is specific to Open BlueDragon. In the mean time, please refer to the following documentation covering New Atlanta BlueDragon 7 for general information 
-concerning CFML compatibility and language enhancements.
+<p>The <a href="http://www.openbluedragon.org/about.cfm" target="_blank">Open BlueDragon steering committee</a> is hard at work producing documentation that 
+is specific to Open BlueDragon, so please continue to <a href="http://wiki.openbluedragon.org" target="_blank">refer to our wiki</a> for the latest documentation.</p>
+
+<p>You may also wish to refer to the following documentation covering New Atlanta BlueDragon 7 for general information 
+concerning CFML compatibility and language enhancements.</p>
 
 <ul>
 	<li>

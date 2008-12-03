@@ -57,15 +57,49 @@
 		<cfset variables.msg.compatibility.NotImplemented = "Not yet implemented in OpenBD AdminAPI compatibility layer" />
 		<cfset variables.msg.compatibility.Unsupported = "Unsupported by OpenBD AdminAPI compatibility layer" />
 		
+		<cfset variables.msg.security.notLoggedIn = "Login required to perform this action" />
+		
 		<cfreturn this />
 	</cffunction>
 	
-	<cffunction name="setConfig" access="package" output="false" returntype="void" roles="admin" 
+	<cffunction name="isUserLoggedIn" access="public" output="false" returntype="boolean" 
+			hint="Returns a boolean indicating whether or not a user is logged in with the valid password">
+		<cfset var loggedIn = false />
+		
+		<cfif structKeyExists(session, "auth") and isStruct(session.auth) and structKeyExists(session.auth, "loggedIn") 
+				and session.auth.loggedIn and structKeyExists(session.auth, "password") 
+				and compare(session.auth.password, getPassword()) eq 0>
+			<cfset loggedIn = true />
+		</cfif>
+		
+		<cfreturn loggedIn />
+	</cffunction>
+	
+	<cffunction name="checkLoginStatus" access="package" output="false" returntype="void" 
+			hint="Checks login status and throws a security exception if there is no valid logged in user">
+		<cfif not isUserLoggedIn()>
+			<cfthrow message="#variables.msg.security.notLoggedIn#" type="bluedragon.adminapi.security" />
+		</cfif>
+	</cffunction>
+
+	<cffunction name="getPassword" access="package" output="false" returntype="void" hint="Returns the administrator password">
+		<cfset var localConfig = getConfig() />
+		
+		<cfif not structKeyExists(localConfig.system, "password")>
+			<cfreturn "admin" />
+		<cfelse>
+			<cfreturn getConfig().system.password />
+		</cfif>
+	</cffunction>
+	
+	<cffunction name="setConfig" access="package" output="false" returntype="void" 
 			hint="Sets the server configuration and tells OpenBD to refresh its settings">
 		<cfargument name="currentConfig" type="struct" required="true" 
 				hint="The configuration struct, which is a struct representation of bluedragon.xml" />
 		
 		<cfset var admin = structNew() />
+		
+		<cfset checkLoginStatus() />
 		
 		<cflock scope="Server" type="exclusive" timeout="5">
 			<cfset admin.server = duplicate(arguments.currentConfig) />
@@ -132,8 +166,12 @@
 		<cfreturn fullPath />
 	</cffunction>
 	
-	<cffunction name="getIsMultiContextJetty" access="public" output="false" returntype="boolean" roles="admin" 
+	<cffunction name="getIsMultiContextJetty" access="public" output="false" returntype="boolean"  
 			hint="Returns a boolean indicating whether or not this is running on the multi-context Jetty build">
+		<cfif not isUserLoggedIn()>
+			<cfthrow message="#variables.msg.security.notLoggedIn#" type="bluedragon.adminapi.security" />
+		</cfif>
+		
 		<cfreturn variables.isMultiContextJetty />
 	</cffunction>
 	

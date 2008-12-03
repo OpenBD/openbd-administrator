@@ -27,7 +27,7 @@
 		hint="Manages server settings - OpenBD Admin API">
 	
 	<!--- PUBLIC METHODS --->
-	<cffunction name="setServerSettings" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setServerSettings" access="public" output="false" returntype="void" 
 			hint="Saves updated server settings">
 		<cfargument name="buffersize" type="numeric" required="true" hint="Response buffer size - 0 indicates to buffer the entire page" />
 		<cfargument name="whitespacecomp" type="boolean" required="true" hint="Apply whitespace compression" />
@@ -42,6 +42,8 @@
 		<cfset var localConfig = getConfig() />
 		<cfset var tempFile = "" />
 		<cfset var tempPath = "" />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- do some trimming of the string values for good measure --->
 		<cfscript>
@@ -137,10 +139,12 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="getServerSettings" access="public" output="false" returntype="struct" roles="admin" 
+	<cffunction name="getServerSettings" access="public" output="false" returntype="struct" 
 			hint="Returns a struct containing the current server setting values">
 		<cfset var localConfig = getConfig() />
 		<cfset var updateConfig = false />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- some of the server settings may not be present in the xml file, so add the ones that don't exist --->
 		<cfif not structKeyExists(localConfig.system, "assert")>
@@ -186,12 +190,14 @@
 		<cfreturn structCopy(localConfig.system) />
 	</cffunction>
 	
-	<cffunction name="revertToPreviousSettings" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="revertToPreviousSettings" access="public" output="false" returntype="void" 
 			hint="Reverts to the previous server settings by replacing bluedragon.xml with 'lastfile' from the config file">
 		<cfset var localConfig = getConfig() />
 		<cfset var lastFile = "" />
 		<cfset var filePath = "" />
 		<cfset var lastFileName = "" />
+
+		<cfset checkLoginStatus() />
 
 		<cfif variables.isMultiContextJetty>
 			<cfset filePath = "#getJVMProperty('jetty.home')##variables.separator.file#etc#variables.separator.file#openbd" />
@@ -226,26 +232,32 @@
 		<cfset SystemReloadConfig() />
 	</cffunction>
 	
-	<cffunction name="reloadSettings" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="reloadSettings" access="public" output="false" returntype="void" 
 			hint="Reloads the configuration settings contained in bluedragon.xml">
+		<cfset checkLoginStatus() />
+		
 		<cfset SystemReloadConfig() />
 	</cffunction>
 	
-	<cffunction name="getServerStartTime" access="public" output="false" returntype="date" roles="admin" 
+	<cffunction name="getServerStartTime" access="public" output="false" returntype="date" 
 			hint="Returns the server start time as a date object">
 		<cfset var startTimeMS = createObject("java", "com.naryx.tagfusion.cfm.engine.cfEngine").thisInstance.startTime />
 		<cfset var startTime = dateAdd("s", startTimeMS / 1000, dateConvert("utc2local", "01/01/1970 00:00:00.000")) />
+
+		<cfset checkLoginStatus() />
 		
 		<cfreturn startTime />
 	</cffunction>
 	
-	<cffunction name="getServerUpTime" access="public" output="false" returntype="any" roles="admin" 
+	<cffunction name="getServerUpTime" access="public" output="false" returntype="any" 
 			hint="Returns the server uptime either in seconds, or as a struct containing days, hours, minutes, and seconds">
 		<cfargument name="returnAs" type="string" required="false" default="seconds" />
 		
 		<cfset var uptimeInSeconds = dateDiff("s", getServerStartTime(), now()) />
 		<cfset var uptime = structNew() />
 		<cfset var remainingSeconds = uptimeInSeconds />
+
+		<cfset checkLoginStatus() />
 		
 		<cfset uptime.days = 0 />
 		<cfset uptime.hours = 0 />

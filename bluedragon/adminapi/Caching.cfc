@@ -27,11 +27,13 @@
 		hint="Manages caching - OpenBD Admin API">
 
 	<!--- GENERAL CACHING SETTINGS/METHODS --->
-	<cffunction name="getCachingSettings" access="public" output="false" returntype="struct" roles="admin" 
+	<cffunction name="getCachingSettings" access="public" output="false" returntype="struct" 
 			hint="Returns an array containing the current caching settings (file, query, and current cache status).">
 		<cfset var cachingSettings = structNew() />
 		<cfset var localConfig = getConfig() />
 		<cfset var doSetConfig = false />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- cfquery node may not exist --->
 		<cfif NOT StructKeyExists(localConfig, "cfquery")>
@@ -73,11 +75,13 @@
 		<cfreturn structCopy(cachingSettings) />
 	</cffunction>
 	
-	<cffunction name="flushCaches" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="flushCaches" access="public" output="false" returntype="void" 
 			hint="Flushes the caches passed in as a comma-delimited list">
 		<cfargument name="cachesToFlush" type="string" required="true" />
 		
 		<cfset var theCache = "" />
+
+		<cfset checkLoginStatus() />
 		
 		<cfloop list="#arguments.cachesToFlush#" index="theCache">
 			<cfswitch expression="#lcase(theCache)#">
@@ -101,8 +105,11 @@
 	</cffunction>
 	
 	<!--- CONTENT CACHE METHODS --->
-	<cffunction name="getNumContentInCache" access="public" output="false" returntype="numeric" roles="admin" 
+	<cffunction name="getNumContentInCache" access="public" output="false" returntype="numeric" 
 			hint="Returns the number of items in the content cache (i.e. created with <cfcachecontent>)">
+
+		<cfset checkLoginStatus() />
+		
 		<!--- throwing this in for pre-1.0 versions of openbd --->
 		<cftry>
 			<cfreturn CacheStats("cfcachecontent").size />
@@ -112,8 +119,10 @@
 		</cftry>
 	</cffunction>
 	
-	<cffunction name="getContentCacheHits" access="public" output="false" returntype="numeric" roles="admin" 
+	<cffunction name="getContentCacheHits" access="public" output="false" returntype="numeric" 
 			hint="Returns the number of hits in the content cache">
+		<cfset checkLoginStatus() />
+
 		<cftry>
 			<cfreturn CacheStats("cfcachecontent").hits />
 			<cfcatch type="any">
@@ -122,8 +131,10 @@
 		</cftry>
 	</cffunction>
 	
-	<cffunction name="getContentCacheMisses" access="public" output="false" returntype="numeric" roles="admin" 
+	<cffunction name="getContentCacheMisses" access="public" output="false" returntype="numeric" 
 			hint="Returns the number of misses in the content cache">
+		<cfset checkLoginStatus() />
+		
 		<cftry>
 			<cfreturn CacheStats("cfcachecontent").misses />
 			<cfcatch type="any">
@@ -132,18 +143,22 @@
 		</cftry>
 	</cffunction>
 	
-	<cffunction name="flushContentCache" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="flushContentCache" access="public" output="false" returntype="void" 
 			hint="Flushes the content cache">
+		<cfset checkLoginStatus() />
+		
 		<cfset CacheDeleteAll("cfcachecontent") />
 	</cffunction>
 	
 	<!--- FILE CACHE METHODS --->
-	<cffunction name="setFileCacheSettings" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setFileCacheSettings" access="public" output="false" returntype="void" 
 			hint="Updates the file cache settings">
 		<cfargument name="maxfiles" type="numeric" required="true" hint="The maximum number of files to cache" />
 		<cfargument name="trustcache" type="boolean" required="true" hint="Enable/disable trusted cache" />
 		
 		<cfset var localConfig = getConfig() />
+
+		<cfset checkLoginStatus() />
 		
 		<cfif find(".", arguments.maxfiles) neq 0 or not isNumeric(arguments.maxfiles)>
 			<cfthrow message="The value of the file cache count is not numeric" 
@@ -156,8 +171,10 @@
 		<cfset setConfig(localConfig) />
 	</cffunction>
 	
-	<cffunction name="getNumFilesInCache" access="public" output="false" returntype="numeric" roles="admin" 
+	<cffunction name="getNumFilesInCache" access="public" output="false" returntype="numeric" 
 			hint="Returns the number of files in the file cache">
+		<cfset checkLoginStatus() />
+		
 		<cftry>
 			<cfreturn CacheStats("filecache").size />
 			<cfcatch type="any">
@@ -166,17 +183,21 @@
 		</cftry>
 	</cffunction>
 	
-	<cffunction name="flushFileCache" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="flushFileCache" access="public" output="false" returntype="void" 
 			hint="Flushes the file cache">
+		<cfset checkLoginStatus() />
+		
 		<cfset CacheDeleteAll("filecache") />
 	</cffunction>
 	
 	<!--- QUERY CACHE METHODS --->
-	<cffunction name="setQueryCacheSettings" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setQueryCacheSettings" access="public" output="false" returntype="void" 
 			hint="Updates the query cache settings">
 		<cfargument name="cachecount" type="numeric" required="true" hint="The maximum number of queries to cache" />
 		
 		<cfset var localConfig = getConfig() />
+
+		<cfset checkLoginStatus() />
 		
 		<cfif find(".", arguments.cachecount) neq 0 or not isNumeric(arguments.cachecount)>
 			<cfthrow message="The value of the query cache count is not numeric" 
@@ -188,8 +209,10 @@
 		<cfset setConfig(localConfig) />
 	</cffunction>
 	
-	<cffunction name="getNumQueriesInCache" access="public" output="false" returntype="numeric" roles="admin" 
+	<cffunction name="getNumQueriesInCache" access="public" output="false" returntype="numeric" 
 			hint="Returns the number of queries in the cache">
+		<cfset checkLoginStatus() />
+		
 		<cftry>
 			<cfreturn CacheStats("query").size />
 			<cfcatch type="any">
@@ -198,8 +221,10 @@
 		</cftry>
 	</cffunction>
 	
-	<cffunction name="getQueryCacheHits" access="public" output="false" returntype="numeric" roles="admin" 
+	<cffunction name="getQueryCacheHits" access="public" output="false" returntype="numeric" 
 			hint="Returns the number of hits against the query cache">
+		<cfset checkLoginStatus() />
+		
 		<cftry>
 			<cfreturn CacheStats("query").hits />
 			<cfcatch type="any">
@@ -208,8 +233,10 @@
 		</cftry>
 	</cffunction>
 	
-	<cffunction name="getQueryCacheMisses" access="public" output="false" returntype="numeric" roles="admin" 
+	<cffunction name="getQueryCacheMisses" access="public" output="false" returntype="numeric" 
 			hint="Returns the number of misses against the query cache">
+		<cfset checkLoginStatus() />
+
 		<cftry>
 			<cfreturn CacheStats("query").misses />
 			<cfcatch type="any">
@@ -218,8 +245,10 @@
 		</cftry>
 	</cffunction>
 	
-	<cffunction name="flushQueryCache" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="flushQueryCache" access="public" output="false" returntype="void" 
 			hint="Flushes the query cache">
+		<cfset checkLoginStatus() />
+
 		<cfset CacheDeleteAll("query") />
 	</cffunction>
 	

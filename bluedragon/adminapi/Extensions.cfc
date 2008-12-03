@@ -27,13 +27,15 @@
 		hint="Manages customtags and CFXs - OpenBD Admin API">
 	
 	<!--- CUSTOM TAG PATHS --->
-	<cffunction name="getCustomTagPaths" access="public" output="false" returntype="array" roles="admin" 
+	<cffunction name="getCustomTagPaths" access="public" output="false" returntype="array" 
 			hint="Returns an array of paths to customtags">
 		<cfset var localConfig = getConfig() />
 		<cfset var customTagPaths = arrayNew(1) />
 		<cfset var customTagPath = "" />
 		<cfset var i = 0 />
 		<cfset var updateConfig = false />
+
+		<cfset checkLoginStatus() />
 
 		<!--- Make sure there are Custom Tag Paths defined --->
 		<cfif NOT StructKeyExists(localConfig, "cfmlcustomtags") OR NOT StructKeyExists(localConfig.cfmlcustomtags, "mapping")>
@@ -66,13 +68,15 @@
 		<cfreturn customTagPaths />
 	</cffunction>
 
-	<cffunction name="setCustomTagPath" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setCustomTagPath" access="public" output="false" returntype="void" 
 			hint="Defines a new path to customtags">
 		<cfargument name="path" type="string" required="true" hint="Custom tag path" />
 		<cfargument name="customTagPathAction" type="string" required="true" hint="The action to perform (create or edit)" />
 		
 		<cfset var localConfig = getConfig() />
 		<cfset var tempPath = "" />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- Make sure there are Custom Tag Paths defined --->
 		<cfif (NOT StructKeyExists(localConfig, "cfmlcustomtags")) OR (NOT StructKeyExists(localConfig.cfmlcustomtags, "mapping"))>
@@ -108,11 +112,14 @@
 		<cfset setConfig(localConfig) />
 	</cffunction>
 
-	<cffunction name="deleteCustomTagPath" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="deleteCustomTagPath" access="public" output="false" returntype="void" 
 			hint="Deletes a custom tag path">
 		<cfargument name="path" type="string" required="true" hint="Custom tag path to delete" />
+		
 		<cfset var localConfig = getConfig() />
 		<cfset var listIndex = "" />
+
+		<cfset checkLoginStatus() />
 
 		<!--- Make sure there are Custom Tag Paths defined --->
 		<cfif (NOT StructKeyExists(localConfig, "cfmlcustomtags")) OR (NOT StructKeyExists(localConfig.cfmlcustomtags, "mapping"))>
@@ -131,11 +138,13 @@
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="verifyCustomTagPath" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="verifyCustomTagPath" access="public" output="false" returntype="void" 
 			hint="Verifies a custom tag path by running directoryexists() on the path">
 		<cfargument name="path" type="string" required="true" hint="Custom tag path to verify" />
 		
 		<cfset var localConfig = getConfig() />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- Make sure there are Custom Tag Paths defined --->
 		<cfif (NOT StructKeyExists(localConfig, "cfmlcustomtags")) OR (NOT StructKeyExists(localConfig.cfmlcustomtags, "mapping"))>
@@ -158,14 +167,17 @@
 	</cffunction>
 	
 	<!--- CFX TAGS --->
-	<cffunction name="getCPPCFX" access="public" output="false" returntype="array" roles="admin" 
+	<cffunction name="getCPPCFX" access="public" output="false" returntype="array" 
 			hint="List the names of all registered C++ CFX tags or a specified C++ CFX tag">
 		<cfargument name="cfxname" required="false" type="string" hint="Specifies a CFX tag name" />
+		
 		<cfset var localConfig = getConfig() />
 		<cfset var cfxIndex = "" />
 		<cfset var returnArray = ArrayNew(1) />
 		<cfset var sortKeys = arrayNew(1) />
 		<cfset var sortKey = structNew() />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- Make sure there are C++ CFXs --->
 		<cfif (NOT StructKeyExists(localConfig, "nativecustomtags")) OR (NOT StructKeyExists(localConfig.nativecustomtags, "mapping"))>
@@ -191,7 +203,7 @@
 		</cfif>
 	</cffunction>
 
-	<cffunction name="setCPPCFX" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setCPPCFX" access="public" output="false" returntype="void" 
 			hint="Registers a C++ CFX">
 		<cfargument name="displayname" type="string" required="true" hint="Name of CFX tag to show in the Administrator" />
 		<cfargument name="module" type="string" required="true" hint="Library module that implments the interface" />
@@ -206,6 +218,8 @@
 		<cfset var cppCFX = StructNew() />
 		<cfset var tempFile = "" />
 		<cfset var temp = "" />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- Make sure configuration structure exists, otherwise build it --->
 		<cfif (NOT StructKeyExists(localConfig, "nativecustomtags")) OR (NOT StructKeyExists(localConfig.nativecustomtags, "mapping"))>
@@ -247,11 +261,14 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="deleteCPPCFX" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="deleteCPPCFX" access="public" output="false" returntype="void" 
 			hint="Delete a C++ CFX tag">
 		<cfargument name="cfxname" required="true" type="string" hint="Specifies a CFX tag name" />
+		
 		<cfset var localConfig = getConfig() />
 		<cfset var cfxIndex = "" />
+
+		<cfset checkLoginStatus() />
 
 		<!--- Make sure there are C++ CFXs --->
 		<cfif (NOT StructKeyExists(localConfig, "nativecustomtags")) OR (NOT StructKeyExists(localConfig.nativecustomtags, "mapping"))>
@@ -268,14 +285,17 @@
 		<cfthrow message="#arguments.cfxname# not registered as a C++ CFX" type="bluedragon.adminapi.extensions">
 	</cffunction>
 
-	<cffunction name="getJavaCFX" access="public" output="false" returntype="array" roles="admin" 
+	<cffunction name="getJavaCFX" access="public" output="false" returntype="array" 
 			hint="List the names of all registered Java CFX tags or a specified Java CFX tag">
 		<cfargument name="cfxname" required="false" type="string" hint="Specifies a CFX tag name" />
+		
 		<cfset var localConfig = getConfig() />
 		<cfset var cfxIndex = "" />
 		<cfset var returnArray = ArrayNew(1) />
 		<cfset var sortKeys = arrayNew(1) />
 		<cfset var sortKey = structNew() />
+
+		<cfset checkLoginStatus() />
 
 		<!--- Make sure there are Java CFXs --->
 		<cfif (NOT StructKeyExists(localConfig, "javacustomtags")) OR (NOT StructKeyExists(localConfig.javacustomtags, "mapping"))>
@@ -301,7 +321,7 @@
 		</cfif>
 	</cffunction>
 
-	<cffunction name="setJavaCFX" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setJavaCFX" access="public" output="false" returntype="void" 
 			hint="Registers a Java CFX">
 		<cfargument name="displayname" type="string" required="true" hint="Name of CFX tag to show in the Administrator" />
 		<cfargument name="class" type="string" required="true" hint="Class name (minus .class) that implments the interface" />
@@ -313,6 +333,8 @@
 		<cfset var localConfig = getConfig() />
 		<cfset var javaCFX = StructNew() />
 		<cfset var javaObj = 0 />
+
+		<cfset checkLoginStatus() />
 
 		<!--- Make sure configuration structure exists, otherwise build it --->
 		<cfif (NOT StructKeyExists(localConfig, "javacustomtags")) OR (NOT StructKeyExists(localConfig.javacustomtags, "mapping"))>
@@ -350,11 +372,14 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="deleteJavaCFX" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="deleteJavaCFX" access="public" output="false" returntype="void" 
 			hint="Delete a Java CFX tag">
 		<cfargument name="cfxname" required="true" type="string" hint="Specifies a CFX tag name" />
+		
 		<cfset var localConfig = getConfig() />
 		<cfset var cfxIndex = "" />
+
+		<cfset checkLoginStatus() />
 
 		<!--- Make sure there are Java CFXs --->
 		<cfif (NOT StructKeyExists(localConfig, "javacustomtags")) OR (NOT StructKeyExists(localConfig.javacustomtags, "mapping"))>
@@ -371,7 +396,7 @@
 		<cfthrow message="#arguments.cfxname# not registered as a Java CFX" type="bluedragon.adminapi.extensions">
 	</cffunction>
 	
-	<cffunction name="verifyCFXTag" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="verifyCFXTag" access="public" output="false" returntype="void" 
 			hint="Verifies a CFX tag by instantiating the Java class or doing a file read on the specified DLL">
 		<cfargument name="cfxname" required="true" type="string" hint="The CFX tag name" />
 		<cfargument name="type" required="true" type="string" hint="The type of CFX tag to verify (java or cpp)" />
@@ -379,6 +404,8 @@
 		<cfset var cfxTag = 0 />
 		<cfset var tempFile = "" />
 		<cfset var temp = 0 />
+
+		<cfset checkLoginStatus() />
 		
 		<cfif arguments.type is "java">
 			<cftry>

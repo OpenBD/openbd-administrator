@@ -52,17 +52,16 @@
 				<cfset passwordValid = Application.administrator.login(args.password) />
 				
 				<cfif not passwordValid>
-					<cflogout />
+					<cfset structDelete(session, "auth", false) />
 					
 					<cfset errorFields[errorFieldsIndex][1] = "password" />
 					<cfset errorFields[errorFieldsIndex][2] = "Incorrect password. Please try again." />
-					
 					<cfset session.errorFields = errorFields />
+					
 					<cflocation url="login.cfm" addtoken="false" />
 				<cfelse>
-					<cflogin>
-						<cfloginuser name="Administrator" password="#args.password#" roles="admin" />
-					</cflogin>
+					<cfset session.auth.loggedIn = true />
+					<cfset session.auth.password = args.password />
 					
 					<cflocation url="index.cfm" addtoken="false" />
 				</cfif>
@@ -71,7 +70,7 @@
 		
 		<!--- LOGOUT --->
 		<cfcase value="logout">
-			<cflogout />
+			<cfset structDelete(session, "auth", false) />
 			
 			<cfset session.message = "You have been logged out" />
 			

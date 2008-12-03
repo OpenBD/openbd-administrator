@@ -43,10 +43,10 @@
 		<cfelse>
 			<cfset dsinfo.filepath = right(dsinfo.filepath, len(dsinfo.filepath) - 13) />
 		</cfif>
-		
+
 		<cfset dsinfo.filepath = left(dsinfo.filepath, len(dsinfo.filepath) - (len(dsinfo.databasename) + 1)) />
-		
-		<cfif dsinfo.filepath is expandPath("/WEB-INF/bluedragon/h2databases")>
+
+		<cfif dsinfo.filepath is Application.datasource.getDefaultH2DatabasePath()>
 			<cfset dsinfo.filepath = "" />
 		</cfif>
 		
@@ -59,7 +59,7 @@
 				<cfset modeEnd = len(dsinfo.hoststring) />
 			</cfif>
 			
-			<cfset dsinfo.mode = mid(dsinfo.hoststring, modeStart, modeEnd - modeStart) />
+			<cfset dsinfo.mode = mid(dsinfo.hoststring, modeStart, modeEnd - modeStart + 1) />
 			<cfset dsinfo.mode = right(dsinfo.mode, len(dsinfo.mode) - 5) />
 		</cfif>
 		
@@ -67,13 +67,17 @@
 		
 		<cfif ignoreCaseStart neq 0>
 			<cfset ignoreCaseEnd = find(";", dsinfo.hoststring, ignoreCaseStart) />
-			
+
 			<cfif ignoreCaseEnd eq 0>
 				<cfset ignoreCaseEnd = len(dsinfo.hoststring) />
 			</cfif>
 			
-			<cfset dsinfo.ignorecase = mid(dsinfo.hoststring, ignoreCaseStart, ignoreCaseEnd - ignoreCaseStart) />
+			<cfset dsinfo.ignorecase = mid(dsinfo.hoststring, ignoreCaseStart, ignoreCaseEnd - ignoreCaseStart + 1) />
 			<cfset dsinfo.ignorecase = right(dsinfo.ignorecase, len(dsinfo.ignorecase) - 11) />
+			
+			<cfif right(dsinfo.ignorecase, 1) is ";">
+				<cfset dsinfo.ignorecase = left(dsinfo.ignorecase, len(dsinfo.ignorecase) - 1) />
+			</cfif>
 		</cfif>
 	</cfif>
 </cfsilent>

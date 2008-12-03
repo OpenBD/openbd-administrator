@@ -27,11 +27,13 @@
 		hint="Manages debugging and logging settings - OpenBD Admin API">
 	
 	<!--- DEBUGGING --->
-	<cffunction name="getDebugSettings" access="public" output="false" returntype="struct" roles="admin" 
+	<cffunction name="getDebugSettings" access="public" output="false" returntype="struct" 
 			hint="Returns a struct containing the current debug settings">
 		<cfset var localConfig = getConfig() />
 		<cfset var doSetConfig = false />
 		<cfset var debugSettings = structNew() />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- Debug settings will include the debugoutput node as well as 'debug' and 'runtimelogging' 
 				from the system node. None of these nodes necessarily exists by default. --->
@@ -197,7 +199,7 @@
 		<cfreturn debugSettings />
 	</cffunction>
 	
-	<cffunction name="saveDebugSettings" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="saveDebugSettings" access="public" output="false" returntype="void" 
 			hint="Saves the basic debug settings">
 		<cfargument name="debug" type="boolean" required="true" hint="Enables/disables 'extended error reporting' is enabled" />
 		<cfargument name="runtimelogging" type="boolean" required="true" hint="Enables/disables logging of runtime errors to a file" />
@@ -205,6 +207,8 @@
 		<cfargument name="assert" type="boolean" required="true" hint="Enables/disables cfassert and the assert function" />
 		
 		<cfset var localConfig = getConfig() />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- the debugoutput node may not exist --->
 		<cfif not structKeyExists(localConfig, "debugoutput")>
@@ -221,7 +225,7 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="setDebugOutputSettings" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setDebugOutputSettings" access="public" output="false" returntype="void" 
 			hint="Saves the debug output settings">
 		<cfargument name="executiontimes" type="boolean" required="true" hint="Enables/disables output of execution times" />
 		<cfargument name="highlight" type="numeric" required="true" hint="Number of milliseconds above which to highlight the execution time in the debug output" />
@@ -232,6 +236,8 @@
 		<cfargument name="variables" type="boolean" required="true" hint="Enables/disables output of variables. Specific scopes are controlled in the variables debug form." />
 		
 		<cfset var localConfig = getConfig() />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- the debugoutput nodes may not exist --->
 		<cfif not structKeyExists(localConfig, "debugoutput")>
@@ -275,7 +281,7 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="setDebugVariablesSettings" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setDebugVariablesSettings" access="public" output="false" returntype="void" 
 			hint="Saves the debug variables settings">
 		<cfargument name="local" type="boolean" required="true" hint="" />
 		<cfargument name="url" type="boolean" required="true" hint="" />
@@ -291,6 +297,8 @@
 		<cfargument name="server" type="boolean" required="true" hint="" />
 		
 		<cfset var localConfig = getConfig() />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- the debugoutput nodes may not exist --->
 		<cfif not structKeyExists(localConfig, "debugoutput")>
@@ -319,11 +327,13 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="getDebugIPAddresses" access="public" output="false" returntype="array" roles="admin" 
+	<cffunction name="getDebugIPAddresses" access="public" output="false" returntype="array" 
 			hint="Returns an array containing the current debug IP addresses">
 		<cfset var localConfig = getConfig() />
 		<cfset var doSetConfig = false />
 		<cfset var ipAddresses = arrayNew(1) />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- debugoutput and ip address nodes may not exist --->
 		<cfif not structKeyExists(localConfig, "debugoutput")>
@@ -347,12 +357,14 @@
 		<cfreturn ipAddresses />
 	</cffunction>
 	
-	<cffunction name="addDebugIPAddresses" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="addDebugIPAddresses" access="public" output="false" returntype="void" 
 			hint="Adds IP address(es) to the debug IP address list. Can be a single IP address or a comma-delimited list.">
 		<cfargument name="ipAddresses" type="string" required="true" hint="Single or comma-delimited list of IP addresses to add" />
 		
 		<cfset var localConfig = getConfig() />
 		<cfset var theIP = "" />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- debugoutput and ip address nodes may not exist --->
 		<cfif not structKeyExists(localConfig, "debugoutput")>
@@ -377,18 +389,22 @@
 		<cfset setConfig(localConfig) />
 	</cffunction>
 	
-	<cffunction name="addLocalIPAddress" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="addLocalIPAddress" access="public" output="false" returntype="void" 
 			hint="Adds the local IP address to the debug IP address list">
+		<cfset checkLoginStatus() />
+		
 		<cfset addDebugIPAddresses(CGI.REMOTE_ADDR) />
 	</cffunction>
 	
-	<cffunction name="removeDebugIPAddresses" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="removeDebugIPAddresses" access="public" output="false" returntype="void" 
 			hint="Removes IP address(es) from the debug IP address list. Can be a single IP address or a comma-delimited list.">
 		<cfargument name="ipAddresses" type="string" required="true" hint="Single or comma-delimited list of IP addresses to remove" />
 		
 		<cfset var localConfig = getConfig() />
 		<cfset var theIP = "" />
 		<cfset var pos = 0 />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- debugoutput and ip address nodes may not exist --->
 		<cfif not structKeyExists(localConfig, "debugoutput")>
@@ -414,12 +430,14 @@
 	</cffunction>
 	
 	<!--- LOGGING --->
-	<cffunction name="getLogFiles" access="public" output="false" returntype="array" roles="admin" 
+	<cffunction name="getLogFiles" access="public" output="false" returntype="array" 
 			hint="Returns an array containing the paths to available log files">
 		<cfset var logFilePath = "" />
 		<cfset var logFiles = arrayNew(1) />
 		<cfset var logFile = structNew() />
 		<cfset var temp = "" />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- set the log file path --->
 		<cfif variables.isMultiContextJetty>
@@ -526,13 +544,15 @@
 		<cfreturn logFiles />
 	</cffunction>
 	
-	<cffunction name="archiveLogFile" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="archiveLogFile" access="public" output="false" returntype="void" 
 			hint="Renames the active log file to ${LOG_FILE}.log.1, deletes ${LOG_FILE}.log.10, and shifts all other log files back a number">
 		<cfargument name="logFile" type="string" required="true" hint="The log file to archive" />
 		
 		<cfset var logFilePath = getLogFilePath(arguments.logFile) />
 		<cfset var logFiles = 0 />
 		<cfset var i = 0 />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- get a listing of the current log files of this type --->
 		<cfdirectory action="list" directory="#logFilePath#" name="logFiles" />
@@ -560,22 +580,26 @@
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="deleteLogFile" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="deleteLogFile" access="public" output="false" returntype="void" 
 			hint="Deletes a log file">
 		<cfargument name="logFile" type="string" required="true" hint="The log file to delete" />
 		
 		<cfset var logFilePath = getLogFilePath(arguments.logFile) />
+
+		<cfset checkLoginStatus() />
 		
 		<cfif fileExists("#logFilePath##variables.separator.file##arguments.logFile#")>
 			<cffile action="delete" file="#logFilePath##variables.separator.file##arguments.logFile#" />
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="getLogFilePath" access="public" output="false" returntype="string" roles="admin" 
+	<cffunction name="getLogFilePath" access="public" output="false" returntype="string" 
 			hint="Returns the directory path for a given log file">
 		<cfargument name="logFile" type="string" required="true" hint="The log file name" />
 		
 		<cfset var logFilePath = "" />
+
+		<cfset checkLoginStatus() />
 
 		<!--- set the log file path --->
 		<cfif variables.isMultiContextJetty>
@@ -610,7 +634,7 @@
 		<cfreturn logFilePath />
 	</cffunction>
 	
-	<cffunction name="getLogFileLines" access="public" output="false" returntype="struct" roles="admin" 
+	<cffunction name="getLogFileLines" access="public" output="false" returntype="struct" 
 			hint="Returns a struct containing the elements totalLineCount, which is the total number of lines in the log file, and logFileLines, which is an array of log file lines retrieved using the start line and number of lines to display">
 		<cfargument name="logFile" type="string" required="true" hint="The name of the log file" />
 		<cfargument name="startLine" type="numeric" required="false" default="1" hint="The starting line" />
@@ -624,6 +648,8 @@
 		<cfset var line = "" />
 		<cfset var hasMoreLines = true />
 		<cfset var totalLineCount = 0 />
+
+		<cfset checkLoginStatus() />
 		
 		<cfloop condition="hasMoreLines">
 			<cfset line = lineNumberReader.readLine() />
@@ -650,9 +676,11 @@
 		<cfreturn logFileData />
 	</cffunction>
 	
-	<cffunction name="getRuntimeErrorLogPath" access="public" output="false" returntype="string" roles="admin" 
+	<cffunction name="getRuntimeErrorLogPath" access="public" output="false" returntype="string" 
 			hint="Returns the full path for the runtime error logs based on configuration and environment">
 		<cfset var rteLogPath = "" />
+
+		<cfset checkLoginStatus() />
 		
 		<cfif variables.isMultiContextJetty>
 			<cfset rteLogPath = "#getJVMProperty('jetty.home')##variables.separator.file#logs#variables.separator.file#openbd" />
@@ -665,10 +693,12 @@
 		<cfreturn rteLogPath />
 	</cffunction>
 	
-	<cffunction name="getRuntimeErrorLogs" access="public" output="false" returntype="query" roles="admin" 
+	<cffunction name="getRuntimeErrorLogs" access="public" output="false" returntype="query" 
 			hint="Returns a query object containing all the files in the runtime error log directory (/WEB-INF/bluedragon/work/temp/rtelogs)">
 		<cfset var rteLogs = 0 />
 		<cfset var rteLogFilePath = getRuntimeErrorLogPath() & variables.separator.file />
+
+		<cfset checkLoginStatus() />
 
 		<cfif directoryExists(rteLogFilePath)>
 			<cfdirectory action="list" directory="#rteLogFilePath#" name="rteLogs" />
@@ -685,11 +715,13 @@
 		<cfreturn rteLogs />
 	</cffunction>
 	
-	<cffunction name="deleteRuntimeErrorLog" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="deleteRuntimeErrorLog" access="public" output="false" returntype="void" 
 			hint="Deletes a runtime error log file">
 		<cfargument name="rteLog" type="string" required="true" hint="The runtime error log file to delete" />
 		
 		<cfset var logFilePath = getRuntimeErrorLogPath() & variables.separator.file />
+
+		<cfset checkLoginStatus() />
 		
 		<cfif fileExists("#logFilePath##arguments.rteLog#")>
 			<cffile action="delete" file="#logFilePath##arguments.rteLog#" />
@@ -698,10 +730,12 @@
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="deleteAllRuntimeErrorLogs" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="deleteAllRuntimeErrorLogs" access="public" output="false" returntype="void" 
 			hint="Deletes all runtime error logs">
 		<cfset var errorLogs = "" />
 		<cfset var logFilePath = getRuntimeErrorLogPath() & variables.separator.file  />
+
+		<cfset checkLoginStatus() />
 
 		<cfdirectory action="list" directory="#logFilePath#" filter="*.html" name="errorLogs" />
 		

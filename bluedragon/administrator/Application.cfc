@@ -45,7 +45,7 @@
 			Application.webServices = createObject("component", "bluedragon.adminapi.WebServices");
 			
 			Application.adminConsoleVersion = "1.0";
-			Application.adminConsoleBuildDate = LSDateFormat(createDate(2008,11,14)) & " " & LSTimeFormat(createTime(17,41,00));
+			Application.adminConsoleBuildDate = LSDateFormat(createDate(2008,12,2)) & " " & LSTimeFormat(createTime(19,03,00));
 			
 			// Need to make sure the basic security nodes exist in bluedragon.xml. Other potential missing nodes
 			// are handled as the related pages within the administrator are hit.
@@ -134,8 +134,8 @@
 				</cfif>
 			</cfif>
 		</cfif>
-		
-		<cfif (getAuthUser() is "" or not isUserInRole("admin")) 
+
+		<cfif not Application.administrator.isUserLoggedIn() 
 				and listLast(CGI.SCRIPT_NAME, "/") is not "login.cfm" 
 				and listLast(CGI.SCRIPT_NAME, "/") is not "_loginController.cfm">
 			<cfset contextPath = getPageContext().getRequest().getContextPath() />

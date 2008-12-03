@@ -26,10 +26,12 @@
 		extends="Base" 
 		hint="Manages variable settings - OpenBD Admin API">
 
-	<cffunction name="getVariableSettings" access="public" output="false" returntype="struct" roles="admin" 
+	<cffunction name="getVariableSettings" access="public" output="false" returntype="struct" 
 			hint="Returns an array containing the current variable settings">
 		<cfset var localConfig = getConfig() />
 		<cfset var doSetConfig = false />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- some of the cfapplication nodes may not exist --->
 		<cfif not structKeyExists(localConfig.cfapplication, "clientpurgeenabled")>
@@ -59,7 +61,7 @@
 		<cfreturn structCopy(localConfig.cfapplication) />
 	</cffunction>
 	
-	<cffunction name="setVariableSettings" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setVariableSettings" access="public" output="false" returntype="void" 
 			hint="Saves the variable settings">
 		<cfargument name="j2eesession" type="boolean" required="true" hint="Enables/disables J2EE session variables" />
 		<cfargument name="appTimeoutDays" type="numeric" required="true" hint="Application timeout days" />
@@ -78,6 +80,8 @@
 		<cfset var localConfig = getConfig() />
 		<cfset var applicationtimeout = "##CreateTimeSpan(#arguments.appTimeoutDays#,#arguments.appTimeoutHours#,#arguments.appTimeoutMinutes#,#arguments.appTimeoutSeconds#)##" />
 		<cfset var sessiontimeout = "##CreateTimeSpan(#arguments.sessionTimeoutDays#,#arguments.sessionTimeoutHours#,#arguments.sessionTimeoutMinutes#,#arguments.sessionTimeoutSeconds#)##" />
+
+		<cfset checkLoginStatus() />
 		
 		<cfscript>
 			localConfig.cfapplication.j2eesession = ToString(arguments.j2eesession);

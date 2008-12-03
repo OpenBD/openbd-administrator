@@ -27,7 +27,7 @@
 		hint="Manages datasources - OpenBD Admin API">
 	
 	<!--- PUBLIC METHODS --->
-	<cffunction name="setDatasource" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setDatasource" access="public" output="false" returntype="void" 
 			hint="Creates or updates a datasource">
 		<cfargument name="name" type="string" required="true" hint="OpenBD Datasource Name" />
 		<cfargument name="databasename" type="string" required="false" default="" hint="Database name on the database server" />
@@ -62,6 +62,8 @@
 		<cfset var datasourceSettings = structNew() />
 		<cfset var driver = 0 />
 		<cfset var datasourceVerified = false />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- make sure configuration structure exists, otherwise build it --->
 		<cfif (NOT StructKeyExists(localConfig, "cfquery")) OR (NOT StructKeyExists(localConfig.cfquery, "datasource"))>
@@ -150,7 +152,7 @@
 		</cftry>
 	</cffunction>
 
-	<cffunction name="getDatasources" access="public" output="false" returntype="array" roles="admin" 
+	<cffunction name="getDatasources" access="public" output="false" returntype="array" 
 			hint="Returns an array containing all the data sources or a specified data source">
 		<cfargument name="dsn" type="string" required="false" default="" hint="The name of the datasource to return" />
 		
@@ -159,6 +161,8 @@
 		<cfset var dsnIndex = "" />
 		<cfset var sortKeys = arrayNew(1) />
 		<cfset var sortKey = structNew() />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- Make sure there are datasources --->
 		<cfif NOT StructKeyExists(localConfig, "cfquery") OR NOT StructKeyExists(localConfig.cfquery, "datasource")>
@@ -185,13 +189,15 @@
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="datasourceExists" access="public" output="false" returntype="boolean" roles="admin" 
+	<cffunction name="datasourceExists" access="public" output="false" returntype="boolean" 
 				hint="Returns a boolean indicating whether or not a datasource with the specified name exists">
 		<cfargument name="dsn" type="string" required="true" hint="The datasource name to check" />
 		
 		<cfset var dsnExists = true />
 		<cfset var localConfig = getConfig() />
 		<cfset var i = 0 />
+
+		<cfset checkLoginStatus() />
 		
 		<cfif not StructKeyExists(localConfig, "cfquery") or not StructKeyExists(localConfig.cfquery, "datasource")>
 			<!--- no datasources at all, so this one doesn't exist ---->
@@ -210,12 +216,14 @@
 		<cfreturn dsnExists />
 	</cffunction>
 	
-	<cffunction name="deleteDatasource" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="deleteDatasource" access="public" output="false" returntype="void" 
 			hint="Delete the specified data source">
 		<cfargument name="dsn" required="true" type="string" hint="The name of the data source to be deleted" />
 		
 		<cfset var localConfig = getConfig() />
 		<cfset var dsnIndex = 0 />
+
+		<cfset checkLoginStatus() />
 
 		<!--- Make sure there are datasources --->
 		<cfif (NOT StructKeyExists(localConfig, "cfquery")) OR (NOT StructKeyExists(localConfig.cfquery, "datasource"))>
@@ -233,7 +241,7 @@
 		<cfthrow message="#arguments.dsn# not registered as a datasource" type="bluedragon.adminapi.datasource" />
 	</cffunction>
 	
-	<cffunction name="getRegisteredDrivers" access="public" output="false" returntype="array" roles="admin" 
+	<cffunction name="getRegisteredDrivers" access="public" output="false" returntype="array" 
 			hint="Returns an array containing all the database drivers that are 'known' to OpenBD. If the node doesn't exist in the XML it is created and populated with the standard driver information. Note this does not guarantee the user will have the drivers installed in their classpath but an error will be thrown if they try to add a datasource that uses a driver that is not in the classpath.">
 		<cfargument name="resetDrivers" type="boolean" required="false" default="false" />
 		
@@ -241,6 +249,8 @@
 		<cfset var dbDriverInfo = structNew() />
 		<cfset var sortKeys = arrayNew(1) />
 		<cfset var sortKey = structNew() />
+
+		<cfset checkLoginStatus() />
 		
 		<cfif not structKeyExists(localConfig, "cfquery")>
 			<cfset localConfig.cfquery = structNew() />
@@ -354,7 +364,7 @@
 		<cfreturn variables.udfs.sortArrayOfObjects(getConfig().cfquery.dbdrivers.driver, sortKeys, false, false) />
 	</cffunction>
 	
-	<cffunction name="getDriverInfo" access="public" output="false" returntype="struct" roles="admin" 
+	<cffunction name="getDriverInfo" access="public" output="false" returntype="struct" 
 			hint="Returns a struct containing the information for a particular driver. Currently this is pulled by the driver config page but this can be expanded to get the driver info by other attributes.">
 		<cfargument name="datasourceconfigpage" type="string" required="false" default="" />
 		<cfargument name="drivername" type="string" required="false" default="" />
@@ -362,6 +372,8 @@
 		<cfset var dbdrivers = getConfig().cfquery.dbdrivers.driver />
 		<cfset var driverInfo = structNew() />
 		<cfset var i = 0 />
+
+		<cfset checkLoginStatus() />
 		
 		<cfif arguments.datasourceconfigpage is not "">
 			<cfloop index="i" from="1" to="#arrayLen(dbdrivers)#" step="1">
@@ -382,7 +394,7 @@
 		<cfreturn driverInfo />
 	</cffunction>
 	
-	<cffunction name="verifyDatasource" access="public" output="false" returntype="boolean" roles="admin" 
+	<cffunction name="verifyDatasource" access="public" output="false" returntype="boolean" 
 			hint="Verifies a datasource">
 		<cfargument name="dsn" type="string" required="true" hint="Datasource name to verify" />
 		
@@ -392,6 +404,8 @@
 		<cfset var dbcon = 0 />
 		<cfset var stmt = 0 />
 		<cfset var rs = 0 />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- check that we can hit the driver --->
 		<cftry>
@@ -500,21 +514,41 @@
 		<cfreturn verified />
 	</cffunction>
 	
-	<cffunction name="setAutoConfigODBC" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="getDefaultH2DatabasePath" access="public" output="false" returntype="string" 
+			hint="Returns the default H2 database path">
+		<cfset var h2DatabasePath = "" />
+		
+		<cfset checkLoginStatus() />
+		
+		<cfif variables.isMultiContextJetty>
+			<cfset h2DatabasePath = 
+						"#getJVMProperty('jetty.home')##variables.separator.file#etc#variables.separator.file#openbd#variables.separator.file#h2databases" />
+		<cfelse>
+			<cfset h2DatabasePath = expandPath("/WEB-INF/bluedragon/h2databases") />
+		</cfif>
+		
+		<cfreturn h2DatabasePath />
+	</cffunction>
+	
+	<cffunction name="setAutoConfigODBC" access="public" output="false" returntype="void" 
 			hint="Sets the autoconfig-odbc setting">
 		<cfargument name="autoconfigodbc" type="boolean" required="true" />
 		
 		<cfset var localConfig = getConfig() />
+
+		<cfset checkLoginStatus() />
 		
 		<cfset localConfig.cfquery["autoconfig-odbc"] = ToString(arguments.autoconfigodbc) />
 		
 		<cfset setConfig(structCopy(localConfig)) />
 	</cffunction>
 	
-	<cffunction name="getAutoConfigODBC" access="public" output="false" returntype="boolean" roles="admin" 
+	<cffunction name="getAutoConfigODBC" access="public" output="false" returntype="boolean" 
 			hint="Returns a boolean indicating the setting of autoconfig-odbc in the XML config file">
 		<cfset var localConfig = getConfig() />
 		<cfset var autoConfigODBC = false />
+
+		<cfset checkLoginStatus() />
 		
 		<cfif not structKeyExists(localConfig.cfquery, "autoconfig-odbc")>
 			<cfset localConfig.cfquery["autoconfig-odbc"] = "false" />
@@ -526,13 +560,15 @@
 		<cfreturn autoConfigODBC />
 	</cffunction>
 	
-	<cffunction name="refreshODBCDatasources" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="refreshODBCDatasources" access="public" output="false" returntype="void" 
 			hint="Refreshes ODBC datasources on Windows">
+		<cfset checkLoginStatus() />
+		
 		<cfset createObject("java", "com.naryx.tagfusion.cfm.engine.cfEngine").autoConfigOdbcDataSources(true, getAutoConfigODBC()) />
 	</cffunction>
 	
 	<!--- PRIVATE METHODS --->
-	<cffunction name="formatJDBCURL" access="private" output="false" returntype="string" roles="admin" 
+	<cffunction name="formatJDBCURL" access="private" output="false" returntype="string" 
 			hint="Formats a JDBC URL for a specific database driver type">
 		<cfargument name="drivername" type="string" required="true" hint="The name of the database driver class" />
 		<cfargument name="server" type="string" required="true" hint="The database server name or IP address" />
@@ -548,6 +584,8 @@
 				hint="Boolean indicating whether or not H2 should ignore case" />
 		
 		<cfset var jdbcURL = "" />
+
+		<cfset checkLoginStatus() />
 		
 		<cfswitch expression="#arguments.drivername#">
 			<!--- h2 embedded --->
@@ -631,12 +669,14 @@
 		<cfreturn jdbcURL />
 	</cffunction>
 	
-	<cffunction name="registerDriver" access="private" output="false" returntype="boolean" roles="admin" 
+	<cffunction name="registerDriver" access="private" output="false" returntype="boolean" 
 			hint="Registers a driver class to make sure it exists and is available in the classpath">
 		<cfargument name="class" type="string" required="true" hint="JDBC class name" />
 	
 		<cfset var javaClass = "" />
 		<cfset var registerJDBCDriver = "" />
+
+		<cfset checkLoginStatus() />
 		
 		<cftry>
 			<cfset registerJDBCDriver = createObject("java", "java.lang.Class").forName(arguments.class) />

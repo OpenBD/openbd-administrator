@@ -27,7 +27,7 @@
 		hint="Manages web services - OpenBD Admin API">
 	
 	<!--- PUBLIC METHODS --->
-	<cffunction name="setWebService" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setWebService" access="public" output="false" returntype="void" 
 			hint="Creates or updates a web service">
 		<cfargument name="name" type="string" required="true" hint="OpenBD web service name" />
 		<cfargument name="wsdl" type="string" required="true" hint="WSDL URL" />
@@ -40,6 +40,8 @@
 		<cfset var webService = structNew() />
 		<cfset var webServiceVerified = false />
 		<cfset var testWS = "" />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- make sure configuration structure exists, otherwise build it --->
 		<cfif NOT StructKeyExists(localConfig, "webservices") or NOT StructKeyExists(localConfig.webservices, "webservice")>
@@ -88,7 +90,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="getWebServices" access="public" output="false" returntype="array" roles="admin" 
+	<cffunction name="getWebServices" access="public" output="false" returntype="array" 
 			hint="Returns an array containing all the web services or a specified web service">
 		<cfargument name="webService" type="string" required="false" default="" hint="The name of the web service to return" />
 		
@@ -97,6 +99,8 @@
 		<cfset var webServiceIndex = "" />
 		<cfset var sortKeys = arrayNew(1) />
 		<cfset var sortKey = structNew() />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- Make sure there are web services --->
 		<cfif NOT StructKeyExists(localConfig, "webservices") or NOT StructKeyExists(localconfig.webservices, "webservice")>
@@ -123,13 +127,15 @@
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="webServiceExists" access="public" output="false" returntype="boolean" roles="admin" 
+	<cffunction name="webServiceExists" access="public" output="false" returntype="boolean" 
 				hint="Returns a boolean indicating whether or not a web service with the specified name exists">
 		<cfargument name="webService" type="string" required="true" hint="The web service name to check" />
 		
 		<cfset var webServiceExists = true />
 		<cfset var localConfig = getConfig() />
 		<cfset var i = 0 />
+
+		<cfset checkLoginStatus() />
 		
 		<cfif not StructKeyExists(localConfig, "webservices")>
 			<!--- no web services at all, so this one doesn't exist ---->
@@ -148,12 +154,14 @@
 		<cfreturn webServiceExists />
 	</cffunction>
 	
-	<cffunction name="deleteWebService" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="deleteWebService" access="public" output="false" returntype="void" 
 			hint="Deletes the specified web service">
 		<cfargument name="webService" required="true" type="string" hint="The name of the web service to be deleted" />
 		
 		<cfset var localConfig = getConfig() />
 		<cfset var webServiceIndex = 0 />
+
+		<cfset checkLoginStatus() />
 
 		<!--- Make sure there are datasources --->
 		<cfif NOT StructKeyExists(localConfig, "webservices")>
@@ -171,13 +179,15 @@
 		<cfthrow message="#arguments.webService# not registered as a web service" type="bluedragon.adminapi.webservices" />
 	</cffunction>
 	
-	<cffunction name="verifyWebService" access="public" output="false" returntype="boolean" roles="admin" 
+	<cffunction name="verifyWebService" access="public" output="false" returntype="boolean" 
 			hint="Verifies a web service">
 		<cfargument name="webService" type="string" required="true" hint="Web service name to verify" />
 		
 		<cfset var verified = false />
 		<cfset var theWebService = getWebServices(arguments.webservice).get(0) />
 		<cfset var testWS = "" />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- try to hit the web service and throw error if we can't --->
 		<cftry>

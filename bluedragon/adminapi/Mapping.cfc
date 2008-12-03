@@ -26,7 +26,7 @@
 		extends="Base" 
 		hint="Manage mappings - OpenBD Admin API">
 
-	<cffunction name="getMappings" access="public" output="false" returntype="array" roles="admin" 
+	<cffunction name="getMappings" access="public" output="false" returntype="array" 
 			hint="Returns array of mappings which equate logical paths to directory paths">
 		<cfargument name="mapName" required="false" type="string" hint="The mapping to retrieve" />
 		
@@ -35,6 +35,8 @@
 		<cfset var returnArray = ArrayNew(1) />
 		<cfset var sortKeys = arrayNew(1) />
 		<cfset var sortKey = structNew() />
+
+		<cfset checkLoginStatus() />
 
 		<!--- Make sure there are Mappings --->
 		<cfif (NOT StructKeyExists(localConfig, "cfmappings")) OR (NOT StructKeyExists(localConfig.cfmappings, "mapping"))>
@@ -60,7 +62,7 @@
 		</cfif>
 	</cffunction>
 
-	<cffunction name="setMapping" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setMapping" access="public" output="false" returntype="void" 
 				hint="Creates a mapping, equating a logical path to a directory path">
 		<cfargument name="name" type="string" required="true" hint="Logical path name" />
 		<cfargument name="directory" type="string" required="true" hint="Directory path name" />
@@ -71,6 +73,8 @@
 		<cfset var localConfig = getConfig() />
 		<cfset var mapping = StructNew() />
 		<cfset var tempPath = "" />
+
+		<cfset checkLoginStatus() />
 
 		<!--- Make sure configuration structure exists, otherwise build it --->
 		<cfif (NOT StructKeyExists(localConfig, "cfmappings")) OR (NOT StructKeyExists(localConfig.cfmappings, "mapping"))>
@@ -113,12 +117,14 @@
 		<cfset setConfig(localConfig) />
 	</cffunction>
 	
-	<cffunction name="verifyMapping" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="verifyMapping" access="public" output="false" returntype="void" 
 			hint="Verifies the mapping by running cfdirectory on both the physical and logical paths">
 		<cfargument name="mappingName" type="string" required="true" hint="The mapping to verify" />
 		
 		<cfset var mapping = getMappings(arguments.mappingName) />
 		<cfset var tempPath = "" />
+
+		<cfset checkLoginStatus() />
 		
 		<cfset mapping = mapping[1] />
 		
@@ -149,12 +155,14 @@
 		</cftry>
 	</cffunction>
 
-	<cffunction name="deleteMapping" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="deleteMapping" access="public" output="false" returntype="void" 
 			hint="Deletes the specified mapping">
 		<cfargument name="mapName" required="true" type="string" hint="The mapping to delete" />
 		
 		<cfset var localConfig = getConfig() />
 		<cfset var mapIndex = "" />
+
+		<cfset checkLoginStatus() />
 
 		<!--- Make sure there are Mappings --->
 		<cfif (NOT StructKeyExists(localConfig, "cfmappings")) OR (NOT StructKeyExists(localConfig.cfmappings, "mapping"))>

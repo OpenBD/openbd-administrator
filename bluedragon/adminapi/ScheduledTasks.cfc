@@ -26,7 +26,7 @@
 		extends="Base" 
 		hint="Manages scheduled tasks - OpenBD Admin API">
 
-	<cffunction name="getScheduledTasks" access="public" output="false" returntype="array" roles="admin" 
+	<cffunction name="getScheduledTasks" access="public" output="false" returntype="array" 
 			hint="Returns an array of scheduled tasks, or a specific scheduled task based on the task name passed in">
 		<cfargument name="task" type="string" required="false" hint="The name of the scheduled task to retrieve" />
 		
@@ -36,6 +36,8 @@
 		<cfset var i = 0 />
 		<cfset var sortKeys = arrayNew(1) />
 		<cfset var sortKey = structNew() />
+
+		<cfset checkLoginStatus() />
 		
 		<cfif not structKeyExists(localConfig, "cfschedule") or not structKeyExists(localConfig.cfschedule, "task")>
 			<cfthrow message="No scheduled tasks configured" type="bluedragon.adminapi.scheduledtasks" />
@@ -60,7 +62,7 @@
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="setScheduledTask" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setScheduledTask" access="public" output="false" returntype="void" 
 			hint="Creates or updates a scheduled task">
 		<cfargument name="task" type="string" required="true" hint="The scheduled task name" />
 		<cfargument name="url" type="string" required="true" hint="The URL the scheduled task will call" />
@@ -85,6 +87,8 @@
 				hint="Boolean indicating whether or not to resolve internal URLs to full URLs" />
 		<cfargument name="requesttimeout" type="numeric" required="false" default="30" hint="The request timeout for the scheduled task" />
 		<cfargument name="action" type="string" required="false" default="create" hint="The action to take on the scheduled task (create or update)" />
+
+		<cfset checkLoginStatus() />
 		
 		<cfif arguments.action is "create" and scheduledTaskExists(arguments.task)>
 			<cfthrow type="bluedragon.adminapi.scheduledtasks" message="A scheduled task with that name already exists" />
@@ -177,7 +181,7 @@
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="scheduledTaskExists" access="public" output="false" returntype="boolean" roles="admin" 
+	<cffunction name="scheduledTaskExists" access="public" output="false" returntype="boolean" 
 			hint="Returns a boolean indicating whether or not a scheduled task with the name passed in exists">
 		<cfargument name="task" type="string" required="true" hint="The name of the scheduled task to run" />
 		
@@ -185,6 +189,8 @@
 		<cfset var exists = false />
 		<cfset var tasks = arrayNew(1) />
 		<cfset var i = 0 />
+
+		<cfset checkLoginStatus() />
 		
 		<cfif structKeyExists(localConfig, "cfschedule") and structKeyExists(localConfig.cfschedule, "task")>
 			<cfset tasks = localConfig.cfschedule.task />
@@ -200,16 +206,20 @@
 		<cfreturn exists />
 	</cffunction>
 	
-	<cffunction name="runScheduledTask" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="runScheduledTask" access="public" output="false" returntype="void" 
 			hint="Runs a scheduled task">
 		<cfargument name="task" type="string" required="true" hint="The name of the scheduled task to run" />
+
+		<cfset checkLoginStatus() />
 		
 		<cfschedule action="run" task="#arguments.task#" />
 	</cffunction>
 	
-	<cffunction name="deleteScheduledTask" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="deleteScheduledTask" access="public" output="false" returntype="void" 
 			hint="Deletes a scheduled task">
 		<cfargument name="task" type="string" required="true" hint="The name of the scheduled task to delete" />
+
+		<cfset checkLoginStatus() />
 		
 		<cfschedule action="delete" task="#arguments.task#" />
 	</cffunction>

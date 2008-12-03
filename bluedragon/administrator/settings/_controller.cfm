@@ -62,7 +62,8 @@
 						<cflocation url="security.cfm" addtoken="false" />
 					</cfcatch>
 				</cftry>
-
+				
+				<cfset session.auth.password = args.password />
 				<cfset session.message.text = "The password was updated successfully." />
 				<cfset session.message.type = "info" />
 				<cflocation url="security.cfm" addtoken="false" />

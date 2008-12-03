@@ -26,11 +26,13 @@
 		extends="Base" 
 		hint="Manage font directories - OpenBD Admin API">
 
-	<cffunction name="getFontDirectories" access="public" output="false" returntype="array" roles="admin" 
+	<cffunction name="getFontDirectories" access="public" output="false" returntype="array" 
 			hint="Returns an array containing the defined font directories">
 		<cfset var localConfig = getConfig() />
 		<cfset var returnArray = ArrayNew(1) />
 		<cfset var fontDir = "" />
+
+		<cfset checkLoginStatus() />
 
 		<!--- Make sure there are font directories --->
 		<cfif NOT StructKeyExists(localConfig, "fonts") OR NOT StructKeyExists(localConfig.fonts, "dirs") 
@@ -45,7 +47,7 @@
 		<cfreturn returnArray />
 	</cffunction>
 
-	<cffunction name="setFontDirectory" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setFontDirectory" access="public" output="false" returntype="void" 
 				hint="Creates font directory">
 		<cfargument name="fontDirectory" type="string" required="true" hint="The physical path to the font directory" />
 		<cfargument name="action" type="string" required="false" default="create" hint="Font directory action (create or update)" />
@@ -53,6 +55,8 @@
 				hint="Existing font directory--used in the event of an update" />
 		
 		<cfset var localConfig = getConfig() />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- Make sure font directory structure exists, otherwise build it --->
 		<cfif (NOT StructKeyExists(localConfig, "fonts")) OR (NOT StructKeyExists(localConfig.fonts, "dirs"))>
@@ -93,9 +97,11 @@
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="verifyFontDirectory" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="verifyFontDirectory" access="public" output="false" returntype="void" 
 			hint="Verifies the font direcotry by running cfdirectory on the physical path">
 		<cfargument name="fontDirectory" type="string" required="true" hint="The font directory to verify" />
+
+		<cfset checkLoginStatus() />
 		
 		<cftry>
 			<cfif not directoryExists(arguments.fontDirectory)>
@@ -109,12 +115,14 @@
 		</cftry>
 	</cffunction>
 
-	<cffunction name="deleteFontDirectory" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="deleteFontDirectory" access="public" output="false" returntype="void" 
 			hint="Deletes the specified font directory">
 		<cfargument name="fontDirectory" required="true" type="string" hint="The font directory to delete" />
-		
+
 		<cfset var localConfig = getConfig() />
 		<cfset var i = 0 />
+
+		<cfset checkLoginStatus() />
 		
 		<cfif (NOT StructKeyExists(localConfig, "fonts")) OR (NOT StructKeyExists(localConfig.fonts, "dirs"))>
 			<cfthrow message="No Font Directories Defined" type="bluedragon.adminapi.fonts" />		

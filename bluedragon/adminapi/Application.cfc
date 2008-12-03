@@ -23,7 +23,7 @@
 --->
 <cfcomponent displayname="Application" 
 		output="false" 
-		hint="Application CFC - OpenBD Aadmin API">
+		hint="Application CFC - OpenBD Admin API">
 	
 	<cfscript>
 		this.name = "OpenBDAdminAPI";

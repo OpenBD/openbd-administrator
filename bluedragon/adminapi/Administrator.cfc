@@ -48,38 +48,36 @@
 		
 		<cfif doSetConfig>
 			<!--- need to log in briefly to be able to call setConfig() --->
-			<cflogin>
-				<cfloginuser name="Administrator" password="admin" roles="admin" />
-			</cflogin>
+			<cfset session.auth.loggedIn = true />
+			<cfset session.auth.password = "admin" />
 			
 			<cfset setConfig(localConfig) />
 			
 			<!--- log right back out --->
-			<cflogout />
+			<cfset structDelete(session, "auth", false) />
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="setPassword" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setPassword" access="public" output="false" returntype="void" 
 			hint="Sets the administrator password">
 		<cfargument name="password" type="string" required="true" hint="The password" />
 		
 		<cfset var localConfig = getConfig() />
+
+		<cfset checkLoginStatus() />
 		
 		<cfset localConfig.system.password = arguments.password />
 		
 		<cfset setConfig(localConfig) />
 	</cffunction>
 	
-	<cffunction name="getPassword" access="private" output="false" returntype="void" 
-			hint="Returns the administrator password">
-		<cfreturn getConfig().system.password />
-	</cffunction>
-	
-	<cffunction name="setAllowedIPs" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setAllowedIPs" access="public" output="false" returntype="void" 
 			hint="Sets the IP addresses allowed to access the admin API">
 		<cfargument name="allowedIPs" type="string" required="true" hint="The allowed IPs" />
 		
 		<cfset var localConfig = getConfig() />
+
+		<cfset checkLoginStatus() />
 		
 		<cfset localConfig.system.allowedips = arguments.allowedIPs />
 		
@@ -98,11 +96,13 @@
 		<cfreturn localConfig.system.allowedips />
 	</cffunction>
 	
-	<cffunction name="setDeniedIPs" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setDeniedIPs" access="public" output="false" returntype="void" 
 			hint="Sets the IP addresses not allowed to access the admin API">
 		<cfargument name="deniedIPs" type="string" required="true" hint="The denied IPs" />
 		
 		<cfset var localConfig = getConfig() />
+
+		<cfset checkLoginStatus() />
 		
 		<cfset localConfig.system.deniedips = arguments.deniedIPs />
 		
@@ -135,7 +135,7 @@
 	</cffunction>
 
 	<cffunction name="logout" access="public" output="false" returntype="void" hint="Logs the user out">
-		<cflogout />
+		<cfset structDelete(session, "auth", false) />
 	</cffunction>
 
 </cfcomponent>

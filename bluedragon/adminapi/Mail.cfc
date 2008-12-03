@@ -26,10 +26,12 @@
 		extends="Base" 
 		hint="Manages mail settings - OpenBD Admin API">
 
-	<cffunction name="getMailSettings" access="public" output="false" returntype="struct" roles="admin" 
+	<cffunction name="getMailSettings" access="public" output="false" returntype="struct" 
 			hint="Returns a struct containing the mail settings">
 		<cfset var localConfig = getConfig() />
 		<cfset var doSetConfig = false />
+
+		<cfset checkLoginStatus() />
 		
 		<!--- some of the mail settings may not exist --->
 		<cfif not structKeyExists(localConfig.cfmail, "charset")>
@@ -59,7 +61,7 @@
 		<cfreturn localConfig.cfmail />
 	</cffunction>
 	
-	<cffunction name="setMailSettings" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setMailSettings" access="public" output="false" returntype="void" 
 			hint="Saves mail settings">
 		<cfargument name="timeout" type="numeric" required="true" hint="The connection timeout in seconds" />
 		<cfargument name="threads" type="numeric" required="true" hint="The number of threads to be used by cfmail" />
@@ -67,6 +69,8 @@
 		<cfargument name="charset" type="string" required="true" hint="The default charset used by cfmail" />
 		
 		<cfset var localConfig = getConfig() />
+
+		<cfset checkLoginStatus() />
 		
 		<cfscript>
 			localConfig.cfmail.timeout = ToString(arguments.timeout);
@@ -78,7 +82,7 @@
 		</cfscript>
  	</cffunction>
 	
-	<cffunction name="getMailServers" access="public" output="false" returntype="array" roles="admin" 
+	<cffunction name="getMailServers" access="public" output="false" returntype="array" 
 			hint="Returns specific mail server information or all the registered mail servers">
 		<cfargument name="mailServer" type="string" required="false" default="" hint="The mail server to retrieve" />
 		
@@ -90,6 +94,8 @@
 		<cfset var localConfig = getConfig() />
 		<cfset var doSetConfig = false />
 		<cfset var i = 0 />
+
+		<cfset checkLoginStatus() />
 
 		<!--- some of the mail settings may not exist --->
 		<cfif not structKeyExists(localConfig.cfmail, "threads")>
@@ -159,7 +165,7 @@
 		<cfreturn mailServers />
 	</cffunction>
 
-	<cffunction name="setMailServer" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="setMailServer" access="public" output="false" returntype="void" 
 			hint="Creates or updates a mail server">
 		<cfargument name="smtpserver" type="string" required="true" hint="The SMTP server DNS name or IP address" />
 		<cfargument name="smtpport" type="numeric" required="false" hint="The SMTP port" />
@@ -180,6 +186,8 @@
 		<cfset var errorMessage = "" />
 		<cfset var i = 0 />
 		<cfset var doSetConfig = false />
+
+		<cfset checkLoginStatus() />
 
 		<!--- some of the mail settings may not exist --->
 		<cfif not structKeyExists(localConfig.cfmail, "threads")>
@@ -246,11 +254,13 @@
 		<cfset setConfig(localConfig) />
 	</cffunction>
 	
-	<cffunction name="deleteMailServer" access="public" output="false" returntype="void" roles="admin" 
+	<cffunction name="deleteMailServer" access="public" output="false" returntype="void" 
 			hint="Deletes a mail server from the list of available mail servers">
 		<cfargument name="mailServer" type="string" required="true" hint="The mail server to delete from the list of available mail servers" />
 		
 		<cfset var localConfig = getConfig() />
+
+		<cfset checkLoginStatus() />
 		
 		<cfloop index="i" from="1" to="#listLen(localConfig.cfmail.smtpserver)#">
 			<cfif findNoCase(arguments.mailServer, listGetAt(localConfig.cfmail.smtpserver, i))>
@@ -262,10 +272,12 @@
 		<cfset setConfig(localConfig) />
 	</cffunction>
 	
-	<cffunction name="getSpooledMailCount" access="public" output="false" returntype="numeric" roles="admin" 
+	<cffunction name="getSpooledMailCount" access="public" output="false" returntype="numeric" 
 			hint="Returns the number of files currently in the mail spool. If this returns -1 it means an error occurred while reading the spool directory.">
 		<cfset var spoolCount = 0 />
 		<cfset var spoolDirList = 0 />
+
+		<cfset checkLoginStatus() />
 		
 		<cftry>
 			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work/cfmail/spool')#" name="spoolDirList" />
@@ -278,7 +290,7 @@
 		<cfreturn spoolCount />
 	</cffunction>
 	
-	<cffunction name="verifyMailServer" access="public" output="false" returntype="void" 
+	<cffunction name="verifyMailServer" access="public" output="false" 
 			hint="Verifies a mail server by connecting to the server via a JavaMail session">
 		<cfargument name="mailServer" type="string" required="true" hint="The mail server to verify, in format 'server', 'server:port', or 'user:pass@server:port'" />
 		
@@ -288,6 +300,8 @@
 		<cfset var port = 25 />
 		<cfset var username = "" />
 		<cfset var password = "" />
+
+		<cfset checkLoginStatus() />
 		
 		<cfif find("@", arguments.mailServer)>
 			<cfset theMailServer = listFirst(listLast(arguments.mailServer, "@"), ":") />
@@ -316,6 +330,8 @@
 			hint="Returns the number of files currently in the undelivered mail directory. If this returns -1 it means an error occurred while reading the undelivered directory.">
 		<cfset var undeliveredCount = 0 />
 		<cfset var undeliveredlDirList = 0 />
+
+		<cfset checkLoginStatus() />
 		
 		<cftry>
 			<cfdirectory action="list" directory="#ExpandPath('/WEB-INF/bluedragon/work/cfmail/undelivered')#" name="undeliveredDirList" />
@@ -331,6 +347,8 @@
 	<cffunction name="respoolUndeliveredMail" access="public" output="false" returntype="void" 
 			hint="Moves all the mail in the undelivered directory to the spool">
 		<cfset var undeliveredMail = 0 />
+
+		<cfset checkLoginStatus() />
 		
 		<cfdirectory action="list" directory="#expandPath('/WEB-INF/bluedragon/work/cfmail/undelivered')#" name="undeliveredMail" filter="*.email" />
 		

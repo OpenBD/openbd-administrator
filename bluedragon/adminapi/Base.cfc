@@ -29,7 +29,7 @@
 
 	<cffunction name="init" access="package" output="false" returntype="any" hint="Constructor">
 		<cfset variables.api.version = "1.0" />
-		<cfset variables.api.builddate = "20081202" />
+		<cfset variables.api.builddate = LSDateFormat(createDate(2008,12,3)) & " " & LSTimeFormat(createTime(11,20,00)) />
 		
 		<!--- instantiate the udfs cfc here so it's available everywhere --->
 		<cfset variables.udfs = createObject("component", "bluedragon.adminapi.utils.UDFs") />

@@ -135,8 +135,14 @@
 			}
 			
 			function triggerMailSpool() {
-				if(confirm("Are you sure you want to trigger the mail spool?\nYou should only do this if the mail spool has been\nidle for a long period and you do not want to\nrestart OpenBD.")) {
-					location.replace("_controller.cfm?action=triggerMailSpool");
+				var spoolCount = #spoolCount#;
+				
+				if (spoolCount == 0) {
+					alert("The mail spool is currently empty");
+				} else {
+					if(confirm("Are you sure you want to trigger the mail spool?\nYou should only do this if the mail spool has been\nidle for a long period and you do not want to\nrestart OpenBD.")) {
+						location.replace("_controller.cfm?action=triggerMailSpool");
+					}
 				}
 			}
 		</script>

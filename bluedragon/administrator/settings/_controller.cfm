@@ -675,6 +675,21 @@
 			<cflocation url="mail.cfm" addtoken="false" />
 		</cfcase>
 		
+		<cfcase value="triggerMailSpool">
+			<cftry>
+				<cfset Application.mail.triggerMailSpool() />
+				<cfcatch type="bluedragon.adminapi.mail">
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
+					<cflocation url="mail.cfm" addtoken="false" />
+				</cfcatch>
+			</cftry>
+
+			<cfset session.message.text = "The mail spool was triggered successfully." />
+			<cfset session.message.type = "info" />
+			<cflocation url="mail.cfm" addtoken="false" />
+		</cfcase>
+		
 		<!--- FONTS --->
 		<cfcase value="processFontDirForm">
 			<cfset errorFields = arrayNew(2) />

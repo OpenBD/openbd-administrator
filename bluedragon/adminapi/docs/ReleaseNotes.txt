@@ -1,0 +1,10 @@
+Open BlueDragon Admin Console/API Release Notes 
+__________________________________
+
+$Date: 2008/12/03 11:57:00 $
+__________________________________
+
+- added functionality to respool undelivered mail and trigger the mail spool
+- fixed bug with setInitialSecurity() since empty password node is now present in bluedragon.xml by default
+
+--- Stable Release 1.0 [2nd December 2008]

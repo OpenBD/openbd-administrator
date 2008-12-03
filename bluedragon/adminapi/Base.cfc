@@ -83,13 +83,7 @@
 	</cffunction>
 
 	<cffunction name="getPassword" access="package" output="false" returntype="void" hint="Returns the administrator password">
-		<cfset var localConfig = getConfig() />
-		
-		<cfif not structKeyExists(localConfig.system, "password")>
-			<cfreturn "admin" />
-		<cfelse>
-			<cfreturn getConfig().system.password />
-		</cfif>
+		<cfreturn getConfig().system.password />
 	</cffunction>
 	
 	<cffunction name="setConfig" access="package" output="false" returntype="void" 

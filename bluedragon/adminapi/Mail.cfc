@@ -365,21 +365,15 @@
 				</cfif>
 			</cfloop>
 		</cfif>
+		
+		<cfset triggerMailSpool() />
 	</cffunction>
 	
 	<cffunction name="triggerMailSpool" access="public" output="false" returntype="void" 
-			hint="Triggers the mail spool by grabbing the first mail file in the spool, parsing it, and sending it using cfmail. Used mainly following a move of mail files to the spool.">
-		<cfset var mailFiles = 0 />
-		<cfset var mailFile = "" />
+			hint="Triggers the mail spool to start sending mail">
+		<cfset checkLoginStatus() />
 		
-		<cfdirectory action="list" directory="#getMailSpoolPath()#" name="mailFiles" filter="*.email" />
-		
-		<cfif mailFiles.RecordCount gt 0>
-			<!--- grab the first file; if it's not there anymore, chances are that means the spool is active 
-					so just forget about priming things --->
-			<cfif fileExists(getMailSpoolPath() & variables.separator.file & mailFiles.name)>
-			</cfif>
-		</cfif>
+		<cfset createObject("java", "com.naryx.tagfusion.cfm.mail.cfMAIL").spoolingMailServer.notifySenders() />
 	</cffunction>
 	
 	<cffunction name="getMailSpoolPath" access="public" output="false" returntype="string" 

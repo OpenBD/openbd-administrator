@@ -123,11 +123,25 @@
 			}
 			
 			function respoolUndeliveredMail() {
-				if(confirm("Are you sure you want to respool all undelivered mail?")) {
-					location.replace("_controller.cfm?action=respoolUndeliveredMail");
+				var undeliveredCount = #undeliveredCount#;
+				
+				if (undeliveredCount == 0) {
+					alert("No undelivered mail to respool");
+				} else {
+					if(confirm("Are you sure you want to respool all undelivered mail?")) {
+						location.replace("_controller.cfm?action=respoolUndeliveredMail");
+					}
+				}
+			}
+			
+			function triggerMailSpool() {
+				if(confirm("Are you sure you want to trigger the mail spool?\nYou should only do this if the mail spool has been\nidle for a long period and you do not want to\nrestart OpenBD.")) {
+					location.replace("_controller.cfm?action=triggerMailSpool");
 				}
 			}
 		</script>
+		
+		<h3>Mail</h3>
 		
 		<cfif structKeyExists(session, "message") and session.message.text is not "">
 			<p class="#session.message.type#">#session.message.text#</p>
@@ -159,21 +173,33 @@
 			</ul>
 		</cfif>
 		
-		<h3>Mail Status</h3>
-		
-		<ul>
-			<li>Spooled Mail: #spoolCount# messages</li>
-			<li>
-				Undelivered Mail: #undeliveredCount# messages
-				<cfif undeliveredCount gt 0>
-					&nbsp;
+		<table border="0" width="300" cellpadding="2" cellspacing="1" bgcolor="##999999">
+			<tr bgcolor="##dedede">
+				<td colspan="3"><strong>Mail Status</strong></td>
+			</tr>
+			<tr>
+				<td bgcolor="##f0f0f0" align="right" width="140">Spooled Mail</td>
+				<td bgcolor="##ffffff">#spoolCount#</td>
+				<td bgcolor="##ffffff" width="40" align="center">
+					<a href="javascript:void(0);" onclick="javascript:triggerMailSpool();" 
+						alt="Trigger Mail Spool" title="Trigger Mail Spool">
+						<img src="../images/arrow_refresh.png" height="16" width="16" border="0" />
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td bgcolor="##f0f0f0" align="right">Undelivered Mail</td>
+				<td bgcolor="##ffffff">#undeliveredCount#</td>
+				<td bgcolor="##ffffff" align="center">
 					<a href="javascript:void(0);" onclick="javascript:respoolUndeliveredMail();" 
 							alt="Respool Undelivered Mail" title="Respool Undelivered Mail">
 						<img src="../images/email_go.png" height="16" width="16" border="0" />
 					</a>
-				</cfif>
-			</li>
-		</ul>
+				</td>
+			</tr>
+		</table>
+		
+		<br /><br />
 		
 		<cfif arrayLen(mailServers) eq 0>
 			<h3>Mail Servers</h3>

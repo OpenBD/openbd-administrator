@@ -31,11 +31,6 @@
 		<cfset var localConfig = getConfig() />
 		<cfset var doSetConfig = false />
 		
-		<cfif not structKeyExists(localConfig.system, "password")>
-			<cfset localConfig.system.password = "admin" />
-			<cfset doSetConfig = true />
-		</cfif>
-		
 		<cfif not structKeyExists(localConfig.system, "allowedips")>
 			<cfset localConfig.system.allowedips = "" />
 			<cfset doSetConfig = true />
@@ -49,7 +44,7 @@
 		<cfif doSetConfig>
 			<!--- need to log in briefly to be able to call setConfig() --->
 			<cfset session.auth.loggedIn = true />
-			<cfset session.auth.password = "admin" />
+			<cfset session.auth.password = localConfig.system.password />
 			
 			<cfset setConfig(localConfig) />
 			

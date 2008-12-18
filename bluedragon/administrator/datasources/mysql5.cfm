@@ -31,6 +31,25 @@
 	</cfif>
 	
 	<cfset dsinfo = session.datasource[1] />
+	
+	<!--- based on bug in certain versions of mysql, adding cacheResultSetMetadata as a checkbox --->
+	<cfset crsmdStart = findNoCase("cacheResultSetMetadata", dsinfo.hoststring) />
+	
+	<!--- if cacheResultSetMetadata doesn't exist in the hoststring, set the value to true since 
+			only certain combinations of driver and engine seem to have the problem --->
+	<cfif crsmdStart eq 0>
+		<cfset dsinfo.cacheresultsetmetadata = true />
+	<cfelse>
+		<cfset crsmdEnd = find("&", dsinfo.hoststring, crsmdStart) />
+		
+		<cfif crsmdEnd eq 0>
+			<cfset crsmdEnd = len(dsinfo.hoststring) />
+		<cfelse>
+			<cfset crsmdEnd = crsmdEnd -1 />
+		</cfif>
+		
+		<cfset dsinfo.cacheresultsetmetadata = listLast(mid(dsinfo.hoststring, crsmdStart, crsmdEnd - crsmdStart + 1), "=") />
+	</cfif>
 </cfsilent>
 <cfsavecontent variable="request.content">
 <cfoutput>
@@ -201,31 +220,38 @@
 			</td>
 		</tr>
 		<tr>
+			<td><label for="cacheresultsetmetadata">Cache Result Set Metadata</label></td>
+			<td>
+				<input type="checkbox" name="cacheresultsetmetadata" id="cacheresultsetmetadata" value="true" 
+						<cfif dsinfo.cacheresultsetmetadata> checked="true"</cfif> tabindex="18" />
+			</td>
+		</tr>
+		<tr>
 			<td><label for="maxconnections">Maximum Connections</label></td>
 			<td>
 				<input type="text" name="maxconnections" id="maxconnections" size="4" maxlength="4" 
-						value="#dsinfo.maxconnections#" tabindex="18" />
+						value="#dsinfo.maxconnections#" tabindex="19" />
 			</td>
 		</tr>
 		<tr>
 			<td><label for="connectiontimeout">Connection Timeout</label></td>
 			<td>
 				<input type="text" name="connectiontimeout" id="connectiontimeout" size="4" maxlength="10" 
-						value="#dsinfo.connectiontimeout#" tabindex="19" />
+						value="#dsinfo.connectiontimeout#" tabindex="20" />
 			</td>
 		</tr>
 		<tr>
 			<td><label for="logintimeout">Login Timeout</label></td>
 			<td>
 				<input type="text" name="logintimeout" id="logintimeout" size="4" maxlength="4" 
-						value="#dsinfo.logintimeout#" tabindex="20" />
+						value="#dsinfo.logintimeout#" tabindex="21" />
 			</td>
 		</tr>
 		<tr>
 			<td><label for="connectionretries">Connection Retries</label></td>
 			<td>
 				<input type="text" name="connectionretries" id="connectionretries" size="4" maxlength="4" 
-						value="#dsinfo.connectionretries#" tabindex="21" />
+						value="#dsinfo.connectionretries#" tabindex="22" />
 			</td>
 		</tr>
 	</table>

@@ -38,8 +38,9 @@
 <head>
   <title>Open BlueDragon Administrator</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <link rel="StyleSheet" href="#contextPath#/bluedragon/administrator/css/sinorcaish-screen.css" type="text/css" media="screen" />
-  <link rel="StyleSheet" href="#contextPath#/bluedragon/administrator/css/sinorcaish-print.css" type="text/css" media="print" />
+  <link rel="shortcut icon" href="#contextPath#/bluedragon/administrator/images/favicon.ico" />
+  <link rel="stylesheet" href="#contextPath#/bluedragon/administrator/css/sinorcaish-screen.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="#contextPath#/bluedragon/administrator/css/sinorcaish-print.css" type="text/css" media="print" />
 </head>
 
 <body>
@@ -140,7 +141,8 @@
 <div id="footer">
   <hr />
 	<div style="float:left;">
-	  Copyright &copy; 2008<cfif DatePart("yyyy", now()) gt 2008> - #DatePart("yyyy", now())#</cfif> <a href="http://www.openbluedragon.org">Open BlueDragon Project</a>
+	  Copyright &copy; 2008<cfif DatePart("yyyy", now()) gt 2008> - #DatePart("yyyy", now())#</cfif> 
+	  <a href="http://www.openbluedragon.org" target="_blank">Open BlueDragon Project</a>
 	</div>
 	<div style="float:right;">
 		Version #Application.adminConsoleVersion# - #Application.adminConsoleBuildDate#

@@ -40,11 +40,14 @@
 		<cfargument name="filepath" type="string" required="false" default="" hint="File path for file-based databases (H2, etc.)" />
 		<cfargument name="description" type="string" required="false" default="" hint="A description of this data source" />
 		<cfargument name="initstring" type="string" required="false" default="" hint="Additional initialization settings" />
-		<cfargument name="connectiontimeout" type="numeric" required="false" default="120" hint="Number of seconds OpenBD maintains an unused connection before it is destroyed" />
+		<cfargument name="connectiontimeout" type="numeric" required="false" default="120" 
+				hint="Number of seconds OpenBD maintains an unused connection before it is destroyed" />
 		<cfargument name="connectionretries" type="numeric" required="false" default="0" hint="Number of connection retry attempts to make" />
-		<cfargument name="logintimeout" type="numeric" required="false" default="120" hint="Number of seconds before OpenBD times out the data source connection login attempt" />
+		<cfargument name="logintimeout" type="numeric" required="false" default="120" 
+				hint="Number of seconds before OpenBD times out the data source connection login attempt" />
 		<cfargument name="maxconnections" type="numeric" required="false" default="3" hint="Maximum number of simultaneous database connections" />
-		<cfargument name="perrequestconnections" type="boolean" required="false" default="false" hint="Indication of whether or not to pool connections" />
+		<cfargument name="perrequestconnections" type="boolean" required="false" default="false" 
+				hint="Indication of whether or not to pool connections" />
 		<cfargument name="sqlselect" type="boolean" required="false" default="true" hint="Allow SQL SELECT statements from this datasource" />
 		<cfargument name="sqlinsert" type="boolean" required="false" default="true" hint="Allow SQL INSERT statements from this datasource" />
 		<cfargument name="sqlupdate" type="boolean" required="false" default="true" hint="Allow SQL UPDATE statements from this datasource" />
@@ -52,7 +55,9 @@
 		<cfargument name="sqlstoredprocedures" type="boolean" required="false" default="true" hint="Allow SQL stored procedure calls from this datasource" />
 		<cfargument name="drivername" type="string" required="false" default="" hint="JDBC driver class to use" />
 		<cfargument name="action" type="string" required="false" default="create" hint="Action to take on the datasource (create or update)" />
-		<cfargument name="existingDatasourceName" type="string" required="false" default="" hint="The existing (old) datasource name so we know what to delete if this is an update" />
+		<cfargument name="existingDatasourceName" type="string" required="false" default="" 
+				hint="The existing (old) datasource name so we know what to delete if this is an update" />
+		<cfargument name="cacheResultSetMetadata" type="boolean" required="false" default="true" hint="MySQL specific setting" />
 		<cfargument name="verificationQuery" type="string" required="false" default="" hint="Custom verification query for 'other' driver types" />
 		<cfargument name="h2Mode" type="string" required="false" default="" hint="Compatibility mode for H2 database" />
 		<cfargument name="h2IgnoreCase" type="boolean" required="false" default="true" hint="Boolean indicating whether or not H2 ignores case" />
@@ -107,7 +112,7 @@
 			<cfset datasourceSettings.hoststring = formatJDBCURL(trim(arguments.drivername), trim(arguments.server), 
 																trim(arguments.port), trim(arguments.databasename), 
 																arguments.filepath, trim(arguments.username), trim(arguments.password), 
-																arguments.h2Mode, arguments.h2IgnoreCase) />
+																arguments.cacheResultSetMetadata, arguments.h2Mode, arguments.h2IgnoreCase) />
 		<cfelse>
 			<cfset arguments.port = "" />
 			<cfset datasourceSettings.hoststring = trim(arguments.hoststring) />
@@ -579,6 +584,7 @@
 				hint="Database user name if one is to be included as part of the connection string. Mostly used for file-based databases." />
 		<cfargument name="password" type="string" required="false" default="" 
 				hint="Database password if one is to be included as part of the connection string. Mostly used for file-based databases." />
+		<cfargument name="cacheResultSetMetadata" type="boolean" required="false" default="true" hint="MySQL specific setting" />
 		<cfargument name="h2Mode" type="string" required="false" default="" hint="Compatibility mode for H2" />
 		<cfargument name="h2IgnoreCase" type="boolean" required="false" default="true" 
 				hint="Boolean indicating whether or not H2 should ignore case" />
@@ -621,14 +627,6 @@
 				<cfif arguments.h2Mode is not "H2Native">
 					<cfset jdbcURL = jdbcURL & ";MODE=#arguments.h2Mode#" />
 				</cfif>
-				
-				<cfif arguments.username is not "">
-					<cfset jdbcURL = jdbcURL & ";USER=#arguments.username#" />
-				</cfif>
-				
-				<cfif arguments.password is not "">
-					<cfset jdbcURL = jdbcURL & ";PASSWORD=#arguments.password#" />
-				</cfif>
 			</cfcase>
 			
 			<!--- sql server -- microsoft driver --->
@@ -646,7 +644,7 @@
 			<!--- mysql --->
 			<cfcase value="com.mysql.jdbc.Driver">
 				<!--- url format: jdbc:mysql://[host][,failoverhost...][:port]/[database][?propertyName1][=propertyValue1][&propertyName2][=propertyValue2] --->
-				<cfset jdbcURL = "jdbc:mysql://#arguments.server#:#arguments.port#/#arguments.database#?cacheResultSetMetadata=true" />
+				<cfset jdbcURL = "jdbc:mysql://#arguments.server#:#arguments.port#/#arguments.database#?cacheResultSetMetadata=#arguments.cacheResultSetMetadata#&autoReconnect=true" />
 			</cfcase>
 			
 			<!--- oracle --->

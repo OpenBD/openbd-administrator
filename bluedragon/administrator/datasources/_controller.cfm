@@ -142,6 +142,8 @@
 			<cfparam name="args.datasourceAction" type="string" default="create" />
 			<cfparam name="args.hoststring" type="string" default="" />
 			<cfparam name="args.dbtype" type="string" default="" />
+			<!--- This is MySQL specific. Default to false since it's a checkbox on the form. --->
+			<cfparam name="args.cacheresultsetmetadata" type="boolean" default="false" />
 			
 			<cfset errorFields = arrayNew(2) />
 			<cfset errorFieldsIndex = 1 />
@@ -215,7 +217,8 @@
 																				args.maxconnections, args.perrequestconnections, 
 																				args.sqlselect, args.sqlinsert, args.sqlupdate, args.sqldelete, 
 																				args.sqlstoredprocedures, args.drivername, 
-																				args.datasourceAction, args.existingDatasourceName) />
+																				args.datasourceAction, args.existingDatasourceName, 
+																				args.cacheresultsetmetadata) />
 							</cfcase>
 							
 							<!--- h2 embedded --->
@@ -227,8 +230,8 @@
 																			args.maxconnections, args.perrequestconnections, 
 																			args.sqlselect, args.sqlinsert, args.sqlupdate, args.sqldelete, 
 																			args.sqlstoredprocedures, args.drivername, 
-																			args.datasourceAction, args.existingDatasourceName, "", 
-																			args.mode, args.ignorecase) />
+																			args.datasourceAction, args.existingDatasourceName, true, 
+																			"", args.mode, args.ignorecase) />
 							</cfcase>
 							
 							<!--- 'other' jdbc driver --->
@@ -240,7 +243,7 @@
 																				args.maxconnections, args.perrequestconnections, 
 																				args.sqlselect, args.sqlinsert, args.sqlupdate, args.sqldelete, 
 																				args.sqlstoredprocedures, args.drivername, 
-																				args.datasourceAction, args.existingDatasourceName, 
+																				args.datasourceAction, args.existingDatasourceName, true, 
 																				args.verificationquery) />
 							</cfcase>
 						</cfswitch>

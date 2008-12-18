@@ -1,9 +1,14 @@
 Open BlueDragon Admin Console/API Release Notes 
 __________________________________
 
-$Date: 2008/12/03 11:57:00 $
+$Date: 2008/12/10 22:16:00 $
 __________________________________
 
+- fix for #29--remove user name/password from H2 hoststrings
+- fix for #31--add cacheResultSetMetadata setting as checkbox on MySQL datasource configuration screen
+- fix for #32--add "autoReconnect=true" at end of MySQL hoststring
+- added favorite icon
+- removed functionality to set password in setInitialSecurity()--all distros will come with default password of "admin" in XML
 - added functionality to respool undelivered mail and trigger the mail spool
 - fixed bug with setInitialSecurity() since empty password node is now present in bluedragon.xml by default
 

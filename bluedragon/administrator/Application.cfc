@@ -144,7 +144,7 @@
 				<cfset contextPath = "" />
 			</cfif>
 			
-			<cflocation url="#contextPath#/bluedragon/administrator/login.cfm" />
+			<cflocation url="#contextPath#/bluedragon/administrator/login.cfm" addtoken="false" />
 		</cfif>
 		
 		<cfreturn true />

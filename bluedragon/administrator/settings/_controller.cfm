@@ -193,7 +193,7 @@
 					<cfset Application.serverSettings.setServerSettings(args.buffersize, args.whitespacecomp, args.errorhandler, 
 																			args.missingtemplatehandler, args.defaultcharset, 
 																			args.scriptprotect, args.scriptsrc, args.tempdirectory, 
-																			args.componentcfc) />
+																			args.componentcfc, args.verifypathsettings) />
 					<cfcatch type="bluedragon.adminapi.serversettings">
 						<cfset session.message.text = CFCATCH.Message />
 						<cfset session.message.type = "error" />

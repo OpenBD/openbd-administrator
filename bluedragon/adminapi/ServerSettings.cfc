@@ -38,6 +38,8 @@
 		<cfargument name="scriptsrc" type="string" required="true" hint="Default CFFORM script location" />
 		<cfargument name="tempdirectory" type="string" required="true" hint="Default temp directory" />
 		<cfargument name="component-cfc" type="string" required="true" hint="Path for the base CFC file for all CFCs" />
+		<cfargument name="verifypathsettings" type="boolean" required="true" 
+				hint="Indicates whether or not to perform a read operation to verify that the paths/files provided actually exist and are readable" />
 		
 		<cfset var localConfig = getConfig() />
 		<cfset var tempFile = "" />
@@ -54,73 +56,75 @@
 			arguments["component-cfc"] = trim(arguments["component-cfc"]);
 		</cfscript>
 		
-		<!--- need to make sure we can create a CFC if the user is setting component-cfc;
-				this can still totally hose things up but they can always fix it via the XML file directly --->
-		<cfset tempPath = getFullPath(arguments["component-cfc"]) />
-		
-		<cftry>
-			<cffile action="read" file="#tempPath#" variable="tempFile" />
-			<cfcatch type="any">
-				<cfthrow message="Cannot read the base CFC file. Please verify this setting." 
-						type="bluedragon.adminapi.serversettings" />
-			</cfcatch>
-		</cftry>
-		
-		<!--- See if we can load the errorhandler, missingtemplatehandler, tempdirectory, and scriptsrc.
-				Assuming it's just the openbd internals that need the $ to figure out how to handle
-				the paths so we'll chop that off if it exists here just for validation purposes. --->
-		<cfif arguments.errorhandler is not "">
-			<cfset tempPath = getFullPath(arguments.errorhandler) />
-
+		<cfif arguments.verifypathsettings>
+			<!--- need to make sure we can create a CFC if the user is setting component-cfc;
+					this can still totally hose things up but they can always fix it via the XML file directly --->
+			<cfset tempPath = getFullPath(arguments["component-cfc"]) />
+			
 			<cftry>
 				<cffile action="read" file="#tempPath#" variable="tempFile" />
 				<cfcatch type="any">
-					<cfthrow message="Cannot read the specified error handler. Please verify this setting." 
+					<cfthrow message="Cannot read the base CFC file. Please verify this setting." 
 							type="bluedragon.adminapi.serversettings" />
 				</cfcatch>
 			</cftry>
-		</cfif>
-		
-		<cfif arguments.missingtemplatehandler is not "">
-			<cfset tempPath = getFullPath(arguments.missingtemplatehandler) />
-
-			<cftry>
-				<cffile action="read" file="#tempPath#" variable="tempFile" />
-				<cfcatch type="any">
-					<cfthrow message="Cannot read the specified missing template handler. Please verify this setting." 
-							type="bluedragon.adminapi.serversettings" />
-				</cfcatch>
-			</cftry>
-		</cfif>
-		
-		<cfif arguments.tempdirectory is not "">
-			<cfset tempPath = getFullPath(arguments.tempdirectory) />
-
-			<cftry>
-				<cfif not directoryExists(tempPath)>
-					<cfthrow message="Cannot read the specified temp directory. Please verify this setting." 
-							type="bluedragon.adminapi.serversettings" />
-				</cfif>
-				<cfcatch type="any">
-					<cfthrow message="Cannot read the specified temp directory. Please verify this setting." 
-							type="bluedragon.adminapi.serversettings" />
-				</cfcatch>
-			</cftry>
-		</cfif>
-		
-		<cfif arguments.scriptsrc is not "">
-			<cfset tempPath = getFullPath(arguments.scriptsrc) />
-
-			<cftry>
-				<cfif not directoryExists(tempPath)>
-					<cfthrow message="Cannot read the specified script source directory. Please verify this setting." 
-							type="bluedragon.adminapi.serversettings" />
-				</cfif>
-				<cfcatch type="any">
-					<cfthrow message="Cannot read the specified script source directory. Please verify this setting." 
-							type="bluedragon.adminapi.serversettings" />
-				</cfcatch>
-			</cftry>
+			
+			<!--- See if we can load the errorhandler, missingtemplatehandler, tempdirectory, and scriptsrc.
+					Assuming it's just the openbd internals that need the $ to figure out how to handle
+					the paths so we'll chop that off if it exists here just for validation purposes. --->
+			<cfif arguments.errorhandler is not "">
+				<cfset tempPath = getFullPath(arguments.errorhandler) />
+	
+				<cftry>
+					<cffile action="read" file="#tempPath#" variable="tempFile" />
+					<cfcatch type="any">
+						<cfthrow message="Cannot read the specified error handler. Please verify this setting." 
+								type="bluedragon.adminapi.serversettings" />
+					</cfcatch>
+				</cftry>
+			</cfif>
+			
+			<cfif arguments.missingtemplatehandler is not "">
+				<cfset tempPath = getFullPath(arguments.missingtemplatehandler) />
+	
+				<cftry>
+					<cffile action="read" file="#tempPath#" variable="tempFile" />
+					<cfcatch type="any">
+						<cfthrow message="Cannot read the specified missing template handler. Please verify this setting." 
+								type="bluedragon.adminapi.serversettings" />
+					</cfcatch>
+				</cftry>
+			</cfif>
+			
+			<cfif arguments.tempdirectory is not "">
+				<cfset tempPath = getFullPath(arguments.tempdirectory) />
+	
+				<cftry>
+					<cfif not directoryExists(tempPath)>
+						<cfthrow message="Cannot read the specified temp directory. Please verify this setting." 
+								type="bluedragon.adminapi.serversettings" />
+					</cfif>
+					<cfcatch type="any">
+						<cfthrow message="Cannot read the specified temp directory. Please verify this setting." 
+								type="bluedragon.adminapi.serversettings" />
+					</cfcatch>
+				</cftry>
+			</cfif>
+			
+			<cfif arguments.scriptsrc is not "">
+				<cfset tempPath = getFullPath(arguments.scriptsrc) />
+	
+				<cftry>
+					<cfif not directoryExists(tempPath)>
+						<cfthrow message="Cannot read the specified script source directory. Please verify this setting." 
+								type="bluedragon.adminapi.serversettings" />
+					</cfif>
+					<cfcatch type="any">
+						<cfthrow message="Cannot read the specified script source directory. Please verify this setting." 
+								type="bluedragon.adminapi.serversettings" />
+					</cfcatch>
+				</cftry>
+			</cfif>
 		</cfif>
 		
 		<!--- set the settings and set the config --->

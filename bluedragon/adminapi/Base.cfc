@@ -37,11 +37,20 @@
 		<!--- Grab some JVM specific information --->
 		<cfset variables.separator.path = getJVMProperty("path.separator") />
 		<cfset variables.separator.file = getJVMProperty("file.separator") />
+		<cfset variables.servletContainerHome = "" />
 
 		<cfif compareNoCase(left(getJVMProperty("os.name"), 7), "windows") eq 0>
 			<cfset variables.isWindows = true />
 		<cfelse>
 			<cfset variables.isWindows = false />
+		</cfif>
+		
+		<cfif getJVMProperty("jetty.home") is not "" and getJVMProperty("jetty.home") is not "[null]">
+			<cfset variables.servletContainerHome = getJVMProperty("jetty.home") />
+		</cfif>
+		
+		<cfif getJVMProperty("catalina.home") is not "" and getJVMProperty("catalina.home") is not "[null]">
+			<cfset variables.servletContainerHome = getJVMProperty("catalina.home") />
 		</cfif>
 
 		<cfif not directoryExists(expandPath("/WEB-INF")) and getJVMProperty("jetty.home") is not "" 
@@ -149,10 +158,12 @@
 		
 		<cfset var fullPath = "" />
 		
-		<cfif left(arguments.thePath, 1) is "$">
+		<cfif left(arguments.thePath, 2) is "$/">
 			<cfset fullPath = right(arguments.thePath, len(arguments.thePath) - 1) />
 		<cfelseif left(arguments.thePath, 1) is "/">
 			<cfset fullPath = expandPath(arguments.thePath) />
+		<cfelseif left(arguments.thePath, 4) is "$../">
+			<cfset fullPath = variables.servletContainerHome & right(arguments.thePath, len(arguments.thePath) - 3) />
 		<cfelse>
 			<cfset fullPath = arguments.thePath />
 		</cfif>

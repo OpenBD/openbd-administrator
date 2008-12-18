@@ -181,10 +181,19 @@
 							tabindex="11" />
 				</td>
 			</tr>
+			<tr>
+				<td align="right" bgcolor="##f0f0f0">Verify Path Settings?</td>
+				<td bgcolor="##ffffff">
+					<input type="radio" name="verifypathsettings" id="verifypathsettingsTrue" value="true" checked="true" tabindex="12" />
+					<label for="verifypathsettingsTrue">Yes</label>&nbsp;
+					<input type="radio" name="verifypathsettings" id="verifypathsettingsFalse" value="false" tabindex="13" />
+					<label for="verifypathsettingsFalse">No</label>
+				</td>
+			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" name="submit" value="Submit" tabindex="12" />
+					<input type="submit" name="submit" value="Submit" tabindex="14" />
 				</td>
 			</tr>
 		</table>
@@ -201,6 +210,18 @@
 			<li>
 				A path beginning with "/" is interpreted as a relative path from the web application root directory, which 
 				may be a subdirectory of the WEB-INF directory.
+			</li>
+			<li>
+				A path beginning with "$../" is interpreted as relative to the servlet container's home JVM property. 
+				For example, on Tomcat this would be relative to catalina.home, and on Jetty this would be relative to 
+				jetty.home.
+			</li>
+			<li>
+				If "Verify Path Settings" in the form above is set to "Yes," an attempt will be made to perform a read operation on 
+				the directories (or in the case of the Base CFC, the file) provided when the form is submitted. If the read operation 
+				is not successful, the settings will not be saved. If you are running OpenBD in an unusual environment for which read 
+				operations on the directories provided are not successful, but you wish to save the settings regardless, you must set 
+				"Verify Path Settings" to "No" in order for the settings to be saved.
 			</li>
 		</ul>
 

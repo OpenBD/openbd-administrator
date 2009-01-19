@@ -1,9 +1,13 @@
 Open BlueDragon Admin Console/API Release Notes 
 __________________________________
 
-$Date: 2008/12/10 22:16:00 $
+$Date: 2009/01/19 07:00:00 $
 __________________________________
 
+-- Stable Release 1.0.1 [19th January 2009]
+
+- added ability to turn path/file verification on and off on settings screen
+- fix for #33--issues with setting paths on certain installations/configurations
 - fix for #29--remove user name/password from H2 hoststrings
 - fix for #31--add cacheResultSetMetadata setting as checkbox on MySQL datasource configuration screen
 - fix for #32--add "autoReconnect=true" at end of MySQL hoststring

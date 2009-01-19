@@ -252,10 +252,10 @@
 			<li>
 				If you change this value, PLEASE use caution and ensure that the CFC file being used is error free,
 				and that the path to the CFC file is valid. Upon submitting the form the application will attempt to 
-				read the physical CFC file, but this does not ensure that an error in the CFC itself will not cause 
-				global problems on this instance of OpenBD. If problems do occur, the value must be changed in 
-				/WEB-INF/bluedragon/bluedragon.xml (preferably back to its deafult value of /WEB-INF/bluedragon/component.cfc) 
-				and the OpenBD instance must be restarted.
+				read the physical CFC file (provided you have "Verify Path Settings" set to "Yes"), but this does not 
+				ensure that an error in the CFC itself will not cause global problems on this instance of OpenBD. 
+				If problems do occur, the value must be changed in the bluedragon.xml configuration file and the 
+				OpenBD instance must be restarted.
 			</li>
 		</ul>
 	</cfoutput>

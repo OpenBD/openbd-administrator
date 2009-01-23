@@ -44,8 +44,8 @@
 			Application.variableSettings = createObject("component", "bluedragon.adminapi.VariableSettings");
 			Application.webServices = createObject("component", "bluedragon.adminapi.WebServices");
 			
-			Application.adminConsoleVersion = "1.0";
-			Application.adminConsoleBuildDate = LSDateFormat(createDate(2008,12,3)) & " " & LSTimeFormat(createTime(11,20,00));
+			Application.adminConsoleVersion = "1.0.1";
+			Application.adminConsoleBuildDate = LSDateFormat(createDate(2009,1,19)) & " " & LSTimeFormat(createTime(7,00,00));
 			
 			// Need to make sure the basic security nodes exist in bluedragon.xml. Other potential missing nodes
 			// are handled as the related pages within the administrator are hit.

@@ -4,6 +4,7 @@
 	Contributing Developers:
 	David C. Epler - dcepler@dcepler.net
 	Matt Woodward - matt@mattwoodward.com
+	Jordan Michaels - jordan@viviotech.net
 
 	This file is part of of the Open BlueDragon Admin API.
 
@@ -94,6 +95,9 @@
 		<cfset var localConfig = getConfig() />
 		<cfset var doSetConfig = false />
 		<cfset var i = 0 />
+		<cfset var mailServerString = "">
+		<cfset var numcolons = "">
+		<cfset var numats = "">
 
 		<cfset checkLoginStatus() />
 
@@ -129,26 +133,50 @@
 				<cfset tempMailServer.isPrimary = false />
 			</cfif>
 			
-			<!--- if the server info has been formatted using port, username, and password, need to handle it differently --->
-			<cfif find("@", theMailServer) gt 0>
-				<cfset tempMailServer.smtpserver = listFirst(listLast(theMailServer, "@"), ":") />
-				<cfset tempMailServer.smtpport = listLast(listLast(theMailServer, "@"), ":") />
-				<cfset tempMailServer.username = listFirst(listFirst(theMailServer, "@"), ":") />
-				<cfset tempMailServer.password = listLast(listFirst(theMailServer, "@"), ":") />
-				<cfset arrayAppend(mailServers, tempMailServer) />
-			<cfelseif find(":", theMailServer) gt 0>
-				<cfset tempMailServer.smtpserver = listFirst(theMailServer, ":") />
-				<cfset tempMailServer.smtpport = listLast(theMailServer, ":") />
-				<cfset tempMailServer.username = "" />
-				<cfset tempMailServer.password = "" />
-				<cfset arrayAppend(mailServers, tempMailServer) />
+			<cfset tempMailServer.username = "" />
+			<cfset tempMailServer.password = "" />
+			
+			<!---
+			Start out by seeing how many colons we're dealing with. This will give us an idea of what data we'll be
+			working with. We'll be working with the string from right to left.
+			0 = Server Only
+			>=1 = we have to check
+			--->
+			<cfset mailServerString = theMailServer>
+			<cfset numcolons = ListLen(mailServerString, ":") />
+			<cfif numcolons GT 0>
+			        <!--- If we're dealing with colons we have to do some variable hunting --->
+			        <!--- Check to see if the last variable is numeric. Yes = port, No = Server --->
+			        <cfif isnumeric(listLast(mailServerString, ":"))>
+			                <cfset tempMailServer.smtpport = listLast(mailServerString, ":") />
+			                <!--- drop the port from the string --->
+			                <cfset mailServerString = Left(mailServerString, (Len(mailServerString)-(len(listLast(mailServerString, ":"))+1))) />
+			        </cfif>
+			        <!--- From here, we know that the last variable is the server, so let's see if we have anything in addition to the server --->
+			        <cfset numats = ListLen(mailServerString, "@") />
+			        <cfif numats GT 1>
+			                <!--- if we have an at symbol, then we know we have user information of some sort --->
+			                <cfset tempMailServer.smtpserver = listLast(mailServerString, "@") />
+			                <!--- now drop the server info so all we have is user data --->
+			                <cfset mailServerString = Left(mailServerString, (Len(mailServerString)-(len(listLast(mailServerString, "@"))+1))) />
+			                <!--- assume that if a user name is specified, a colon is too --->
+			                <cfif right(mailServerString, 1) IS ":">
+			                        <!--- if the password field is blank --->
+			                        <cfset tempMailServer.username = listFirst(mailServerString, ":") />
+			                        <cfset tempMailServer.password = "" />
+			                <cfelse>
+			                        <cfset tempMailServer.username = listFirst(mailServerString, ":") />
+			                        <cfset tempMailServer.password = listLast(mailServerString, ":") />
+			                </cfif>
+			        <cfelse>
+			                <!--- if there is no at symbol, then we're done. --->
+			                <cfset tempMailServer.smtpserver = mailServerString />
+			        </cfif>
 			<cfelse>
-				<cfset tempMailServer.smtpserver = theMailServer />
-				<cfset tempMailServer.smtpport = localConfig.cfmail.smtpport />
-				<cfset tempMailServer.username = "" />
-				<cfset tempMailServer.password = "" />
-				<cfset arrayAppend(mailServers, tempMailServer) />
+			        <!--- If we're not dealing with colons, just the server name was specified --->
+			        <cfset tempMailServer.smtpserver = theMailServer />
 			</cfif>
+			<cfset arrayAppend(mailServers, tempMailServer) />
 			
 			<cfif arguments.mailServer is not "" and findNoCase(arguments.mailServer, theMailServer) gt 0>
 				<cfset returnMailServer = tempMailServer />
@@ -282,19 +310,51 @@
 		<cfset var port = 25 />
 		<cfset var username = "" />
 		<cfset var password = "" />
+		<cfset var mailServerString = "">
+		<cfset var numcolons = "">
+		<cfset var numats = "">
 
 		<cfset checkLoginStatus() />
 		
-		<cfif find("@", arguments.mailServer)>
-			<cfset theMailServer = listFirst(listLast(arguments.mailServer, "@"), ":") />
-			<cfset port = listLast(listLast(arguments.mailServer, "@"), ":") />
-			<cfset username = listFirst(listFirst(arguments.mailServer, "@"), ":") />
-			<cfset password = listLast(listFirst(arguments.mailServer, "@"), ":") />
-		<cfelseif find(":", arguments.mailServer)>
-			<cfset theMailServer = listFirst(arguments.mailServer, ":") />
-			<cfset port = listLast(arguments.mailServer, ":") />
+		<!---
+		Start out by seeing how many colons we're dealing with. This will give us an idea of what data we'll be
+		working with. We'll be working with the string from right to left.
+		0 = Server Only
+		>=1 = we have to check
+		--->
+		<cfset mailServerString = arguments.mailServer>
+		<cfset numcolons = ListLen(mailServerString, ":") />
+		<cfif numcolons GT 0>
+		        <!--- If we're dealing with colons we have to do some variable hunting --->
+		        <!--- Check to see if the last variable is numeric. Yes = port, No = Server --->
+		        <cfif isnumeric(listLast(mailServerString, ":"))>
+		                <cfset port = listLast(mailServerString, ":") />
+		                <!--- drop the port from the string --->
+		                <cfset mailServerString = Left(mailServerString, (Len(mailServerString)-(len(listLast(mailServerString, ":"))+1))) />
+		        </cfif>
+		        <!--- From here, we know that the last variable is the server, so let's see if we have anything in addition to the server --->
+		        <cfset numats = ListLen(mailServerString, "@") />
+		        <cfif numats GT 1>
+		                <!--- if we have an at symbol, then we know we have user information of some sort --->
+		                <cfset theMailServer = listLast(mailServerString, "@") />
+		                <!--- now drop the server info so all we have is user data --->
+		                <cfset mailServerString = Left(mailServerString, (Len(mailServerString)-(len(listLast(mailServerString, "@"))+1))) />
+		                <!--- assume that if a user name is specified, a colon is too --->
+		                <cfif right(mailServerString, 1) IS ":">
+		                        <!--- if the password field is blank --->
+		                        <cfset username = listFirst(mailServerString, ":") />
+		                        <cfset password = "" />
+		                <cfelse>
+		                        <cfset username = listFirst(mailServerString, ":") />
+		                        <cfset password = listLast(mailServerString, ":") />
+		                </cfif>
+		        <cfelse>
+		                <!--- if there is no at symbol, then we're done. --->
+		                <cfset theMailServer = mailServerString />
+		        </cfif>
 		<cfelse>
-			<cfset theMailServer = arguments.mailServer />
+		        <!--- If we're not dealing with colons, just the server name was specified --->
+		        <cfset theMailServer = arguments.mailServer />
 		</cfif>
 		
 		<cftry>

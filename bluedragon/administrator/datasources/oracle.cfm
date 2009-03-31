@@ -31,6 +31,11 @@
 	</cfif>
 	
 	<cfset dsinfo = session.datasource[1] />
+	
+	<!--- added connectstring so need to set to a default in case it doesn't exist in the xml --->
+	<cfif not StructKeyExists(dsinfo, "connectstring")>
+		<cfset dsinfo.connectstring = "" />
+	</cfif>
 </cfsilent>
 <cfsavecontent variable="request.content">
 <cfoutput>
@@ -150,9 +155,15 @@
 	<br />
 	<table border="0">
 		<tr>
+			<td valign="top"><label for="connectstring">Connection String</label></td>
+			<td valign="top">
+				<textarea name="connectstring" id="connectstring" rows="4" cols="40" tabindex="11">#dsinfo.connectstring#</textarea>
+			</td>
+		</tr>
+		<tr>
 			<td valign="top"><label for="initstring">Initialization String</label></td>
 			<td valign="top">
-				<textarea name="initstring" id="initstring" rows="4" cols="40" tabindex="11">#dsinfo.initstring#</textarea>
+				<textarea name="initstring" id="initstring" rows="4" cols="40" tabindex="12">#dsinfo.initstring#</textarea>
 			</td>
 		</tr>
 		<tr>
@@ -162,31 +173,31 @@
 					<tr>
 						<td>
 							<input type="checkbox" name="sqlselect" id="sqlselect" value="true"
-									<cfif dsinfo.sqlselect> checked="true"</cfif> tabindex="12" />
+									<cfif dsinfo.sqlselect> checked="true"</cfif> tabindex="13" />
 							<label for="sqlselect">SELECT</label>
 						</td>
 						<td>
 							<input type="checkbox" name="sqlinsert" id="sqlinsert" value="true"
-									<cfif dsinfo.sqlinsert> checked="true"</cfif> tabindex="13" />
+									<cfif dsinfo.sqlinsert> checked="true"</cfif> tabindex="14" />
 							<label for="sqlinsert">INSERT</label>
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<input type="checkbox" name="sqlupdate" id="sqlupdate" value="true"
-									<cfif dsinfo.sqlupdate> checked="true"</cfif> tabindex="14" />
+									<cfif dsinfo.sqlupdate> checked="true"</cfif> tabindex="15" />
 							<label for="sqlupdate">UPDATE</label>
 						</td>
 						<td>
 							<input type="checkbox" name="sqldelete" id="sqldelete" value="true"
-									<cfif dsinfo.sqldelete> checked="true"</cfif> tabindex="15" />
+									<cfif dsinfo.sqldelete> checked="true"</cfif> tabindex="16" />
 							<label for="sqldelete">DELETE</label>
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<input type="checkbox" name="sqlstoredprocedures" id="sqlstoredprocedures" value="true"
-									<cfif dsinfo.sqlstoredprocedures> checked="true"</cfif> tabindex="16" />
+									<cfif dsinfo.sqlstoredprocedures> checked="true"</cfif> tabindex="17" />
 							<label for="sqlstoredprocedures">Stored Procedures</label>
 						</td>
 						<td>&nbsp;</td>
@@ -198,35 +209,35 @@
 			<td><label for="perrequestconnections">Per-Request Connections</label></td>
 			<td>
 				<input type="checkbox" name="perrequestconnections" id="perrequestconnections" value="true"
-						<cfif dsinfo.perrequestconnections> checked="true"</cfif> tabindex="17" />
+						<cfif dsinfo.perrequestconnections> checked="true"</cfif> tabindex="18" />
 			</td>
 		</tr>
 		<tr>
 			<td><label for="maxconnections">Maximum Connections</label></td>
 			<td>
 				<input type="text" name="maxconnections" id="maxconnections" size="4" maxlength="4" 
-						value="#dsinfo.maxconnections#" tabindex="18" />
+						value="#dsinfo.maxconnections#" tabindex="19" />
 			</td>
 		</tr>
 		<tr>
 			<td><label for="connectiontimeout">Connection Timeout</label></td>
 			<td>
 				<input type="text" name="connectiontimeout" id="connectiontimeout" size="4" maxlength="10" 
-						value="#dsinfo.connectiontimeout#" tabindex="19" />
+						value="#dsinfo.connectiontimeout#" tabindex="20" />
 			</td>
 		</tr>
 		<tr>
 			<td><label for="logintimeout">Login Timeout</label></td>
 			<td>
 				<input type="text" name="logintimeout" id="logintimeout" size="4" maxlength="4" 
-						value="#dsinfo.logintimeout#" tabindex="20" />
+						value="#dsinfo.logintimeout#" tabindex="21" />
 			</td>
 		</tr>
 		<tr>
 			<td><label for="connectionretries">Connection Retries</label></td>
 			<td>
 				<input type="text" name="connectionretries" id="connectionretries" size="4" maxlength="4" 
-						value="#dsinfo.connectionretries#" tabindex="21" />
+						value="#dsinfo.connectionretries#" tabindex="22" />
 			</td>
 		</tr>
 	</table>

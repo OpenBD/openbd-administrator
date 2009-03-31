@@ -39,6 +39,7 @@
 				hint="JDBC URL for 'other' database types. Databasename, server, and port arguments are ignored if a hoststring is provided." />
 		<cfargument name="filepath" type="string" required="false" default="" hint="File path for file-based databases (H2, etc.)" />
 		<cfargument name="description" type="string" required="false" default="" hint="A description of this data source" />
+		<cfargument name="connectstring" type="string" required="false" default="" hint="Additional connection information" />
 		<cfargument name="initstring" type="string" required="false" default="" hint="Additional initialization settings" />
 		<cfargument name="connectiontimeout" type="numeric" required="false" default="120" 
 				hint="Number of seconds OpenBD maintains an unused connection before it is destroyed" />
@@ -110,12 +111,17 @@
 			</cfif>
 	
 			<cfset datasourceSettings.hoststring = formatJDBCURL(trim(arguments.drivername), trim(arguments.server), 
-																trim(arguments.port), trim(arguments.databasename), 
+																trim(arguments.port), trim(arguments.databasename), arguments.connectstring, 
 																arguments.filepath, trim(arguments.username), trim(arguments.password), 
 																arguments.cacheResultSetMetadata, arguments.h2Mode, arguments.h2IgnoreCase) />
 		<cfelse>
 			<cfset arguments.port = "" />
 			<cfset datasourceSettings.hoststring = trim(arguments.hoststring) />
+			
+			<cfif trim(arguments.connectstring) is not "">
+				<cfset datasourceSettings.hoststring = datasourceSettings.hoststring & trim(arguments.connectstring) />
+			</cfif>
+			
 			<cfset datasourceSettings.verificationquery = trim(arguments.verificationQuery) />
 		</cfif>
 		
@@ -130,6 +136,7 @@
 			datasourceSettings.password = trim(arguments.password);
 			datasourceSettings.description = trim(arguments.description);
 			datasourceSettings.drivername = trim(arguments.drivername);
+			datasourceSettings.connectstring = trim(arguments.connectstring);
 			datasourceSettings.initstring = trim(arguments.initstring);
 			datasourceSettings.sqlselect = ToString(arguments.sqlselect);
 			datasourceSettings.sqlinsert = ToString(arguments.sqlinsert);
@@ -579,6 +586,7 @@
 		<cfargument name="server" type="string" required="true" hint="The database server name or IP address" />
 		<cfargument name="port" type="numeric" required="true" hint="The database server port" />
 		<cfargument name="database" type="string" required="true" hint="The database name" />
+		<cfargument name="connectstring" type="string" required="false" hint="Additional conncetion information" />
 		<cfargument name="filepath" type="string" required="false" default="" hint="The file path for a file-based database" />
 		<cfargument name="username" type="string" required="false" default="" 
 				hint="Database user name if one is to be included as part of the connection string. Mostly used for file-based databases." />
@@ -627,24 +635,40 @@
 				<cfif arguments.h2Mode is not "H2Native">
 					<cfset jdbcURL = jdbcURL & ";MODE=#arguments.h2Mode#" />
 				</cfif>
+				
+				<cfif arguments.connectstring is not "">
+					<cfset jdbcURL = jdbcURL & ";" & arguments.connectstring />
+				</cfif>
 			</cfcase>
 			
 			<!--- sql server -- microsoft driver --->
 			<cfcase value="com.microsoft.sqlserver.jdbc.SQLServerDriver">
 				<!--- url format: jdbc:sqlserver://[serverName[\instanceName][:portNumber]][;property=value[;property=value]] --->
 				<cfset jdbcURL = "jdbc:sqlserver://#arguments.server#:#arguments.port#;databaseName=#arguments.database#" />
+				
+				<cfif arguments.connectstring is not "">
+					<cfset jdbcURL = jdbcURL & ";" & arguments.connectstring />
+				</cfif>
 			</cfcase>
 			
 			<!--- sql server -- jtds driver --->
 			<cfcase value="net.sourceforge.jtds.jdbc.Driver">
 				<!--- url format: jdbc:jtds:<server_type>://<server>[:<port>][/<database>][;<property>=<value>[;...]] --->
 				<cfset jdbcURL = "jdbc:jtds:sqlserver://#arguments.server#:#arguments.port#/#arguments.database#" />
+				
+				<cfif arguments.connectstring is not "">
+					<cfset jdbcURL = jdbcURL & ";" & arguments.connectstring />
+				</cfif>
 			</cfcase>
 			
 			<!--- mysql --->
 			<cfcase value="com.mysql.jdbc.Driver">
 				<!--- url format: jdbc:mysql://[host][,failoverhost...][:port]/[database][?propertyName1][=propertyValue1][&propertyName2][=propertyValue2] --->
 				<cfset jdbcURL = "jdbc:mysql://#arguments.server#:#arguments.port#/#arguments.database#?cacheResultSetMetadata=#arguments.cacheResultSetMetadata#&autoReconnect=true" />
+				
+				<cfif arguments.connectstring is not "">
+					<cfset jdbcURL = jdbcURL & "&" & arguments.connectstring />
+				</cfif>
 			</cfcase>
 			
 			<!--- oracle --->

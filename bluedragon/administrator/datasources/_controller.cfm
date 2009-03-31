@@ -49,7 +49,7 @@
 		<!--- DATASOURCES --->
 		<cfcase value="addDatasource">
 			<cfparam name="args.dsn" type="string" default="" />
-
+			
 			<cfset errorFields = arrayNew(2) />
 			<cfset errorFieldsIndex = 1 />
 			
@@ -84,6 +84,7 @@
 					dsinfo.username = "";
 					dsinfo.password = "";
 					dsinfo.description = "";
+					dsinfo.connectstring = "";
 					dsinfo.initstring = "";
 					dsinfo.sqlselect = true;
 					dsinfo.sqlinsert = true;
@@ -144,7 +145,7 @@
 			<cfparam name="args.dbtype" type="string" default="" />
 			<!--- This is MySQL specific. Default to false since it's a checkbox on the form. --->
 			<cfparam name="args.cacheresultsetmetadata" type="boolean" default="false" />
-			
+
 			<cfset errorFields = arrayNew(2) />
 			<cfset errorFieldsIndex = 1 />
 			
@@ -211,7 +212,7 @@
 							<cfcase value="">
 								<cfset Application.datasource.setDatasource(args.name, args.databasename, args.server, 
 																				args.port, args.username, args.password, 
-																				"", "", args.description, 
+																				"", "", args.description, args.connectstring, 
 																				args.initstring, args.connectiontimeout, 
 																				args.connectionretries, args.logintimeout, 
 																				args.maxconnections, args.perrequestconnections, 
@@ -225,8 +226,8 @@
 							<cfcase value="h2embedded">
 								<cfset Application.datasource.setDatasource(args.name, args.databasename, "", 0, 
 																			args.username, args.password, "", args.filepath, 
-																			args.description, args.initstring, args.connectiontimeout, 
-																			args.connectionretries, args.logintimeout, 
+																			args.description, args.connectstring, args.initstring, 
+																			args.connectiontimeout, args.connectionretries, args.logintimeout, 
 																			args.maxconnections, args.perrequestconnections, 
 																			args.sqlselect, args.sqlinsert, args.sqlupdate, args.sqldelete, 
 																			args.sqlstoredprocedures, args.drivername, 
@@ -238,7 +239,7 @@
 							<cfcase value="other">
 								<cfset Application.datasource.setDatasource(args.name, "", "", 0, args.username, 
 																				args.password, args.hoststring, "", args.description, 
-																				args.initstring, args.connectiontimeout, 
+																				args.connectstring, args.initstring, args.connectiontimeout, 
 																				args.connectionretries, args.logintimeout, 
 																				args.maxconnections, args.perrequestconnections, 
 																				args.sqlselect, args.sqlinsert, args.sqlupdate, args.sqldelete, 

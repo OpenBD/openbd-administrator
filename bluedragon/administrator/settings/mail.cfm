@@ -61,6 +61,11 @@
 		<cfset mailServer = session.mailServer[1] />
 		<cfset mailServerAction = "update" />
 		<cfset mailServerFormActionHeader = "Edit" />
+		
+		<!--- may not be a port specified in the xml --->
+		<cfif not StructKeyExists(mailServer, "smtpport")>
+			<cfset mailServer.smtpport = 25 />
+		</cfif>
 	<cfelse>
 		<cfset mailServer = structNew() />
 		<cfset mailServer.smtpserver = "" />

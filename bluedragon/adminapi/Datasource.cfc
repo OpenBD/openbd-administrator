@@ -58,7 +58,7 @@
 		<cfargument name="action" type="string" required="false" default="create" hint="Action to take on the datasource (create or update)" />
 		<cfargument name="existingDatasourceName" type="string" required="false" default="" 
 				hint="The existing (old) datasource name so we know what to delete if this is an update" />
-		<cfargument name="cacheResultSetMetadata" type="boolean" required="false" default="true" hint="MySQL specific setting" />
+		<cfargument name="cacheResultSetMetadata" type="boolean" required="false" default="false" hint="MySQL specific setting" />
 		<cfargument name="verificationQuery" type="string" required="false" default="" hint="Custom verification query for 'other' driver types" />
 		<cfargument name="h2Mode" type="string" required="false" default="" hint="Compatibility mode for H2 database" />
 		<cfargument name="h2IgnoreCase" type="boolean" required="false" default="true" hint="Boolean indicating whether or not H2 ignores case" />
@@ -592,7 +592,7 @@
 				hint="Database user name if one is to be included as part of the connection string. Mostly used for file-based databases." />
 		<cfargument name="password" type="string" required="false" default="" 
 				hint="Database password if one is to be included as part of the connection string. Mostly used for file-based databases." />
-		<cfargument name="cacheResultSetMetadata" type="boolean" required="false" default="true" hint="MySQL specific setting" />
+		<cfargument name="cacheResultSetMetadata" type="boolean" required="false" default="false" hint="MySQL specific setting" />
 		<cfargument name="h2Mode" type="string" required="false" default="" hint="Compatibility mode for H2" />
 		<cfargument name="h2IgnoreCase" type="boolean" required="false" default="true" 
 				hint="Boolean indicating whether or not H2 should ignore case" />

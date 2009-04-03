@@ -35,10 +35,10 @@
 	<!--- based on bug in certain versions of mysql, adding cacheResultSetMetadata as a checkbox --->
 	<cfset crsmdStart = findNoCase("cacheResultSetMetadata", dsinfo.hoststring) />
 	
-	<!--- if cacheResultSetMetadata doesn't exist in the hoststring, set the value to true since 
-			only certain combinations of driver and engine seem to have the problem --->
+	<!--- if cacheResultSetMetadata doesn't exist in the hoststring, set the value to false since 
+			as a rule a setting of true is causing problems for people --->
 	<cfif crsmdStart eq 0>
-		<cfset dsinfo.cacheresultsetmetadata = true />
+		<cfset dsinfo.cacheresultsetmetadata = false />
 	<cfelse>
 		<cfset crsmdEnd = find("&", dsinfo.hoststring, crsmdStart) />
 		

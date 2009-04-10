@@ -3,6 +3,7 @@
 	
 	Contributing Developers:
 	Matt Woodward - matt@mattwoodward.com
+	Jordan Michaels - jordan@viviotech.net
 
 	This file is part of of the Open BlueDragon Administrator.
 
@@ -229,6 +230,9 @@
 				<td><strong>Status</strong></td>
 			</tr>
 		<cfloop index="i" from="1" to="#arrayLen(mailServers)#">
+			<cfif NOT IsDefined("mailServers[i].smtpport")>
+				<cfset mailServers[i].smtpport = 25>
+			</cfif>
 			<tr <cfif not structKeyExists(mailServers[i], "verified")>bgcolor="##ffffff"<cfelseif mailServers[i].verified>bgcolor="##ccffcc"<cfelseif not mailServers[i].verified>bgcolor="##ffff99"</cfif>>
 				<td width="100">
 					<a href="_controller.cfm?action=editMailServer&mailServer=#mailServers[i].smtpserver#" 

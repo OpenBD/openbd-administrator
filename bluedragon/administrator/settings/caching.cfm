@@ -59,6 +59,25 @@
 			<cfset queryCacheMessage = CFCATCH.Message />
 		</cfcatch>
 	</cftry>
+	
+	<cfif not StructKeyExists(cachingSettings, "cfcachecontent")>
+		<cfset cachingSettings.cfcachecontent = StructNew() />
+	</cfif>
+	
+	<cfif not StructKeyExists(cachingSettings.cfcachecontent, "datasource")>
+		<cfset cachingSettings.cfcachecontent.datasource = "" />
+	</cfif>
+	
+	<cfif not StructKeyExists(cachingSettings.cfcachecontent, "total")>
+		<cfset cachingSettings.cfcachecontent.total = 1000 />
+	</cfif>
+
+	<cftry>
+		<cfset datasources = Application.datasource.getDatasources() />
+		<cfcatch type="bluedragon.adminapi.datasource">
+			<cfset datasources = arrayNew(1) />
+		</cfcatch>
+	</cftry>
 </cfsilent>
 <cfsavecontent variable="request.content">
 	<cfoutput>
@@ -96,6 +115,17 @@
 			function validateQueryCacheForm(f) {
 				if (f.cachecount.value != parseInt(f.cachecount.value)) {
 					alert("Please enter a numeric value for query cache size. If no caching is desired, please enter 0.");
+					return false;
+				} else {
+					return true;
+				}
+			}
+			
+			function validateCFCacheContentForm(f) {
+				if (f.total.value.length == 0 || 
+						f.total.value != parseInt(f.total.value) || 
+						f.total.value <= 0) {
+					alert("Item Cache Size must be a numeric value greater than 0.");
 					return false;
 				} else {
 					return true;
@@ -224,6 +254,46 @@
 			</tr>
 		</table>
 		</form>
+		
+		<br /><br />
+		
+		<form name="cfcachecontentForm" action="_controller.cfm?action=processCFCacheContentForm" method="post" 
+				onsubmit="javascript:return validateCFCacheContentForm(this);">
+		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+			<tr bgcolor="##dedede">
+				<td colspan="2"><strong>CFCACHECONTENT Settings</strong></td>
+			</tr>
+			<tr>
+				<td bgcolor="##f0f0f0" align="right">
+					<label for="total">Item Cache Size</label>
+				</td>
+				<td bgcolor="##ffffff">
+					<input type="text" name="total" id="total" size="6" maxlength="5" 
+							value="#cachingSettings.cfcachecontent.total#" tabindex="11" />
+				</td>
+			</tr>
+			<tr>
+				<td bgcolor="##f0f0f0" align="right">
+					<label for="datasource">Datasource</label>
+				</td>
+				<td bgcolor="##ffffff">
+					<select name="datasource" id="datasource" tabindex="12">
+						<option value=""<cfif cachingSettings.cfcachecontent.datasource is ""> selected="true"</cfif>>- select -</option>
+					<cfif arrayLen(datasources) gt 0>
+						<cfloop index="i" from="1" to="#arrayLen(datasources)#">
+						<option value="#datasources[i].name#"<cfif cachingSettings.cfcachecontent.datasource is datasources[i].name> selected="true"</cfif>>#datasources[i].name#</option>
+						</cfloop>
+					</cfif>
+					</select><br />
+				</td>
+			</tr>
+			<tr bgcolor="##dedede">
+				<td>&nbsp;</td>
+				<td><input type="submit" name="submit" value="Submit" tabindex="13" /></td>
+			</tr>
+		</table>
+		</form>
+		
 		<p><strong>Information Concerning Caching</strong></p>
 		
 		<ul>
@@ -232,6 +302,11 @@
 				If the cache statistics are always all 0, this is likely because you are running a pre-1.0 version 
 				of the OpenBD engine. The underlying caching code was changed for 1.0 so cache statistics on 
 				pre-1.0 versions of OpenBD are not reported.
+			</li>
+			<li>
+				The datasource setting for CFCACHECONTENT indicates the datasource in which items will be stored 
+				after the value of Item Cache Size field is exceeded. The value of Item Cache Size must be a 
+				numeric value greater than 0.
 			</li>
 		</ul>
 	</cfoutput>

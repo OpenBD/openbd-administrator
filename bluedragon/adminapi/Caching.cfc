@@ -68,6 +68,27 @@
 		<cfset cachingSettings.file.maxfiles = localConfig.file.maxfiles />
 		<cfset cachingSettings.file.trustcache = localConfig.file.trustcache />
 		
+		<!--- cfcachecontent node may not exist --->
+		<cfif not structKeyExists(localConfig, "cfcachecontent")>
+			<cfset localConfig.cfcachecontent = structNew() />
+			<cfset localConfig.cfcachecontent.datasource = "" />
+			<cfset localConfig.cfcachecontent.total = "1000" />
+			<cfset doSetConfig = true />
+		</cfif>
+		
+		<cfif not structKeyExists(localConfig.cfcachecontent, "datasource")>
+			<cfset localConfig.cfcachecontent.datasource = "" />
+			<cfset doSetConfig = true />
+		</cfif>
+		
+		<cfif not structKeyExists(localConfig.cfcachecontent, "total")>
+			<cfset localConfig.cfcachecontent.total = "1000" />
+			<cfset doSetConfig = true />
+		</cfif>
+		
+		<cfset cachingSettings.cfcachecontent.datasource = localConfig.cfcachecontent.datasource />
+		<cfset cachingSettings.cfcachecontent.total = localConfig.cfcachecontent.total />
+		
 		<cfif doSetConfig>
 			<cfset setConfig(localConfig) />
 		</cfif>
@@ -105,6 +126,29 @@
 	</cffunction>
 	
 	<!--- CONTENT CACHE METHODS --->
+	<cffunction name="setCFCacheContentSettings" access="public" output="false" returntype="void" 
+			hint="Updates the CFCACHECONTENT settings">
+		<cfargument name="total" type="numeric" required="true" 
+				hint="The maximum number of items to cache in RAM before using the datasource" />
+		<cfargument name="datasource" type="string" required="true" 
+				hint="The datasource to use for items exceeding the maximum number to be stored in RAM" />
+		
+		<cfset var localConfig = getConfig() />
+
+		<cfset checkLoginStatus() />
+		
+		<cfif find(".", arguments.total) neq 0 or not isNumeric(arguments.total) 
+				or arguments.total lte 0>
+			<cfthrow message="The item cache size must be a numeric value greater than 0" 
+					type="bluedragon.adminapi.caching" />
+		</cfif>
+		
+		<cfset localConfig.cfcachecontent.total = ToString(arguments.total) />
+		<cfset localConfig.cfcachecontent.datasource = arguments.datasource />
+		
+		<cfset setConfig(localConfig) />
+	</cffunction>
+	
 	<cffunction name="getNumContentInCache" access="public" output="false" returntype="numeric" 
 			hint="Returns the number of items in the content cache (i.e. created with <cfcachecontent>)">
 
@@ -251,5 +295,4 @@
 
 		<cfset CacheDeleteAll("query") />
 	</cffunction>
-	
 </cfcomponent>

@@ -400,6 +400,36 @@
 			<cflocation url="caching.cfm" addtoken="false" />
 		</cfcase>
 		
+		<cfcase value="processCFCacheContentForm">
+			<cfset errorFields = arrayNew(2) />
+			<cfset errorFieldsIndex = 1 />
+			
+			<cfif not IsNumeric(args.total) 
+					or args.total lte 0>
+				<cfset errorFields[errorFieldsIndex][1] = "total" />
+				<cfset errorFields[errorFieldsIndex][2] = "The value of Item Cache Size must be a numeric value greater than 0." />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
+			
+			<cfif arrayLen(errorFields) gt 0>
+				<cfset session.errorFields = errorFields />
+				<cflocation url="caching.cfm" addtoken="false" />
+			<cfelse>
+				<cftry>
+					<cfset Application.caching.setCFCacheContentSettings(argumentcollection = args) />
+					<cfcatch type="bluedragon.adminapi.caching">
+						<cfset session.message.text = CFCATCH.Message />
+						<cfset session.message.type = "error" />
+						<cflocation url="caching.cfm" addtoken="false" />
+					</cfcatch>
+				</cftry>
+			</cfif>
+			
+			<cfset session.message.text = "The CFCACHECONTENT settings were updated successfully." />
+			<cfset session.message.type = "info" />
+			<cflocation url="caching.cfm" addtoken="false" />
+		</cfcase>
+		
 		<!--- VARIABLES --->
 		<cfcase value="processVariableForm">
 			<cfset errorFields = arrayNew(2) />

@@ -28,6 +28,8 @@
 			<cfset errorFieldList = listAppend(errorFieldList, session.errorFields[i][1], ",") />
 		</cfloop>
 	</cfif>
+	
+	<cfsetting showdebugoutput="false" />
 </cfsilent>
 <cfsavecontent variable="request.content">
 	<cfoutput>

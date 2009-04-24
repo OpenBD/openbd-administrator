@@ -35,6 +35,7 @@
 		<cfargument name="missingtemplatehandler" type="string" required="true" hint="Path for the default missing template handler CFM template" />
 		<cfargument name="defaultcharset" type="string" required="true" hint="The default character set" />
 		<cfargument name="scriptprotect" type="boolean" required="true" hint="Apply global script protection - protects against cross-site scripting attacks" />
+		<cfargument name="legacyformvalidation" type="boolean" required="true" hint="Enable legacy form validation - legacy form validation can cause issues with Facebook applications" />
 		<cfargument name="scriptsrc" type="string" required="true" hint="Default CFFORM script location" />
 		<cfargument name="tempdirectory" type="string" required="true" hint="Default temp directory" />
 		<cfargument name="component-cfc" type="string" required="true" hint="Path for the base CFC file for all CFCs" />
@@ -135,6 +136,7 @@
 			localConfig.system.missingtemplatehandler = arguments.missingtemplatehandler;
 			localConfig.system.defaultcharset = arguments.defaultcharset;
 			localConfig.system.scriptprotect = ToString(arguments.scriptprotect);
+			localConfig.system.legacyformvalidation = ToString(arguments.legacyformvalidation);
 			localConfig.system.scriptsrc = arguments.scriptsrc;
 			localConfig.system.tempdirectory = arguments.tempdirectory;
 			localConfig.system["component-cfc"] = arguments["component-cfc"];
@@ -169,6 +171,11 @@
 		
 		<cfif not structKeyExists(localConfig.system, "scriptprotect")>
 			<cfset localConfig.system.scriptprotect = "false" />
+			<cfset updateConfig = true />
+		</cfif>
+		
+		<cfif not structKeyExists(localConfig.system, "legacyformvalidation")>
+			<cfset localConfig.system.legacyformvalidation = "true" />
 			<cfset updateConfig = true />
 		</cfif>
 		

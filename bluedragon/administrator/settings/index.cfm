@@ -22,6 +22,11 @@
 --->
 <cfsilent>
 	<cfset serverSettings = Application.serverSettings.getServerSettings() />
+	
+	<cfif not StructKeyExists(serverSettings, "legacyformvalidation")>
+		<cfset serverSettings.legacyformvalidation = true />
+	</cfif>
+	
 	<cfset charsets = Application.serverSettings.getAvailableCharsets() />
 </cfsilent>
 <cfsavecontent variable="request.content">
@@ -162,38 +167,52 @@
 				</td>
 			</tr>
 			<tr>
+				<td align="right" bgcolor="##f0f0f0">Support Legacy Form Validation</td>
+				<td bgcolor="##ffffff">
+					<input type="radio" name="legacyformvalidation" id="legacyformvalidationTrue" 
+							value="true"<cfif serverSettings.legacyformvalidation> checked="true"</cfif> 
+							tabindex="9" />&nbsp;
+					<label for="legacyformvalidationTrue">Yes</label>&nbsp;
+					<input type="radio" name="legacyformvalidation" id="legacyformvalidationFalse" 
+							value="false"<cfif not serverSettings.legacyformvalidation> checked="true"</cfif> 
+							tabindex="10" />
+					<label for="legacyformvalidationFalse">No</label>
+				</td>
+			</tr>
+			<tr>
 				<td align="right" bgcolor="##f0f0f0"><label for="scriptsrc">Default CFFORM Script Source Location</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="scriptsrc" id="scriptsrc" size="40" value="#serverSettings.scriptsrc#" tabindex="9" />
+					<input type="text" name="scriptsrc" id="scriptsrc" size="40" 
+							value="#serverSettings.scriptsrc#" tabindex="11" />
 				</td>
 			</tr>
 			<tr>
 				<td align="right" bgcolor="##f0f0f0"><label for="tempdirectory">Temp Directory Location</label></td>
 				<td bgcolor="##ffffff">
 					<input type="text" name="tempdirectory" id="tempdirectory" size="40" value="#serverSettings.tempdirectory#" 
-							tabindex="10" />
+							tabindex="12" />
 				</td>
 			</tr>
 			<tr>
 				<td align="right" bgcolor="##f0f0f0"><label for="componentcfc">Base ColdFusion Component (CFC)</label></td>
 				<td bgcolor="##ffffff">
 					<input type="text" name="componentcfc" id="componentcfc" size="40" value="#serverSettings['component-cfc']#" 
-							tabindex="11" />
+							tabindex="13" />
 				</td>
 			</tr>
 			<tr>
 				<td align="right" bgcolor="##f0f0f0">Verify Path Settings?</td>
 				<td bgcolor="##ffffff">
-					<input type="radio" name="verifypathsettings" id="verifypathsettingsTrue" value="true" checked="true" tabindex="12" />
+					<input type="radio" name="verifypathsettings" id="verifypathsettingsTrue" value="true" checked="true" tabindex="14" />
 					<label for="verifypathsettingsTrue">Yes</label>&nbsp;
-					<input type="radio" name="verifypathsettings" id="verifypathsettingsFalse" value="false" tabindex="13" />
+					<input type="radio" name="verifypathsettings" id="verifypathsettingsFalse" value="false" tabindex="15" />
 					<label for="verifypathsettingsFalse">No</label>
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" name="submit" value="Submit" tabindex="14" />
+					<input type="submit" name="submit" value="Submit" tabindex="16" />
 				</td>
 			</tr>
 		</table>

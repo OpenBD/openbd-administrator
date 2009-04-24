@@ -305,7 +305,7 @@
 			</li>
 			<li>
 				The datasource setting for CFCACHECONTENT indicates the datasource in which items will be stored 
-				after the value of Item Cache Size field is exceeded. The value of Item Cache Size must be a 
+				after the value of Item Cache Size is exceeded. The value of Item Cache Size must be a 
 				numeric value greater than 0.
 			</li>
 		</ul>

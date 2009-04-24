@@ -1,8 +1,19 @@
 Open BlueDragon Admin Console/API Release Notes 
 __________________________________
 
-$Date: 2009/01/19 07:00:00 $
+$Date: 2009/04/24 23:09:00 $
 __________________________________
+
+-- Stable Release 1.0.2 [24th April 2009]
+
+- fix for #45--ability to enable/disable legacy form validation (legacy form validation causes issues with Faceboook applications)
+- fix for #43--change default for cacheResultSetMetadata on MySQL datasources to false; a setting of true causes issues (yellow error screen) for most users
+- fix for #41--mail server admin page throws an error due to change in default xml file
+- fix for #40--add connectionstring field to datasource forms
+- fix for #39--allow additional parameters to be added to datasources (see #40)
+- fix for #38--email server usernames containing @ improperly parsed
+- fix for #36--allow setting of cfcachecontent cache size and datasource
+- fix for #34--don't show debug output in openbd administrator even if debug output is turned on
 
 -- Stable Release 1.0.1 [19th January 2009]
 

@@ -57,17 +57,21 @@
 		
 		<!--- add the database driver description (if available) and some other placeholder info to the array of datasources --->
 		<cfloop index="i" from="1" to="#arrayLen(datasources)#">
-			<cfif structKeyExists(datasources[i], "drivername")>
-				<cftry>
-					<cfset datasources[i].driverdescription = 
-							Application.datasource.getDriverInfo(drivername = datasources[i].drivername).driverdescription />
-					<cfcatch type="any">
-						<!--- assume there's a drivername in one of the datasource nodes that we can't pull data on --->
-						<cfset datasources[i].driverdescription = "Other" />
-					</cfcatch>
-				</cftry>
+			<cfif datasources[i].databasename is "">
+				<cfset datasources[i].driverdescription = "Other" />
 			<cfelse>
-				<cfset datasources[i].driverdescription = "" />
+				<cfif structKeyExists(datasources[i], "drivername")>
+					<cftry>
+						<cfset datasources[i].driverdescription = 
+								Application.datasource.getDriverInfo(drivername = datasources[i].drivername).driverdescription />
+						<cfcatch type="any">
+							<!--- assume there's a drivername in one of the datasource nodes that we can't pull data on --->
+							<cfset datasources[i].driverdescription = "Other" />
+						</cfcatch>
+					</cftry>
+				<cfelse>
+					<cfset datasources[i].driverdescription = "" />
+				</cfif>
 			</cfif>
 		</cfloop>
 		

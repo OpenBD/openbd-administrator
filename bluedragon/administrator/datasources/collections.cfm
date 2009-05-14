@@ -165,6 +165,24 @@
 	
 	<ul>
 		<li>
+			The Collection Path should be a complete system path that is ideally in your system's "work" directory.
+			Some examples are as follows:<br>
+			<strong>
+			Linux:<br>
+			</strong>
+			<ul>
+			<li>/opt/tomcat/webapps/openbd/WEB-INF/bluedragon/work/cfcollection</li>
+			<li>/opt/openbd/work/cfcollection</li>
+			</ul>
+			<strong>
+			Windows:<br>
+			</strong>
+			<ul>
+			<li>c:\tomcat\webapps\openbd\WEB-INF\bluedragon\work\cfcollection</li>
+			<li>c:\openbd\work\cfcollection</li>
+			</ul>
+		</li>
+		<li>
 			Open BlueDragon's full-text indexing and search is built on 
 			<a href="http://lucene.apache.org/" target="_blank">Apache Lucene</a>.
 		</li>

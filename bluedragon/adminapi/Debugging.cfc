@@ -4,6 +4,7 @@
 	Contributing Developers:
 	David C. Epler - dcepler@dcepler.net
 	Matt Woodward - matt@mattwoodward.com
+	Jordan Michaels - jordan@viviotech.net
 
 	This file is part of of the Open BlueDragon Admin API.
 
@@ -443,7 +444,10 @@
 		<cfif variables.isMultiContextJetty>
 			<cfset logFilePath = "#getJVMProperty('jetty.home')##variables.separator.file#logs#variables.separator.file#openbd" />
 		<cfelse>
-			<cfset logFilePath = expandPath("/WEB-INF/bluedragon/work") />
+			<cfset logFilePath = "/opt/openbd/logs" />
+			<cfif NOT directoryExists(logFilePath)>
+				<cfset logFilePath = expandPath("/WEB-INF/bluedragon/work") />
+			</cfif>
 		</cfif>
 		
 		<!--- add the standard log files if they exist --->
@@ -605,7 +609,10 @@
 		<cfif variables.isMultiContextJetty>
 			<cfset logFilePath = "#getJVMProperty('jetty.home')##variables.separator.file#logs#variables.separator.file#openbd" />
 		<cfelse>
-			<cfset logFilePath = expandPath("/WEB-INF/bluedragon/work") />
+			<cfset logFilePath = "/opt/openbd/logs" />
+			<cfif NOT directoryExists(logFilePath)>
+				<cfset logFilePath = expandPath("/WEB-INF/bluedragon/work") />
+			</cfif>
 		</cfif>
 		
 		<cfswitch expression="#arguments.logFile#">
@@ -685,7 +692,10 @@
 		<cfif variables.isMultiContextJetty>
 			<cfset rteLogPath = "#getJVMProperty('jetty.home')##variables.separator.file#logs#variables.separator.file#openbd" />
 		<cfelse>
-			<cfset rteLogPath = expandPath("/WEB-INF/bluedragon/work") />
+			<cfset rteLogPath = "/opt/openbd/work" />
+			<cfif NOT directoryExists(rteLogPath)>
+				<cfset rteLogPath = expandPath("/WEB-INF/bluedragon/work") />
+			</cfif>
 		</cfif>
 		
 		<cfset rteLogPath = rteLogPath & variables.separator.file & "temp#variables.separator.file#rtelogs" />

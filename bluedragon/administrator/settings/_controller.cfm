@@ -3,6 +3,7 @@
 	
 	Contributing Developers:
 	Matt Woodward - matt@mattwoodward.com
+	Jordan Michaels - jordan@viviotech.net
 
 	This file is part of of the Open BlueDragon Administrator.
 
@@ -654,7 +655,7 @@
 				<cftry>
 					<cfset mailServerString = mailServers[i].smtpserver />
 					
-					<cfif mailServers[i].smtpport is not "">
+					<cfif IsDefined("mailServers[i].smtpport") AND mailServers[i].smtpport is not "">
 						<cfset mailServerString = mailServerString & ":" & mailServers[i].smtpport />
 					</cfif>
 					

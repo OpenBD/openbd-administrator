@@ -143,6 +143,7 @@
 		<cfargument name="path" type="string" required="true" hint="Custom tag path to verify" />
 		
 		<cfset var localConfig = getConfig() />
+		<cfset var tempPath = "" />
 
 		<cfset checkLoginStatus() />
 		
@@ -332,7 +333,7 @@
 
 		<cfset var localConfig = getConfig() />
 		<cfset var javaCFX = StructNew() />
-		<cfset var javaObj = 0 />
+		<cfset var javaObject = 0 />
 
 		<cfset checkLoginStatus() />
 

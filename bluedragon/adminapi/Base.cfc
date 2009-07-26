@@ -101,6 +101,8 @@
 				hint="The configuration struct, which is a struct representation of bluedragon.xml" />
 		
 		<cfset var admin = structNew() />
+		<cfset var xmlConfig = "" />
+		<cfset var success = false />
 		
 		<cfset checkLoginStatus() />
 		

@@ -70,6 +70,7 @@
 		<cfset var allowedIPOctets = "" />
 		<cfset var deniedIPOctets = "" />
 		<cfset var octetMatchCount = 0 />
+		<cfset var contextPath = "" />
 		<cfset var i = 0 />
 		
 		<cfif not structKeyExists(Application, "inited") or not Application.inited or structKeyExists(url, "reload")>

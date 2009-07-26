@@ -44,7 +44,7 @@
 
 		
 		<!--- Return entire Custom Tag Path list as an array --->
-		<cfset customTagPaths = ListToArray(localConfig.cfmlcustomtags.mapping[1].directory, variables.separator.path) />
+		<cfset customTagPaths = ListToArray(localConfig.cfmlcustomtags.mapping[1].directory, variables.separator.customTagPath) />
 
 		<!--- fix any odd paths on the multi-context jetty version --->
 		<cfif variables.isMultiContextJetty>
@@ -59,7 +59,7 @@
 		</cfif>
 		
 		<cfif updateConfig>
-			<cfset localConfig.cfmlcustomtags.mapping[1].directory = arrayToList(customTagPaths, variables.separator.path) />
+			<cfset localConfig.cfmlcustomtags.mapping[1].directory = arrayToList(customTagPaths, variables.separator.customTagPath) />
 			<cfset setConfig(structCopy(localConfig)) />
 		</cfif>
 		
@@ -103,8 +103,8 @@
 			</cfcatch>
 		</cftry>
 		
-		<cfif not listFind(localConfig.cfmlcustomtags.mapping[1].directory, arguments.path, separator.path)>
-			<cfset localConfig.cfmlcustomtags.mapping[1].directory = ListAppend(localConfig.cfmlcustomtags.mapping[1].directory, arguments.path, separator.path) />
+		<cfif not listFind(localConfig.cfmlcustomtags.mapping[1].directory, arguments.path, variables.separator.customTagPath)>
+			<cfset localConfig.cfmlcustomtags.mapping[1].directory = ListAppend(localConfig.cfmlcustomtags.mapping[1].directory, arguments.path, variables.separator.customTagPath) />
 		<cfelse>
 			<cfthrow message="The custom tag path already exists." type="bluedragon.adminapi.extensions" />
 		</cfif>
@@ -127,11 +127,11 @@
 		</cfif>
 	
 		<!--- Find index of path in list --->
-		<cfset listIndex = ListFindNoCase(localConfig.cfmlcustomtags.mapping[1].directory, arguments.path, separator.path) />
+		<cfset listIndex = ListFindNoCase(localConfig.cfmlcustomtags.mapping[1].directory, arguments.path, variables.separator.customTagPath) />
 		
 		<!--- if found, remove customtag path from list --->
 		<cfif listIndex neq 0>
-			<cfset localConfig.cfmlcustomtags.mapping[1].directory = ListDeleteAt(localConfig.cfmlcustomtags.mapping[1].directory, listIndex, separator.path) />
+			<cfset localConfig.cfmlcustomtags.mapping[1].directory = ListDeleteAt(localConfig.cfmlcustomtags.mapping[1].directory, listIndex, variables.separator.customTagPath) />
 			<cfset setConfig(localConfig) />
 		<cfelse>
 			<cfthrow message="#arguments.path# is not defined as a customtag path" type="bluedragon.adminapi.extensions" />

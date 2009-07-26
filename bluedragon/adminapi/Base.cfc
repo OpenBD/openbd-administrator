@@ -45,6 +45,13 @@
 			<cfset variables.isWindows = false />
 		</cfif>
 		
+		<!--- On linux the path separator is ":", but the custom tag path must be ";" --->
+		<cfif variables.isWindows>
+			<cfset variables.separator.customTagPath = variables.separator.path />
+		<cfelse>
+			<cfset variables.separator.customTagPath = ";" />
+		</cfif>
+		
 		<cfif getJVMProperty("jetty.home") is not "" and getJVMProperty("jetty.home") is not "[null]">
 			<cfset variables.servletContainerHome = getJVMProperty("jetty.home") />
 		</cfif>

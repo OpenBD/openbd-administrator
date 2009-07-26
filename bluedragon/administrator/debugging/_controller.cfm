@@ -411,12 +411,10 @@
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
-			<cfif trim(args.requesttimeout) is not "" and not isNumeric(args.requesttimeout)>
+			<cfif trim(args.requesttimeout) is "" or not isNumeric(args.requesttimeout)>
 				<cfset errorFields[errorFieldsIndex][1] = "requesttimeout" />
 				<cfset errorFields[errorFieldsIndex][2] = "Please enter a numeric value for request timeout" />
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
-			<cfelse>
-				<cfset args.requesttimeout = 30 />
 			</cfif>
 			
 			<cfif arrayLen(errorFields) gt 0>

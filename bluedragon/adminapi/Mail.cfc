@@ -287,6 +287,7 @@
 		<cfargument name="mailServer" type="string" required="true" hint="The mail server to delete from the list of available mail servers" />
 		
 		<cfset var localConfig = getConfig() />
+		<cfset var i = 0 />
 
 		<cfset checkLoginStatus() />
 		

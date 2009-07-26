@@ -4,6 +4,13 @@ __________________________________
 $Date: 2009/04/25 06:17:00 $
 __________________________________
 
+-- Stable Release 1.2 [un-released]
+
+- fix for #58--fix un-scoped var in Extensions.cfc
+- fix for #59--fix un-scoped var in Mail.cfc
+- fix for #60--fix un-scoped var in Base.cfc
+- fix for #47--added ability to set the message-id mail part globla domain
+
 -- Stable Release 1.1 [25th April 2009]
 
 - fix for #45--ability to enable/disable legacy form validation (legacy form validation causes issues with Faceboook applications)

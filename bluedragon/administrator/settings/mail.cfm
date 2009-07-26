@@ -389,6 +389,14 @@
 					</select>
 				</td>
 			</tr>
+			<tr>
+				<td align="right" bgcolor="##f0f0f0"><label for="charset">Default CFMAIL Domain</label></td>
+				<td bgcolor="##ffffff">
+					<input type="text" name="domain" id="domain" size="40" value="#mailSettings.domain#" 
+							tabindex="13" /><br />
+					(Note: This value is used in the "message-id" mail part and not related to SMTP.)
+				</td>
+			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
 				<td><input type="submit" name="submit" value="Submit" tabindex="13" /></td>

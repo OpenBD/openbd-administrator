@@ -611,7 +611,7 @@
 			
 			<cftry>
 				<cfset Application.mail.setMailSettings(args.timeout, args.threads, args.interval, 
-														args.charset) />
+														args.charset, args.domain) />
 				<cfcatch type="bluedragon.adminapi.mail">
 					<cfset session.message.text = CFCATCH.Message />
 					<cfset session.message.type = "error" />

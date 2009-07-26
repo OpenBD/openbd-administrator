@@ -55,6 +55,11 @@
 			<cfset doSetConfig = true />
 		</cfif>
 		
+		<cfif not structKeyExists(localConfig.cfmail, "domain")>
+			<cfset localConfig.cfmail.domain = "" />
+			<cfset doSetConfig = true />
+		</cfif>
+		
 		<cfif doSetConfig>
 			<cfset setConfig(localConfig) />
 		</cfif>
@@ -68,19 +73,20 @@
 		<cfargument name="threads" type="numeric" required="true" hint="The number of threads to be used by cfmail" />
 		<cfargument name="interval" type="numeric" required="true" hint="The spool polling interval in seconds" />
 		<cfargument name="charset" type="string" required="true" hint="The default charset used by cfmail" />
+		<cfargument name="domain" type="string" required="true" hint="The default domain used by cfmail" />
 		
 		<cfset var localConfig = getConfig() />
 
 		<cfset checkLoginStatus() />
 		
-		<cfscript>
-			localConfig.cfmail.timeout = ToString(arguments.timeout);
-			localConfig.cfmail.threads = ToString(arguments.threads);
-			localConfig.cfmail.interval = ToString(arguments.interval);
-			localConfig.cfmail.charset = arguments.charset;
+		<cfset localConfig.cfmail.timeout = ToString(arguments.timeout) />
+		<cfset localConfig.cfmail.threads = ToString(arguments.threads) />
+		<cfset localConfig.cfmail.interval = ToString(arguments.interval) />
+		<cfset localConfig.cfmail.charset = arguments.charset />
+		<!--- It appears that OpenBD ignores the default domain if a zero-length string (may need to check) --->
+		<cfset localConfig.cfmail.domain = arguments.domain />
 
-			setConfig(localConfig);
-		</cfscript>
+		<cfset setConfig(localConfig) />
  	</cffunction>
 	
 	<cffunction name="getMailServers" access="public" output="false" returntype="array" 

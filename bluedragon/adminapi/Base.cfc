@@ -191,4 +191,5 @@
 		
 		<cfreturn structCopy(adminAPIInfo) />
 	</cffunction>
+	
 </cfcomponent>

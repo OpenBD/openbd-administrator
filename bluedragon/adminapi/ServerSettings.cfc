@@ -300,4 +300,12 @@
 		
 		<cfreturn uptime />
 	</cffunction>
+	
+	<cffunction name="getApplicationCount" access="public" output="false" returntype="numeric">
+		<cfreturn createObject( "java", "com.naryx.tagfusion.cfm.application.cfAPPLICATION").getApplicationCount() />
+	</cffunction>
+	
+	<cffunction name="getSessionCount" access="public" output="false" returntype="numeric">
+		<cfreturn createObject( "java", "com.naryx.tagfusion.cfm.application.cfAPPLICATION").getSessionCount() />
+	</cffunction>
 </cfcomponent>

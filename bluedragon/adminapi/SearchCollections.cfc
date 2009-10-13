@@ -92,7 +92,7 @@
 		<cfset checkLoginStatus() />
 		
 		<cfcollection action="create" collection="#arguments.name#" path="#arguments.path#" 
-				language="#arguments.language#" />
+				language="#arguments.language#" storebody="#arguments.storebody#" />
 	</cffunction>
 	
 	<cffunction name="deleteSearchCollection" access="public" output="false" returntype="void" 

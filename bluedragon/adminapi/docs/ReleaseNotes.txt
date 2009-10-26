@@ -1,15 +1,17 @@
 Open BlueDragon Admin Console/API Release Notes 
 __________________________________
 
-$Date: 2009/04/25 06:17:00 $
+$Date: 2009/10/26 09:24:00 $
 __________________________________
 
--- Stable Release 1.2 [un-released]
+-- Stable Release 1.2 [26th October 2009]
 
+- fix for #47--added ability to set the message-id mail part global domain
 - fix for #58--fix un-scoped var in Extensions.cfc
 - fix for #59--fix un-scoped var in Mail.cfc
 - fix for #60--fix un-scoped var in Base.cfc
-- fix for #47--added ability to set the message-id mail part globla domain
+- fix for #64--storebody attribute was missing from cfcollection tag
+- fix for #65--display number of active applications and sessions
 
 -- Stable Release 1.1 [25th April 2009]
 

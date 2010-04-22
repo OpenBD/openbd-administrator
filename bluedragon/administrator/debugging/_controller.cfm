@@ -404,7 +404,7 @@
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
-			<cfif structKeyExists(args, "publishtofile") and args.publishtofile and 
+			<cfif structKeyExists(args, "publish") and args.publish and 
 					(trim(args.publishpath) is "" or trim(args.publishfile) is "")>
 				<cfset errorFields[errorFieldsIndex][1] = "publishpath" />
 				<cfset errorFields[errorFieldsIndex][2] = "Please enter a path and file name to which to publish the file" />

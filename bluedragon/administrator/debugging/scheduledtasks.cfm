@@ -285,11 +285,11 @@
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right"><label for="urltouse">Full URL</label></td>
+				<td bgcolor="##f0f0f0" align="right" valign="top"><label for="urltouse">Full URL</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="urltouse" id="urltouse" size="30"
+					<input type="text" name="urltouse" id="urltouse" size="56"
 							<cfif scheduledTask.urltouse is ""> value="http://"<cfelse> value="#scheduledTask.urltouse#"</cfif> 
-							tabindex="13" />&nbsp;
+							tabindex="13" /><br />
 					<label for="porttouse">Port</label>&nbsp;
 					<input type="text" name="porttouse" id="porttouse" size="5" maxlength="5"
 							<cfif scheduledTask.porttouse eq -1 or scheduledTask.porttouse is ""> value=""<cfelse> value="#scheduledTask.porttouse#"</cfif> 
@@ -306,9 +306,9 @@
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right"><label for="proxyserver">Proxy Server</label></td>
+				<td bgcolor="##f0f0f0" align="right" valign="top"><label for="proxyserver">Proxy Server</label></td>
 				<td bgcolor="##ffffff">
-					<input type="text" name="proxyserver" id="proxyserver" size="30" value="#scheduledTask.proxyserver#" tabindex="17" />&nbsp;
+					<input type="text" name="proxyserver" id="proxyserver" size="56" value="#scheduledTask.proxyserver#" tabindex="17" /><br />
 					<label for="proxyport">Port</label>&nbsp;
 					<input type="text" name="proxyport" id="proxyport" size="5" maxlength="5" value="#scheduledTask.proxyport#" 
 							tabindex="18" />
@@ -333,7 +333,7 @@
 						<tr>
 							<td><label for="publishpath">Path:</label></td>
 							<td>
-								<input type="text" name="publishpath" id="publishpath" size="30" 
+								<input type="text" name="publishpath" id="publishpath" size="46" 
 										value="#scheduledTask.publishpath#" tabindex="21" />
 							</td>
 						</tr>
@@ -350,7 +350,7 @@
 						<tr>
 							<td><label for="publishfile">File Name:</label></td>
 							<td>
-								<input type="text" name="publishfile" id="publishfile" size="30" 
+								<input type="text" name="publishfile" id="publishfile" size="46" 
 										value="#scheduledTask.publishfile#" tabindex="24" />
 							</td>
 						</tr>

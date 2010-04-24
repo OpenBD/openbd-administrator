@@ -24,23 +24,32 @@
 <h3>Welcome to the Open BlueDragon Administrator</h3>
 
 <p>
-	Open BlueDragon is an open source (<a href="http://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GPLv3</a>), J2EE-based runtime engine for CFML. 
-	For more information on the Open BlueDragon project, please visit the <a href="http://www.openbluedragon.org" target="_blank">Open BlueDragon web site</a> 
-	and the <a href="http://groups.google.com/group/openbd" target="_blank">Open BlueDragon Google Group</a>.
+	Open BlueDragon is an open source (<a href="http://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GPLv3</a>), 
+	Java-based runtime engine for CFML. For more information on the Open BlueDragon project, please visit the 
+	<a href="http://www.openbluedragon.org" target="_blank">Open BlueDragon web site</a> and the 
+	<a href="http://groups.google.com/group/openbd" target="_blank">Open BlueDragon Google Group</a>.
 </p>
 
 <p>
-	For more information on the Open BlueDragon Administrator, or to obtain a newer version of the Administrator, please visit the 
+	For more information on the Open BlueDragon Administrator or to obtain a newer version of the Administrator, please visit the 
 	<a href="http://code.google.com/p/openbluedragon-admin-app/" target="_blank">Open BlueDragon Admin Console project at Google Code</a>.
 </p>
 
-<h4>CFML Compatibility and Enhancements</h4>
+<h4>Documentation</h4>
 
-<p>The <a href="http://www.openbluedragon.org/about.cfm" target="_blank">Open BlueDragon steering committee</a> is hard at work producing documentation that 
-is specific to Open BlueDragon, so please continue to <a href="http://wiki.openbluedragon.org" target="_blank">refer to our wiki</a> for the latest documentation.</p>
+<p>
+	For the latest documentation and information on CFML compatibility and enhancements in Open BlueDragon, please refer 
+	to the following resources:
+	<ul>
+		<li><a href="http://wiki.openbluedragon.org" target="_blank">OpenBD Wiki</a></li>
+		<li><a href="http://www.openbluedragon.org/docs/" target="_blank">OpenBD CFML Docs</a></li>
+		<li><a href="${contextPath}/manual" target="_blank">OpenBD CFML Manual</a> (work in progress--please contribute!)</li>
+	</ul>
+</p>
 
-<p>You may also wish to refer to the following documentation covering New Atlanta BlueDragon 7 for general information 
-concerning CFML compatibility and language enhancements.</p>
+<p>
+	You may also find useful information in the Compatibility Guide and Enhancements Guide for New Atlanta BlueDragon 7. 
+</p>
 
 <ul>
 	<li>

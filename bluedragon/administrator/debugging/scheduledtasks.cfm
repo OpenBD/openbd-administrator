@@ -183,9 +183,12 @@
 					<td>#scheduledTasks[i].urltouse#</td>
 					<td>
 						<cfif structKeyExists(scheduledTasks[i], "tasktype") and scheduledTasks[i].tasktype is not "">
-							#lcase(scheduledTasks[i].tasktype)#
-						<cfelse>
-							every #scheduledTasks[i].interval# seconds
+							#lcase(scheduledTasks[i].tasktype)# 
+							<cfif scheduledTasks[i].interval neq -1>
+								every #scheduledTasks[i].interval# seconds
+							<cfelse>
+								@ #LSTimeFormat(scheduledTasks[i].starttime, "short")#
+							</cfif>
 						</cfif>
 					</td>
 					<td>#scheduledTasks[i].startdate# #LSTimeFormat(scheduledTasks[i].starttime, "short")#</td>
@@ -254,24 +257,31 @@
 					</select>
 					&nbsp;<label for="starttime_recurring">@</label>&nbsp;
 					<input type="text" name="starttime_recurring" id="starttime_recurring" size="5" maxlength="5"
-							<cfif scheduledTask.tasktype is "DAILY" or scheduledTask.tasktype is "WEEKLY" or scheduledTask.tasktype is "MONTHLY">value="#timeFormat(scheduledTask.starttime, 'HH:mm')#"</cfif> 
+							<cfif scheduledTask.interval eq -1 and 
+									(scheduledTask.tasktype is "DAILY" or 
+										scheduledTask.tasktype is "WEEKLY" or 
+										scheduledTask.tasktype is "MONTHLY")>value="#timeFormat(scheduledTask.starttime, 'HH:mm')#"</cfif> 
 							tabindex="8" /><br />
 					<input type="radio" name="runinterval" id="runintervalDaily" value="daily"
-							<cfif scheduledTask.tasktype is "" and scheduledTask.interval neq -1> checked="true"</cfif> tabindex="9" />
+							<cfif (scheduledTask.tasktype is "" or scheduledTask.tasktype is "DAILY") and 
+									scheduledTask.interval neq -1> checked="true"</cfif> tabindex="9" />
 					<label for="runintervalDaily">Daily</label>&nbsp;
 					<label for="interval">every</label>&nbsp;
 					<input type="text" name="interval" id="interval" size="5" maxlength="5"
-							<cfif scheduledTask.tasktype is "" and scheduledTask.interval neq -1> value="#scheduledTask.interval#"</cfif> 
-							tabindex="10" />&nbsp;
+							<cfif (scheduledTask.tasktype is "" or scheduledTask.tasktype is "DAILY") and 
+									scheduledTask.interval neq -1> value="#scheduledTask.interval#"</cfif> 
+									tabindex="10" />&nbsp;
 					seconds&nbsp;
 					<label for="starttime_daily">from</label>&nbsp;
 					<input type="text" name="starttime_daily" id="starttime_daily" size="5" maxlength="5"
-							<cfif scheduledTask.tasktype is "" and scheduledTask.interval neq -1> value="#timeFormat(scheduledTask.starttime, 'HH:mm')#"</cfif> 
-							tabindex="11" />&nbsp;
+							<cfif (scheduledTask.tasktype is "" or scheduledTask.tasktype is "DAILY") and 
+									scheduledTask.interval neq -1> value="#timeFormat(scheduledTask.starttime, 'HH:mm')#"</cfif> 
+									tabindex="11" />&nbsp;
 					<label for="endtime_daily">to</label>&nbsp;
 					<input type="text" name="endtime_daily" id="endtime_daily" size="5" maxlength="5"
-							<cfif scheduledTask.tasktype is "" and scheduledTask.interval neq -1 and scheduledTask.endtime is not ""> value="#timeFormat(scheduledTask.endtime, 'HH:mm')#"</cfif> 
-							tabindex="12" />
+							<cfif (scheduledTask.tasktype is "" or scheduledTask.tasktype is "DAILY") and 
+									scheduledTask.interval neq -1 and scheduledTask.endtime is not ""> value="#timeFormat(scheduledTask.endtime, 'HH:mm')#"</cfif> 
+									tabindex="12" />
 				</td>
 			</tr>
 			<tr>

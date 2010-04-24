@@ -68,7 +68,6 @@
     <span class="hidden">Navigation:</span>
     <a href="#contextPath#/bluedragon/administrator/index.cfm">Home</a> |
     <a href="#contextPath#/bluedragon/administrator/_loginController.cfm?action=logout">Logout</a>
-    <!--- <a class="highlight" href="index.html">Other</a> --->
   </div>
 </div>
 
@@ -131,7 +130,7 @@
   <a href="index.html">Home</a> &raquo;
   <a href="index.html">Other</a> &raquo;
 </div> --->
-#request.content#
+#Replace(request.content, "${contextPath}", contextPath, "ALL")#
 
 <br id="endmain" />
 </div>

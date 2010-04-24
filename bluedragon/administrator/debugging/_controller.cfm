@@ -430,13 +430,13 @@
 				</cfif>
 				
 				<cfif args.runinterval is "once">
-					<cfset args.starttime = timeFormat(args.starttime_once, "H:mm") />
+					<cfset args.starttime = timeFormat(args.starttime_once, "HH:mm") />
 					<cfset args.interval = "ONCE" />
 				<cfelseif args.runinterval is "recurring">
-					<cfset args.starttime = timeFormat(args.starttime_recurring, "H:mm") />
+					<cfset args.starttime = timeFormat(args.starttime_recurring, "HH:mm") />
 					<cfset args.interval = args.tasktype />
 				<cfelseif args.runinterval is "daily">
-					<cfset args.starttime = timeFormat(args.starttime_daily, "H:mm") />
+					<cfset args.starttime = timeFormat(args.starttime_daily, "HH:mm") />
 				</cfif>
 				
 				<cfif trim(args.enddate) is not "">
@@ -444,7 +444,7 @@
 				</cfif>
 				
 				<cfif args.runinterval is "daily" and trim(args.endtime_daily) is not "">
-					<cfset args.endtime = timeFormat(args.endtime_daily, "H:mm") />
+					<cfset args.endtime = timeFormat(args.endtime_daily, "HH:mm") />
 				<cfelse>
 					<cfset args.endtime = "" />
 				</cfif>

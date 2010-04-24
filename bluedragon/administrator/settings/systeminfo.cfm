@@ -86,6 +86,10 @@
 				<td bgcolor="##ffffff">#server.coldfusion.productversion#</td>
 			</tr>
 			<tr>
+				<td align="right" bgcolor="##f0f0f0">Open BlueDragon Build Date</td>
+				<td bgcolor="##ffffff">#server.bluedragon.builddate#</td>
+			</tr>
+			<tr>
 				<td align="right" bgcolor="##f0f0f0">Operating System</td>
 				<td bgcolor="##ffffff">#server.os.name# #server.os.arch# (#server.os.version#)</td>
 			</tr>

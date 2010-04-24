@@ -177,8 +177,13 @@
 					<input type="text" name="clientexpiry" id="clientexpiry" size="3" maxlength="3" 
 							value="#variableSettings.clientexpiry#" tabindex="13" />
 					&nbsp;<label for="clientexpiry">days old</label><br />
+					<input type="checkbox" name="clientGlobalUpdatesDisabled" 
+							id="clientGlobalUpdatesDisabled" value="true" 
+							<cfif StructKeyExists(variableSettings, "clientGlobalUpdatesDisabled") 
+									and variableSettings.clientGlobalUpdatesDisabled> checked="true"</cfif> tabindex="14" />
+					<label for="clientGlobalUpdatesDisabled">Disable Global Client Variable Updates</label><br />
 					<input type="checkbox" name="cf5clientdata" id="cf5clientdata" value="true"
-							<cfif variableSettings.cf5clientdata> checked="true"</cfif> tabindex="14" />
+							<cfif variableSettings.cf5clientdata> checked="true"</cfif> tabindex="15" />
 					<label for="cf5clientdata">ColdFusion 5-compatible client data</label>&nbsp;
 					<img src="../images/arrow_refresh_small.png" width="16" height="16" alt="Requires Server Restart" title="Requires Server Restart" />
 				</td>
@@ -186,7 +191,7 @@
 			<tr>
 				<td bgcolor="##f0f0f0" align="right"><label for="cfchartstorage">CFCHART Storage</label></td>
 				<td bgcolor="##ffffff">
-					<select name="cfchartstorage" id="cfchartstorage" tabindex="15">
+					<select name="cfchartstorage" id="cfchartstorage" tabindex="16">
 						<option value="file"<cfif chartSettings.storage is "file"> selected="true"</cfif>>File</option>
 						<option value="session"<cfif chartSettings.storage is "session"> selected="true"</cfif>>Session</option>
 					<cfif arrayLen(datasources) gt 0>
@@ -203,12 +208,12 @@
 				<td bgcolor="##f0f0f0" align="right"><label for="cfchartcachesize">CFCHART Cache Size</label></td>
 				<td bgcolor="##ffffff">
 					<input type="text" name="cfchartcachesize" id="cfchartcachesize" size="5" maxlength="4" 
-							value="#chartSettings.cachesize#" tabindex="16" /> charts
+							value="#chartSettings.cachesize#" tabindex="17" /> charts
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
-				<td><input type="submit" name="submit" value="Submit" tabindex="17" /></td>
+				<td><input type="submit" name="submit" value="Submit" tabindex="18" /></td>
 			</tr>
 		</table>
 		</form>

@@ -507,6 +507,10 @@
 				<cfset args.clientpurgeenabled = false />
 			</cfif>
 			
+			<cfif not structKeyExists(args, "clientGlobalUpdatesDisabled")>
+				<cfset args.clientGlobalUpdatesDisabled = false />
+			</cfif>
+			
 			<cfif not structKeyExists(args, "cf5clientdata")>
 				<cfset args.cf5clientdata = false />
 			</cfif>
@@ -518,7 +522,7 @@
 																			args.sessionTimeoutHours, args.sessionTimeoutMinutes, 
 																			args.sessionTimeoutSeconds, args.clientstorage, 
 																			args.clientpurgeenabled, args.clientexpiry, 
-																			args.cf5clientdata) />
+																			args.clientGlobalUpdatesDisabled, args.cf5clientdata) />
 				<cfcatch type="bluedragon.adminapi.variableSettings">
 					<cfset session.message.text = CFCATCH.Message />
 					<cfset session.message.type = "error" />

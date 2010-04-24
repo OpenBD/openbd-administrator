@@ -75,6 +75,7 @@
 		<cfargument name="clientstorage" type="string" required="true" hint="Client storage location" />
 		<cfargument name="clientpurgeenabled" type="boolean" required="true" hint="Enable/disable automatic client variable purging" />
 		<cfargument name="clientexpiry" type="numeric" required="true" hint="Number of days after which client variables are purged" />
+		<cfargument name="clientGlobalUpdatesDisabled" type="boolean" required="true" hint="Enables/disables global client variable updates" />
 		<cfargument name="cf5clientdata" type="boolean" required="true" hint="Enables/disables CF 5-compatible client variables" />
 		
 		<cfset var localConfig = getConfig() />
@@ -90,6 +91,7 @@
 			localConfig.cfapplication.clientstorage = arguments.clientstorage;
 			localConfig.cfapplication.clientpurgeenabled = ToString(arguments.clientpurgeenabled);
 			localConfig.cfapplication.clientexpiry = ToString(arguments.clientexpiry);
+			localConfig.cfapplication.clientGlobalUpdatesDisabled = ToString(arguments.clientGlobalUpdatesDisabled);
 			localConfig.cfapplication.cf5clientdata = ToString(arguments.cf5clientdata);
 			
 			setConfig(localConfig);

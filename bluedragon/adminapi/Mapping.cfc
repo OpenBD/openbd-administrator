@@ -107,6 +107,10 @@
 		</cfif>
 		
 		<!--- Build Mapping Struct --->
+		<cfif Left(arguments.name, 1) is not "/">
+			<cfset arguments.name = "/" & arguments.name />
+		</cfif>
+		
 		<cfset mapping.name = LCase(arguments.name) />
 		<cfset mapping.displayname = arguments.name />
 		<cfset mapping.directory = arguments.directory />

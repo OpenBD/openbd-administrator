@@ -170,7 +170,7 @@
 									title="Pause Task">
 									<img src="../images/control_pause_blue.png" border="0" width="16" height="16" />
 								</a> --->
-						<a href="_controller.cfm?action=editScheduledTask&name=#scheduledTasks[i].name#" alt="Edit Task" 
+						<a href="_controller.cfm?action=editScheduledTask&name=#URLEncodedFormat(scheduledTasks[i].name)#" alt="Edit Task" 
 							title="Edit Task">
 							<img src="../images/pencil.png" border="0" width="16" height="16" />
 						</a>
@@ -189,6 +189,10 @@
 							<cfelse>
 								@ #LSTimeFormat(scheduledTasks[i].starttime, "short")#
 							</cfif>
+						<cfelseif not structKeyExists(scheduledTasks[i], "tasktype") and 
+									structKeyExists(scheduledTasks[i], "interval") and 
+									scheduledTasks[i].interval is not "">
+							Every #scheduledTasks[i].interval# seconds
 						</cfif>
 					</td>
 					<td>#scheduledTasks[i].startdate# #LSTimeFormat(scheduledTasks[i].starttime, "short")#</td>

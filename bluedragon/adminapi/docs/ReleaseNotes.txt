@@ -1,8 +1,25 @@
 Open BlueDragon Admin Console/API Release Notes 
 __________________________________
 
-$Date: 2009/10/26 09:24:00 $
+$Date: 2010/4/25 08:07:00 $
 __________________________________
+
+-- Stable Release 1.3 [25th April 2010]
+
+- fix for #48--default collection path incorrect when deployed outside webapp directory
+- fix for #55--timeout for scheduled task always set to 30 seconds
+- fix for #56--wrong custom tag delimiter on Linux
+- for for #57--var scope issue in Application.cfc
+- fix for #61--add build version to admin console
+- fix for #62--include new Microsoft SQL Server Driver
+- fix for #63--include new jTDS Driver
+- fix for #66--scheduled task "publish" value is always set to false
+- fix for #67--time of 00:00 is truncated in scheduled task edits
+- fix for #68--increase scheduled task form field sizes
+- fix for #70--when # is in scheduled task name it can't be edited or deleted
+- fix for #72--mappings that don't start with / fail silently
+- fix for #74--database password length limitation
+- fix for #75--added support for Server.cfc location
 
 -- Stable Release 1.2 [26th October 2009]
 

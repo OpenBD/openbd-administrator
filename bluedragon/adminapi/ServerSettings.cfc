@@ -39,6 +39,7 @@
 		<cfargument name="scriptsrc" type="string" required="true" hint="Default CFFORM script location" />
 		<cfargument name="tempdirectory" type="string" required="true" hint="Default temp directory" />
 		<cfargument name="component-cfc" type="string" required="true" hint="Path for the base CFC file for all CFCs" />
+		<cfargument name="servercfc" type="string" required="true" hint="Path for the Server CFC" />
 		<cfargument name="verifypathsettings" type="boolean" required="true" 
 				hint="Indicates whether or not to perform a read operation to verify that the paths/files provided actually exist and are readable" />
 		
@@ -55,6 +56,7 @@
 			arguments.scriptsrc = trim(arguments.scriptsrc);
 			arguments.tempdirectory = trim(arguments.tempdirectory);
 			arguments["component-cfc"] = trim(arguments["component-cfc"]);
+			arguments.servercfc = trim(arguments.servercfc);
 		</cfscript>
 		
 		<cfif arguments.verifypathsettings>
@@ -140,6 +142,7 @@
 			localConfig.system.scriptsrc = arguments.scriptsrc;
 			localConfig.system.tempdirectory = arguments.tempdirectory;
 			localConfig.system["component-cfc"] = arguments["component-cfc"];
+			localConfig.system.servercfc = arguments.servercfc;
 			
 			setConfig(localConfig);
 		</cfscript>
@@ -181,6 +184,11 @@
 		
 		<cfif not structKeyExists(localConfig.system, "scriptsrc")>
 			<cfset localConfig.system.scriptsrc = "/bluedragon/scripts" />
+			<cfset updateConfig = true />
+		</cfif>
+		
+		<cfif not structKeyExists(localConfig.system, "servercfc")>
+			<cfset localConfig.system.servercfc = "/Server.cfc" />
 			<cfset updateConfig = true />
 		</cfif>
 		

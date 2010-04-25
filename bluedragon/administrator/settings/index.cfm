@@ -201,18 +201,25 @@
 				</td>
 			</tr>
 			<tr>
+				<td align="right" bgcolor="##f0f0f0"><label for="servercfc">Server CFC</label></td>
+				<td bgcolor="##ffffff">
+					<input type="text" name="servercfc" id="servercfc" size="40" value="#serverSettings.servercfc#" 
+							tabindex="14" />
+				</td>
+			</tr>
+			<tr>
 				<td align="right" bgcolor="##f0f0f0">Verify Path Settings?</td>
 				<td bgcolor="##ffffff">
-					<input type="radio" name="verifypathsettings" id="verifypathsettingsTrue" value="true" checked="true" tabindex="14" />
+					<input type="radio" name="verifypathsettings" id="verifypathsettingsTrue" value="true" checked="true" tabindex="15" />
 					<label for="verifypathsettingsTrue">Yes</label>&nbsp;
-					<input type="radio" name="verifypathsettings" id="verifypathsettingsFalse" value="false" tabindex="15" />
+					<input type="radio" name="verifypathsettings" id="verifypathsettingsFalse" value="false" tabindex="16" />
 					<label for="verifypathsettingsFalse">No</label>
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" name="submit" value="Submit" tabindex="16" />
+					<input type="submit" name="submit" value="Submit" tabindex="17" />
 				</td>
 			</tr>
 		</table>

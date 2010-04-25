@@ -184,6 +184,12 @@
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
+			<cfif trim(args.servercfc) is "">
+				<cfset errorFields[errorFieldsIndex][1] = "servercfc" />
+				<cfset errorFields[errorFieldsIndex][2] = "The value of Server CFC cannot be blank" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
+			
 			<cfif arrayLen(errorFields) neq 0>
 				<!--- TODO: add nicer functionality so the entire form gets repopulated on error;
 						maybe should repopulate things like tempdirectory and componentcfc with defaults --->
@@ -195,7 +201,8 @@
 																			args.missingtemplatehandler, args.defaultcharset, 
 																			args.scriptprotect, args.legacyformvalidation,
 																			args.scriptsrc, args.tempdirectory, 
-																			args.componentcfc, args.verifypathsettings) />
+																			args.componentcfc, args.servercfc, 
+																			args.verifypathsettings) />
 					<cfcatch type="bluedragon.adminapi.serversettings">
 						<cfset session.message.text = CFCATCH.Message />
 						<cfset session.message.type = "error" />

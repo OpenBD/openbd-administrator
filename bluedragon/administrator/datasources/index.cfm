@@ -276,7 +276,7 @@
 				configure the datasource.
 			</li>
 			<li>
-				If you are using Microsoft SQL Server 2000, 2005, or 2008, you may create a datasource using either the 
+				To connect to Microsoft SQL Server 2000, 2005, or 2008, you may create a datasource using either the 
 				open source <a href="http://jtds.sourceforge.net/" target="_blank">jTDS driver</a> or the Microsoft driver.
 			</li>
 			<li>

@@ -130,7 +130,7 @@
 		<tr>
 			<td><label for="password">Password</label></td>
 			<td>
-				<input name="password" id="password" type="password" size="30" maxlength="16" value="#dsinfo.password#" tabindex="6" />
+				<input name="password" id="password" type="password" size="30" value="#dsinfo.password#" tabindex="6" />
 			</td>
 		</tr>
 		<tr>

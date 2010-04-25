@@ -271,15 +271,19 @@
 		<ul>
 			<li>Use the "Reset Database Drivers" link to reset the available database drivers to the default drivers that ship with OpenBD.</li>
 			<li>
-				If you do not see the database you wish to use listed, obtain JDBC drivers for the database, place the JDBC driver JAR file in OpenBD's 
-				/WEB-INF/lib directory, and then use the "Other" database type to configure the datasource.
+				If you do not see the database you wish to use listed, obtain JDBC drivers for the database, place the JDBC driver JAR file 
+				in OpenBD's /WEB-INF/lib directory (or the equivalent for your environment), and then use the "Other" database type to 
+				configure the datasource.
 			</li>
-			<li>If you are using Microsoft SQL Server 2005, you may create a datasource using either the jTDS driver or the Microsoft driver.</li>
-			<li>If you are using Microsoft SQL Server 2000, you must use the jTDS driver. The Microsoft driver does not support SQL Server 2000.</li>
 			<li>
-				<a href="http://www.h2database.com" target="_blank">H2</a> is an open source, Java-based embedded database that allows for the easy creation of databases 
-				from within the OpenBD administrator. To create a new H2 database, simply create the datasource and if the H2 database doesn't exist, it will be created. 
-				You may also create datasources pointing to existing H2 embedded databases.
+				If you are using Microsoft SQL Server 2000, 2005, or 2008, you may create a datasource using either the 
+				open source <a href="http://jtds.sourceforge.net/" target="_blank">jTDS driver</a> or the Microsoft driver.
+			</li>
+			<li>
+				<a href="http://www.h2database.com" target="_blank">H2</a> is an open source, Java-based embedded database that allows for 
+				the easy creation of databases from within the OpenBD administrator. To create a new H2 database, simply create the datasource 
+				and if the H2 database doesn't exist, it will be created. You may also create datasources pointing to existing H2 embedded 
+				databases.
 			</li>
 			<li>Deleting an H2 Embedded datasource does <em>not</em> delete the database files. These files must be deleted manually.</li>
 		<cfif isWindows>

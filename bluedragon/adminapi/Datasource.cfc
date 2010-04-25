@@ -283,7 +283,7 @@
 				// h2 (provider: h2)
 				dbDriverInfo.name = "h2 embedded (h2)";
 				dbDriverInfo.datasourceconfigpage = "h2-embedded.cfm";
-				dbDriverInfo.version = "";
+				dbDriverInfo.version = "1.2.134";
 				dbDriverInfo.drivername = "org.h2.Driver";
 				dbDriverInfo.driverdescription = "H2 Embedded (H2)";
 				dbDriverInfo.jdbctype = "4";
@@ -295,7 +295,7 @@
 				// mysql (provider: mysql)
 				dbDriverInfo.name = "mysql 4/5";
 				dbDriverInfo.datasourceconfigpage = "mysql5.cfm";
-				dbDriverInfo.version = "5.1.6";
+				dbDriverInfo.version = "5.1.12";
 				dbDriverInfo.drivername = "com.mysql.jdbc.Driver";
 				dbDriverInfo.driverdescription = "MySQL 4/5 (MySQL)";
 				dbDriverInfo.jdbctype = "4";
@@ -305,11 +305,11 @@
 				arrayAppend(localConfig.cfquery.dbdrivers.driver, structCopy(dbDriverInfo));
 				
 				// mssql (provider: ms)
-				dbDriverInfo.name = "microsoft sql server 2005 (microsoft)";
-				dbDriverInfo.datasourceconfigpage = "sqlserver2005-ms.cfm";
-				dbDriverInfo.version = "1.2";
+				dbDriverInfo.name = "microsoft sql server (microsoft)";
+				dbDriverInfo.datasourceconfigpage = "sqlserver-ms.cfm";
+				dbDriverInfo.version = "2.0";
 				dbDriverInfo.drivername = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-				dbDriverInfo.driverdescription = "Microsoft SQL Server 2005 (Microsoft)";
+				dbDriverInfo.driverdescription = "Microsoft SQL Server (Microsoft)";
 				dbDriverInfo.jdbctype = "4";
 				dbDriverInfo.provider = "Microsoft";
 				dbDriverInfo.defaultport = "1433";
@@ -319,7 +319,7 @@
 				// mssql (provider: jtds)
 				dbDriverInfo.name = "microsoft sql server (jtds)";
 				dbDriverInfo.datasourceconfigpage = "sqlserver-jtds.cfm";
-				dbDriverInfo.version = "1.2.2";
+				dbDriverInfo.version = "1.2.5";
 				dbDriverInfo.drivername = "net.sourceforge.jtds.jdbc.Driver";
 				dbDriverInfo.driverdescription = "Microsoft SQL Server (jTDS)";
 				dbDriverInfo.jdbctype = "4";
@@ -331,7 +331,7 @@
 				// postgresql (provider: postgres)
 				dbDriverInfo.name = "postgresql (postgresql)";
 				dbDriverInfo.datasourceconfigpage = "postgresql.cfm";
-				dbDriverInfo.version = "8.3-603";
+				dbDriverInfo.version = "8.4-701";
 				dbDriverInfo.drivername = "org.postgresql.Driver";
 				dbDriverInfo.driverdescription = "PostgreSQL (PostgreSQL)";
 				dbDriverInfo.jdbctype = "4";

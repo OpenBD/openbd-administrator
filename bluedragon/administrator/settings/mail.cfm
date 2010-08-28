@@ -63,7 +63,7 @@
 		<cfset mailServerAction = "update" />
 		<cfset mailServerFormActionHeader = "Edit" />
 		
-		<!--- may not be a port specified in the xml --->
+		<!--- port number may not be specified in the xml --->
 		<cfif not StructKeyExists(mailServer, "smtpport")>
 			<cfset mailServer.smtpport = 25 />
 		</cfif>
@@ -172,7 +172,8 @@
 			<p>
 				Please download <a href="http://java.sun.com/products/javamail/downloads/index.html" target="_blank">JavaMail</a> 
 				and place mail.jar in your classpath (either in your application server's shared lib directory, or in 
-				Open BlueDragon's /WEB-INF/lib directory), then restart Open BlueDragon to enable mail functionality.
+				Open BlueDragon's /WEB-INF/lib directory), then restart Open BlueDragon or your servlet container to enable 
+				mail functionality.
 			</p>
 		</cfif>
 
@@ -390,16 +391,30 @@
 				</td>
 			</tr>
 			<tr>
+				<td align="right" bgcolor="##f0f0f0"><label for="usessl">Use SSL</label></td>
+				<td bgcolor="##ffffff">
+					<input type="checkbox" name="usessl" id="usessl" value="true" tabindex="13" 
+							<cfif mailSettings.usessl>checked="true"</cfif> />
+				</td>
+			</tr>
+			<tr>
+				<td align="right" bgcolor="##f0f0f0"><label for="usessl">Use TLS</label></td>
+				<td bgcolor="##ffffff">
+					<input type="checkbox" name="usetls" id="usetls" value="true" tabindex="14" 
+							<cfif mailSettings.usetls>checked="true"</cfif> />
+				</td>
+			</tr>
+			<tr>
 				<td align="right" bgcolor="##f0f0f0"><label for="charset">Default CFMAIL Domain</label></td>
 				<td bgcolor="##ffffff">
 					<input type="text" name="domain" id="domain" size="40" value="#mailSettings.domain#" 
-							tabindex="13" /><br />
+							tabindex="15" /><br />
 					(Note: This value is used in the "message-id" mail part and not related to SMTP.)
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
-				<td><input type="submit" name="submit" value="Submit" tabindex="13" /></td>
+				<td><input type="submit" name="submit" value="Submit" tabindex="16" /></td>
 			</tr>
 		</table>
 		</form>

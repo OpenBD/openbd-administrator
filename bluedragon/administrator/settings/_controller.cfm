@@ -615,6 +615,14 @@
 				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
 			</cfif>
 			
+			<cfif not structKeyExists(args, "usessl")>
+				<cfset args.usessl = false />
+			</cfif>
+			
+			<cfif not structKeyExists(args, "usetls")>
+				<cfset args.usetls = false />
+			</cfif>
+			
 			<cfif arrayLen(errorFields) gt 0>
 				<cfset session.errorFields = errorFields />
 				<cflocation url="mail.cfm" addtoken="false" />
@@ -622,7 +630,8 @@
 			
 			<cftry>
 				<cfset Application.mail.setMailSettings(args.timeout, args.threads, args.interval, 
-														args.charset, args.domain) />
+														args.charset, args.domain, args.usessl, 
+														args.usetls) />
 				<cfcatch type="bluedragon.adminapi.mail">
 					<cfset session.message.text = CFCATCH.Message />
 					<cfset session.message.type = "error" />

@@ -27,6 +27,7 @@
 		extends="Base" 
 		hint="Manages mail settings - OpenBD Admin API">
 
+
 	<cffunction name="getMailSettings" access="public" output="false" returntype="struct" 
 			hint="Returns a struct containing the mail settings">
 		<cfset var localConfig = getConfig() />
@@ -60,6 +61,16 @@
 			<cfset doSetConfig = true />
 		</cfif>
 		
+		<cfif not structKeyExists(localConfig.cfmail, "usessl")>
+			<cfset localConfig.cfmail.usessl = "false" />
+			<cfset doSetConfig = true />
+		</cfif>
+		
+		<cfif not structKeyExists(localConfig.cfmail, "usetls")>
+			<cfset localConfig.cfmail.usetls = "false" />
+			<cfset doSetConfig = true />
+		</cfif>
+		
 		<cfif doSetConfig>
 			<cfset setConfig(localConfig) />
 		</cfif>
@@ -74,6 +85,8 @@
 		<cfargument name="interval" type="numeric" required="true" hint="The spool polling interval in seconds" />
 		<cfargument name="charset" type="string" required="true" hint="The default charset used by cfmail" />
 		<cfargument name="domain" type="string" required="true" hint="The default domain used by cfmail" />
+		<cfargument name="usessl" type="boolean" required="true" hint="Boolean indicating whether or not to use SSL" />
+		<cfargument name="usetls" type="boolean" required="true" hint="Boolean indicating whether or not to use TLS" />
 		
 		<cfset var localConfig = getConfig() />
 
@@ -85,6 +98,8 @@
 		<cfset localConfig.cfmail.charset = arguments.charset />
 		<!--- It appears that OpenBD ignores the default domain if a zero-length string (may need to check) --->
 		<cfset localConfig.cfmail.domain = arguments.domain />
+		<cfset localConfig.cfmail.usessl = ToString(arguments.usessl) />
+		<cfset localConfig.cfmail.usetls = ToString(arguments.usetls) />
 
 		<cfset setConfig(localConfig) />
  	</cffunction>

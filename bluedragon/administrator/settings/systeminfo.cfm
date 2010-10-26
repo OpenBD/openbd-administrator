@@ -24,7 +24,6 @@
 	<cfset adminAPIInfo = Application.serverSettings.getAdminAPIInfo() />
 	<cfset serverStartTime = Application.serverSettings.getServerStartTime() />
 	<cfset serverUptime = Application.serverSettings.getServerUpTime("struct") />
-	<cfset applicationCount = Application.serverSettings.getApplicationCount() />
 	<cfset sessionCount = Application.serverSettings.getSessionCount() />
 </cfsilent>
 <cfsavecontent variable="request.content">
@@ -66,7 +65,26 @@
 			</tr>
 			<tr>
 				<td align="right" bgcolor="##f0f0f0" width="300">Number of Running Applications</td>
-				<td bgcolor="##ffffff">#applicationCount#</td>
+				<td bgcolor="##ffffff">#ApplicationCount()#</td>
+			</tr>
+			<tr>
+				<td align="right" valign="top" bgcolor="##f0f0f0">Running Applications</td>
+				<td bgcolor="##ffffff" valign="top">
+					<cfif ArrayLen(ApplicationList()) gt 0>
+					<table>
+						<cfloop array="#ApplicationList()#" index="app">
+						<tr>
+							<td>#app#</td>
+							<td>
+								<a href="_controller.cfm?action=unloadApplication&applicationName=#app#">
+									<img src="../images/cancel.png" border="0" width="16" height="16" alt="Unload Application" title="Unload Application" />
+								</a>
+							</td>
+						</tr>
+						</cfloop>
+					</table>
+					</cfif>
+				</td>
 			</tr>
 			<tr>
 				<td align="right" bgcolor="##f0f0f0">Number of Active Sessions</td>

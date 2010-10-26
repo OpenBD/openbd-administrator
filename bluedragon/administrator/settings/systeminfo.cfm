@@ -24,7 +24,6 @@
 	<cfset adminAPIInfo = Application.serverSettings.getAdminAPIInfo() />
 	<cfset serverStartTime = Application.serverSettings.getServerStartTime() />
 	<cfset serverUptime = Application.serverSettings.getServerUpTime("struct") />
-	<cfset sessionCount = Application.serverSettings.getSessionCount() />
 	<cfset memoryInfo = SystemMemory() />
 </cfsilent>
 <cfsavecontent variable="request.content">
@@ -89,7 +88,7 @@
 			</tr>
 			<tr>
 				<td align="right" bgcolor="##f0f0f0">Number of Active Sessions</td>
-				<td bgcolor="##ffffff">#sessionCount#</td>
+				<td bgcolor="##ffffff">#SessionCount()#</td>
 			</tr>
 		</table>
 		

@@ -102,7 +102,9 @@
 							<cfif debugSettings.slowquerytime != -1> checked="true"</cfif> tabindex="5" />&nbsp;&nbsp;
 					<label for="slowquerytime">Log queries running more than</label>&nbsp;
 					<input type="text" name="slowquerytime" id="slowquerytime" size="4" maxlength="4" 
-						value="<cfif debugSettings.slowquerytime != -1>#debugSettings.slowquerytime#</cfif>" tabindex="6" />&nbsp;seconds
+						value="<cfif debugSettings.slowquerytime != -1>#debugSettings.slowquerytime#</cfif>" tabindex="6" />&nbsp;seconds&nbsp;
+					<img src="../images/arrow_refresh_small.png" height="16" width="16" 
+							alt="Requires Server Restart" title="Requires Server Restart" />
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">

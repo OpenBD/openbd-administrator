@@ -540,6 +540,25 @@
 			<cfset arrayAppend(logFiles, logFile) />
 		</cfif>
 		
+		<cfif fileExists("#logFilePath##variables.separator.file#slowlog#variables.separator.file#slow.log")>
+			<cfset logFile = structNew() />
+			
+			<cfdirectory action="list" directory="#logFilePath##variables.separator.file#slowlog" name="temp" />
+			
+			<cfquery name="temp" dbtype="query">
+				SELECT size, datelastmodified 
+				FROM temp 
+				WHERE name = 'slow.log'
+			</cfquery>
+			
+			<cfset logFile.name = "slow.log" />
+			<cfset logFile.fullpath = "#logFilePath##variables.separator.file#slowlog#variables.separator.file#slow.log" />
+			<cfset logFile.size = temp.size />
+			<cfset logFile.datelastmodified = LSDateFormat(temp.datelastmodified, "yyyy-mm-dd") & " " & LSTimeFormat(temp.datelastmodified, "HH:mm:ss") />
+			
+			<cfset arrayAppend(logFiles, logFile) />
+		</cfif>
+		
 		<!--- add custom log files --->
 		<cfif directoryExists("#logFilePath##variables.separator.file#cflog")>
 			<cfdirectory action="list" directory="#logFilePath##variables.separator.file#cflog" name="temp" />
@@ -645,6 +664,10 @@
 			
 			<cfcase value="schedule.log">
 				<cfset logFilePath = logFilePath & variables.separator.file & "cfschedule" />
+			</cfcase>
+			
+			<cfcase value="slow.log">
+				<cfset logFilePath = logFilePath & variables.separator.file & "slowlog" />
 			</cfcase>
 			
 			<!--- for all other log files, assume they're in the default cflog directory --->

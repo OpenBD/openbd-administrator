@@ -4,6 +4,16 @@ __________________________________
 $Date: 2010/4/25 08:07:00 $
 __________________________________
 
+-- Stable Relase 1.4 [27th October 2010]
+
+- fix for #76--Add checkboxes for "Use SSL" and "Use TLS" on mail servers
+- fix for #78--Add query slowlog settings to admin console
+- ENHANCEMENT: using native ApplicationCount() and SessionCount() on system info page
+- ENHANCEMENT: allow for unloading of applications from system info page using new ApplicationRemove() function
+- ENHANCEMENT: display JVM memory stats on system info page
+- ENHANCEMENT: display detailed stats for file cache (hits and misses) using new SystemFileCacheInfo() function
+- ENHANCEMENT: new page to display details about each file in the file cache using new SystemFileCacheList() function
+
 -- Stable Release 1.3 [25th April 2010]
 
 - fix for #48--default collection path incorrect when deployed outside webapp directory

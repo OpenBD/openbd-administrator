@@ -22,7 +22,6 @@
 --->
 <cfsilent>
 	<cfparam name="debuggingMessage" type="string" default="" />
-	
 	<cftry>
 		<cfset debugSettings = Application.debugging.getDebugSettings() />
 		<cfcatch type="bluedragon.adminapi.debugging">
@@ -96,9 +95,19 @@
 							<cfif debugSettings.system.assert> checked="true"</cfif> tabindex="4" />
 				</td>
 			</tr>
+			<tr>
+				<td bgcolor="##f0f0f0" align="right"><label for="slowquerylog">Slow Query Log</label></td>
+				<td bgcolor="##ffffff">
+					<input type="checkbox" name="enableslowquerylog" id="enableslowquerylog" value="true" 
+							<cfif debugSettings.slowquerytime != -1> checked="true"</cfif> tabindex="5" />&nbsp;&nbsp;
+					<label for="slowquerytime">Log queries running more than</label>&nbsp;
+					<input type="text" name="slowquerytime" id="slowquerytime" size="4" maxlength="4" 
+						value="<cfif debugSettings.slowquerytime != -1>#debugSettings.slowquerytime#</cfif>" tabindex="6" />&nbsp;seconds
+				</td>
+			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
-				<td><input type="submit" name="submit" value="Submit" tabindex="5" /></td>
+				<td><input type="submit" name="submit" value="Submit" tabindex="7" /></td>
 			</tr>
 		</table>
 		</form>
@@ -115,50 +124,50 @@
 				<td bgcolor="##f0f0f0" align="right"><label for="executiontimes">Page Execution Times</label></td>
 				<td bgcolor="##ffffff">
 					<input type="checkbox" name="executiontimes" id="executiontimes" value="true"
-							<cfif debugSettings.debugoutput.executiontimes.show> checked="true"</cfif> tabindex="6" />&nbsp;&nbsp;
+							<cfif debugSettings.debugoutput.executiontimes.show> checked="true"</cfif> tabindex="8" />&nbsp;&nbsp;
 					<label for="highlight">Highlight times greater than</label>&nbsp;
 					<input type="text" name="highlight" id="highlight" size="4" maxlength="4" 
-							value="#debugSettings.debugoutput.executiontimes.highlight#" tabindex="7" />&nbsp;ms
+							value="#debugSettings.debugoutput.executiontimes.highlight#" tabindex="9" />&nbsp;ms
 				</td>
 			</tr>
 			<tr>
 				<td bgcolor="##f0f0f0" align="right"><label for="database">Database Activity</label></td>
 				<td bgcolor="##ffffff">
 					<input type="checkbox" name="database" id="database" value="true"
-							<cfif debugSettings.debugoutput.database.show> checked="true"</cfif> tabindex="8" />
+							<cfif debugSettings.debugoutput.database.show> checked="true"</cfif> tabindex="10" />
 				</td>
 			</tr>
 			<tr>
 				<td bgcolor="##f0f0f0" align="right"><label for="exceptions">Exceptions</label></td>
 				<td bgcolor="##ffffff">
 					<input type="checkbox" name="exceptions" id="exceptions" value="true"
-							<cfif debugSettings.debugoutput.exceptions.show> checked="true"</cfif> tabindex="9" />
+							<cfif debugSettings.debugoutput.exceptions.show> checked="true"</cfif> tabindex="11" />
 				</td>
 			</tr>
 			<tr>
 				<td bgcolor="##f0f0f0" align="right"><label for="tracepoints">Trace Points</label></td>
 				<td bgcolor="##ffffff">
 					<input type="checkbox" name="tracepoints" id="tracepoints" value="true"
-							<cfif debugSettings.debugoutput.tracepoints.show> checked="true"</cfif> tabindex="10" />
+							<cfif debugSettings.debugoutput.tracepoints.show> checked="true"</cfif> tabindex="12" />
 				</td>
 			</tr>
 			<tr>
 				<td bgcolor="##f0f0f0" align="right"><label for="timer">Timer Information</label></td>
 				<td bgcolor="##ffffff">
 					<input type="checkbox" name="timer" id="timer" value="true"
-							<cfif debugSettings.debugoutput.timer.show> checked="true"</cfif> tabindex="11" />
+							<cfif debugSettings.debugoutput.timer.show> checked="true"</cfif> tabindex="13" />
 				</td>
 			</tr>
 			<tr>
 				<td bgcolor="##f0f0f0" align="right"><label for="variables">Variables</label></td>
 				<td bgcolor="##ffffff">
 					<input type="checkbox" name="variables" id="variables" value="true"
-							<cfif debugSettings.debugoutput.variables.show> checked="true"</cfif> tabindex="12" />
+							<cfif debugSettings.debugoutput.variables.show> checked="true"</cfif> tabindex="14" />
 				</td>
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
-				<td><input type="submit" name="submit" value="Submit" tabindex="13" /></td>
+				<td><input type="submit" name="submit" value="Submit" tabindex="15" /></td>
 			</tr>
 		</table>
 		</form>
@@ -177,68 +186,68 @@
 						<tr>
 							<td>
 								<input type="checkbox" name="local" id="local" value="true"
-										<cfif debugSettings.debugoutput.variables.local> checked="true"</cfif> tabindex="14" />
+										<cfif debugSettings.debugoutput.variables.local> checked="true"</cfif> tabindex="16" />
 								<label for="local">Local</label>
 							</td>
 							<td>
 								<input type="checkbox" name="url" id="url" value="true"
-										<cfif debugSettings.debugoutput.variables.url> checked="true"</cfif> tabindex="15" />
+										<cfif debugSettings.debugoutput.variables.url> checked="true"</cfif> tabindex="17" />
 								<label for="url">URL</label>
 							</td>
 							<td>
 								<input type="checkbox" name="session" id="session" value="true"
-										<cfif debugSettings.debugoutput.variables.session> checked="true"</cfif> tabindex="16" />
+										<cfif debugSettings.debugoutput.variables.session> checked="true"</cfif> tabindex="18" />
 								<label for="session">Session</label>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<input type="checkbox" name="variables" id="variablesScope" value="true"
-										<cfif debugSettings.debugoutput.variables.variables> checked="true"</cfif> tabindex="17" />
+										<cfif debugSettings.debugoutput.variables.variables> checked="true"</cfif> tabindex="19" />
 								<label for="variablesScope">Variables</label>
 							</td>
 							<td>
 								<input type="checkbox" name="form" id="form" value="true"
-										<cfif debugSettings.debugoutput.variables.form> checked="true"</cfif> tabindex="18" />
+										<cfif debugSettings.debugoutput.variables.form> checked="true"</cfif> tabindex="20" />
 								<label for="form">Form</label>
 							</td>
 							<td>
 								<input type="checkbox" name="client" id="client" value="true"
-										<cfif debugSettings.debugoutput.variables.client> checked="true"</cfif> tabindex="19" />
+										<cfif debugSettings.debugoutput.variables.client> checked="true"</cfif> tabindex="21" />
 								<label for="client">Client</label>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<input type="checkbox" name="request" id="request" value="true"
-										<cfif debugSettings.debugoutput.variables.request> checked="true"</cfif> tabindex="20" />
+										<cfif debugSettings.debugoutput.variables.request> checked="true"</cfif> tabindex="22" />
 								<label for="request">Request</label>
 							</td>
 							<td>
 								<input type="checkbox" name="cookie" id="cookie" value="true"
-										<cfif debugSettings.debugoutput.variables.cookie> checked="true"</cfif> tabindex="21" />
+										<cfif debugSettings.debugoutput.variables.cookie> checked="true"</cfif> tabindex="23" />
 								<label for="cookie">Cookie</label>
 							</td>
 							<td>
 								<input type="checkbox" name="application" id="application" value="true"
-										<cfif debugSettings.debugoutput.variables.application> checked="true"</cfif> tabindex="22" />
+										<cfif debugSettings.debugoutput.variables.application> checked="true"</cfif> tabindex="24" />
 								<label for="application">Application</label>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<input type="checkbox" name="cgi" id="cgi" value="true"
-										<cfif debugSettings.debugoutput.variables.cgi> checked="true"</cfif> tabindex="23" />
+										<cfif debugSettings.debugoutput.variables.cgi> checked="true"</cfif> tabindex="25" />
 								<label for="cgi">CGI</label>
 							</td>
 							<td>
 								<input type="checkbox" name="cffile" id="cffile" value="true"
-										<cfif debugSettings.debugoutput.variables.cffile> checked="true"</cfif> tabindex="24" />
+										<cfif debugSettings.debugoutput.variables.cffile> checked="true"</cfif> tabindex="26" />
 								<label for="cffile">CFFILE</label>
 							</td>
 							<td>
 								<input type="checkbox" name="server" id="server" value="true"
-										<cfif debugSettings.debugoutput.variables.server> checked="true"</cfif> tabindex="25" />
+										<cfif debugSettings.debugoutput.variables.server> checked="true"</cfif> tabindex="27" />
 								<label for="server">Server</label>
 							</td>
 						</tr>
@@ -247,7 +256,7 @@
 			</tr>
 			<tr bgcolor="##dedede">
 				<td>&nbsp;</td>
-				<td><input type="submit" name="submit" value="Submit" tabindex="26" /></td>
+				<td><input type="submit" name="submit" value="Submit" tabindex="28" /></td>
 			</tr>
 		</table>
 		</form>

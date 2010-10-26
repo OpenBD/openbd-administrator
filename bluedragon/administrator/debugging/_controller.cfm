@@ -43,6 +43,20 @@
 	<cfswitch expression="#args.action#">
 		<!--- DEBUG SETTINGS --->
 		<cfcase value="processDebugSettingsForm">
+			<cfset errorFields = arrayNew(2) />
+			<cfset errorFieldsIndex = 1 />
+			
+			<cfif args.slowquerytime != "" && (find(".", args.slowquerytime) != 0 or !isNumeric(args.slowquerytime))>
+				<cfset errorFields[errorFieldsIndex][1] = "slowquerytime" />
+				<cfset errorFields[errorFieldsIndex][2] = "The value of Slow Query Time is not numeric" />
+				<cfset errorFieldsIndex = errorFieldsIndex + 1 />
+			</cfif>
+			
+			<cfif arrayLen(errorFields) gt 0>
+				<cfset session.errorFields = errorFields />
+				<cflocation url="index.cfm" addtoken="false" />
+			</cfif>
+			
 			<cfif not structKeyExists(args, "debug")>
 				<cfset args.debug = false />
 			</cfif>
@@ -59,9 +73,15 @@
 				<cfset args.assert = false />
 			</cfif>
 			
+			<cfif not structKeyExists(args, "enableslowquerylog") or args.slowquerytime eq "">
+				<cfset args.enableslowquerylog = false />
+				<cfset args.slowquerytime = -1 />
+			</cfif>
+			
 			<cftry>
 				<cfset Application.debugging.saveDebugSettings(args.debug, args.runtimelogging, 
-																args.enabled, args.assert) />
+																args.enabled, args.assert, 
+																args.enableslowquerylog, args.slowquerytime) />
 				<cfcatch type="bluedragon.adminapi.debugging">
 					<cfset session.message.text = CFCATCH.Message />
 					<cfset session.message.type = "error" />

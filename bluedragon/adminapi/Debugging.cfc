@@ -188,6 +188,11 @@
 			<cfset doSetConfig = true />
 		</cfif>
 		
+		<cfif not structKeyExists(localConfig.cfquery, "slowlog")>
+			<cfset localConfig.cfquery.slowlog = "-1" />
+			<cfset doSetConfig = true />
+		</cfif>
+		
 		<cfif doSetConfig>
 			<cfset setConfig(localConfig) />
 		</cfif>
@@ -196,6 +201,7 @@
 		<cfset debugSettings.system.debug = localConfig.system.debug />
 		<cfset debugSettings.system.runtimelogging = localConfig.system.runtimelogging />
 		<cfset debugSettings.debugoutput = localConfig.debugoutput />
+		<cfset debugSettings.slowquerytime = localConfig.cfquery.slowlog />
 		
 		<cfreturn debugSettings />
 	</cffunction>
@@ -206,6 +212,9 @@
 		<cfargument name="runtimelogging" type="boolean" required="true" hint="Enables/disables logging of runtime errors to a file" />
 		<cfargument name="enabled" type="boolean" required="true" hint="Enables/disables debug output" />
 		<cfargument name="assert" type="boolean" required="true" hint="Enables/disables cfassert and the assert function" />
+		<cfargument name="enableslowquerylog" type="boolean" required="true" hint="Enables/disables slow query logging" />
+		<cfargument name="slowquerytime" type="numeric" required="true" 
+					hint="Query time in seconds beyond which it's considered 'slow' and is logged. Value of -1 disables slow query logs." />
 		
 		<cfset var localConfig = getConfig() />
 
@@ -221,6 +230,12 @@
 			localConfig.system.runtimelogging = ToString(arguments.runtimelogging);
 			localConfig.debugoutput.enabled = ToString(arguments.enabled);
 			localConfig.system.assert = ToString(arguments.assert);
+			
+			if (!arguments.enableslowquerylog) {
+				arguments.slowquerytime = -1;
+			}
+			
+			localConfig.cfquery.slowlog = ToString(arguments.slowquerytime);
 			
 			setConfig(localConfig);
 		</cfscript>

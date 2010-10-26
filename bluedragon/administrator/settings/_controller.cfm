@@ -802,6 +802,22 @@
 			<cflocation url="fonts.cfm" addtoken="false" />
 		</cfcase>
 		
+		<!--- SERVER INFO --->
+		<cfcase value="unloadApplication">
+			<cfset session.message.text = "The application was successfully unloaded." />
+			<cfset session.message.type = "info" />
+			
+			<cftry>
+				<cfset ApplicationRemove(args.applicationName) />
+				<cfcatch type="any">
+					<cfset session.message.text = CFCATCH.Message />
+					<cfset session.message.type = "error" />
+				</cfcatch>
+			</cftry>
+			
+			<cflocation url="systeminfo.cfm" addtoken="false" />
+		</cfcase>
+		
 		<!--- DEFAULT CASE --->
 		<cfdefaultcase>
 			<cfset session.message.text = "Invalid action" />

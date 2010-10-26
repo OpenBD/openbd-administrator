@@ -9,7 +9,8 @@ __________________________________
 - fix for #76--Add checkboxes for "Use SSL" and "Use TLS" on mail servers
 - fix for #78--Add query slowlog settings to admin console
 - ENHANCEMENT: using native ApplicationCount() and SessionCount() on system info page
-- ENHANCEMENT: allow for unloading of applications from system info page using new ApplicationRemove() function
+- ENHANCEMENT: list names of running applications (partial fix for #54)
+- ENHANCEMENT: allow for unloading of applications from system info page using new ApplicationRemove() function (partial fix for #54)
 - ENHANCEMENT: display JVM memory stats on system info page
 - ENHANCEMENT: display detailed stats for file cache (hits and misses) using new SystemFileCacheInfo() function
 - ENHANCEMENT: new page to display details about each file in the file cache using new SystemFileCacheList() function

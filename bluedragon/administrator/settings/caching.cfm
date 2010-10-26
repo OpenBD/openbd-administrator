@@ -23,9 +23,10 @@
 <cfsilent>
 	<cfparam name="cachingMessage" type="string" default="" />
 	<cfparam name="numFilesInCache" type="numeric" default="-1" />
-	<cfparam name="fileCacheMessage" type="string" default="" />
 	<cfparam name="numQueriesInCache" type="numeric" default="-1" />
 	<cfparam name="queryCacheMessage" type="string" default="" />
+	
+	<cfset fileCacheInfo = SystemFileCacheInfo() />
 	
 	<cftry>
 		<cfset cachingSettings = Application.caching.getCachingSettings() />
@@ -41,13 +42,6 @@
 		<cfset numContentCacheMisses = Application.caching.getContentCacheMisses() />
 		<cfcatch type="bluedragon.adminapi.caching">
 			<cfset contentCacheMessage = CFCATCH.Message />
-		</cfcatch>
-	</cftry>
-	
-	<cftry>
-		<cfset numFilesInCache = Application.caching.getNumFilesInCache() />
-		<cfcatch type="bluedragon.adminapi.caching">
-			<cfset fileCacheMessage = CFCATCH.Message />
 		</cfcatch>
 	</cftry>
 	
@@ -151,7 +145,7 @@
 			</cfloop>
 			</ul>
 		</cfif>
-		
+
 		<form name="cacheStatusForm" action="_controller.cfm?action=processFlushCacheForm" method="post" 
 				onsubmit="javascript:return validateCacheStatusForm(this);">
 		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
@@ -166,10 +160,10 @@
 				<td><strong>Flush</strong></td>
 			</tr>
 			<tr>
-				<td bgcolor="##f0f0f0" align="right" width="200"><label for="cacheToFlushFile">File</label></td>
-				<td bgcolor="##ffffff" width="300">#numFilesInCache#</td>
-				<td bgcolor="##ffffff">N/A</td>
-				<td bgcolor="##ffffff">N/A</td>
+				<td bgcolor="##f0f0f0" align="right" width="200"><label for="cacheToFlushFile">File</label> (<a href="filecachedetails.cfm">details</a>)</td>
+				<td bgcolor="##ffffff" width="300">#fileCacheInfo.size#</td>
+				<td bgcolor="##ffffff">#fileCacheInfo.hits#</td>
+				<td bgcolor="##ffffff">#fileCacheInfo.misses#</td>
 				<td bgcolor="##f0f0f0" align="center">
 					<input type="checkbox" name="cacheToFlush" id="cacheToFlushFile" value="file" tabindex="1" />
 				</td>
@@ -297,12 +291,6 @@
 		<p><strong>Information Concerning Caching</strong></p>
 		
 		<ul>
-			<li>Hit and miss statistics for file caching are not tracked</li>
-			<li>
-				If the cache statistics are always all 0, this is likely because you are running a pre-1.0 version 
-				of the OpenBD engine. The underlying caching code was changed for 1.0 so cache statistics on 
-				pre-1.0 versions of OpenBD are not reported.
-			</li>
 			<li>
 				The datasource setting for CFCACHECONTENT indicates the datasource in which items will be stored 
 				after the value of Item Cache Size is exceeded. The value of Item Cache Size must be a 

@@ -25,11 +25,12 @@
 	<cfset serverStartTime = Application.serverSettings.getServerStartTime() />
 	<cfset serverUptime = Application.serverSettings.getServerUpTime("struct") />
 	<cfset sessionCount = Application.serverSettings.getSessionCount() />
+	<cfset memoryInfo = SystemMemory() />
 </cfsilent>
 <cfsavecontent variable="request.content">
 	<cfoutput>
 		<h3>System Information</h3>
-		
+
 		<cfif structKeyExists(session, "message") and session.message.text is not "">
 			<p class="#session.message.type#">#session.message.text#</p>
 		</cfif>
@@ -118,6 +119,31 @@
 			<tr>
 				<td align="right" bgcolor="##f0f0f0">Java Virtual Machine</td>
 				<td bgcolor="##ffffff">#server.os.additionalinformation# (<a href="jvmproperties.cfm">JVM Properties</a>)</td>
+			</tr>
+		</table>
+		
+		<br />
+		<br />
+
+		<table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+			<tr bgcolor="##dedede">
+				<td colspan="2"><strong>JVM Memory Information</strong></td>
+			</tr>
+			<tr>
+				<td align="right" bgcolor="##f0f0f0">Used</td>
+				<td bgcolor="##ffffff">#Round(memoryInfo.used / 1048576)# MB</td>
+			</tr>
+			<tr>
+				<td align="right" bgcolor="##f0f0f0">Free</td>
+				<td bgcolor="##ffffff">#Round(memoryInfo.free / 1048576)# MB</td>
+			</tr>
+			<tr>
+				<td align="right" bgcolor="##f0f0f0">Total</td>
+				<td bgcolor="##ffffff">#Round(memoryInfo.total / 1048576)# MB</td>
+			</tr>
+			<tr>
+				<td align="right" bgcolor="##f0f0f0">Max</td>
+				<td bgcolor="##ffffff">#Round(memoryInfo.max / 1048576)# MB</td>
 			</tr>
 		</table>
 		

@@ -98,7 +98,7 @@
 		</cfif>
 	</cffunction>
 
-	<cffunction name="getPassword" access="package" output="false" returntype="void" hint="Returns the administrator password">
+	<cffunction name="getPassword" access="package" output="false" returntype="string" hint="Returns the administrator password">
 		<cfreturn getConfig().system.password />
 	</cffunction>
 	

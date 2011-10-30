@@ -54,15 +54,15 @@
       </div>
     </div>
 
-    <cfif structKeyExists(session, "message") and session.message.text is not "">
+    <cfif StructKeyExists(session, "message") && session.message.text != "">
       <p class="#session.message.type#">#session.message.text#</p>
     </cfif>
     
-    <cfif structKeyExists(session, "errorFields") and isArray(session.errorFields)>
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields)>
       <p class="error">The following errors occurred:</p>
       
       <ul>
-	<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
+	<cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
 	  <li>#session.errorFields[i][2]#</li>
 	</cfloop>
       </ul>

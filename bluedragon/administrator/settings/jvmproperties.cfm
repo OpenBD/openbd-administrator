@@ -23,7 +23,7 @@
 <cfsilent>
   <cfparam name="jvmMessage" type="string" default="" />
   
-  <cfset jvmProps = structNew() />
+  <cfset jvmProps = {} />
   
   <cftry>
     <cfset jvmProps = Application.serverSettings.getJVMProperties() />
@@ -39,11 +39,11 @@
       <h2>Java Virtual Machine (JVM) Properties</h2>
     </div>
     
-    <cfif structKeyExists(session, "message") and session.message.text is not "">
+    <cfif StructKeyExists(session, "message") && session.message.text != "">
       <p class="#session.message.type#">#session.message.text#</p>
     </cfif>
     
-    <cfif jvmMessage is not "">
+    <cfif jvmMessage != "">
       <p class="#jvmMessageType#">#jvmMessage#</p>
     </cfif>
     

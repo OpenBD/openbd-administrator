@@ -24,15 +24,11 @@
   <cfparam name="mappingMessage" type="string" default="" />
   <cfparam name="mappings" type="array" default="#arrayNew(1)#" />
   
-  <cfif structKeyExists(session, "mapping")>
+  <cfif StructKeyExists(session, "mapping")>
     <cfset mapping = session.mapping[1] />
     <cfset mappingAction = "update" />
     <cfelse>
-      <cfset mapping = structNew() />
-      <cfset mapping.name = "" />
-      <cfset mapping.displayname = "" />
-      <cfset mapping.directory = "" />
-      <cfset mappingAction = "create" />
+      <cfset mapping = {name:'', displayname:'', directory:'', mappingAction:'create'} />
   </cfif>
   
   <cftry>
@@ -74,22 +70,22 @@
       </div>
     </div>
     
-    <cfif structKeyExists(session, "message") and session.message.text is not "">
+    <cfif StructKeyExists(session, "message") && session.message.text != "">
       <p class="#session.message.type#">#session.message.text#</p>
     </cfif>
     
-    <cfif mappingMessage is not "">
+    <cfif mappingMessage != "">
       <p class="#mappingMessageType#">#mappingMessage#</p>
     </cfif>
 
-    <cfif arrayLen(mappings) gt 0>
+    <cfif ArrayLen(mappings) gt 0>
       <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 	<tr bgcolor="##f0f0f0">
 	  <td><strong>Actions</strong></td>
 	  <td><strong>Logical Path</strong></td>
 	  <td><strong>Directory Path</strong></td>
 	</tr>
-	<cfloop index="i" from="1" to="#arrayLen(mappings)#">
+	<cfloop index="i" from="1" to="#ArrayLen(mappings)#">
 	  <tr bgcolor="##ffffff">
 	    <td width="100">
 	      <a href="_controller.cfm?action=editMapping&name=#mappings[i].name#" alt="Edit Mapping" title="Edit Mapping">
@@ -109,10 +105,10 @@
       </table>
     </cfif>
     
-    <cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
+    <cfif StructKeyExists(session, "errorFields") && ArrayLen(session.errorFields) gt 0>
       <p class="error">The following errors occurred:</p>
       <ul>
-	<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
+	<cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
 	  <li>#session.errorFields[i][2]#</li>
 	</cfloop>
       </ul>
@@ -124,7 +120,7 @@
 	  onsubmit="javascript:return validate(this);">
       <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 	<tr bgcolor="##dedede">
-	  <td colspan="2"><strong><cfif mappingAction is "create">Add a<cfelse>Edit</cfif> Mapping</strong></td>
+	  <td colspan="2"><strong><cfif mappingAction == "create">Add a<cfelse>Edit</cfif> Mapping</strong></td>
 	</tr>
 	<tr>
 	  <td align="right" bgcolor="##f0f0f0"><label for="name">Logical Path</label></td>
@@ -171,5 +167,5 @@
       </div>
     </div>
   </cfoutput>
-  <cfset structDelete(session, "mapping", false) />
+  <cfset StructDelete(session, "mapping", false) />
 </cfsavecontent>

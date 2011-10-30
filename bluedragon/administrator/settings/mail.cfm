@@ -41,16 +41,16 @@
   </cftry>
   
   <!--- if session.mailServerStatus exists, either one or all mail servers are being verified so add that info to the 
-      mail servers --->
-  <cfif structKeyExists(session, "mailServerStatus")>
-    <cfloop index="i" from="1" to="#arrayLen(session.mailServerStatus)#">
-      <cfloop index="j" from="1" to="#arrayLen(mailServers)#">
-	<cfif session.mailServerStatus[i].smtpserver is mailServers[j].smtpserver>
-	  <cfif structKeyExists(session.mailServerStatus[i], "verified")>
+        mail servers --->
+  <cfif StructKeyExists(session, "mailServerStatus")>
+    <cfloop index="i" from="1" to="#ArrayLen(session.mailServerStatus)#">
+      <cfloop index="j" from="1" to="#ArrayLen(mailServers)#">
+	<cfif session.mailServerStatus[i].smtpserver == mailServers[j].smtpserver>
+	  <cfif StructKeyExists(session.mailServerStatus[i], "verified")>
 	    <cfset mailServers[j].verified = session.mailServerStatus[i].verified />
 	  </cfif>
 	  
-	  <cfif structKeyExists(session.mailServerStatus[i], "message")>
+	  <cfif StructKeyExists(session.mailServerStatus[i], "message")>
 	    <cfset mailServers[j].message = session.mailServerStatus[i].message />
 	  </cfif>
 	</cfif>
@@ -58,22 +58,17 @@
     </cfloop>
   </cfif>
   
-  <cfif structKeyExists(session, "mailServer")>
+  <cfif StructKeyExists(session, "mailServer")>
     <cfset mailServer = session.mailServer[1] />
     <cfset mailServerAction = "update" />
     <cfset mailServerFormActionHeader = "Edit" />
     
     <!--- port number may not be specified in the xml --->
-    <cfif not StructKeyExists(mailServer, "smtpport")>
+    <cfif !StructKeyExists(mailServer, "smtpport")>
       <cfset mailServer.smtpport = 25 />
     </cfif>
     <cfelse>
-      <cfset mailServer = structNew() />
-      <cfset mailServer.smtpserver = "" />
-      <cfset mailServer.smtpport = 25 />
-      <cfset mailServer.username = "" />
-      <cfset mailServer.password = "" />
-      <cfset mailServer.isPrimary = false />
+      <cfset mailServer = {smtpserver:'', smtpport:25, username:'', password:'', isPrimary:false} />
   </cfif>
   
   <cfset spoolCount = Application.mail.getSpooledMailCount() />
@@ -82,7 +77,7 @@
   <!--- some java app servers don't ship with javamail, so try instantiating 
       a mail session and inform the user if a mail session object can't be created --->
   <cftry>
-    <cfset mailSession = createObject("java", "javax.mail.Session") />
+    <cfset mailSession = CreateObject("java", "javax.mail.Session") />
     <cfcatch type="any">
       <cfset mailAvailable = false />
     </cfcatch>
@@ -157,11 +152,11 @@
       <h2>Mail</h2>
     </div>
     
-    <cfif structKeyExists(session, "message") and session.message.text is not "">
+    <cfif StructKeyExists(session, "message") && session.message.text != "">
       <p class="#session.message.type#">#session.message.text#</p>
     </cfif>
 
-    <cfif not mailAvailable>
+    <cfif !mailAvailable>
       <h3>JavaMail Not Installed</h3>
       
       <p class="error">It appears that you do not hava JavaMail installed.</p>
@@ -179,10 +174,10 @@
       </p>
     </cfif>
 
-    <cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
+    <cfif StructKeyExists(session, "errorFields") && ArrayLen(session.errorFields) gt 0>
       <p class="error">The following errors occurred:</p>
       <ul>
-	<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
+	<cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
 	  <li>#session.errorFields[i][2]#</li>
 	</cfloop>
       </ul>
@@ -216,7 +211,7 @@
     
     <br /><br />
     
-    <cfif arrayLen(mailServers) eq 0>
+    <cfif ArrayLen(mailServers) eq 0>
       <h3>Mail Servers</h3>
       
       <p><strong><em>No mail servers configured</em></strong></p>
@@ -232,11 +227,11 @@
 	    <td><strong>Using Login</strong></td>
 	    <td><strong>Status</strong></td>
 	  </tr>
-	  <cfloop index="i" from="1" to="#arrayLen(mailServers)#">
-	    <cfif NOT IsDefined("mailServers[i].smtpport")>
+	  <cfloop index="i" from="1" to="#ArrayLen(mailServers)#">
+	    <cfif !IsDefined("mailServers[i].smtpport")>
 	      <cfset mailServers[i].smtpport = 25>
 	    </cfif>
-	    <tr <cfif not structKeyExists(mailServers[i], "verified")>bgcolor="##ffffff"<cfelseif mailServers[i].verified>bgcolor="##ccffcc"<cfelseif not mailServers[i].verified>bgcolor="##ffff99"</cfif>>
+	    <tr <cfif !StructKeyExists(mailServers[i], "verified")>bgcolor="##ffffff"<cfelseif mailServers[i].verified>bgcolor="##ccffcc"<cfelseif !mailServers[i].verified>bgcolor="##ffff99"</cfif>>
 	      <td width="100">
 		<a href="_controller.cfm?action=editMailServer&mailServer=#mailServers[i].smtpserver#" 
 		   alt="Edit Mail Server" title="Edit Mail Server">
@@ -252,7 +247,7 @@
 		</a>
 	      </td>
 	      <td>
-		<cfif i eq 1>
+		<cfif i == 1>
 		  <img src="../images/asterisk_yellow.png" height="16" width="16" alt="Primary Mail Server" 
 		       title="Primary Mail Server" />
 		</cfif>
@@ -260,18 +255,18 @@
 	      </td>
 	      <td>#mailServers[i].smtpport#</td>
 	      <td>
-		<cfif mailServers[i].username is not "">
+		<cfif mailServers[i].username != "">
 		  Yes
 		  <cfelse>
 		    No
 		</cfif>
 	      </td>
 	      <td width="200">
-		<cfif structKeyExists(mailServers[i], "verified")>
+		<cfif StructKeyExists(mailServers[i], "verified")>
 		  <cfif mailServers[i].verified>
 		    <img src="../images/tick.png" width="16" height="16" alt="Mail Server Verified" 
 			 title="Mail Server Verified" />
-		    <cfelseif not mailServers[i].verified>
+		    <cfelseif !mailServers[i].verified>
 		      <img src="../images/exclamation.png" width="16" height="16" alt="Mail Server Verification Failed" 
 			   title="Mail Server Verification Failed" /><br />
 		      #mailServers[i].message#
@@ -293,7 +288,7 @@
     
     <br /><br />
 
-    <cfif mailMessage is not "">
+    <cfif mailMessage != "">
       <p class="#mailMessageType#">#mailMessage#</p>
     </cfif>
     
@@ -421,6 +416,6 @@
       </table>
     </form>
   </cfoutput>
-  <cfset structDelete(session, "mailServer", false) />
-  <cfset structDelete(session, "mailServerStatus", false) />
+  <cfset StructDelete(session, "mailServer", false) />
+  <cfset StructDelete(session, "mailServerStatus", false) />
 </cfsavecontent>

@@ -69,15 +69,15 @@
       </div>
     </div>
     
-    <cfif structKeyExists(session, "message") and session.message.text is not "">
+    <cfif StructKeyExists(session, "message") && session.message.text != "">
       <p class="#session.message.type#">#session.message.text#</p>
     </cfif>
     
-    <cfif fontsMessage is not "">
+    <cfif fontsMessage != "">
       <p class="#fontsMessageType#">#fontsMessage#</p>
     </cfif>
 
-    <cfif arrayLen(fontDirs) gt 0>
+    <cfif ArrayLen(fontDirs) gt 0>
       <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 	<tr bgcolor="##f0f0f0">
 	  <td><strong>Actions</strong></td>
@@ -109,10 +109,10 @@
     
     <br />
     
-    <cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
+    <cfif StructKeyExists(session, "errorFields") && ArrayLen(session.errorFields) gt 0>
       <p class="error">The following errors occurred:</p>
       <ul>
-	<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
+	<cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
 	  <li>#session.errorFields[i][2]#</li>
 	</cfloop>
       </ul>
@@ -122,7 +122,7 @@
 	  onsubmit="javascript:return validate(this);">
       <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
 	<tr bgcolor="##dedede">
-	  <td colspan="2"><strong><cfif fontDirAction is "create">Add a<cfelse>Edit</cfif> Font Directory</strong></td>
+	  <td colspan="2"><strong><cfif fontDirAction == "create">Add a<cfelse>Edit</cfif> Font Directory</strong></td>
 	</tr>
 	<tr>
 	  <td align="right" bgcolor="##f0f0f0"><label for="fontDir">Font Directory</label></td>

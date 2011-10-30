@@ -69,6 +69,6 @@
     </script>
   </cfoutput>
 
-  <cfset structDelete(session, "message", false) />
-  <cfset structDelete(session, "errorFields", false) />
+  <cfset StructDelete(session, "message", false) />
+  <cfset StructDelete(session, "errorFields", false) />
 </cfsavecontent>

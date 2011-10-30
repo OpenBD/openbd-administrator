@@ -29,20 +29,20 @@
     <cftry>
       <cfset datasources = Application.datasource.getDatasources() />
       <cfcatch type="bluedragon.adminapi.datasource">
-	<cfset datasources = arrayNew(1) />
+	<cfset datasources = [] />
       </cfcatch>
     </cftry>
     
     <cfset chartSettings = Application.chart.getChartSettings() />
     
     <!--- need to extract application and session timeout values from the createTimeSpan value in the config settings --->
-    <cfset startPos = find("(", variableSettings.applicationtimeout) + 1 />
-    <cfset endPos = find(")", variableSettings.applicationtimeout) />
-    <cfset applicationTimeout = mid(variableSettings.applicationtimeout, startPos, endPos - startPos) />
+    <cfset startPos = Find("(", variableSettings.applicationtimeout) + 1 />
+    <cfset endPos = Find(")", variableSettings.applicationtimeout) />
+    <cfset applicationTimeout = Mid(variableSettings.applicationtimeout, startPos, endPos - startPos) />
     
-    <cfset startPos = find("(", variableSettings.sessiontimeout) + 1 />
-    <cfset endPos = find(")", variableSettings.sessiontimeout) />
-    <cfset sessionTimeout = mid(variableSettings.sessiontimeout, startPos, endPos - startPos) />
+    <cfset startPos = Find("(", variableSettings.sessiontimeout) + 1 />
+    <cfset endPos = Find(")", variableSettings.sessiontimeout) />
+    <cfset sessionTimeout = Mid(variableSettings.sessiontimeout, startPos, endPos - startPos) />
     
     <cfcatch type="bluedragon.adminapi.variableSettings">
       <cfset variableMessage = CFCATCH.Message />
@@ -99,18 +99,18 @@
       </div>
     </div>
     
-    <cfif structKeyExists(session, "message") and session.message.text is not "">
+    <cfif StructKeyExists(session, "message") && session.message.text != "">
       <p class="#session.message.type#">#session.message.text#</p>
     </cfif>
     
-    <cfif variableMessage is not "">
+    <cfif variableMessage != "">
       <p class="#variableMessageType#">#variableMessage#</p>
     </cfif>
 
-    <cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
+    <cfif StructKeyExists(session, "errorFields") && ArrayLen(session.errorFields) gt 0>
       <p class="error">The following errors occurred:</p>
       <ul>
-	<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
+	<cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
 	  <li>#session.errorFields[i][2]#</li>
 	</cfloop>
       </ul>
@@ -129,7 +129,7 @@
 		   <cfif variableSettings.j2eesession> checked="true"</cfif> tabindex="1" />
 	    <label for="j2eesessionTrue">Yes</label>&nbsp;
 	    <input type="radio" name="j2eesession" id="j2eesessionFalse" value="false"
-		   <cfif not variableSettings.j2eesession> checked="true"</cfif> tabindex="2" />
+		   <cfif !variableSettings.j2eesession> checked="true"</cfif> tabindex="2" />
 	    <label for="j2eesessionFalse">No</label>
 	  </td>
 	</tr>
@@ -172,9 +172,9 @@
 	  <td bgcolor="##ffffff">
 	    <select name="clientstorage" id="clientstorage" tabindex="11">
 	      <option value="cookie"<cfif variableSettings.clientstorage is "cookie"> selected="true"</cfif>>Cookies</option>
-	      <cfif arrayLen(datasources) gt 0>
+	      <cfif ArrayLen(datasources) gt 0>
 		<cfloop index="i" from="1" to="#arrayLen(datasources)#">
-		  <option value="#datasources[i].name#"<cfif variableSettings.clientstorage is datasources[i].name> selected="true"</cfif>>#datasources[i].name#</option>
+		  <option value="#datasources[i].name#"<cfif variableSettings.clientstorage == datasources[i].name> selected="true"</cfif>>#datasources[i].name#</option>
 		</cfloop>
 	      </cfif>
 	    </select><br />
@@ -186,8 +186,8 @@
 	    &nbsp;<label for="clientexpiry">days old</label><br />
 	    <input type="checkbox" name="clientGlobalUpdatesDisabled" 
 		   id="clientGlobalUpdatesDisabled" value="true" 
-		   <cfif StructKeyExists(variableSettings, "clientGlobalUpdatesDisabled") 
-			 and variableSettings.clientGlobalUpdatesDisabled> checked="true"</cfif> tabindex="14" />
+		   <cfif StructKeyExists(variableSettings, "clientGlobalUpdatesDisabled") &&
+			 variableSettings.clientGlobalUpdatesDisabled> checked="true"</cfif> tabindex="14" />
 	    <label for="clientGlobalUpdatesDisabled">Disable Global Client Variable Updates</label><br />
 	    <input type="checkbox" name="cf5clientdata" id="cf5clientdata" value="true"
 		   <cfif variableSettings.cf5clientdata> checked="true"</cfif> tabindex="15" />
@@ -199,12 +199,12 @@
 	  <td bgcolor="##f0f0f0" align="right"><label for="cfchartstorage">CFCHART Storage</label></td>
 	  <td bgcolor="##ffffff">
 	    <select name="cfchartstorage" id="cfchartstorage" tabindex="16">
-	      <option value="file"<cfif chartSettings.storage is "file"> selected="true"</cfif>>File</option>
-	      <option value="session"<cfif chartSettings.storage is "session"> selected="true"</cfif>>Session</option>
-	      <cfif arrayLen(datasources) gt 0>
+	      <option value="file"<cfif chartSettings.storage == "file"> selected="true"</cfif>>File</option>
+	      <option value="session"<cfif chartSettings.storage == "session"> selected="true"</cfif>>Session</option>
+	      <cfif ArrayLen(datasources) gt 0>
 		<cfloop index="i" from="1" to="#arrayLen(datasources)#">
 		  <option value="#datasources[i].name#"<cfif chartSettings.storage is datasources[i].name> selected="true"</cfif>>
-		    <cfif structKeyExists(datasources[i], "displayname")>#datasources[i].displayname#<cfelse>#datasources[i].name#</cfif>
+		    <cfif StructKeyExists(datasources[i], "displayname")>#datasources[i].displayname#<cfelse>#datasources[i].name#</cfif>
 		  </option>
 		</cfloop>
 	      </cfif>

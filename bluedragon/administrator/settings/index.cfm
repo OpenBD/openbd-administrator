@@ -85,14 +85,14 @@
 
     <h4>Settings last updated #serverSettings.lastupdated#</h4>
     
-    <cfif structKeyExists(session, "message") and session.message.text is not "">
+    <cfif StructKeyExists(session, "message") && session.message.text != "">
       <p class="#session.message.type#">#session.message.text#</p>
     </cfif>
     
-    <cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
+    <cfif StructKeyExists(session, "errorFields") && ArrayLen(session.errorFields) gt 0>
       <p class="error">The following errors occurred:</p>
       <ul>
-	<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
+	<cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
 	  <li>#session.errorFields[i][2]#</li>
 	</cfloop>
       </ul>
@@ -118,9 +118,9 @@
 	  <td align="right" bgcolor="##f0f0f0"><label for="buffersize">Response Buffer Size</label></td>
 	  <td bgcolor="##ffffff">
 	    <input type="text" name="buffersize" id="buffersize" size="3" value="#serverSettings.buffersize#"
-		   <cfif serverSettings.buffersize eq 0> readOnly="true"</cfif> tabindex="1" /> KB&nbsp;
+		   <cfif serverSettings.buffersize == 0> readOnly="true"</cfif> tabindex="1" /> KB&nbsp;
 	    <input type="checkbox" name="bufferentirepage" id="bufferentirepage" value="1" 
-		   onclick="javascript:updateBufferSettings();"<cfif serverSettings.buffersize eq 0> checked="true"</cfif> 
+		   onclick="javascript:updateBufferSettings();"<cfif serverSettings.buffersize == 0> checked="true"</cfif> 
 		   tabindex="2" /><label for="bufferentirepage">Buffer Entire Page</label>
 	  </td>
 	</tr>
@@ -131,7 +131,7 @@
 		   <cfif serverSettings.whitespacecomp> checked="true"</cfif> tabindex="3" />
 	    <label for="whitespacecompTrue">Yes</label>&nbsp;
 	    <input type="radio" name="whitespacecomp" id="whitespacecompFalse" value="false"
-		   <cfif not serverSettings.whitespacecomp> checked="true"</cfif> tabindex="4" />
+		   <cfif !serverSettings.whitespacecomp> checked="true"</cfif> tabindex="4" />
 	    <label for="whitespacecompFalse">No</label>
 	  </td>
 	</tr>
@@ -154,7 +154,7 @@
 	  <td bgcolor="##ffffff">
 	    <select name="defaultcharset" id="defaultcharset" tabindex="6">
 	      <cfloop collection="#charsets#" item="charset">
-		<option value="#charset#"<cfif serverSettings.defaultcharset is charset> selected="true"</cfif>>#charset#</option>
+		<option value="#charset#"<cfif serverSettings.defaultcharset == charset> selected="true"</cfif>>#charset#</option>
 	      </cfloop>
 	    </select>
 	  </td>
@@ -166,7 +166,7 @@
 		   <cfif serverSettings.scriptprotect> checked="true"</cfif> tabindex="7" />
 	    <label for="scriptprotectTrue">Yes</label>&nbsp;
 	    <input type="radio" name="scriptprotect" id="scriptprotectFalse" value="false"
-		   <cfif not serverSettings.scriptprotect> checked="true"</cfif> tabindex="8" />
+		   <cfif !serverSettings.scriptprotect> checked="true"</cfif> tabindex="8" />
 	    <label for="scriptprotectFalse">No</label>&nbsp;
 	    <img src="../images/arrow_refresh_small.png" height="16" width="16" 
 		 alt="Requires Server Restart" title="Requires Server Restart" />
@@ -180,7 +180,7 @@
 		   tabindex="9" />&nbsp;
 	    <label for="legacyformvalidationTrue">Yes</label>&nbsp;
 	    <input type="radio" name="legacyformvalidation" id="legacyformvalidationFalse" 
-		   value="false"<cfif not serverSettings.legacyformvalidation> checked="true"</cfif> 
+		   value="false"<cfif !serverSettings.legacyformvalidation> checked="true"</cfif> 
 		   tabindex="10" />
 	    <label for="legacyformvalidationFalse">No</label>
 	  </td>

@@ -54,22 +54,22 @@
     </cfcatch>
   </cftry>
   
-  <cfif not StructKeyExists(cachingSettings, "cfcachecontent")>
+  <cfif !StructKeyExists(cachingSettings, "cfcachecontent")>
     <cfset cachingSettings.cfcachecontent = StructNew() />
   </cfif>
   
-  <cfif not StructKeyExists(cachingSettings.cfcachecontent, "datasource")>
+  <cfif !StructKeyExists(cachingSettings.cfcachecontent, "datasource")>
     <cfset cachingSettings.cfcachecontent.datasource = "" />
   </cfif>
   
-  <cfif not StructKeyExists(cachingSettings.cfcachecontent, "total")>
+  <cfif !StructKeyExists(cachingSettings.cfcachecontent, "total")>
     <cfset cachingSettings.cfcachecontent.total = 1000 />
   </cfif>
 
   <cftry>
     <cfset datasources = Application.datasource.getDatasources() />
     <cfcatch type="bluedragon.adminapi.datasource">
-      <cfset datasources = arrayNew(1) />
+      <cfset datasources = [] />
     </cfcatch>
   </cftry>
 </cfsilent>
@@ -136,18 +136,18 @@
       </div>
     </div>
 
-    <cfif structKeyExists(session, "message") and session.message.text is not "">
+    <cfif StructKeyExists(session, "message") && session.message.text != "">
       <p class="#session.message.type#">#session.message.text#</p>
     </cfif>
     
-    <cfif cachingMessage is not "">
+    <cfif cachingMessage != "">
       <p class="#cachingMessageType#">#cachingMessage#</p>
     </cfif>
 
-    <cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
+    <cfif StructKeyExists(session, "errorFields") && ArrayLen(session.errorFields) gt 0>
       <p class="error">The following errors occurred:</p>
       <ul>
-	<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
+	<cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
 	  <li>#session.errorFields[i][2]#</li>
 	</cfloop>
       </ul>
@@ -223,7 +223,7 @@
 		   <cfif cachingSettings.file.trustcache> checked="true"</cfif> tabindex="6" />
 	    <label for="trustcacheTrue">Yes</label>&nbsp;
 	    <input type="radio" name="trustcache" id="trustcacheFalse" value="false"
-		   <cfif not cachingSettings.file.trustcache> checked="true"</cfif> tabindex="7" />
+		   <cfif !cachingSettings.file.trustcache> checked="true"</cfif> tabindex="7" />
 	    <label for="trustcacheFalse">No</label>&nbsp;
 	  </td>
 	</tr>
@@ -279,10 +279,10 @@
 	  </td>
 	  <td bgcolor="##ffffff">
 	    <select name="datasource" id="datasource" tabindex="12">
-	      <option value=""<cfif cachingSettings.cfcachecontent.datasource is ""> selected="true"</cfif>>- select -</option>
-	      <cfif arrayLen(datasources) gt 0>
+	      <option value=""<cfif cachingSettings.cfcachecontent.datasource == ""> selected="true"</cfif>>- select -</option>
+	      <cfif ArrayLen(datasources) gt 0>
 		<cfloop index="i" from="1" to="#arrayLen(datasources)#">
-		  <option value="#datasources[i].name#"<cfif cachingSettings.cfcachecontent.datasource is datasources[i].name> selected="true"</cfif>>#datasources[i].name#</option>
+		  <option value="#datasources[i].name#"<cfif cachingSettings.cfcachecontent.datasource == datasources[i].name> selected="true"</cfif>>#datasources[i].name#</option>
 		</cfloop>
 	      </cfif>
 	    </select><br />

@@ -238,7 +238,7 @@
     <cfset checkLoginStatus() />
 
     <!--- Make sure there are datasources --->
-    <cfif !StructKeyExists(localConfig, "cfquery") || !StructKeyExists(localConfig.cfquery, "datasource"))>
+    <cfif !StructKeyExists(localConfig, "cfquery") || !StructKeyExists(localConfig.cfquery, "datasource")>
       <cfthrow message="No datasources defined" type="bluedragon.adminapi.datasource" />		
     </cfif>
 

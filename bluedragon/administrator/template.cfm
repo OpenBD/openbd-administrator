@@ -42,6 +42,7 @@
       <script src="#contextPath#/bluedragon/administrator/js/jquery-1.6.4.min.js" type="text/javascript"></script>
       <script src="#contextPath#/bluedragon/administrator/js/bootstrap-dropdown.js" type="text/javascript"></script>
       <script src="#contextPath#/bluedragon/administrator/js/bootstrap-modal.js" type="text/javascript"></script>
+      <script src="#contextPath#/bluedragon/administrator/js/bootstrap-alerts.js" type="text/javascript"></script>
     </head>
 
     <body style="padding-top:50px;">

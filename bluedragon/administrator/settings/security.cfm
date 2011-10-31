@@ -26,6 +26,8 @@
 </cfsilent>
 <cfsavecontent variable="request.content">
   <script type="text/javascript">
+    $().alert();
+    
     function validatePasswordForm(f) {
       if (f.password.value != f.confirmPassword.value) {
         alert("The password fields do not match");
@@ -55,70 +57,74 @@
     </div>
 
     <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
-    
+
     <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields)>
-      <p class="error">The following errors occurred:</p>
-      
-      <ul>
-	<cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
-	  <li>#session.errorFields[i][2]#</li>
-	</cfloop>
-      </ul>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
     </cfif>
     
     <form name="ipAddresses" action="_controller.cfm?action=processIPAddressForm" method="post">
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##dedede">
 	  <td colspan="2"><strong>Allowed IP Addresses</strong> (comma-delimited, * for wildcard)</td>
 	</tr>
 	<tr>
 	  <td align="right" bgcolor="##f0f0f0"><label for="allowIPs">Allow IPs</label></td>
 	  <td bgcolor="##ffffff">
-	    <input type="text" name="allowIPs" id="allowIPs" size="70" value="#allowedIPs#" tabindex="1" />
+	    <input class="span10" type="text" name="allowIPs" id="allowIPs" size="70" value="#allowedIPs#" tabindex="1" />
 	  </td>
 	</tr>
 	<tr>
 	  <td align="right" bgcolor="##f0f0f0"><label for="denyIPs">Deny IPs</label></td>
 	  <td bgcolor="##ffffff">
-	    <input type="text" name="denyIPs" id="denyIPs" size="70" value="#deniedIPs#" tabindex="2" />
+	    <input class="span10" type="text" name="denyIPs" id="denyIPs" value="#deniedIPs#" tabindex="2" />
 	  </td>
 	</tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
 	  <td>
-	    <input type="submit" name="submit" value="Submit" tabindex="3" />
+	    <input class="btn primary" type="submit" name="submit" id="submit1" value="Submit" tabindex="3" />
 	  </td>
 	</tr>
       </table>
     </form>
     
     <br />
-    <br />
 
     <form name="adminConsolePassword" action="_controller.cfm?action=processAdminConsolePasswordForm" method="post" 
 	  onsubmit="javascript:return validatePasswordForm(this);">
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##dedede">
 	  <td colspan="2"><strong>Administration Console Password</strong></td>
 	</tr>
 	<tr>
 	  <td align="right" bgcolor="##f0f0f0"><label for="password">New Password</label></td>
 	  <td bgcolor="##ffffff">
-	    <input type="password" name="password" id="password" size="30" maxlength="30" tabindex="4" />
+	    <input class="span6" type="password" name="password" id="password" maxlength="30" tabindex="4" />
 	  </td>
 	</tr>
 	<tr>
 	  <td align="right" bgcolor="##f0f0f0"><label for="confirmPassword">Confirm Password</label></td>
 	  <td bgcolor="##ffffff">
-	    <input type="password" name="confirmPassword" id="confirmPassword" size="30" maxlength="30" tabindex="5" />
+	    <input class="span6" type="password" name="confirmPassword" id="confirmPassword" maxlength="30" tabindex="5" />
 	  </td>
 	</tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
 	  <td>
-	    <input type="submit" name="submit" value="Submit" tabindex="6" />
+	    <input class="btn primary" type="submit" name="submit" id="submit2" value="Submit" tabindex="6" />
 	  </td>
 	</tr>
       </table>

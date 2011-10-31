@@ -63,7 +63,7 @@
       </div>
     </cfif>
 
-    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields)>
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
       <div class="alert-message block-message error fade in" data-alert="alert">
 	<a class="close" href="##">x</a>
 	<h5>The following errors occurred:</h5>

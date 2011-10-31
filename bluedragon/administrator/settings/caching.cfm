@@ -55,7 +55,7 @@
   </cftry>
   
   <cfif !StructKeyExists(cachingSettings, "cfcachecontent")>
-    <cfset cachingSettings.cfcachecontent = StructNew() />
+    <cfset cachingSettings.cfcachecontent = {} />
   </cfif>
   
   <cfif !StructKeyExists(cachingSettings.cfcachecontent, "datasource")>
@@ -137,50 +137,59 @@
     </div>
 
     <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
     
     <cfif cachingMessage != "">
-      <p class="#cachingMessageType#">#cachingMessage#</p>
+      <div class="alert-message #cachingMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#cachingMessage#</p>
+      </div>
     </cfif>
 
-    <cfif StructKeyExists(session, "errorFields") && ArrayLen(session.errorFields) gt 0>
-      <p class="error">The following errors occurred:</p>
-      <ul>
-	<cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
-	  <li>#session.errorFields[i][2]#</li>
-	</cfloop>
-      </ul>
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
     </cfif>
 
     <form name="cacheStatusForm" action="_controller.cfm?action=processFlushCacheForm" method="post" 
 	  onsubmit="javascript:return validateCacheStatusForm(this);">
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##dedede">
-	  <td colspan="5"><strong>Cache Status</strong></td>
+	  <td colspan="5"><h5>Cache Status</h5></td>
 	</tr>
-	<tr bgcolor="##dedede">
-	  <td><strong>Cache</strong></td>
-	  <td><strong>Size</strong></td>
-	  <td><strong>Hits</strong></td>
-	  <td><strong>Misses</strong></td>
-	  <td><strong>Flush</strong></td>
+	<tr bgcolor="##f0f0f0">
+	  <th>Cache</th>
+	  <th>Size</th>
+	  <th>Hits</th>
+	  <th>Misses</th>
+	  <th>Flush</th>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right" width="200"><label for="cacheToFlushFile">File</label> (<a href="filecachedetails.cfm">details</a>)</td>
+	  <td bgcolor="##f0f0f0" width="200"><label for="cacheToFlushFile">File (<a href="filecachedetails.cfm">details</a>)</label></td>
 	  <td bgcolor="##ffffff" width="300">#fileCacheInfo.size#</td>
 	  <td bgcolor="##ffffff">#fileCacheInfo.hits#</td>
 	  <td bgcolor="##ffffff">#fileCacheInfo.misses#</td>
-	  <td bgcolor="##f0f0f0" align="center">
+	  <td bgcolor="##f0f0f0" style="width:80px;text-align:center;">
 	    <input type="checkbox" name="cacheToFlush" id="cacheToFlushFile" value="file" tabindex="1" />
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right"><label for="cacheToFlushQuery">Query</label></td>
+	  <td bgcolor="##f0f0f0"><label for="cacheToFlushQuery">Query</label></td>
 	  <td bgcolor="##ffffff">#numQueriesInCache#</td>
 	  <td bgcolor="##ffffff">#numQueryCacheHits#</td>
 	  <td bgcolor="##ffffff">#numQueryCacheMisses#</td>
-	  <td bgcolor="##f0f0f0" align="center">
+	  <td bgcolor="##f0f0f0" style="text-align:center;">
 	    <input type="checkbox" name="cacheToFlush" id="cacheToFlushQuery" value="query" tabindex="2" />
 	  </td>
 	</tr>
@@ -189,39 +198,43 @@
 	  <td bgcolor="##ffffff">#numContentInCache#</td>
 	  <td bgcolor="##ffffff">#numContentCacheHits#</td>
 	  <td bgcolor="##ffffff">#numContentCacheMisses#</td>
-	  <td bgcolor="##f0f0f0" align="center">
+	  <td bgcolor="##f0f0f0" style="text-align:center;">
 	    <input type="checkbox" name="cacheToFlush" id="cacheToFlushContent" value="content" tabindex="3" />
 	  </td>
 	</tr>
 	<tr>
 	</tr>
 	<tr bgcolor="##dedede">
-	  <td colspan="5" align="right"><input type="submit" name="submit" value="Flush Checked Caches" tabindex="4" /></td>
+	  <td colspan="5">
+	    <div class="pull-right">
+	      <input class="btn primary" type="submit" name="submit" value="Flush Checked Caches" tabindex="4" />
+	    </div>
+	  </td>
 	</tr>
       </table>
     </form>
     
-    <br /><br />
+    <br />
     
     <form name="fileCacheForm" action="_controller.cfm?action=processFileCacheForm" method="post" 
 	  onsubmit="javascript:return validateFileCacheForm(this);">
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##dedede">
-	  <td colspan="2"><strong>File Cache Settings</strong></td>
+	  <td colspan="2"><h5>File Cache Settings</h5></td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right"><label for="maxfiles">File Cache Size</label></td>
+	  <td bgcolor="##f0f0f0"><label for="maxfiles">File Cache Size</label></td>
 	  <td bgcolor="##ffffff">
-	    <input type="text" name="maxfiles" id="maxfiles" size="5" maxlength="4" 
+	    <input class="span3" type="text" name="maxfiles" id="maxfiles" maxlength="4" 
 		   value="#cachingSettings.file.maxfiles#" tabindex="5" /> files
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right">Trust Cache</td>
+	  <td bgcolor="##f0f0f0"><label>Trust Cache</label></td>
 	  <td bgcolor="##ffffff">
+	    <label for="trustcacheTrue">Yes</label>&nbsp;
 	    <input type="radio" name="trustcache" id="trustcacheTrue" value="true"
 		   <cfif cachingSettings.file.trustcache> checked="true"</cfif> tabindex="6" />
-	    <label for="trustcacheTrue">Yes</label>&nbsp;
 	    <input type="radio" name="trustcache" id="trustcacheFalse" value="false"
 		   <cfif !cachingSettings.file.trustcache> checked="true"</cfif> tabindex="7" />
 	    <label for="trustcacheFalse">No</label>&nbsp;
@@ -229,47 +242,47 @@
 	</tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
-	  <td><input type="submit" name="submit" value="Submit" tabindex="8" /></td>
+	  <td><input class="btn primary" type="submit" name="submit" value="Submit" tabindex="8" /></td>
 	</tr>
       </table>
     </form>
     
-    <br /><br />
+    <br />
     
     <form name="queryCacheForm" action="_controller.cfm?action=processQueryCacheForm" method="post" 
 	  onsubmit="javascript:return validateQueryCacheForm(this);">
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##dedede">
-	  <td colspan="2"><strong>Query Cache Settings</strong></td>
+	  <td colspan="2"><h5>Query Cache Settings</h5></td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right"><label for="cachecount">Query Cache Size</label></td>
+	  <td bgcolor="##f0f0f0"><label for="cachecount">Query Cache Size</label></td>
 	  <td bgcolor="##ffffff">
-	    <input type="text" name="cachecount" id="cachecount" size="5" maxlength="4" 
+	    <input class="span3" type="text" name="cachecount" id="cachecount" maxlength="4" 
 		   value="#cachingSettings.cfquery.cachecount#" tabindex="9" /> queries
 	  </td>
 	</tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
-	  <td><input type="submit" name="submit" value="Submit" tabindex="10" /></td>
+	  <td><input class="btn primary" type="submit" name="submit" value="Submit" tabindex="10" /></td>
 	</tr>
       </table>
     </form>
     
-    <br /><br />
+    <br />
     
     <form name="cfcachecontentForm" action="_controller.cfm?action=processCFCacheContentForm" method="post" 
 	  onsubmit="javascript:return validateCFCacheContentForm(this);">
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##dedede">
-	  <td colspan="2"><strong>CFCACHECONTENT Settings</strong></td>
+	  <td colspan="2"><h5>CFCACHECONTENT Settings</h5></td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right">
+	  <td bgcolor="##f0f0f0">
 	    <label for="total">Item Cache Size</label>
 	  </td>
 	  <td bgcolor="##ffffff">
-	    <input type="text" name="total" id="total" size="6" maxlength="5" 
+	    <input class="span3" type="text" name="total" id="total" maxlength="5" 
 		   value="#cachingSettings.cfcachecontent.total#" tabindex="11" />
 	  </td>
 	</tr>
@@ -285,12 +298,12 @@
 		  <option value="#datasources[i].name#"<cfif cachingSettings.cfcachecontent.datasource == datasources[i].name> selected="true"</cfif>>#datasources[i].name#</option>
 		</cfloop>
 	      </cfif>
-	    </select><br />
+	    </select>
 	  </td>
 	</tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
-	  <td><input type="submit" name="submit" value="Submit" tabindex="13" /></td>
+	  <td><input class="btn primary" type="submit" name="submit" value="Submit" tabindex="13" /></td>
 	</tr>
       </table>
     </form>

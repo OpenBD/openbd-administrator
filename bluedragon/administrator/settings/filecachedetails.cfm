@@ -29,15 +29,15 @@
       <h2>File Cache Details</h2>
     </div>
     <cfif ArrayLen(fileCacheList) gt 0>
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##dedede">
-	  <td colspan="5"><strong>Files in Cache (#ArrayLen(fileCacheList)#)</strong></td>
+	  <td colspan="5"><h5>Files in Cache (#ArrayLen(fileCacheList)#)</h5></td>
 	</tr>
-	<tr bgcolor="##dedede">
-	  <td><strong>URI</strong></td>
-	  <td><strong>Real Path</strong></td>
-	  <td><strong>Hits</strong></td>
-	  <td><strong>Last Used</strong></td>
+	<tr bgcolor="##f0f0f0">
+	  <th>URI</th>
+	  <th>Real Path</th>
+	  <th>Hits</th>
+	  <th>Last Used</th>
 	</tr>
 	<cfloop array="#fileCacheList#" index="info">
 	  <tr>

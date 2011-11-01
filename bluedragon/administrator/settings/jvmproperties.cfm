@@ -40,17 +40,23 @@
     </div>
     
     <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
     
     <cfif jvmMessage != "">
-      <p class="#jvmMessageType#">#jvmMessage#</p>
+      <div class="alert-message #jvmMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#jvmMessage#</p>
+      </div>
     </cfif>
-    
-    <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
-      <tr bgcolor="##dedede">
-	<td><strong>Property Name</strong></td>
-	<td><strong>Property Value</strong></td>
+
+    <table>
+      <tr bgcolor="##f0f0f0">
+	<th>Property Name</th>
+	<th>Property Value</th>
       </tr>
       <cfloop collection="#jvmProps#" item="prop">
 	<tr>

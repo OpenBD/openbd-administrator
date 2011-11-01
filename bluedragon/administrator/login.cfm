@@ -52,7 +52,7 @@
 	  <div class="clearfix">
 	    <label for="password">Password</label>
 	    <div class="input">
-	      <input class="xlarge" id="password" name="password" type="password" />
+	      <input class="span4" id="password" name="password" type="password" />
 	    </div>
 	  </div>
 	  <div class="clearfix">

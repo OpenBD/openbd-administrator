@@ -136,32 +136,6 @@
       </div>
     </div>
 
-    <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <div class="alert-message #session.message.type# fade in" data-alert="alert">
-	<a class="close" href="##">x</a>
-	<p>#session.message.text#</p>
-      </div>
-    </cfif>
-    
-    <cfif cachingMessage != "">
-      <div class="alert-message #cachingMessageType# fade in" data-alert="alert">
-	<a class="close" href="##">x</a>
-	<p>#cachingMessage#</p>
-      </div>
-    </cfif>
-
-    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
-      <div class="alert-message block-message error fade in" data-alert="alert">
-	<a class="close" href="##">x</a>
-	<h5>The following errors occurred:</h5>
-	<ul>
-	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
-	    <li>#session.errorFields[i][2]#</li>
-	  </cfloop>
-	</ul>
-      </div>
-    </cfif>
-
     <form name="cacheStatusForm" action="_controller.cfm?action=processFlushCacheForm" method="post" 
 	  onsubmit="javascript:return validateCacheStatusForm(this);">
       <table>

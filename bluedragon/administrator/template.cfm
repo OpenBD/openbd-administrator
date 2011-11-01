@@ -51,7 +51,9 @@
 	  <div class="topbar" data-dropdown="dropdown">
 	    <div class="topbar-inner">
               <div class="container">
-		<div class="pull-left"><img src="#contextPath#/bluedragon/administrator/images/openBD-204.jpg" border="0" height="40" width="204" /></div>
+		<a class="brand" href="#contextPath#/bluedragon/administrator/index.cfm" style="padding:0;">
+		  <img src="#contextPath#/bluedragon/administrator/images/sd_openBD_32.png" border="0" height="32" width="32" style="border:0px; margin-top:5px; margin-left:20px; padding:0;" />
+		</a>
 		<ul class="nav">
 		  <li<cfif theSection == "administrator" && thePage == "index.cfm"> class="active"</cfif>><a href="#contextPath#/bluedragon/administrator/index.cfm">Home</a></li>
 		  <li class="dropdown<cfif theSection == 'settings'> active</cfif>">

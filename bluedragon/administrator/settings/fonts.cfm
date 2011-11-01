@@ -70,18 +70,36 @@
     </div>
     
     <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
     
     <cfif fontsMessage != "">
-      <p class="#fontsMessageType#">#fontsMessage#</p>
+      <div class="alert-message #fontsMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#fontsMessage#</p>
+      </div>
+    </cfif>
+
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
     </cfif>
 
     <cfif ArrayLen(fontDirs) gt 0>
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##f0f0f0">
-	  <td><strong>Actions</strong></td>
-	  <td><strong>Font Directory</strong></td>
+	  <th>Actions</th>
+	  <th>Font Directory</th>
 	</tr>
 	<cfloop index="i" from="1" to="#arrayLen(fontDirs)#">
 	  <tr bgcolor="##ffffff">
@@ -109,31 +127,22 @@
     
     <br />
     
-    <cfif StructKeyExists(session, "errorFields") && ArrayLen(session.errorFields) gt 0>
-      <p class="error">The following errors occurred:</p>
-      <ul>
-	<cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
-	  <li>#session.errorFields[i][2]#</li>
-	</cfloop>
-      </ul>
-    </cfif>
-    
     <form name="fontDirForm" action="_controller.cfm?action=processFontDirForm" method="post" 
 	  onsubmit="javascript:return validate(this);">
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##dedede">
 	  <td colspan="2"><strong><cfif fontDirAction == "create">Add a<cfelse>Edit</cfif> Font Directory</strong></td>
 	</tr>
 	<tr>
 	  <td align="right" bgcolor="##f0f0f0"><label for="fontDir">Font Directory</label></td>
 	  <td bgcolor="##ffffff">
-	    <input type="text" name="fontDir" id="fontDir" size="40" value="" tabindex="1" />
+	    <input class="span6" type="text" name="fontDir" id="fontDir" value="" tabindex="1" />
 	  </td>
 	</tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
 	  <td>
-	    <input type="submit" name="submit" value="Submit" tabindex="2" />
+	    <input class="btn primary" id="submit" type="submit" name="submit" value="Submit" tabindex="2" />
 	  </td>
 	</tr>
       </table>

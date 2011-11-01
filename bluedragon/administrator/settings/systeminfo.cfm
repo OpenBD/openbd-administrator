@@ -36,9 +36,9 @@
       <p class="#session.message.type#">#session.message.text#</p>
     </cfif>
     
-    <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+    <table>
       <tr bgcolor="##dedede">
-	<td colspan="2"><strong>Server Status</strong></td>
+	<td colspan="2"><h5>Server Status</h5></td>
       </tr>
       <tr>
 	<td align="right" bgcolor="##f0f0f0">Server Name</td>
@@ -59,11 +59,10 @@
     </table>
     
     <br />
-    <br />
 
-    <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+    <table>
       <tr bgcolor="##dedede">
-	<td colspan="2"><strong>Application and Session Status</strong></td>
+	<td colspan="2"><h5>Application and Session Status</h5></td>
       </tr>
       <tr>
 	<td align="right" bgcolor="##f0f0f0" width="300">Number of Running Applications</td>
@@ -73,18 +72,16 @@
 	<td align="right" valign="top" bgcolor="##f0f0f0">Running Applications</td>
 	<td bgcolor="##ffffff" valign="top">
 	  <cfif ArrayLen(ApplicationList()) gt 0>
-	    <table>
 	      <cfloop array="#ApplicationList()#" index="app">
-		<tr>
-		  <td>#app#</td>
-		  <td>
+		<div class="row">
+		  <div class="pull-left" style="margin-left:20px;">#app#</div>
+		  <div class="pull-right" style="padding-right:200px;">
 		    <a href="_controller.cfm?action=unloadApplication&applicationName=#app#">
 		      <img src="../images/cancel.png" border="0" width="16" height="16" alt="Unload Application" title="Unload Application" />
 		    </a>
-		  </td>
-		</tr>
+		  </div>
+		</div>
 	      </cfloop>
-	    </table>
 	  </cfif>
 	</td>
       </tr>
@@ -95,11 +92,10 @@
     </table>
     
     <br />
-    <br />
 
-    <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+    <table>
       <tr bgcolor="##dedede">
-	<td colspan="2"><strong>Open BlueDragon and Java Information</strong></td>
+	<td colspan="2"><h5>Open BlueDragon and Java Information</h5></td>
       </tr>
       <tr>
 	<td align="right" bgcolor="##f0f0f0">Open BlueDragon Product Version</td>
@@ -124,11 +120,10 @@
     </table>
     
     <br />
-    <br />
 
-    <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+    <table>
       <tr bgcolor="##dedede">
-	<td colspan="2"><strong>JVM Memory Information</strong></td>
+	<td colspan="2"><h5>JVM Memory Information</h5></td>
       </tr>
       <tr>
 	<td align="right" bgcolor="##f0f0f0">Used</td>
@@ -149,11 +144,10 @@
     </table>
     
     <br />
-    <br />
 
-    <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+    <table>
       <tr bgcolor="##dedede">
-	<td colspan="2"><strong>Open BlueDragon Admin Console and Admin API Information</strong></td>
+	<td colspan="2"><h5>Open BlueDragon Admin Console and Admin API Information</h5></td>
       </tr>
       <tr>
 	<td align="right" bgcolor="##f0f0f0">Admin Console Version</td>

@@ -100,7 +100,7 @@
     
     <form name="serverSettings" action="_controller.cfm?action=processServerSettingsForm" method="post" 
 	  onsubmit="javascript:return validate(this);">
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##dedede">
 	  <td colspan="2">
 	    <strong>Update Server Settings</strong>&nbsp;
@@ -117,8 +117,7 @@
 	<tr>
 	  <td align="right" bgcolor="##f0f0f0"><label for="buffersize">Response Buffer Size</label></td>
 	  <td bgcolor="##ffffff">
-	    <input type="text" name="buffersize" id="buffersize" size="3" value="#serverSettings.buffersize#"
-		   <cfif serverSettings.buffersize == 0> readOnly="true"</cfif> tabindex="1" /> KB&nbsp;
+	    <input type="text" name="buffersize" id="buffersize" size="3" value="#serverSettings.buffersize#"<cfif serverSettings.buffersize == 0> readOnly="true"</cfif> tabindex="1" /> KB&nbsp;
 	    <input type="checkbox" name="bufferentirepage" id="bufferentirepage" value="1" 
 		   onclick="javascript:updateBufferSettings();"<cfif serverSettings.buffersize == 0> checked="true"</cfif> 
 		   tabindex="2" /><label for="bufferentirepage">Buffer Entire Page</label>

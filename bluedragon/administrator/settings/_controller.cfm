@@ -743,7 +743,7 @@
     
     <!--- FONTS --->
     <cfcase value="processFontDirForm">
-      <cfset errorFields = !ArrayNew(2) />
+      <cfset errorFields = ArrayNew(2) />
       <cfset errorFieldsIndex = 1 />
       
       <cfif Trim(args.fontDir) == "">

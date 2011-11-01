@@ -81,7 +81,7 @@
 	  <td colspan="2"><strong>Allowed IP Addresses</strong> (comma-delimited, * for wildcard)</td>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0"><label for="allowIPs">Allow IPs</label></td>
+	  <td align="right" bgcolor="##f0f0f0" style="width:180px;"><label for="allowIPs">Allow IPs</label></td>
 	  <td bgcolor="##ffffff">
 	    <input class="span10" type="text" name="allowIPs" id="allowIPs" size="70" value="#allowedIPs#" tabindex="1" />
 	  </td>
@@ -110,7 +110,7 @@
 	  <td colspan="2"><strong>Administration Console Password</strong></td>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0"><label for="password">New Password</label></td>
+	  <td align="right" bgcolor="##f0f0f0" style="width:180px;"><label for="password">New Password</label></td>
 	  <td bgcolor="##ffffff">
 	    <input class="span6" type="password" name="password" id="password" maxlength="30" tabindex="4" />
 	  </td>

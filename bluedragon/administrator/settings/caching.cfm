@@ -223,21 +223,21 @@
 	  <td colspan="2"><h5>File Cache Settings</h5></td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="maxfiles">File Cache Size</label></td>
+	  <td bgcolor="##f0f0f0" style="width:240px;"><label for="maxfiles">File Cache Size</label></td>
 	  <td bgcolor="##ffffff">
-	    <input class="span3" type="text" name="maxfiles" id="maxfiles" maxlength="4" 
+	    <input class="span2" type="text" name="maxfiles" id="maxfiles" maxlength="4" 
 		   value="#cachingSettings.file.maxfiles#" tabindex="5" /> files
 	  </td>
 	</tr>
 	<tr>
 	  <td bgcolor="##f0f0f0"><label>Trust Cache</label></td>
 	  <td bgcolor="##ffffff">
-	    <label for="trustcacheTrue">Yes</label>&nbsp;
-	    <input type="radio" name="trustcache" id="trustcacheTrue" value="true"
-		   <cfif cachingSettings.file.trustcache> checked="true"</cfif> tabindex="6" />
-	    <input type="radio" name="trustcache" id="trustcacheFalse" value="false"
-		   <cfif !cachingSettings.file.trustcache> checked="true"</cfif> tabindex="7" />
-	    <label for="trustcacheFalse">No</label>&nbsp;
+	      <div class="inline-inputs">
+		<input type="radio" name="trustcache" id="trustcacheTrue" value="true"<cfif cachingSettings.file.trustcache> checked="true"</cfif> tabindex="6" />
+		<span>Yes</span>
+		<input type="radio" name="trustcache" id="trustcacheFalse" value="false"<cfif !cachingSettings.file.trustcache> checked="true"</cfif> tabindex="7" />
+		<span>No</span>
+	      </div>
 	  </td>
 	</tr>
 	<tr bgcolor="##dedede">
@@ -256,9 +256,9 @@
 	  <td colspan="2"><h5>Query Cache Settings</h5></td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="cachecount">Query Cache Size</label></td>
+	  <td bgcolor="##f0f0f0" style="width:240px;"><label for="cachecount">Query Cache Size</label></td>
 	  <td bgcolor="##ffffff">
-	    <input class="span3" type="text" name="cachecount" id="cachecount" maxlength="4" 
+	    <input class="span2" type="text" name="cachecount" id="cachecount" maxlength="4" 
 		   value="#cachingSettings.cfquery.cachecount#" tabindex="9" /> queries
 	  </td>
 	</tr>
@@ -278,11 +278,11 @@
 	  <td colspan="2"><h5>CFCACHECONTENT Settings</h5></td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0">
+	  <td bgcolor="##f0f0f0" style="width:240px;">
 	    <label for="total">Item Cache Size</label>
 	  </td>
 	  <td bgcolor="##ffffff">
-	    <input class="span3" type="text" name="total" id="total" maxlength="5" 
+	    <input class="span2" type="text" name="total" id="total" maxlength="5" 
 		   value="#cachingSettings.cfcachecontent.total#" tabindex="11" />
 	  </td>
 	</tr>
@@ -294,7 +294,7 @@
 	    <select name="datasource" id="datasource" tabindex="12">
 	      <option value=""<cfif cachingSettings.cfcachecontent.datasource == ""> selected="true"</cfif>>- select -</option>
 	      <cfif ArrayLen(datasources) gt 0>
-		<cfloop index="i" from="1" to="#arrayLen(datasources)#">
+		<cfloop index="i" from="1" to="#ArrayLen(datasources)#">
 		  <option value="#datasources[i].name#"<cfif cachingSettings.cfcachecontent.datasource == datasources[i].name> selected="true"</cfif>>#datasources[i].name#</option>
 		</cfloop>
 	      </cfif>

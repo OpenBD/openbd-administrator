@@ -26,8 +26,8 @@
   <!--- TODO: investigate integration with Luke (http://www.getopt.org/luke/) to allow better insight into collections --->
   <cfparam name="searchCollectionsMessage" type="string" default="" />
 
-  <cfset supportedLanguages = ArrayNew(1) />
-  <cfset searchCollections = ArrayNew(1) />
+  <cfset supportedLanguages = [] />
+  <cfset searchCollections = [] />
   
   <cftry>
     <cfset supportedLanguages = Application.searchCollections.getSupportedLanguages() />
@@ -65,38 +65,52 @@
     
     <div class="row">
       <div class="pull-left">
-	<h2>Search Collections</h2>
+	<h2>Manage Search Collections</h2>
       </div>
       <div class="pull-right">
 	<button data-controls-modal="moreInfo" data-backdrop="true" data-keyboard="true" class="btn primary">More Info</button>
       </div>
     </div>
-    
+
     <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
-    </cfif>
-    
-    <cfif StructKeyExists(session, "errorFields") && ArrayLen(session.errorFields) gt 0>
-      <p class="error">The following errors occurred:</p>
-      <ul>
-	<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
-	  <li>#session.errorFields[i][2]#</li>
-	</cfloop>
-      </ul>
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
 
-    <cfif searchCollectionsMessage != ""><p class="#searchCollectionsMessageType#">#searchCollectionsMessage#</p></cfif>
-    
+    <cfif searchCollectionsMessage != "">
+      <div class="alert-message #searchCollectionsMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#searchCollectionsMessage#</p>
+      </div>
+    </cfif>
+
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
+    </cfif>
+
     <cfif ArrayLen(searchCollections) == 0>
       <p><strong><em>No search collections configured</em></strong></p>
       <cfelse>
-	<table border="0" width="100%" cellpadding="2" cellspacing="1" bgcolor="##999999">
+	<table>
 	  <tr bgcolor="##dedede">
-	    <td width="80"><strong>Actions</strong></td>
-	    <td><strong>Name</strong></td>
-	    <td><strong>Path</strong></td>
-	    <td><strong>Language</strong></td>
-	    <td><strong>Store Body</strong></td>
+	    <th colspan="5"><h5>Search Collections</h5></th>
+	  </tr>
+	  <tr bgcolor="##f0f0f0">
+	    <th style="width:80px;">Actions</th>
+	    <th>Name</th>
+	    <th>Path</th>
+	    <th>Language</th>
+	    <th>Store Body</th>
 	  </tr>
 	  <cfloop index="i" from="1" to="#ArrayLen(searchCollections)#">
 	    <tr bgcolor="##ffffff">
@@ -120,30 +134,30 @@
 	</table>
     </cfif>
 
-    <br /><br />
+    <br />
 
     <form name="addCollection" action="_controller.cfm?action=createSearchCollection" method="post" 
 	  onsubmit="javascript:return validateAddCollectionForm(this);">
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##dedede">
-	  <td colspan="2"><strong>Add Search Collection</strong></td>
+	  <th colspan="2"><h5>Add Search Collection</h5></td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="name">Collection Name</label></td>
-	  <td bgcolor="##ffffff">
-	    <input type="text" name="name" id="name" size="50" maxlength="50" tabindex="1" />
+	  <td bgcolor="##f0f0f0">Collection Name</td>
+	  <td>
+	    <input type="text" name="name" id="name" class="span12" maxlength="50" tabindex="1" />
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="path">Collection Path</label></td>
-	  <td bgcolor="##ffffff">
-	    <input type="text" name="path" id="path" size="50" 
+	  <td bgcolor="##f0f0f0">Collection Path</td>
+	  <td>
+	    <input type="text" name="path" id="path" class="span12"
 		   value="#expandPath('/WEB-INF/bluedragon/work/cfcollection')#" tabindex="2" />
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="language">Language</label></td>
-	  <td bgcolor="##ffffff">
+	  <td bgcolor="##f0f0f0">Language</td>
+	  <td>
 	    <select name="language" id="language" tabindex="3">
 	      <cfloop index="i" from="1" to="#ArrayLen(supportedLanguages)#">
 		<option value="#supportedLanguages[i]#"<cfif supportedLanguages[i] == "english"> selected="true"</cfif>>#supportedLanguages[i]#</option>
@@ -153,16 +167,18 @@
 	</tr>
 	<tr>
 	  <td bgcolor="##f0f0f0">Store Document Body</td>
-	  <td bgcolor="##ffffff">
-	    <input type="radio" name="storebody" id="storebodyTrue" value="true" tabindex="4" />
-	    <label for="storebodyTrue">Yes</label>&nbsp;
-	    <input type="radio" name="storebody" id="storebodyFalse" value="false" checked="true" tabindex="5" />
-	    <label for="storebodyFalse">No</label>
+	  <td>
+	    <div class="inline-inputs">
+	      <input type="radio" name="storebody" id="storebodyTrue" value="true" tabindex="4" />
+	      <span>Yes</span>
+	      <input type="radio" name="storebody" id="storebodyFalse" value="false" checked="true" tabindex="5" />
+	      <span>No</span>
+	    </div>
 	  </td>
 	</tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
-	  <td><input type="submit" name="submit" value="Create Collection" tabindex="6" /></td>
+	  <td><input class="btn primary" type="submit" name="submit" value="Create Collection" tabindex="6" /></td>
 	</tr>
       </table>
     </form>

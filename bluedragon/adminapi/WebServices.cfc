@@ -56,7 +56,7 @@
     
     <!--- try to hit the web service and throw error if we can't --->
     <cftry>
-      <cfobject name="testWS" type="webservice" webservice="#trim(arguments.wsdl)#" 
+      <cfobject name="testWS" type="webservice" webservice="#Trim(arguments.wsdl)#" 
 		username="#arguments.username#" password="#arguments.password#" />
       <cfcatch type="any">
 	<cfrethrow />

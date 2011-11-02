@@ -27,7 +27,7 @@
     <cflocation url="collections.cfm" addtoken="false" />
   </cfif>
   
-  <cfset fileExtensions = ArrayNew(1) />
+  <cfset fileExtensions = [] />
   
   <cftry>
     <cfset fileExtensions = ArrayToList(Application.searchCollections.getIndexableFileExtensions()) />
@@ -58,59 +58,72 @@
 	<button data-controls-modal="moreInfo" data-backdrop="true" data-keyboard="true" class="btn primary">More Info</button>
       </div>
     </div>
-    
+
     <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
-    </cfif>
-    
-    <cfif StructKeyExists(session, "errorFields") && ArrayLen(session.errorFields) gt 0>
-      <p class="error">The following errors occurred:</p>
-      <ul>
-	<cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
-	  <li>#session.errorFields[i][2]#</li>
-	</cfloop>
-      </ul>
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
 
-    <cfif searchCollectionsMessage != ""><p class="#searchCollectionsMessageType#">#searchCollectionsMessage#</p></cfif>
+    <cfif searchCollectionsMessage != "">
+      <div class="alert-message #searchCollectionsMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#searchCollectionsMessage#</p>
+      </div>
+    </cfif>
+
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
+    </cfif>
     
     <form name="directoryIndexForm" action="_controller.cfm?action=indexSearchCollection" method="post" 
 	  onSubmit="return validateDirectoryIndexForm(this);">
-      <table border="0" width="700" cellpadding="2" cellspacing="1" bgcolor="##999999">
+      <table>
 	<tr bgcolor="##dedede">
-	  <td colspan="2"><strong>Directory Index</strong></td>
+	  <th colspan="2"><h5>Directory Index</h5></th>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right"><label for="key">Directory Path</label></td>
-	  <td bgcolor="##ffffff"><input type="text" name="key" id="key" size="50" tabindex="1" /></td>
+	  <td bgcolor="##f0f0f0">Directory Path</td>
+	  <td><input type="text" name="key" id="key" class="span12" tabindex="1" /></td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right"><label for="extensions">Extensions</label></td>
-	  <td bgcolor="##ffffff">
-	    <input type="text" name="extensions" id="extensions" size="50" value="#fileExtensions#" 
+	  <td bgcolor="##f0f0f0">Extensions</td>
+	  <td>
+	    <input type="text" name="extensions" id="extensions" class="span12" value="#fileExtensions#" 
 		   tabindex="2" />
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right">Recurse Subdirectories</td>
-	  <td bgcolor="##ffffff">
-	    <input type="radio" name="recurse" id="recurseTrue" value="true" checked="true" tabindex="3" />
-	    <label for="recurseTrue">Yes</label>&nbsp;
-	    <input type="radio" name="recurse" id="recurseFalse" value="false" tabindex="4" />
-	    <label for="recurseFalse">No</label>
+	  <td bgcolor="##f0f0f0">Recurse Subdirectories</td>
+	  <td>
+	    <div class="inline-inputs">
+	      <input type="radio" name="recurse" id="recurseTrue" value="true" checked="true" tabindex="3" />
+	      <span>Yes</span>
+	      <input type="radio" name="recurse" id="recurseFalse" value="false" tabindex="4" />
+	      <span>No</span>
+	    </div>
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right"><label for="urlpath">URL Path</label></td>
-	  <td bgcolor="##ffffff"><input type="text" name="urlpath" id="urlpath" size="50" tabindex="5" /></td>
+	  <td bgcolor="##f0f0f0">URL Path</td>
+	  <td><input type="text" name="urlpath" id="urlpath" class="span12" tabindex="5" /></td>
 	</tr>
 	<tr>
 	  <td bgcolor="##f0f0f0" align="right">Language</td>
-	  <td bgcolor="##ffffff">#session.searchCollection.language#</td>
+	  <td>#session.searchCollection.language#</td>
 	</tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
-	  <td><input type="submit" name="submit" value="Create/Update Index" tabindex="6" /></td>
+	  <td><input type="submit" class="btn primary" name="submit" value="Create/Update Index" tabindex="6" /></td>
 	</tr>
       </table>
       <input type="hidden" name="collection" value="#session.searchCollection.name#" />
@@ -119,21 +132,21 @@
       <input type="hidden" name="collectionAction" value="refresh" />
     </form>
     
-    <br /><br />
+    <br />
     
     <form name="webSiteIndexForm" action="_controller.cfm?action=indexSearchCollection" method="post" 
 	  onsubmit="javascript:return validateWebSiteIndexForm(this);">
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##dedede">
-	  <td colspan="2"><strong>Web Site Index</strong></td>
+	  <th colspan="2"><h5>Web Site Index</h5></th>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="urlKey">Starting URL</label></td>
-	  <td bgcolor="##ffffff"><input type="text" name="key" id="urlKey" size="50" tabindex="7" /></td>
+	  <td bgcolor="##f0f0f0">Starting URL</td>
+	  <td><input type="text" name="key" id="urlKey" class="span12" tabindex="7" /></td>
 	</tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
-	  <td><input type="submit" name="submit" value="Create/Update Index" tabindex="8" /></td>
+	  <td><input type="submit" class="btn primary" name="submit" value="Create/Update Index" tabindex="8" /></td>
 	</tr>
       </table>
       <input type="hidden" name="collection" value="#session.searchCollection.name#" />

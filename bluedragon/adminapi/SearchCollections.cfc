@@ -88,7 +88,7 @@
     <cfargument name="language" type="string" required="true" hint="The language of the search collection" />
     <cfargument name="storebody" type="boolean" required="true" 
 		hint="Boolean indicating whether or not to store the document body in the search collection" />
-
+    
     <cfset checkLoginStatus() />
     
     <cfcollection action="create" collection="#arguments.name#" path="#arguments.path#" 
@@ -136,32 +136,55 @@
 	      hint="Returns an array containing the supported languages for collections">
     <cfset checkLoginStatus() />
     
-    <cfreturn CreateObject("java", "com.naryx.tagfusion.search.lucene.AnalyzerFactory").getSupportedLanguages() />
+    <cfreturn CreateObject("java", "com.bluedragon.search.AnalyzerFactory").getSupportedLanguages() />
   </cffunction>
-  
+
   <cffunction name="getIndexableFileExtensions" access="public" output="false" returntype="array" 
 	      hint="Returns the file extensions from each of the available document handlers">
-    <cfset var documentHandlers = CreateObject("java", "com.naryx.tagfusion.search.SearchProps").getPropValue("com.naryx.tagfusion.search.DocumentHandler") />
-    <cfset var fileExtensions = [] />
-    <cfset var tmpFileExtensions = 0 />
-    <cfset var documentHandler = 0 />
-    <cfset var i = 0 />
-
-    <cfset checkLoginStatus() />
-    
-    <cfloop list="#documentHandlers#" index="documentHandler">
-      <cfset tmpFileExtensions = CreateObject("java", documentHandler).init().getHandledExtensions() />
+    <cfscript>
+      checkLoginStatus();
       
-      <cfif IsArray(tmpFileExtensions) && ArrayLen(tmpFileExtensions) gt 0>
-	<cfloop index="i" from="1" to="#ArrayLen(tmpFileExtensions)#">
-	  <cfset ArrayAppend(fileExtensions, "." & tmpFileExtensions[i]) />
-	</cfloop>
-	<cfelse>
-	  <cfthrow message="Could not retrieve file extensions for document handler #documentHandler#" type="bluedragon.adminapi.searchcollections" />
-      </cfif>
-    </cfloop>
-    
-    <cfreturn fileExtensions />
+      var allExts = CreateObject("java", "java.util.TreeSet").init();
+      var fileExtensions = [];
+      var textExts = CreateObject("java", "com.bluedragon.search.index.crawl.handler.FileHandlerTextImpl").init(JavaCast("boolean", "false")).getExtensions().iterator();
+      var mp3Exts = CreateObject("java", "com.bluedragon.search.index.crawl.handler.FileHandlerMP3Impl").init(JavaCast("boolean", "false")).getExtensions().iterator();
+      var jpgExts = CreateObject("java", "com.bluedragon.search.index.crawl.handler.FileHandlerJPGImpl").init(JavaCast("boolean", "false")).getExtensions().iterator();
+      var wordExts = CreateObject("java", "com.bluedragon.search.index.crawl.handler.FileHandlerWordImpl").init(JavaCast("boolean", "false")).getExtensions().iterator();
+      var htmlExts = CreateObject("java", "com.bluedragon.search.index.crawl.handler.FileHandlerHTMLImpl").init(JavaCast("boolean", "false")).getExtensions().iterator();
+      var pdfExts = CreateObject("java", "com.bluedragon.search.index.crawl.handler.FileHandlerPDFImpl").init(JavaCast("boolean", "false")).getExtensions().iterator();
+
+      while(textExts.hasNext()) {
+        allExts.add(textExts.next());
+      }
+
+      while(mp3Exts.hasNext()) {
+        allExts.add(mp3Exts.next());
+      }
+
+      while(jpgExts.hasNext()) {
+        allExts.add(jpgExts.next());
+      }
+
+      while(wordExts.hasNext()) {
+        allExts.add(wordExts.next());
+      }
+
+      while(htmlExts.hasNext()) {
+        allExts.add(htmlExts.next());
+      }
+
+      while(pdfExts.hasNext()) {
+        allExts.add(pdfExts.next());
+      }
+
+      var allExtsIterator = allExts.iterator();
+
+      while(allExtsIterator.hasNext()) {
+        ArrayAppend(fileExtensions, allExtsIterator.next());
+      }
+
+      return fileExtensions;
+    </cfscript>
   </cffunction>
   
 </cfcomponent>

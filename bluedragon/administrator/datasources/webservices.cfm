@@ -32,7 +32,7 @@
     <cfset webServiceAction = "update" />
     <cfset formActionText = "Update" />
     <cfelse>
-      <cfset webService = StructNew() />
+      <cfset webService = {} />
       <cfset webService.name = "" />
       <cfset webService.wsdl = "" />
       <cfset webService.username = "" />
@@ -93,49 +93,73 @@
     
     <div class="row">
       <div class="pull-left">
-	<h3>#formActionText# Web Service</h3>
+	<h2>Manage Web Services</h2>
       </div>
       <div class="pull-right">
 	<button data-controls-modal="moreInfo" data-backdrop="true" data-keyboard="true" class="btn primary">More Info</button>
       </div>
     </div>
-    
+
     <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
+    </cfif>
+
+    <cfif webServiceRetrievalMessage != "">
+      <div class="alert-message #webServiceRetrievalMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#webServiceRetrievalMessage#</p>
+      </div>
+    </cfif>
+
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
     </cfif>
     
     <form name="webServiceForm" action="_controller.cfm?action=processWebServiceForm" method="post" 
 	  onsubmit="javascript:return validate(this);">
-      <table border="0">
+      <table>
+	<tr bgcolor="##dedede">
+	  <th colspan="2"><h5>#formActionText# Web Service</h5></th>
 	<tr>
-	  <td><label for="name">Web Service Name</label></td>
+	  <td bgcolor="##f0f0f0">Web Service Name</td>
 	  <td>
-	    <input type="text" name="name" id="name" size="30" maxlength="50" value="#webService.name#" tabindex="1" />
+	    <input type="text" name="name" id="name" class="span6" maxlength="50" value="#webService.name#" tabindex="1" />
 	  </td>
 	</tr>
 	<tr>
-	  <td><label for="wsdl">WSDL URL</label></td>
+	  <td bgcolor="##f0f0f0">WSDL URL</td>
 	  <td>
-	    <input type="text" name="wsdl" id="wsdl" size="30" value="#webService.wsdl#" tabindex="2" />
+	    <input type="text" name="wsdl" id="wsdl" class="span6" value="#webService.wsdl#" tabindex="2" />
 	  </td>
 	</tr>
 	<tr>
-	  <td><label for="username">User Name</label></td>
+	  <td bgcolor="##f0f0f0">User Name</td>
 	  <td>
-	    <input type="text" name="username" id="username" size="30" maxlength="100" 
+	    <input type="text" name="username" id="username" class="span6" maxlength="100" 
 		   value="#webService.username#" tabindex="3" />
 	  </td>
 	</tr>
 	<tr>
-	  <td><label for="password">Password</label></td>
+	  <td bgcolor="##f0f0f0">Password</td>
 	  <td>
-	    <input type="password" name="password" id="password" size="30" maxlength="100" 
+	    <input type="password" name="password" id="password" class="span6" maxlength="100" 
 		   value="#webService.password#" tabindex="4" />
 	  </td>
 	</tr>
-	<tr>
+	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
-	  <td><input type="submit" name="submit" value="#formActionText# Web Service" tabindex="5" /></td>
+	  <td><input type="submit" class="btn primary" name="submit" value="#formActionText# Web Service" tabindex="5" /></td>
 	</tr>
       </table>
       <input type="hidden" name="webServiceAction" value="#webServiceAction#" />
@@ -146,25 +170,21 @@
 
     <h3>Web Services</h3>
 
-    <cfif webServiceRetrievalMessage != "">
-      <p class="#webServiceRetrievalMessageType#">#webServiceRetrievalMessage#</p>
-    </cfif>
-    
     <cfif ArrayLen(webServices) == 0>
       <p><strong><em>No web services configured</em></strong></p>
       <cfelse>
 	<table border="0" width="100%" cellpadding="2" cellspacing="1" bgcolor="##999999">
 	  <tr bgcolor="##dedede">
-	    <td width="100"><strong>Actions</strong></td>
-	    <td><strong>Name</strong></td>
-	    <td><strong>WSDL URL</strong></td>
-	    <td><strong>User Name</strong></td>
-	    <td><strong>Password</strong></td>
-	    <td><strong>Status</strong></td>
+	    <th style="width:100px;">Actions</th>
+	    <th>Name</th>
+	    <th>WSDL URL</th>
+	    <th>User Name</th>
+	    <th>Password</th>
+	    <th style="width:200px;">Status</th>
 	  </tr>
 	  <cfloop index="i" from="1" to="#ArrayLen(webServices)#">
-	    <tr <cfif !StructKeyExists(webServices[i], "verified")>bgcolor="##ffffff"<cfelseif webServices[i].verified>bgcolor="##ccffcc"<cfelseif !webServices[i].verified>bgcolor="##ffff99"</cfif>>
-	      <td width="100">
+	    <tr<cfif !StructKeyExists(webServices[i], "verified")> bgcolor="##ffffff"<cfelseif webServices[i].verified> bgcolor="##ccffcc"<cfelseif !webServices[i].verified> bgcolor="##ffff99"</cfif>>
+	      <td>
 		<a href="_controller.cfm?action=editWebService&name=#webServices[i].name#" alt="Edit Web Service" 
 		   title="Edit Web Service">
 		  <img src="../images/pencil.png" border="0" width="16" height="16" />
@@ -182,7 +202,7 @@
 	      <td>#webServices[i].wsdl#</td>
 	      <td>#webServices[i].username#</td>
 	      <td><cfif webServices[i].password != "">#RepeatString("*", 8)#</cfif></td>
-	      <td width="200">
+	      <td>
 		<cfif StructKeyExists(webServices[i], "verified")>
 		  <cfif webServices[i].verified>
 		    <img src="../images/tick.png" width="16" height="16" alt="Web Service Verified" 
@@ -200,28 +220,28 @@
 	  </cfloop>
 	  <tr bgcolor="##dedede">
 	    <td colspan="6">
-	      <input type="button" name="verifyAll" value="Verify All Web Services" 
+	      <input type="button" class="btn primary" name="verifyAll" value="Verify All Web Services" 
 		     onclick="javascript:verifyAllWebServices()" tabindex="6" />
 	    </td>
 	  </tr>
 	</table>
     </cfif>
 
-  <div id="moreInfo" class="modal hide fade">
-    <div class="modal-header">
-      <a href="##" class="close">&times;</a>
-      <h3>Information Concerning Web Services</h3>
+    <div id="moreInfo" class="modal hide fade">
+      <div class="modal-header">
+	<a href="##" class="close">&times;</a>
+	<h3>Information Concerning Web Services</h3>
+      </div>
+      <div class="modal-body">
+	<ul>
+	  <li>
+	    If Open BlueDragon throws an internal error while attempting to add a web service, and the stack trace begins with 
+	    "java.lang.NoClassDefFoundError: sun/tools/javac/Main", this indicates that you do not have Java's tools.jar in your classpath. 
+	    Either add the appropriate tools.jar to your classpath or copy tools.jar to Open BlueDragon's WEB-INF/lib directory.
+	  </li>
+	</ul>
+      </div>
     </div>
-    <div class="modal-body">
-      <ul>
-	<li>
-	  If Open BlueDragon throws an internal error while attempting to add a web service, and the stack trace begins with 
-	  "java.lang.NoClassDefFoundError: sun/tools/javac/Main", this indicates that you do not have Java's tools.jar in your classpath. 
-	  Either add the appropriate tools.jar to your classpath or copy tools.jar to Open BlueDragon's WEB-INF/lib directory.
-	</li>
-      </ul>
-    </div>
-  </div>
   </cfoutput>
   <cfset StructDelete(session, "webServiceRetrievalMessage", false) />
   <cfset StructDelete(session, "webService", false) />

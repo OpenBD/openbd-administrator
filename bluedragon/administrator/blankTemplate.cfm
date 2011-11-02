@@ -36,6 +36,7 @@
   <html>
     <head>
       <title>Open BlueDragon Administrator</title>
+      <meta http-equiv="X-UA-Compatible" content="IE-edge">
       <link rel="shortcut icon" href="#contextPath#/bluedragon/administrator/images/favicon.ico" />
       <link rel="stylesheet" href="#contextPath#/bluedragon/administrator/css/bootstrap.css" type="text/css" />
       <script src="#contextPath#/bluedragon/administrator/js/jquery-1.6.4.min.js" type="text/javascript"></script>      

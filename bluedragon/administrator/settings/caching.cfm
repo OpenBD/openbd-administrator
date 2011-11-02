@@ -22,9 +22,10 @@
  --->
 <cfsilent>
   <cfparam name="cachingMessage" type="string" default="" />
+  <cfparam name="contentCacheMessage" type="string" default="" />
+  <cfparam name="queryCacheMessage" type="string" default="" />
   <cfparam name="numFilesInCache" type="numeric" default="-1" />
   <cfparam name="numQueriesInCache" type="numeric" default="-1" />
-  <cfparam name="queryCacheMessage" type="string" default="" />
   
   <cfset fileCacheInfo = SystemFileCacheInfo() />
   
@@ -32,7 +33,7 @@
     <cfset cachingSettings = Application.caching.getCachingSettings() />
     <cfcatch type="bluedragon.adminapi.caching">
       <cfset cachingMessage = CFCATCH.Message />
-      <cfset cachingMessageType = "error" />
+      <cfset cachingMessageType = "warning" />
     </cfcatch>
   </cftry>
   
@@ -42,6 +43,7 @@
     <cfset numContentCacheMisses = Application.caching.getContentCacheMisses() />
     <cfcatch type="bluedragon.adminapi.caching">
       <cfset contentCacheMessage = CFCATCH.Message />
+      <cfset contentCacheMessageType = "warning" />
     </cfcatch>
   </cftry>
   
@@ -51,6 +53,7 @@
     <cfset numQueryCacheMisses = Application.caching.getQueryCacheMisses() />
     <cfcatch type="bluedragon.adminapi.caching">
       <cfset queryCacheMessage = CFCATCH.Message />
+      <cfset queryCacheMessageType = "warning" />
     </cfcatch>
   </cftry>
   
@@ -136,6 +139,46 @@
       </div>
     </div>
 
+    <cfif StructKeyExists(session, "message") && session.message.text != "">
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
+    </cfif>
+
+    <cfif cachingMessage != "">
+      <div class="alert-message #cachingMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#cachingMessage#</p>
+      </div>
+    </cfif>
+
+    <cfif contentCacheMessage != "">
+      <div class="alert-message #contentCacheMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#contentCacheMessage#</p>
+      </div>
+    </cfif>
+
+    <cfif queryCacheMessage != "">
+      <div class="alert-message #queryCacheMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#queryCacheMessage#</p>
+      </div>
+    </cfif>
+
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
+    </cfif>
+
     <form name="cacheStatusForm" action="_controller.cfm?action=processFlushCacheForm" method="post" 
 	  onsubmit="javascript:return validateCacheStatusForm(this);">
       <table>
@@ -143,15 +186,15 @@
 	  <td colspan="5"><h5>Cache Status</h5></td>
 	</tr>
 	<tr bgcolor="##f0f0f0">
-	  <th>Cache</th>
-	  <th>Size</th>
+	  <th style="width:200px;">Cache</th>
+	  <th style="width:180px;">Size</th>
 	  <th>Hits</th>
 	  <th>Misses</th>
-	  <th>Flush</th>
+	  <th style="width:60px;">Flush</th>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" width="200"><label for="cacheToFlushFile">File (<a href="filecachedetails.cfm">details</a>)</label></td>
-	  <td bgcolor="##ffffff" width="300">#fileCacheInfo.size#</td>
+	  <td bgcolor="##f0f0f0"><label for="cacheToFlushFile">File (<a href="filecachedetails.cfm">details</a>)</label></td>
+	  <td bgcolor="##ffffff">#fileCacheInfo.size#</td>
 	  <td bgcolor="##ffffff">#fileCacheInfo.hits#</td>
 	  <td bgcolor="##ffffff">#fileCacheInfo.misses#</td>
 	  <td bgcolor="##f0f0f0" style="width:80px;text-align:center;">
@@ -168,7 +211,7 @@
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right"><label for="cacheToFlushContent">Content</label></td>
+	  <td bgcolor="##f0f0f0"><label for="cacheToFlushContent">Content</label></td>
 	  <td bgcolor="##ffffff">#numContentInCache#</td>
 	  <td bgcolor="##ffffff">#numContentCacheHits#</td>
 	  <td bgcolor="##ffffff">#numContentCacheMisses#</td>

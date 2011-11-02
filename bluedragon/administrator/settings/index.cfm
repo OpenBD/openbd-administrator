@@ -84,18 +84,24 @@
     </div>
 
     <h4>Settings last updated #serverSettings.lastupdated#</h4>
-    
+
     <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
-    
-    <cfif StructKeyExists(session, "errorFields") && ArrayLen(session.errorFields) gt 0>
-      <p class="error">The following errors occurred:</p>
-      <ul>
-	<cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
-	  <li>#session.errorFields[i][2]#</li>
-	</cfloop>
-      </ul>
+
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
     </cfif>
     
     <form name="serverSettings" action="_controller.cfm?action=processServerSettingsForm" method="post" 
@@ -103,53 +109,57 @@
       <table>
 	<tr bgcolor="##dedede">
 	  <td colspan="2">
-	    <strong>Update Server Settings</strong>&nbsp;
-	    <a href="javascript:void(0);" onclick="javascript:confirmRevert();" alt="Revert to Previous Settings" 
+	    <h5>
+	      Update Server Settings
+	      <a href="javascript:void(0);" onclick="javascript:confirmRevert();" alt="Revert to Previous Settings" 
 	       title="Revert to Previous Settings">
-	      <img src="../images/arrow_undo.png" height="16" width="16" border="0" />
-	    </a>&nbsp;
-	    <a href="javascript:void(0);" onclick="javascript:confirmReload();" alt="Reload Current Settings" 
-	       title="Reload Current Settings">
-	      <img src="../images/arrow_refresh.png" height="16" width="16" border="0" />
-	    </a>
+		<img src="../images/arrow_undo.png" height="16" width="16" border="0" />
+	      </a>&nbsp;
+	      <a href="javascript:void(0);" onclick="javascript:confirmReload();" alt="Reload Current Settings" 
+		 title="Reload Current Settings">
+		<img src="../images/arrow_refresh.png" height="16" width="16" border="0" />
+	      </a>
+	    </h5> 
 	  </td>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0"><label for="buffersize">Response Buffer Size</label></td>
+	  <td bgcolor="##f0f0f0" style="width:300px;">Response Buffer Size</td>
 	  <td bgcolor="##ffffff">
-	    <input type="text" name="buffersize" id="buffersize" size="3" value="#serverSettings.buffersize#"<cfif serverSettings.buffersize == 0> readOnly="true"</cfif> tabindex="1" /> KB&nbsp;
-	    <input type="checkbox" name="bufferentirepage" id="bufferentirepage" value="1" 
-		   onclick="javascript:updateBufferSettings();"<cfif serverSettings.buffersize == 0> checked="true"</cfif> 
-		   tabindex="2" /><label for="bufferentirepage">Buffer Entire Page</label>
+	    <div class="inline-inputs">
+	      <input class="span2" type="text" name="buffersize" id="buffersize" value="#serverSettings.buffersize#"<cfif serverSettings.buffersize == 0> readOnly="true"</cfif> tabindex="1" /><span>KB</span>
+	      <input type="checkbox" name="bufferentirepage" id="bufferentirepage" value="1" 
+		     onclick="javascript:updateBufferSettings();"<cfif serverSettings.buffersize == 0> checked="true"</cfif> 
+		     tabindex="2" /><span>Buffer Entire Page</span>
+	    </div>
 	  </td>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0">Whitespace Compression</td>
+	  <td bgcolor="##f0f0f0">Whitespace Compression</td>
 	  <td bgcolor="##ffffff">
-	    <input type="radio" name="whitespacecomp" id="whitespacecompTrue" value="true"
-		   <cfif serverSettings.whitespacecomp> checked="true"</cfif> tabindex="3" />
-	    <label for="whitespacecompTrue">Yes</label>&nbsp;
-	    <input type="radio" name="whitespacecomp" id="whitespacecompFalse" value="false"
-		   <cfif !serverSettings.whitespacecomp> checked="true"</cfif> tabindex="4" />
-	    <label for="whitespacecompFalse">No</label>
+	    <div class="inline-inputs">
+	      <input type="radio" name="whitespacecomp" id="whitespacecompTrue" value="true"<cfif serverSettings.whitespacecomp> checked="true"</cfif> tabindex="3" />
+	      <span>Yes</span>
+	      <input type="radio" name="whitespacecomp" id="whitespacecompFalse" value="false"<cfif !serverSettings.whitespacecomp> checked="true"</cfif> tabindex="4" />
+	      <span>No</span>
+	    </div>
 	  </td>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0"><label for="errorhandler">Default Error Handler</label></td>
+	  <td bgcolor="##f0f0f0">Default Error Handler</td>
 	  <td bgcolor="##ffffff">
-	    <input type="text" name="errorhandler" id="errorhandler" size="40" value="#serverSettings.errorhandler#" 
+	    <input type="text" name="errorhandler" id="errorhandler" class="span6" value="#serverSettings.errorhandler#" 
 		   tabindex="5" />
 	  </td>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0"><label for="missingtemplatehandler">Missing Template Handler</label></td>
+	  <td bgcolor="##f0f0f0">Missing Template Handler</td>
 	  <td bgcolor="##ffffff">
-	    <input type="text" name="missingtemplatehandler" id="missingtemplatehandler" size="40" 
+	    <input type="text" name="missingtemplatehandler" id="missingtemplatehandler" class="span6" 
 		   value="#serverSettings.missingtemplatehandler#" tabindex="6" />
 	  </td>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0"><label for="defaultcharset">Default Character Set</label></td>
+	  <td bgcolor="##f0f0f0">Default Character Set</td>
 	  <td bgcolor="##ffffff">
 	    <select name="defaultcharset" id="defaultcharset" tabindex="6">
 	      <cfloop collection="#charsets#" item="charset">
@@ -159,72 +169,75 @@
 	  </td>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0">Global Script Protection</td>
+	  <td bgcolor="##f0f0f0">Global Script Protection</td>
 	  <td bgcolor="##ffffff">
-	    <input type="radio" name="scriptprotect" id="scriptprotectTrue" value="true"
-		   <cfif serverSettings.scriptprotect> checked="true"</cfif> tabindex="7" />
-	    <label for="scriptprotectTrue">Yes</label>&nbsp;
-	    <input type="radio" name="scriptprotect" id="scriptprotectFalse" value="false"
-		   <cfif !serverSettings.scriptprotect> checked="true"</cfif> tabindex="8" />
-	    <label for="scriptprotectFalse">No</label>&nbsp;
-	    <img src="../images/arrow_refresh_small.png" height="16" width="16" 
-		 alt="Requires Server Restart" title="Requires Server Restart" />
+	    <div class="inline-inputs">
+	      <input type="radio" name="scriptprotect" id="scriptprotectTrue" value="true"<cfif serverSettings.scriptprotect> checked="true"</cfif> tabindex="7" />
+	      <span>Yes</span>
+	      <input type="radio" name="scriptprotect" id="scriptprotectFalse" value="false"<cfif !serverSettings.scriptprotect> checked="true"</cfif> tabindex="8" />
+	      <span>No</span>
+	      <img src="../images/arrow_refresh_small.png" height="16" width="16" alt="Requires Server Restart" title="Requires Server Restart" />
+	    </div>
 	  </td>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0">Support Legacy Form Validation</td>
+	  <td bgcolor="##f0f0f0">Support Legacy Form Validation</td>
 	  <td bgcolor="##ffffff">
-	    <input type="radio" name="legacyformvalidation" id="legacyformvalidationTrue" 
-		   value="true"<cfif serverSettings.legacyformvalidation> checked="true"</cfif> 
-		   tabindex="9" />&nbsp;
-	    <label for="legacyformvalidationTrue">Yes</label>&nbsp;
-	    <input type="radio" name="legacyformvalidation" id="legacyformvalidationFalse" 
-		   value="false"<cfif !serverSettings.legacyformvalidation> checked="true"</cfif> 
-		   tabindex="10" />
-	    <label for="legacyformvalidationFalse">No</label>
+	    <div class="inline-inputs">
+	      <input type="radio" name="legacyformvalidation" id="legacyformvalidationTrue" 
+		     value="true"<cfif serverSettings.legacyformvalidation> checked="true"</cfif> 
+		     tabindex="9" />&nbsp;
+	      <span>Yes</span>
+	      <input type="radio" name="legacyformvalidation" id="legacyformvalidationFalse" 
+		     value="false"<cfif !serverSettings.legacyformvalidation> checked="true"</cfif> 
+		     tabindex="10" />
+	      <span>No</span>
+	    </div>
 	  </td>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0"><label for="scriptsrc">Default CFFORM Script Source Location</label></td>
+	  <td bgcolor="##f0f0f0">Default CFFORM Script Source Location</td>
 	  <td bgcolor="##ffffff">
-	    <input type="text" name="scriptsrc" id="scriptsrc" size="40" 
+	    <input type="text" name="scriptsrc" id="scriptsrc" class="span6" 
 		   value="#serverSettings.scriptsrc#" tabindex="11" />
 	  </td>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0"><label for="tempdirectory">Temp Directory Location</label></td>
+	  <td bgcolor="##f0f0f0">Temp Directory Location</td>
 	  <td bgcolor="##ffffff">
-	    <input type="text" name="tempdirectory" id="tempdirectory" size="40" value="#serverSettings.tempdirectory#" 
+	    <input type="text" name="tempdirectory" id="tempdirectory" class="span6" value="#serverSettings.tempdirectory#" 
 		   tabindex="12" />
 	  </td>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0"><label for="componentcfc">Base ColdFusion Component (CFC)</label></td>
+	  <td bgcolor="##f0f0f0">Base ColdFusion Component (CFC)</td>
 	  <td bgcolor="##ffffff">
-	    <input type="text" name="componentcfc" id="componentcfc" size="40" value="#serverSettings['component-cfc']#" 
+	    <input type="text" name="componentcfc" id="componentcfc" class="span6" value="#serverSettings['component-cfc']#" 
 		   tabindex="13" />
 	  </td>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0"><label for="servercfc">Server CFC</label></td>
+	  <td bgcolor="##f0f0f0">Server CFC</td>
 	  <td bgcolor="##ffffff">
-	    <input type="text" name="servercfc" id="servercfc" size="40" value="#serverSettings.servercfc#" 
+	    <input type="text" name="servercfc" id="servercfc" class="span6" value="#serverSettings.servercfc#" 
 		   tabindex="14" />
 	  </td>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0">Verify Path Settings?</td>
+	  <td bgcolor="##f0f0f0">Verify Path Settings?</td>
 	  <td bgcolor="##ffffff">
-	    <input type="radio" name="verifypathsettings" id="verifypathsettingsTrue" value="true" checked="true" tabindex="15" />
-	    <label for="verifypathsettingsTrue">Yes</label>&nbsp;
-	    <input type="radio" name="verifypathsettings" id="verifypathsettingsFalse" value="false" tabindex="16" />
-	    <label for="verifypathsettingsFalse">No</label>
+	    <div class="inline-inputs">
+	      <input type="radio" name="verifypathsettings" id="verifypathsettingsTrue" value="true" checked="true" tabindex="15" />
+	      <span>Yes</span>
+	      <input type="radio" name="verifypathsettings" id="verifypathsettingsFalse" value="false" tabindex="16" />
+	      <span>No</span>
+	    </div>
 	  </td>
 	</tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
 	  <td>
-	    <input type="submit" name="submit" value="Submit" tabindex="17" />
+	    <input class="btn primary" type="submit" name="submit" value="Submit" tabindex="17" />
 	  </td>
 	</tr>
       </table>

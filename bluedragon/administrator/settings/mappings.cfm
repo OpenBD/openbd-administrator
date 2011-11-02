@@ -23,6 +23,7 @@
 <cfsilent>
   <cfparam name="mappingMessage" type="string" default="" />
   <cfparam name="mappings" type="array" default="#arrayNew(1)#" />
+  <cfparam name="mappingAction" type="string" default="create" />
   
   <cfif StructKeyExists(session, "mapping")>
     <cfset mapping = session.mapping[1] />
@@ -69,25 +70,43 @@
 	<button data-controls-modal="moreInfo" data-backdrop="true" data-keyboard="true" class="btn primary">More Info</button>
       </div>
     </div>
-    
+
     <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
-    
+
     <cfif mappingMessage != "">
-      <p class="#mappingMessageType#">#mappingMessage#</p>
+      <div class="alert-message #mappingMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#mappingMessage#</p>
+      </div>
+    </cfif>
+
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
     </cfif>
 
     <cfif ArrayLen(mappings) gt 0>
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##f0f0f0">
-	  <td><strong>Actions</strong></td>
-	  <td><strong>Logical Path</strong></td>
-	  <td><strong>Directory Path</strong></td>
+	  <th>Actions</th>
+	  <th>Logical Path</th>
+	  <th>Directory Path</th>
 	</tr>
 	<cfloop index="i" from="1" to="#ArrayLen(mappings)#">
 	  <tr bgcolor="##ffffff">
-	    <td width="100">
+	    <td style="width:100px;">
 	      <a href="_controller.cfm?action=editMapping&name=#mappings[i].name#" alt="Edit Mapping" title="Edit Mapping">
 		<img src="../images/pencil.png" border="0" width="16" height="16" />
 	      </a>
@@ -105,41 +124,32 @@
       </table>
     </cfif>
     
-    <cfif StructKeyExists(session, "errorFields") && ArrayLen(session.errorFields) gt 0>
-      <p class="error">The following errors occurred:</p>
-      <ul>
-	<cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
-	  <li>#session.errorFields[i][2]#</li>
-	</cfloop>
-      </ul>
-    </cfif>
-    
     <br />
     
     <form name="mappingForm" action="_controller.cfm?action=processMappingForm" method="post" 
 	  onsubmit="javascript:return validate(this);">
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##dedede">
 	  <td colspan="2"><strong><cfif mappingAction == "create">Add a<cfelse>Edit</cfif> Mapping</strong></td>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0"><label for="name">Logical Path</label></td>
+	  <td bgcolor="##f0f0f0">Logical Path</td>
 	  <td bgcolor="##ffffff">
-	    <input type="text" name="name" id="name" size="40" 
+	    <input type="text" name="name" id="name" class="span8" 
 		   value="<cfif structKeyExists(mapping, 'displayname')>#mapping.displayname#<cfelse>#mapping.name#</cfif>" 
 		   tabindex="1" />
 	  </td>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0"><label for="directory">Directory Path</label></td>
+	  <td bgcolor="##f0f0f0">Directory Path</td>
 	  <td bgcolor="##ffffff">
-	    <input type="text" name="directory" id="directory" size="40" value="#mapping.directory#" tabindex="2" />
+	      <input type="text" name="directory" id="directory" class="span8" value="#mapping.directory#" tabindex="2" />
 	  </td>
 	</tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
 	  <td>
-	    <input type="submit" name="submit" value="Submit" tabindex="3" />
+	    <input class="btn primary" type="submit" name="submit" value="Submit" tabindex="3" />
 	  </td>
 	</tr>
       </table>

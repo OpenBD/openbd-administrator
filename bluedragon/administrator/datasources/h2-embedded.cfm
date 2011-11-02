@@ -125,46 +125,55 @@
       }
     </script>
     <h3>Configure Datasource - H2 Embedded</h3>
-    <br />
+
     <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
 
-    <cfif StructKeyExists(session, "errorFields") && ArrayLen(session.errorFields) gt 0>
-      <p class="error">The following errors occurred:</p>
-      <ul>
-	<cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
-	  <li>#session.errorFields[i][2]#</li>
-	</cfloop>
-      </ul>
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
     </cfif>
-    
+
     <!--- TODO: need explanatory tooltips/mouseovers on all these settings, esp. 'per request connections' which 
 	from my understanding is the opposite of Adobe CF's description 'maintain connections across client requests'--->
     <form name="datasourceForm" action="_controller.cfm?action=processDatasourceForm" method="post" 
 	  onsubmit="return validate(this);">
-      <table border="0">
-	<tr>
-	  <td><label for="name">OpenBD Datasource Name</td>
-	  <td><input name="name" id="name" type="text" size="30" maxlength="50" value="#dsinfo.name#" tabindex="1" /></td>
+      <table>
+	<tr bgcolor="##dedede">
+	  <th colspan="2"><h5>Datasource Details</h5></th>
 	</tr>
 	<tr>
-	  <td valign="top"><label for="databasename">Database Name</label></td>
+	  <td bgcolor="##f0f0f0">OpenBD Datasource Name</td>
+	  <td><input name="name" id="name" type="text" class="span6" maxlength="50" value="#dsinfo.name#" tabindex="1" /></td>
+	</tr>
+	<tr>
+	  <td valign="top" bgcolor="##f0f0f0">Database Name</td>
 	  <td valign="top">
-	    <input name="databasename" id="databasename" type="text" size="30" maxlength="250" 
+	    <input name="databasename" id="databasename" type="text" class="span6" maxlength="250" 
 		   value="#dsinfo.databasename#" tabindex="2" /><br />
 	    <em>(Minimum 3 characters. The database will be created if it doesn't exist.)</em>
 	  </td>
 	</tr>
 	<tr>
-	  <td valign="top"><label for="filepath">File Path</label></td>
+	  <td valign="top" bgcolor="##f0f0f0">File Path</td>
 	  <td valign="top">
-	    <input name="filepath" id="filepath" type="text" size="30" value="#dsinfo.filepath#" tabindex="3" /><br />
+	    <input name="filepath" id="filepath" type="text" class="span6" value="#dsinfo.filepath#" tabindex="3" /><br />
 	    <em>(Leave blank for default path. Do not include database name.)</em>
 	  </td>
 	</tr>
 	<tr>
-	  <td><label for="mode">Compatibility Mode</label></td>
+	  <td bgcolor="##f0f0f0">Compatibility Mode</td>
 	  <td>
 	    <select name="mode" id="mode" tabindex="4">
 	      <option value="H2Native"<cfif dsinfo.mode == "H2Native"> selected="true"</cfif>>None (H2 Native)</option>
@@ -178,132 +187,113 @@
 	  </td>
 	</tr>
 	<tr>
-	  <td>Case Sensitive?</td>
+	  <td bgcolor="##f0f0f0">Case Sensitive?</td>
 	  <td>
-	    <input type="radio" name="ignorecase" id="ignorecaseFalse" value="false"
-		   <cfif !dsinfo.ignorecase> checked="true"</cfif> tabindex="5" />
-	    <label for="ignorecaseFalse">Yes</label>&nbsp;
-	    <input type="radio" name="ignorecase" id="ignorecaseTrue" value="true"
-		   <cfif dsinfo.ignorecase> checked="true"</cfif> tabindex="6" />
-	    <label for="ignorecaseTrue">No</label>
+	    <div class="inline-inputs">
+	      <input type="radio" name="ignorecase" id="ignorecaseFalse" value="false"<cfif !dsinfo.ignorecase> checked="true"</cfif> tabindex="5" />
+	      <span>Yes</span>
+	      <input type="radio" name="ignorecase" id="ignorecaseTrue" value="true"<cfif dsinfo.ignorecase> checked="true"</cfif> tabindex="6" />
+	      <span>No</span>
+	    </div>
 	  </td>
 	</tr>
 	<tr>
-	  <td><label for="username">User Name</label></td>
+	  <td bgcolor="##f0f0f0">User Name</td>
 	  <td>
-	    <input name="username" id="username" type="text" size="30" maxlength="50" value="#dsinfo.username#" tabindex="7" />
+	    <input name="username" id="username" type="text" class="span6" maxlength="50" value="#dsinfo.username#" tabindex="7" />
 	  </td>
 	</tr>
 	<tr>
-	  <td><label for="password">Password</label></td>
+	  <td bgcolor="##f0f0f0">Password</td>
 	  <td>
-	    <input name="password" id="password" type="password" size="30" value="#dsinfo.password#" tabindex="8" />
+	    <input name="password" id="password" type="password" class="span6" value="#dsinfo.password#" tabindex="8" />
 	  </td>
 	</tr>
 	<tr>
-	  <td valign="top"><label for="description">Description</label></td>
+	  <td valign="top" bgcolor="##f0f0f0">Description</td>
 	  <td valign="top">
-	    <textarea name="description" id="description" rows="4" cols="40" tabindex="9"><cfif StructKeyExists(dsinfo, "description")>#dsinfo.description#</cfif></textarea>
+	    <textarea name="description" id="description" rows="4" class="span6" tabindex="9"><cfif StructKeyExists(dsinfo, "description")>#dsinfo.description#</cfif></textarea>
 	  </td>
 	</tr>
-	<tr>
+	<tr bgcolor="##dedede">
 	  <td>
-	    <input type="button" id="advSettingsButton" name="showAdvSettings" value="Show Advanced Settings" 
+	    <input type="button" class="btn default" id="advSettingsButton" name="showAdvSettings" value="Show Advanced Settings" 
 		   onclick="javascript:showHideAdvSettings();" tabindex="10" />
 	  </td>
 	  <td align="right">
-	    <input type="submit" name="submit" value="Submit" tabindex="11" />
-	    <input type="button" name="cancel" value="Cancel" 
+	    <input type="submit" class="btn primary" name="submit" value="Submit" tabindex="11" />
+	    <input type="button" class="btn default" name="cancel" value="Cancel" 
 		   onclick="javascript:location.replace('index.cfm');" tabindex="12" />
 	  </td>
 	</tr>
       </table>
       <div id="advancedSettings" style="display:none;visibility:hidden;">
 	<br />
-	<table border="0">
+	<table>
+	  <tr bgcolor="##dedede">
+	    <th colspan="2">Advanced Settings</th>
+	  </tr>
 	  <tr>
-	    <td valign="top"><label for="connectstring">Connection String</label></td>
+	    <td valign="top" bgcolor="##f0f0f0">Connection String</td>
 	    <td valign="top">
-	      <textarea name="connectstring" id="connectstring" rows="4" cols="40" tabindex="13">#dsinfo.connectstring#</textarea>
+	      <textarea name="connectstring" id="connectstring" rows="4" class="span6" tabindex="13">#dsinfo.connectstring#</textarea>
 	    </td>
 	  </tr>
 	  <tr>
-	    <td valign="top"><label for="initstring">Initialization String</label></td>
+	    <td valign="top" bgcolor="##f0f0f0">Initialization String</td>
 	    <td valign="top">
-	      <textarea name="initstring" id="initstring" rows="4" cols="40" tabindex="14">#dsinfo.initstring#</textarea>
+	      <textarea name="initstring" id="initstring" rows="4" class="span6" tabindex="14">#dsinfo.initstring#</textarea>
 	    </td>
 	  </tr>
 	  <tr>
-	    <td valign="top">SQL Operations</td>
+	    <td valign="top" bgcolor="##f0f0f0">SQL Operations</td>
 	    <td valign="top">
-	      <table border="0">
-		<tr>
-		  <td>
-		    <input type="checkbox" name="sqlselect" id="sqlselect" value="true"
-			   <cfif dsinfo.sqlselect> checked="true"</cfif> tabindex="15" />
-		    <label for="sqlselect">SELECT</label>
-		  </td>
-		  <td>
-		    <input type="checkbox" name="sqlinsert" id="sqlinsert" value="true"
-			   <cfif dsinfo.sqlinsert> checked="true"</cfif> tabindex="16" />
-		    <label for="sqlinsert">INSERT</label>
-		  </td>
-		</tr>
-		<tr>
-		  <td>
-		    <input type="checkbox" name="sqlupdate" id="sqlupdate" value="true"
-			   <cfif dsinfo.sqlupdate> checked="true"</cfif> tabindex="17" />
-		    <label for="sqlupdate">UPDATE</label>
-		  </td>
-		  <td>
-		    <input type="checkbox" name="sqldelete" id="sqldelete" value="true"
-			   <cfif dsinfo.sqldelete> checked="true"</cfif> tabindex="18" />
-		    <label for="sqldelete">DELETE</label>
-		  </td>
-		</tr>
-		<tr>
-		  <td>
-		    <input type="checkbox" name="sqlstoredprocedures" id="sqlstoredprocedures" value="true"
-			   <cfif dsinfo.sqlstoredprocedures> checked="true"</cfif> tabindex="19" />
-		    <label for="sqlstoredprocedures">Stored Procedures</label>
-		  </td>
-		  <td>&nbsp;</td>
-		</tr>
-	      </table>
+	      <div class="inline-inputs">
+		<input type="checkbox" name="sqlselect" id="sqlselect" value="true"<cfif dsinfo.sqlselect> checked="true"</cfif> tabindex="15" />
+		<span>SELECT</span>
+		<input type="checkbox" name="sqlinsert" id="sqlinsert" value="true"<cfif dsinfo.sqlinsert> checked="true"</cfif> tabindex="16" />
+		<span>INSERT</span>
+		<input type="checkbox" name="sqlupdate" id="sqlupdate" value="true"<cfif dsinfo.sqlupdate> checked="true"</cfif> tabindex="17" />
+		<span>UPDATE</span>
+		<input type="checkbox" name="sqldelete" id="sqldelete" value="true"<cfif dsinfo.sqldelete> checked="true"</cfif> tabindex="18" />
+		<span>DELETE</span>
+		<input type="checkbox" name="sqlstoredprocedures" id="sqlstoredprocedures" value="true"<cfif dsinfo.sqlstoredprocedures> checked="true"</cfif> tabindex="19" />
+		<span>Stored Procedures</span>
+	      </div>
 	    </td>
 	  </tr>
 	  <tr>
-	    <td><label for="perrequestconnections">Per-Request Connections</label></td>
+	    <td bgcolor="##f0f0f0">Per-Request Connections</td>
 	    <td>
 	      <input type="checkbox" name="perrequestconnections" id="perrequestconnections" value="true"
 		     <cfif dsinfo.perrequestconnections> checked="true"</cfif> tabindex="20" />
 	    </td>
 	  </tr>
 	  <tr>
-	    <td><label for="maxconnections">Maximum Connections</label></td>
+	    <td bgcolor="##f0f0f0">Maximum Connections</td>
 	    <td>
-	      <input type="text" name="maxconnections" id="maxconnections" size="4" maxlength="4" 
+	      <input type="text" name="maxconnections" id="maxconnections" class="span2" maxlength="4" 
 		     value="#dsinfo.maxconnections#" tabindex="21" />
 	    </td>
 	  </tr>
 	  <tr>
-	    <td><label for="connectiontimeout">Connection Timeout</label></td>
+	    <td bgcolor="##f0f0f0">Connection Timeout</td>
 	    <td>
-	      <input type="text" name="connectiontimeout" id="connectiontimeout" size="4" maxlength="10" 
+	      <input type="text" name="connectiontimeout" id="connectiontimeout" class="span2" maxlength="10" 
 		     value="#dsinfo.connectiontimeout#" tabindex="22" />
 	    </td>
 	  </tr>
 	  <tr>
-	    <td><label for="logintimeout">Login Timeout</label></td>
+	    <td bgcolor="##f0f0f0">Login Timeout</td>
 	    <td>
-	      <input type="text" name="logintimeout" id="logintimeout" size="4" maxlength="4" 
+	      <input type="text" name="logintimeout" id="logintimeout" class="span2" maxlength="4" 
 		     value="#dsinfo.logintimeout#" tabindex="23" />
 	    </td>
 	  </tr>
 	  <tr>
-	    <td><label for="connectionretries">Connection Retries</label></td>
+	    <td bgcolor="##f0f0f0">Connection Retries</td>
 	    <td>
-	      <input type="text" name="connectionretries" id="connectionretries" size="4" maxlength="4" 
+	      <input type="text" name="connectionretries" id="connectionretries" class="span2" maxlength="4" 
 		     value="#dsinfo.connectionretries#" tabindex="24" />
 	    </td>
 	  </tr>

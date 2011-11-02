@@ -131,10 +131,10 @@
 	  onsubmit="javascript:return validate(this);">
       <table>
 	<tr bgcolor="##dedede">
-	  <td colspan="2"><strong><cfif fontDirAction == "create">Add a<cfelse>Edit</cfif> Font Directory</strong></td>
+	  <th colspan="2"><h5><cfif fontDirAction == "create">Add a<cfelse>Edit</cfif> Font Directory</h5></th>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0"><label for="fontDir">Font Directory</label></td>
+	  <td bgcolor="##f0f0f0"><label for="fontDir">Font Directory</label></td>
 	  <td bgcolor="##ffffff">
 	    <input class="span6" type="text" name="fontDir" id="fontDir" value="" tabindex="1" />
 	  </td>

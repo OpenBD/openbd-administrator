@@ -49,13 +49,20 @@
     <!--- DATASOURCES --->
     <cfcase value="addDatasource">
       <cfparam name="args.dsn" type="string" default="" />
+      <cfparam name="args.datasourceconfigpage" type="string" default="" />
       
       <cfset errorFields = ArrayNew(2) />
       <cfset errorFieldsIndex = 1 />
       
-      <cfif trim(args.dsn) == "">
+      <cfif Trim(args.dsn) == "">
 	<cfset errorFields[errorFieldsIndex][1] = "dsn" />
 	<cfset errorFields[errorFieldsIndex][2] = "The value of Datasource Name cannot be blank" />
+	<cfset errorFieldsIndex++ />
+      </cfif>
+      
+      <cfif args.datasourceconfigpage == "">
+	<cfset errorFields[errorFieldsIndex][1] = "datasourceconfigpage" />
+	<cfset errorFields[errorFieldsIndex][2] = "You must select a Database Type" />
 	<cfset errorFieldsIndex++ />
       </cfif>
       
@@ -66,7 +73,7 @@
 	<cfset errorFieldsIndex++ />
       </cfif>
       
-      <cfif arrayLen(errorFields) gt 0>
+      <cfif ArrayLen(errorFields) gt 0>
 	<cfset session.errorFields = errorFields />
 	<cflocation url="index.cfm" addtoken="false" />
 	<cfelse>

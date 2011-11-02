@@ -31,8 +31,8 @@
     <cfset isWindows = true />
   </cfif>
   
-  <cfset dbdrivers = ArrayNew(1) />
-  <cfset datasources = ArrayNew(1) />
+  <cfset dbdrivers = [] />
+  <cfset datasources = [] />
 
   <cftry>
     <cfset dbdrivers = Application.datasource.getRegisteredDrivers() />
@@ -60,7 +60,7 @@
       <cfif datasources[i].databasename == "">
 	<cfset datasources[i].driverdescription = "Other" />
 	<cfelse>
-	  <cfif structKeyExists(datasources[i], "drivername")>
+	  <cfif StructKeyExists(datasources[i], "drivername")>
 	    <cftry>
 	      <cfset datasources[i].driverdescription = 
 		     Application.datasource.getDriverInfo(drivername = datasources[i].drivername).driverdescription />
@@ -135,41 +135,53 @@
     
     <div class="row">
       <div class="pull-left">
-	<h2>Add Datasource</h2>
+	<h2>Manage Datasources</h2>
       </div>
       <div class="pull-right">
 	<button data-controls-modal="moreInfo" data-backdrop="true" data-keyboard="true" class="btn primary">More Info</button>
       </div>
     </div>
     
-    <cfif StructKeyExists(session, "message") and session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
+    <cfif StructKeyExists(session, "message") && session.message.text != "">
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
-    
-    <cfif dbDriverRetrievalMessage is not "">
-      <p class="#dbDriverRetrievalMessageType#">#dbDriverRetrievalMessage#</p>
+
+    <cfif dbDriverRetrievalMessage != "">
+      <div class="alert-message #dbDriverRetrievalMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#dbDriverRetrievalMessage#</p>
+      </div>
     </cfif>
-    
-    <cfif StructKeyExists(session, "errorFields") and ArrayLen(session.errorFields) gt 0>
-      <p class="error">The following errors occurred:</p>
-      <ul>
-	<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
-	  <li>#session.errorFields[i][2]#</li>
-	</cfloop>
-      </ul>
+
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
     </cfif>
     
     <form name="addDatasource" action="_controller.cfm?action=addDatasource" method="post" 
 	  onsubmit="javascript:return validate(this);">
-      <table border="0">
-	<tr>
-	  <td><label for="dsn">Datasource Name</label></td>
-	  <td><input type="text" name="dsn" id="dsn" size="30" maxlength="50" tabindex="1" /></td>
+      <table>
+	<tr bgcolor="##dedede">
+	  <th colspan="2"><h5>Add a Datasource</h5></th>
 	</tr>
 	<tr>
-	  <td><label for="datasourceconfigpage">Database Type</label></td>
+	  <td bgcolor="##f0f0f0"><label for="dsn">Datasource Name</label></td>
+	  <td><input type="text" name="dsn" id="dsn" class="span6" maxlength="50" tabindex="1" /></td>
+	</tr>
+	<tr>
+	  <td bgcolor="##f0f0f0"><label for="datasourceconfigpage">Database Type</label></td>
 	  <td>
-	    <select name="datasourceconfigpage" id="datasourceconfigpage" tabindex="2">
+	    <select name="datasourceconfigpage" id="datasourceconfigpage" class="span6" tabindex="2">
 	      <option value="" selected="true">- select -</option>
 	      <cfloop index="i" from="1" to="#ArrayLen(dbdrivers)#">
 		<option value="#dbdrivers[i].datasourceconfigpage#">#dbdrivers[i].driverdescription#</option>
@@ -178,33 +190,35 @@
 	    <a href="javascript:void(0);" onclick="javascript:resetDBDrivers()" alt="Reset Database Drivers" title="Reset Database Drivers"><img src="../images/database_gear.png" border="0" width="16" height="16" /></a>
 	  </td>
 	</tr>
-	<tr>
+	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
-	  <td><input type="submit" name="submit" value="Add Datasource" tabindex="3" /></td>
+	  <td><input class="btn primary" type="submit" name="submit" value="Add Datasource" tabindex="3" /></td>
 	</tr>
       </table>
     </form>
     
     <hr noshade="true" />
 
-    <h2>Datasources</h2>
+    <h3>Datasources</h3>
     
-    <cfif datasourceRetrievalMessage is not ""><p class="#datasourceRetrievalMessageType#">#datasourceRetrievalMessage#</p></cfif>
+    <cfif datasourceRetrievalMessage != "">
+      <p class="#datasourceRetrievalMessageType#">#datasourceRetrievalMessage#</p>
+    </cfif>
     
-    <cfif ArrayLen(datasources) eq 0>
+    <cfif ArrayLen(datasources) == 0>
       <p><strong><em>No datasources configured</em></strong></p>
       <cfelse>
-	<table border="0" width="100%" cellpadding="2" cellspacing="1" bgcolor="##999999">
+	<table>
 	  <tr bgcolor="##dedede">
-	    <td width="100"><strong>Actions</strong></td>
-	    <td><strong>Datasource Name</strong></td>
-	    <td><strong>Description</strong></td>
-	    <td><strong>Database Type</strong></td>
-	    <td><strong>Status</strong></td>
+	    <th style="width:100px;">Actions</th>
+	    <th>Datasource Name</th>
+	    <th>Description</th>
+	    <th>Database Type</th>
+	    <th style="width:200px;">Status</th>
 	  </tr>
 	  <cfloop index="i" from="1" to="#ArrayLen(datasources)#">
-	    <tr <cfif !StructKeyExists(datasources[i], "verified")>bgcolor="##ffffff"<cfelseif datasources[i].verified>bgcolor="##ccffcc"<cfelseif !datasources[i].verified>bgcolor="##ffff99"</cfif>>
-	      <td width="100">
+	    <tr<cfif !StructKeyExists(datasources[i], "verified")> bgcolor="##ffffff"<cfelseif datasources[i].verified> bgcolor="##ccffcc"<cfelseif !datasources[i].verified> bgcolor="##ffff99"</cfif>>
+	      <td>
 		<a href="_controller.cfm?action=editDatasource&dsn=#datasources[i].name#" alt="Edit Datasource" title="Edit Datasource"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
 		<a href="_controller.cfm?action=verifyDatasource&dsn=#datasources[i].name#" alt="Verify Datasource" title="Verify Datasource"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
 		<a href="javascript:void(0);" onclick="javascript:removeDatasource('#datasources[i].name#');" alt="Remove Datasource" title="Remove Datasource"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
@@ -228,7 +242,7 @@
 	  </cfloop>
 	  <tr bgcolor="##dedede">
 	    <td colspan="5">
-	      <input type="button" name="verifyAll" value="Verify All Datasources" onclick="javascript:verifyAllDatasources()" 
+	      <input class="btn primary" type="button" name="verifyAll" value="Verify All Datasources" onclick="javascript:verifyAllDatasources()" 
 		     tabindex="4" />
 	    </td>
 	  </tr>
@@ -255,17 +269,19 @@
 	  <tr>
 	    <td><strong>Auto-Configure ODBC Datasources?</strong></td>
 	    <td>
-	      <input type="radio" name="autoconfigodbc" id="autoconfigodbcTrue" value="true" 
-		     <cfif autoConfigODBC>checked="true"</cfif> tabindex="5" />
-	      <label for="autoconfigodbcTrue">Yes</label>&nbsp;
-	      <input type="radio" name="autoconfigodbc" id="autoconfigodbcFalse" value="false" 
-		     <cfif not autoConfigODBC>checked="false"</cfif> tabindex="6" />
-	      <label for="autoconfigodbcFalse">No</label>
+	      <div class="inline-inputs">
+		<input type="radio" name="autoconfigodbc" id="autoconfigodbcTrue" value="true" 
+		       <cfif autoConfigODBC>checked="true"</cfif> tabindex="5" />
+		<span>Yes</span>
+		<input type="radio" name="autoconfigodbc" id="autoconfigodbcFalse" value="false" 
+		       <cfif not autoConfigODBC>checked="false"</cfif> tabindex="6" />
+		<span>No</span>
+	      </div>
 	    </td>
 	  </tr>
 	  <tr>
 	    <td>&nbsp;</td>
-	    <td><input type="submit" name="submit" value="Submit" tabindex="7" /></td>
+	    <td><input class="btn primary" type="submit" name="submit" value="Submit" tabindex="7" /></td>
 	  </tr>
 	</table>
       </form>

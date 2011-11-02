@@ -72,8 +72,9 @@
 		  <li class="dropdown<cfif theSection == 'datasources'> active</cfif>">
 		    <a href="##" class="dropdown-toggle">Data &amp; Services</a>
 		    <ul class="dropdown-menu">
-		      <li<cfif theSection == "datasources" && ListFind("index.cfm,h2-embedded.cfm,sqlserver-jtds.cfm,sqlserver2005-ms.cfm,mysql5.cfm,other.cfm,postgresql.cfm", thePage) != 0> class="active"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/index.cfm">Datasources</a></li>
+		      <li<cfif theSection == "datasources" && ListFind("index.cfm,h2-embedded.cfm,sqlserver-jtds.cfm,sqlserver2005-ms.cfm,mysql5.cfm,oracle.cfm,other.cfm,postgresql.cfm", thePage) != 0> class="active"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/index.cfm">Datasources</a></li>
 		      <li<cfif theSection == "datasources" && thePage == "collections.cfm"> class="active"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/collections.cfm">Search Collections</a></li>
+		      <li<cfif theSection == "datasources" && thePage == "webservices.cfm"> class="active"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/webservices.cfm">Web Services</a></li>
 		    </ul>
 		  </li>
 		  <li class="dropdown<cfif theSection == 'debugging'> active</cfif>">

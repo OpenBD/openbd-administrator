@@ -55,61 +55,70 @@
     </script>
     
     <h2>Debug IP Addresses</h2>
-    
-    <cfif structKeyExists(session, "message") and session.message.text is not "">
-      <p class="#session.message.type#">#session.message.text#</p>
-    </cfif>
-    
-    <cfif ipAddressMessage is not "">
-      <p class="#ipAddressMessageType#">#ipAddressMessage#</p>
+
+    <cfif StructKeyExists(session, "message") && session.message.text != "">
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
 
-    <cfif structKeyExists(session, "errorFields") and arrayLen(session.errorFields) gt 0>
-      <p class="error">The following errors occurred:</p>
-      <ul>
-	<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
-	  <li>#session.errorFields[i][2]#</li>
-	</cfloop>
-      </ul>
+    <cfif ipAddressMessage != "">
+      <div class="alert-message #ipAddressMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#ipAddressMessage#</p>
+      </div>
+    </cfif>
+
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
     </cfif>
     
     <form name="addIPAddressForm" action="_controller.cfm?action=addIPAddress" method="post" 
 	  onsubmit="javascript:return validateAddIPAddressForm(this);">
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##dedede">
-	  <td colspan="2"><strong>Add IP Address</strong></td>
+	  <th colspan="2"><h5>Add IP Address</h5></td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right"><label for="ipaddress">New IP Address</label></td>
-	  <td bgcolor="##ffffff">
-	    <input type="text" name="ipaddress" id="ipaddress" size="16" maxlength="15" tabindex="1" />
+	  <td bgcolor="##f0f0f0" style="width:200px;">New IP Address</td>
+	  <td>
+	    <input type="text" name="ipaddress" id="ipaddress" class="span6" maxlength="15" tabindex="1" />
 	  </td>
 	</tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
 	  <td>
-	    <input type="button" name="addLocalIP" value="Add Local" tabindex="2" 
+	    <input type="button" class="btn default" name="addLocalIP" value="Add Local" tabindex="2" 
 		   onclick="javascript:location.replace('_controller.cfm?action=addLocalIP');" />
-	    <input type="submit" name="submit" value="Submit" tabindex="3" />
+	    <input type="submit" class="btn primary" name="submit" value="Submit" tabindex="3" />
 	  </td>
 	</tr>
       </table>
     </form>
     
-    <br /><br />
+    <br />
 
     <form name="editIPAddressForm" action="_controller.cfm?action=removeIPAddresses" method="post" 
 	  onsubmit="javascript:return validateEditIPAddressForm(this);">
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##dedede">
-	  <td colspan="2"><strong>Edit IP Addresses</strong></td>
+	  <th colspan="2"><h5>Edit IP Addresses</h5></th>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right" valign="top"><label for="ipaddresses">Configured IP Addresses</label></td>
-	  <td bgcolor="##ffffff">
-	    <select name="ipaddresses" id="ipaddresses" size="5" multiple="true" style="width:20em;" tabindex="4">
-	      <cfif arrayLen(ipAddresses) gt 0>
-		<cfloop index="i" from="1" to="#arrayLen(ipAddresses)#">
+	  <td bgcolor="##f0f0f0" align="right" valign="top" style="width:200px;">Configured IP Addresses</td>
+	  <td>
+	    <select name="ipaddresses" id="ipaddresses" size="5" multiple="true" class="span6" tabindex="4">
+	      <cfif ArrayLen(ipAddresses) gt 0>
+		<cfloop index="i" from="1" to="#ArrayLen(ipAddresses)#">
 		  <option value="#ipAddresses[i]#">#ipAddresses[i]#</option>
 		</cfloop>
 	      </cfif>
@@ -118,7 +127,7 @@
 	</tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
-	  <td><input type="submit" name="submit" value="Remove Selected IPs" tabindex="5" /></td>
+	  <td><input type="submit" class="btn primary" name="submit" value="Remove Selected IPs" tabindex="5" /></td>
 	</tr>
       </table>
     </form>

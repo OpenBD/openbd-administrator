@@ -54,28 +54,46 @@
     </script>
     
     <h2>Log Files</h2>
-    
+
     <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
-    
+
     <cfif logFilesMessage != "">
-      <p class="#logFilesMessageType#">#logFilesMessage#</p>
+      <div class="alert-message #logFilesMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#logFilesMessage#</p>
+      </div>
+    </cfif>
+
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
     </cfif>
     
     <cfif ArrayLen(logFiles) == 0>
       <p><strong><em>No log files available</em></strong></p>
       <cfelse>
-	<table border="0" width="100%" cellpadding="2" cellspacing="1" bgcolor="##999999">
-	  <tr bgcolor="##dedede">
-	    <td width="100"><strong>Actions</strong></td>
-	    <td><strong>Log File</strong></td>
-	    <td><strong>Size</strong></td>
-	    <td><strong>Last Updated</strong></td>
+	<table>
+	  <tr bgcolor="##f0f0f0">
+	    <th width="100">Actions</th>
+	    <th>Log File</th>
+	    <th>Size</strong></th>
+	    <th>Last Updated</th>
 	  </tr>
 	  <cfloop index="i" from="1" to="#ArrayLen(logFiles)#">
-	    <tr bgcolor="##ffffff">
-	      <td width="100">
+	    <tr>
+	      <td>
 		<a href="viewlogfile.cfm?logFile=#logFiles[i].name#" alt="View Log File" title="View Log File"><img src="../images/page_find.png" border="0" width="16" height="16" /></a>
 		<a href="javascript:void(0);" onclick="javascript:downloadLogFile('#logFiles[i].name#');" alt="Download Log File" title="Download Log File"><img src="../images/disk.png" border="0" width="16" height="16" /></a>
 		<!--- TODO: deleting and archiving log files didn't currently jive with how the openbd engine deals with log files, so commenting this out for now --->

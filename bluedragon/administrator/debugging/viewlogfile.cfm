@@ -75,64 +75,54 @@
     <h3>View Log File - #url.logFile#</h3>
     
     <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
-    
+
     <cfif logFileMessage != "">
-      <p class="#logFileMessageType#">#logFileMessage#</p>
+      <div class="alert-message #logFileMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#logFileMessage#</p>
+      </div>
+    </cfif>
+
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
     </cfif>
     
     <cfif ArrayLen(logFileData.logFileLines) == 0>
       <p><strong><em>Log file not available or contains no entries</em></strong></p>
       <cfelse>
-	<table border="0" width="100%" cellpadding="2" cellspacing="1" bgcolor="##999999">
-	  <tr bgcolor="##dedede">
-	    <td>
-	      <table border="0" width="100%" cellpadding="0" cellspacing="0">
-		<tr>
-		  <td>Entries #url.startLine# - #endLine# of #logFileData.totalLineCount#</td>
-		  <td align="right">
-		    <table border="0" cellpadding="0" cellspacing="0">
-		      <tr>
-			<td width="16">
-			  <cfif showPrev>
-			    <a href="viewlogfile.cfm?logFile=#url.logFile#&startLine=1&numLinesToShow=#url.numLinesToShow#"><img src="../images/resultset_first.png" border="0" width="16" height="16" alt="Go To Beginning" title="Go To Beginning" /></a>
-			    <cfelse>
-			      &nbsp;
-			  </cfif>
-			</td>
-			<td width="16">
-			  <cfif showPrev>
-			    <a href="viewlogfile.cfm?logFile=#url.logFile#&startLine=#prevStart#&numLinesToShow=#url.numLinesToShow#"><img src="../images/resultset_previous.png" border="0" width="16" height="16" alt="Previous #url.numLinesToShow#" title="Previous #url.numLinesToShow#" /></a>
-			    <cfelse>
-			      &nbsp;
-			  </cfif>
-			</td>
-			<td width="16">
-			  <cfif showNext>
-			    <a href="viewlogfile.cfm?logFile=#url.logFile#&startLine=#nextStart#&numLinesToShow=#url.numLinesToShow#"><img src="../images/resultset_next.png" border="0" width="16" height="16" alt="Next #url.numLinesToShow#" title="Next #url.numLinesToShow#" /></a>
-			    <cfelse>
-			      &nbsp;
-			  </cfif>
-			</td>
-			<td width="16">
-			  <cfif showFinal>
-			    <a href="viewlogfile.cfm?logFile=#url.logFile#&startLine=#finalStart#&numLinesToShow=#url.numLinesToShow#"><img src="../images/resultset_last.png" border="0" width="16" height="16" alt="Go To End" title="Go To End" /></a>
-			    <cfelse>
-			      &nbsp;
-			  </cfif>
-			</td>
-		      </tr>
-		    </table>
-		  </td>
-		</tr>
-	      </table>
-	    </td>
-	  </tr>
+	<div class="pull-left"><h5>Entries #url.startLine# - #endLine# of #logFileData.totalLineCount#</h5></div>
+	<div class="pull-right">
+	  <cfif showPrev>
+	    <a href="viewlogfile.cfm?logFile=#url.logFile#&startLine=1&numLinesToShow=#url.numLinesToShow#"><img src="../images/resultset_first.png" border="0" width="16" height="16" alt="Go To Beginning" title="Go To Beginning" /></a>
+	  </cfif>
+	  <cfif showPrev>
+	    <a href="viewlogfile.cfm?logFile=#url.logFile#&startLine=#prevStart#&numLinesToShow=#url.numLinesToShow#"><img src="../images/resultset_previous.png" border="0" width="16" height="16" alt="Previous #url.numLinesToShow#" title="Previous #url.numLinesToShow#" /></a>
+	  </cfif>
+	  <cfif showNext>
+	    <a href="viewlogfile.cfm?logFile=#url.logFile#&startLine=#nextStart#&numLinesToShow=#url.numLinesToShow#"><img src="../images/resultset_next.png" border="0" width="16" height="16" alt="Next #url.numLinesToShow#" title="Next #url.numLinesToShow#" /></a>
+	  </cfif>
+	  <cfif showFinal>
+	    <a href="viewlogfile.cfm?logFile=#url.logFile#&startLine=#finalStart#&numLinesToShow=#url.numLinesToShow#"><img src="../images/resultset_last.png" border="0" width="16" height="16" alt="Go To End" title="Go To End" /></a>
+	  </cfif>
+	</div>
+	<table>
 	  <cfloop index="i" from="1" to="#arrayLen(logFileData.logFileLines)#">
 	    <cfset rowBG = IIf(i Mod 2 == 0, DE("f0f0f0"), DE("ffffff")) />
 	    <tr bgcolor="###rowBG#">
-	      <td colspan="2">
+	      <td>
 		<cfif logFileData.logFileLines[i] != "">
 		  #logFileData.logFileLines[i]#
 		  <cfelse>

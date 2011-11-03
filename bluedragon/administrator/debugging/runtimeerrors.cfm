@@ -86,71 +86,60 @@
       }
     </script>
     
-    <h2>Runtime Error Logs</h2>
-    
+    <h3>Runtime Error Logs</h3>
+
     <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
-    
+
     <cfif logFilesMessage != "">
-      <p class="#logFilesMessageType#">#logFilesMessage#</p>
+      <div class="alert-message #logFilesMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#logFilesMessage#</p>
+      </div>
     </cfif>
-    
+
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
+    </cfif>
+
     <cfif !IsQuery(logFiles) || logFiles.RecordCount == 0>
       <p><strong><em>No runtime error logs available</em></strong></p>
       <cfelse>
-	<table border="0" width="100%" cellpadding="2" cellspacing="1" bgcolor="##999999">
-	  <tr bgcolor="##dedede">
-	    <td colspan="4">
-	      <table border="0" width="100%" cellpadding="0" cellspacing="0">
-		<tr>
-		  <td>
-		    <strong>Runtime Errors #url.start# - #endLog# of #logFiles.RecordCount#</strong>&nbsp;
-		    <a href="javascript:void(0)" onclick="javascript:deleteAllRTEs();" alt="Delete All Runtime Error Logs" title="Delete All Runtime Error Logs"><img src="../images/folder_delete.png" height="16" width="16" border="0" /></a>
-		  </td>
-		  <td align="right">
-		    <table border="0" cellpadding="0" cellspacing="0">
-		      <tr>
-			<td width="16">
-			  <cfif showPrev>
-			    <a href="runtimeerrors.cfm?start=1"><img src="../images/resultset_first.png" border="0" width="16" height="16" alt="Go To Beginning" title="Go To Beginning" /></a>
-			    <cfelse>
-			      &nbsp;
-			  </cfif>
-			</td>
-			<td width="16">
-			  <cfif showPrev>
-			    <a href="runtimeerrors.cfm?start=#prevStart#"><img src="../images/resultset_previous.png" border="0" width="16" height="16" alt="Previous #numPerPage#" title="Previous #numPerPage#" /></a>
-			    <cfelse>
-			      &nbsp;
-			  </cfif>
-			</td>
-			<td width="16">
-			  <cfif showNext>
-			    <a href="runtimeerrors.cfm?start=#nextStart#"><img src="../images/resultset_next.png" border="0" width="16" height="16" alt="Next #numPerPage#" title="Next #numPerPage#" /></a>
-			    <cfelse>
-			      &nbsp;
-			  </cfif>
-			</td>
-			<td width="16">
-			  <cfif showFinal>
-			    <a href="runtimeerrors.cfm?start=#finalStart#"><img src="../images/resultset_last.png" border="0" width="16" height="16" alt="Go To End" title="Go To End" /></a>
-			    <cfelse>
-			      &nbsp;
-			  </cfif>
-			</td>
-		      </tr>
-		    </table>
-		  </td>
-		</tr>
-	      </table>
-	    </td>
-	  </tr>
-	  <tr bgcolor="##dedede">
-	    <td width="100"><strong>Actions</strong></td>
-	    <td><strong>Runtime Error Log</strong></td>
-	    <td><strong>Size</strong></td>
-	    <td><strong>Created</strong></td>
+	<div class="pull-left">
+	  <h5>Runtime Errors #url.start# - #endLog# of #logFiles.RecordCount#&nbsp;<a href="javascript:void(0)" onclick="javascript:deleteAllRTEs();" alt="Delete All Runtime Error Logs" title="Delete All Runtime Error Logs"><img src="../images/folder_delete.png" height="16" width="16" border="0" /></a></h5>
+	</div>
+	<div class="pull-right">
+	  <cfif showPrev>
+	    <a href="runtimeerrors.cfm?start=1"><img src="../images/resultset_first.png" border="0" width="16" height="16" alt="Go To Beginning" title="Go To Beginning" /></a>
+	  </cfif>
+	  <cfif showPrev>
+	    <a href="runtimeerrors.cfm?start=#prevStart#"><img src="../images/resultset_previous.png" border="0" width="16" height="16" alt="Previous #numPerPage#" title="Previous #numPerPage#" /></a>
+	  </cfif>
+	  <cfif showNext>
+	    <a href="runtimeerrors.cfm?start=#nextStart#"><img src="../images/resultset_next.png" border="0" width="16" height="16" alt="Next #numPerPage#" title="Next #numPerPage#" /></a>
+	  </cfif>
+	  <cfif showFinal>
+	    <a href="runtimeerrors.cfm?start=#finalStart#"><img src="../images/resultset_last.png" border="0" width="16" height="16" alt="Go To End" title="Go To End" /></a>
+	  </cfif>
+	</div>
+	<table>
+	  <tr bgcolor="##f0f0f0">
+	    <th style="width:100px;">Actions</th>
+	    <th>Runtime Error Log</th>
+	    <th>Size</th>
+	    <th>Created</th>
 	  </tr>
 	  <cfloop query="logFiles" startrow="#url.start#" endrow="#endLog#">
 	    <tr bgcolor="##ffffff">

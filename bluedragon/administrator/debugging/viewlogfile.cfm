@@ -72,8 +72,11 @@
 </cfsilent>
 <cfsavecontent variable="request.content">
   <cfoutput>
-    <h3>View Log File - #url.logFile#</h3>
-    
+    <div class="row">
+      <div class="pull-left"><h3>View Log File - #url.logFile#</h3></div>
+      <div class="pull-right"><h6><a href="logs.cfm">&laquo; Back to Logs</a></h6></div>
+    </div>
+
     <cfif StructKeyExists(session, "message") && session.message.text != "">
       <div class="alert-message #session.message.type# fade in" data-alert="alert">
 	<a class="close" href="##">x</a>

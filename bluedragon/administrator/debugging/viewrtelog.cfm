@@ -35,7 +35,10 @@
 <cfsavecontent variable="request.content">
   <cfoutput>
     <cfif logContents != "">
-      <h3>Viewing Contents of #url.rteLog#</h3>
+      <div class="row">
+	<div class="pull-left"><h3>Viewing Contents of #url.rteLog#</h3></div>
+	<div class="pull-right"><h6><a href="runtimeerrors.cfm">&laquo; Back to Runtime Error Logs</a></h6></div>
+      </div>
       <cfoutput>#logContents#</cfoutput>
       <cfelse>
 	<p><strong>No file contents to display</strong></p>

@@ -41,6 +41,17 @@
       <link rel="shortcut icon" href="#contextPath#/bluedragon/administrator/images/favicon.ico" />
       <link rel="stylesheet" href="#contextPath#/bluedragon/administrator/css/bootstrap.css" type="text/css" />
       <script src="#contextPath#/bluedragon/administrator/js/jquery-1.6.4.min.js" type="text/javascript"></script>
+      <!--- if scheduled tasks page include date picker --->
+      <cfif thePage == "scheduledtasks.cfm">
+	<link rel="stylesheet" type="text/css" href="#contextPath#/bluedragon/administrator/css/smoothness/jquery-ui-1.8.16.custom.css" />
+	<script src="#contextPath#/bluedragon/administrator/js/jquery-ui-1.8.16.custom.min.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	  $(function() {
+	    $("##startdate").datepicker();
+	    $("##enddate").datepicker();
+	  });
+	</script>
+      </cfif>
       <script src="#contextPath#/bluedragon/administrator/js/bootstrap-dropdown.js" type="text/javascript"></script>
       <script src="#contextPath#/bluedragon/administrator/js/bootstrap-modal.js" type="text/javascript"></script>
       <script src="#contextPath#/bluedragon/administrator/js/bootstrap-alerts.js" type="text/javascript"></script>

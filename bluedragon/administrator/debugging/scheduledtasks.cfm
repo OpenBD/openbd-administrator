@@ -123,27 +123,45 @@
     </script>
     
     <h2>Scheduled Tasks</h2>
-    
+
     <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
-    
+
     <cfif scheduledTaskMessage != "">
-      <p class="#scheduledTaskMessageType#">#scheduledTaskMessage#</p>
+      <div class="alert-message #scheduledTaskMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#scheduledTaskMessage#</p>
+      </div>
     </cfif>
-    
-    <cfif arrayLen(scheduledTasks) gt 0>
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="100%">
-	<tr bgcolor="##dedede">
-	  <td width="100"><strong>Actions</strong></td>
-	  <td><strong>Task</strong></td>
-	  <td><strong>URL</strong></td>
-	  <td><strong>Interval</strong></td>
-	  <td><strong>Start Date/Time</strong></td>
-	  <td><strong>End Date/Time</strong></td>
+
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
+    </cfif>
+        
+    <cfif ArrayLen(scheduledTasks) gt 0>
+      <table>
+	<tr bgcolor="##f0f0f0">
+	  <th style="width:100px;">Actions</th>
+	  <th>Task</th>
+	  <th>URL</th>
+	  <th>Interval</th>
+	  <th>Start Date/Time</th>
+	  <th>End Date/Time</th>
 	</tr>
 	<cfloop index="i" from="1" to="#ArrayLen(scheduledTasks)#">
-	  <tr bgcolor="##ffffff">
+	  <tr>
 	    <td>
 	      <a href="_controller.cfm?action=runScheduledTask&name=#scheduledTasks[i].name#" alt="Run Task" 
 		 title="Run Task">
@@ -189,117 +207,129 @@
       </table>
     </cfif>
     
-    <br /><br />
+    <br />
 
-    <cfif StructKeyExists(session, "errorFields") && ArrayLen(session.errorFields) gt 0>
-      <p class="error">The following errors occurred:</p>
-      <ul>
-	<cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
-	  <li>#session.errorFields[i][2]#</li>
-	</cfloop>
-      </ul>
-    </cfif>
-    
     <form name="scheduledTaskForm" action="_controller.cfm?action=processScheduledTaskForm" method="post" 
 	  onsubmit="javascript:return validate(this);">
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##dedede">
-	  <td colspan="2"><strong>#scheduledTaskActionLabel# Scheduled Task</strong></td>
+	  <th colspan="2"><h5>#scheduledTaskActionLabel# Scheduled Task</h5></th>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right"><label for="name">Task Name</label></td>
-	  <td bgcolor="##ffffff">
-	    <input type="text" name="name" id="name" size="30" maxlength="50" value="#scheduledTask.name#" tabindex="1" />
+	  <td bgcolor="##f0f0f0">Task Name</td>
+	  <td>
+	    <input type="text" name="name" id="name" class="span8" maxlength="50" value="#scheduledTask.name#" tabindex="1" />
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right" valign="top">Duration</td>
-	  <td bgcolor="##ffffff">
-	    <label for="startdate">Start Date:</label>&nbsp;
-	    <input type="text" name="startdate" id="startdate" size="10" maxlength="10" 
-		   value="#scheduledTask.startdate#" tabindex="2" />&nbsp;
-	    <label for="enddate">End Date:</label>&nbsp;
-	    <input type="text" name="enddate" id="enddate" size="10" maxlength="10" 
-		   value="#scheduledTask.enddate#" tabindex="3" />
+	  <td bgcolor="##f0f0f0" valign="top">Duration</td>
+	  <td>
+	    <div class="inline-inputs">
+	      <span>Start Date:</span>&nbsp;
+	      <input type="text" name="startdate" id="startdate" class="span2" maxlength="10" 
+		     value="#scheduledTask.startdate#" tabindex="2" />&nbsp;
+	      <span>End Date:</span>&nbsp;
+	      <input type="text" name="enddate" id="enddate" class="span2" maxlength="10" 
+		     value="#scheduledTask.enddate#" tabindex="3" />
+	    </div>
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right" valign="top">Interval</td>
-	  <td bgcolor="##ffffff">
-	    <input type="radio" name="runinterval" id="runintervalOnce" value="once"
-		   <cfif scheduledTask.tasktype == "ONCE"> checked="true"</cfif> tabindex="4" />
-	    <label for="runintervalOnce">One Time</label>&nbsp;
-	    <label for="starttime_once">@</label>&nbsp;
-	    <input type="text" name="starttime_once" id="starttime_once" size="5" maxlength="5"
-		   <cfif scheduledTask.tasktype == "ONCE" && scheduledTask.starttime != ""> value="#timeFormat(scheduledTask.starttime, 'HH:mm')#"</cfif> 
-		   tabindex="5" /><br />
-	    <input type="radio" name="runinterval" id="runintervalRecurring" value="recurring"
-		   <cfif (scheduledTask.tasktype == "DAILY" || scheduledTask.tasktype == "WEEKLY" || scheduledTask.tasktype == "MONTHLY") && scheduledTask.interval == -1> checked="true"</cfif> 
-		   tabindex="6" />
-	    <label for="runintervalRecurring">Recurring</label>&nbsp;
-	    <select name="tasktype" id="tasktype" tabindex="7">
-	      <option value="" selected="true">- select -</option>
-	      <option value="DAILY"<cfif scheduledTask.tasktype == "DAILY" && scheduledTask.interval == -1> selected="true"</cfif>>daily</option>
-	      <option value="WEEKLY"<cfif scheduledTask.tasktype == "WEEKLY" && scheduledTask.interval == -1> selected="true"</cfif>>weekly</option>
-	      <option value="MONTHLY"<cfif scheduledTask.tasktype == "MONTHLY" && scheduledTask.interval == -1> selected="true"</cfif>>monthly</option>
-	    </select>
-	    &nbsp;<label for="starttime_recurring">@</label>&nbsp;
-	    <input type="text" name="starttime_recurring" id="starttime_recurring" size="5" maxlength="5"
-		   <cfif scheduledTask.interval == -1 && 
-			 (scheduledTask.tasktype == "DAILY" || 
-			 scheduledTask.tasktype == "WEEKLY" || 
-			 scheduledTask.tasktype == "MONTHLY")>value="#timeFormat(scheduledTask.starttime, 'HH:mm')#"</cfif> 
-		   tabindex="8" /><br />
-	    <input type="radio" name="runinterval" id="runintervalDaily" value="daily"
-		   <cfif (scheduledTask.tasktype == "" || scheduledTask.tasktype == "DAILY") && 
-			 scheduledTask.interval != -1> checked="true"</cfif> tabindex="9" />
-	    <label for="runintervalDaily">Daily</label>&nbsp;
-	    <label for="interval">every</label>&nbsp;
-	    <input type="text" name="interval" id="interval" size="5" maxlength="5"
-		   <cfif (scheduledTask.tasktype == "" || scheduledTask.tasktype == "DAILY") && 
-			 scheduledTask.interval != -1> value="#scheduledTask.interval#"</cfif> 
-		   tabindex="10" />&nbsp;
-	    seconds&nbsp;
-	    <label for="starttime_daily">from</label>&nbsp;
-	    <input type="text" name="starttime_daily" id="starttime_daily" size="5" maxlength="5"
-		   <cfif (scheduledTask.tasktype == "" || scheduledTask.tasktype == "DAILY") && 
-			 scheduledTask.interval != -1> value="#timeFormat(scheduledTask.starttime, 'HH:mm')#"</cfif> 
-		   tabindex="11" />&nbsp;
-	    <label for="endtime_daily">to</label>&nbsp;
-	    <input type="text" name="endtime_daily" id="endtime_daily" size="5" maxlength="5"
-		   <cfif (scheduledTask.tasktype == "" || scheduledTask.tasktype == "DAILY") && 
-			 scheduledTask.interval != -1 && scheduledTask.endtime != ""> value="#timeFormat(scheduledTask.endtime, 'HH:mm')#"</cfif> 
-		   tabindex="12" />
+	  <td bgcolor="##f0f0f0" valign="top">Interval</td>
+	  <td>
+	    <div class="span10">
+	      <div class="row">
+		<div class="inline-inputs">
+		  <input type="radio" name="runinterval" id="runintervalOnce" value="once"
+			 <cfif scheduledTask.tasktype == "ONCE"> checked="true"</cfif> tabindex="4" />
+		  <span>One Time</span>&nbsp;
+		  <span>@</span>&nbsp;
+		  <input type="text" name="starttime_once" id="starttime_once" size="5" maxlength="5"
+			 <cfif scheduledTask.tasktype == "ONCE" && scheduledTask.starttime != ""> value="#timeFormat(scheduledTask.starttime, 'HH:mm')#"</cfif> 
+			 tabindex="5" />
+		</div>
+	      </div>
+	      <div class="row" style="padding-top:2px;">
+		<div class="inline-inputs">
+		  <input type="radio" name="runinterval" id="runintervalRecurring" value="recurring"
+			 <cfif (scheduledTask.tasktype == "DAILY" || scheduledTask.tasktype == "WEEKLY" || scheduledTask.tasktype == "MONTHLY") && scheduledTask.interval == -1> checked="true"</cfif> 
+			 tabindex="6" />
+		  <span>Recurring</span>&nbsp;
+		  <select name="tasktype" id="tasktype" tabindex="7">
+		    <option value="" selected="true">- select -</option>
+		    <option value="DAILY"<cfif scheduledTask.tasktype == "DAILY" && scheduledTask.interval == -1> selected="true"</cfif>>daily</option>
+		    <option value="WEEKLY"<cfif scheduledTask.tasktype == "WEEKLY" && scheduledTask.interval == -1> selected="true"</cfif>>weekly</option>
+		    <option value="MONTHLY"<cfif scheduledTask.tasktype == "MONTHLY" && scheduledTask.interval == -1> selected="true"</cfif>>monthly</option>
+		  </select>
+		  &nbsp;<span>@</span>&nbsp;
+		  <input type="text" name="starttime_recurring" id="starttime_recurring" class="span2" maxlength="5"
+			 <cfif scheduledTask.interval == -1 && 
+			       (scheduledTask.tasktype == "DAILY" || 
+			       scheduledTask.tasktype == "WEEKLY" || 
+			       scheduledTask.tasktype == "MONTHLY")>value="#timeFormat(scheduledTask.starttime, 'HH:mm')#"</cfif> 
+			 tabindex="8" />
+		</div>
+	      </div>
+	      <div class="row" style="padding-top:2px;">
+		<div class="inline-inputs">
+		  <input type="radio" name="runinterval" id="runintervalDaily" value="daily"
+			 <cfif (scheduledTask.tasktype == "" || scheduledTask.tasktype == "DAILY") && 
+			       scheduledTask.interval != -1> checked="true"</cfif> tabindex="9" />
+		  <span>Daily</span>&nbsp;
+		  <span>every</span>&nbsp;
+		  <input type="text" name="interval" id="interval" class="span2" maxlength="5"
+			 <cfif (scheduledTask.tasktype == "" || scheduledTask.tasktype == "DAILY") && 
+			       scheduledTask.interval != -1> value="#scheduledTask.interval#"</cfif> 
+			 tabindex="10" />&nbsp;
+		  <span>seconds from</span>&nbsp;
+		  <input type="text" name="starttime_daily" id="starttime_daily" class="span2" maxlength="5"
+			 <cfif (scheduledTask.tasktype == "" || scheduledTask.tasktype == "DAILY") && 
+			       scheduledTask.interval != -1> value="#timeFormat(scheduledTask.starttime, 'HH:mm')#"</cfif> 
+			 tabindex="11" />&nbsp;
+		  <span>to</span>&nbsp;
+		  <input type="text" name="endtime_daily" id="endtime_daily" class="span2" maxlength="5"
+			 <cfif (scheduledTask.tasktype == "" || scheduledTask.tasktype == "DAILY") && 
+			       scheduledTask.interval != -1 && scheduledTask.endtime != ""> value="#timeFormat(scheduledTask.endtime, 'HH:mm')#"</cfif> 
+			 tabindex="12" />
+		</div>
+	      </div>
+	    </div>
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right" valign="top"><label for="urltouse">Full URL</label></td>
-	  <td bgcolor="##ffffff">
-	    <input type="text" name="urltouse" id="urltouse" size="56"
+	  <td bgcolor="##f0f0f0" valign="top">Full URL</td>
+	  <td>
+	    <input type="text" name="urltouse" id="urltouse" class="span12"
 		   <cfif scheduledTask.urltouse == ""> value="http://"<cfelse> value="#scheduledTask.urltouse#"</cfif> 
 		   tabindex="13" /><br />
-	    <label for="porttouse">Port</label>&nbsp;
-	    <input type="text" name="porttouse" id="porttouse" size="5" maxlength="5"
-		   <cfif scheduledTask.porttouse == -1 || scheduledTask.porttouse == ""> value=""<cfelse> value="#scheduledTask.porttouse#"</cfif> 
-		   tabindex="14" />
+	    <div class="inline-inputs" style="padding-top:2px;">
+	      <span>Port</span>&nbsp;
+	      <input type="text" name="porttouse" id="porttouse" class="span2" maxlength="5"
+		     <cfif scheduledTask.porttouse == -1 || scheduledTask.porttouse == ""> value=""<cfelse> value="#scheduledTask.porttouse#"</cfif> 
+		     tabindex="14" />
+	    </div>
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right">Login Details</td>
-	  <td bgcolor="##ffffff">
-	    <label for="username">User Name:</label>&nbsp;
-	    <input type="text" name="username" id="username" size="10" value="#scheduledTask.username#" tabindex="15" />&nbsp;
-	    <label for="password">Password</label>:&nbsp;
-	    <input type="password" name="password" id="password" size="10" value="#scheduledTask.password#" tabindex="16" />
+	  <td bgcolor="##f0f0f0">Login Details</td>
+	  <td>
+	    <div class="inline-inputs">
+	      <span>User Name:</span>
+	      <input type="text" name="username" id="username" class="span4" value="#scheduledTask.username#" tabindex="15" />&nbsp;
+	      <span>Password:</span>
+	      <input type="password" name="password" id="password" class="span4" value="#scheduledTask.password#" tabindex="16" />
+	    </div>
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right" valign="top"><label for="proxyserver">Proxy Server</label></td>
-	  <td bgcolor="##ffffff">
-	    <input type="text" name="proxyserver" id="proxyserver" size="56" value="#scheduledTask.proxyserver#" tabindex="17" /><br />
-	    <label for="proxyport">Port</label>&nbsp;
-	    <input type="text" name="proxyport" id="proxyport" size="5" maxlength="5" value="#scheduledTask.proxyport#" 
-		   tabindex="18" />
+	  <td bgcolor="##f0f0f0" valign="top">Proxy Server</td>
+	  <td>
+	    <input type="text" name="proxyserver" id="proxyserver" class="span8" value="#scheduledTask.proxyserver#" tabindex="17" /><br />
+	    <div class="inline-inputs" style="padding-top:2px;">
+	      <span>Port</span>&nbsp;
+	      <input type="text" name="proxyport" id="proxyport" class="span2" maxlength="5" value="#scheduledTask.proxyport#" 
+		     tabindex="18" />
+	    </div>
 	    <!---
 		TODO: enable this once proxyuser and proxypassword are added to the engine <br />
 		User Name: <input type="text" name="proxyuser" size="20" value="#scheduledTask.proxyuser#" />&nbsp;
@@ -307,67 +337,75 @@
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right" valign="top">Publish Results to File</td>
-	  <td bgcolor="##ffffff">
-	    <input type="radio" name="publish" id="publishTrue" value="true"
-		   <cfif StructKeyExists(scheduledTask, "publish") && IsBoolean(scheduledTask.publish) && scheduledTask.publish> checked="true"</cfif> 
-		   tabindex="19" />
-	    <label for="publishTrue">Yes</label>&nbsp;
-	    <input type="radio" name="publish" id="publishFalse" value="false"
-		   <cfif (StructKeyExists(scheduledTask, "publish") && (!IsBoolean(scheduledTask.publish) || !scheduledTask.publish)) || !StructKeyExists(scheduledTask, "publish")> checked="true"</cfif> 
-		   tabindex="20" />
-	    <label for="publishFalse">No</label><br />
-	    <table border="0" cellpadding="0" cellspacing="0">
-	      <tr>
-		<td><label for="publishpath">Path:</label></td>
-		<td>
-		  <input type="text" name="publishpath" id="publishpath" size="46" 
+	  <td bgcolor="##f0f0f0" valign="top">Publish Results to File</td>
+	  <td>
+	    <div class="span10">
+	      <div class="row">
+		<div class="inline-inputs">
+		  <input type="radio" name="publish" id="publishTrue" value="true"
+			 <cfif StructKeyExists(scheduledTask, "publish") && IsBoolean(scheduledTask.publish) && scheduledTask.publish> checked="true"</cfif> 
+			 tabindex="19" />
+		  <span>Yes</span>&nbsp;
+		  <input type="radio" name="publish" id="publishFalse" value="false"
+			 <cfif (StructKeyExists(scheduledTask, "publish") && (!IsBoolean(scheduledTask.publish) || !scheduledTask.publish)) || !StructKeyExists(scheduledTask, "publish")> checked="true"</cfif> 
+			 tabindex="20" />
+		  <span>No</span>
+		</div>
+	      </div>
+	      <div class="row" style="padding-top:2px;">
+		<div class="inline-inputs">
+		  <span>Path:</span>
+		  <input type="text" name="publishpath" id="publishpath" class="span8"
 			 value="#scheduledTask.publishpath#" tabindex="21" />
-		</td>
-	      </tr>
-	      <tr>
-		<td>Path Type:</td>
-		<td>
+		</div>
+	      </div>
+	      <div class="row" style="padding-top:2px;">
+		<div class="inline-inputs">
+		  <span>Path Type:</span>
 		  <input type="radio" name="uridirectory" id="uridirectoryTrue" value="true" tabindex="22" />
-		  <label for="uridirectoryTrue">Relative</label>&nbsp;
+		  <span>Relative</span>&nbsp;
 		  <input type="radio" name="uridirectory" id="uridirectoryFalse" value="false" 
 			 checked="true" tabindex="23" />
-		  <label for="uridirectoryFalse">Absolute</label>
-		</td>
-	      </tr>
-	      <tr>
-		<td><label for="publishfile">File Name:</label></td>
-		<td>
-		  <input type="text" name="publishfile" id="publishfile" size="46" 
+		  <span>Absolute</span>
+		</div>
+	      </div>
+	      <div class="row" style="padding-top:2px;">
+		<div class="inline-inputs">
+		  <span>File Name:</span>
+		  <input type="text" name="publishfile" id="publishfile" class="span8" 
 			 value="#scheduledTask.publishfile#" tabindex="24" />
-		</td>
-	      </tr>
-	    </table>
+		</div>
+	      </div>
+	    </div>
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right">Resolve Internal URLs</td>
-	  <td bgcolor="##ffffff">
-	    <input type="radio" name="resolvelinks" id="resolvelinksTrue" value="true"
-		   <cfif scheduledTask.resolvelinks> checked="true"</cfif> tabindex="25" />
-	    <label for="resolvelinksTrue">Yes</label>&nbsp;
-	    <input type="radio" name="resolvelinks" id="resolvelinksFalse" value="false"
-		   <cfif (IsBoolean(scheduledTask.resolvelinks) && !scheduledTask.resolvelinks) || scheduledTask.resolvelinks == ""> checked="true"</cfif> 
-		   tabindex="26" />
-	    <label for="resolvelinksFalse">No</label>
+	  <td bgcolor="##f0f0f0">Resolve Internal URLs</td>
+	  <td>
+	    <div class="inline-inputs">
+	      <input type="radio" name="resolvelinks" id="resolvelinksTrue" value="true"
+		     <cfif scheduledTask.resolvelinks> checked="true"</cfif> tabindex="25" />
+	      <span>Yes</span>&nbsp;
+	      <input type="radio" name="resolvelinks" id="resolvelinksFalse" value="false"
+		     <cfif (IsBoolean(scheduledTask.resolvelinks) && !scheduledTask.resolvelinks) || scheduledTask.resolvelinks == ""> checked="true"</cfif> 
+		     tabindex="26" />
+	      <span>No</span>
+	    </div>
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0" align="right"><label for="requesttimeout">Request Timeout</label></td>
-	  <td bgcolor="##ffffff">
-	    <input type="text" name="requesttimeout" id="requesttimeout" size="5" maxlength="5" 
-		   value="#scheduledTask.requesttimeout#" tabindex="27" /> seconds
+	  <td bgcolor="##f0f0f0">Request Timeout</td>
+	  <td>
+	    <div class="inline-inputs">
+	      <input type="text" name="requesttimeout" id="requesttimeout" class="span2" maxlength="5" 
+		     value="#scheduledTask.requesttimeout#" tabindex="27" /> <span>seconds</span>
+	    </div>
 	  </td>
 	</tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
 	  <td>
-	    <input type="submit" name="submit" value="Submit" tabindex="28" />
+	    <input type="submit" class="btn primary" name="submit" value="Submit" tabindex="28" />
 	  </td>
 	</tr>
       </table>

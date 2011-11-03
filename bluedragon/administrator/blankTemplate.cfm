@@ -33,7 +33,8 @@
   </cfscript>
 </cfsilent>
 <cfoutput>
-  <html>
+  <!DOCTYPE html>
+  <html lang="en">
     <head>
       <title>Open BlueDragon Administrator</title>
       <meta http-equiv="X-UA-Compatible" content="IE-edge">

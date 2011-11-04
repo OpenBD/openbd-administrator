@@ -80,7 +80,7 @@
       
       <cftry>
 	<cfset Application.debugging.saveDebugSettings(args.debug, args.runtimelogging, 
-	       args.enabled, args.assert, 
+	       args.runtimeloggingmax, args.enabled, args.assert, 
 	       args.enableslowquerylog, args.slowquerytime) />
 	<cfcatch type="bluedragon.adminapi.debugging">
 	  <cfset session.message.text = CFCATCH.Message />

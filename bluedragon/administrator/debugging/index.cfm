@@ -86,22 +86,28 @@
 	<tr>
 	  <td bgcolor="##f0f0f0">Runtime Error Logging</td>
 	  <td>
-	    <input type="checkbox" name="runtimelogging" id="runtimelogging" value="true"
-		   <cfif debugSettings.system.runtimelogging> checked="true"</cfif> tabindex="2" />
+	    <div class="inline-inputs">
+	      <input type="checkbox" name="runtimelogging" id="runtimelogging" value="true"
+		     <cfif debugSettings.system.runtimelogging> checked="true"</cfif> tabindex="2" />&nbsp;
+	      <span>Store a maximum of</span>
+	      <input type="text" name="runtimeloggingmax" id="runtimeloggingmax" class="span2" maxlength="5" 
+		     value="#debugSettings.system.runtimeloggingmax#" tabindex="3" />
+	      <span>RTE logs</span>
+	    </div>
 	  </td>
 	</tr>
 	<tr>
 	  <td bgcolor="##f0f0f0" align="right">Enable Debug Output</td>
 	  <td>
 	    <input type="checkbox" name="enabled" id="enabled" value="true"
-		   <cfif debugSettings.debugoutput.enabled> checked="true"</cfif> tabindex="3" />
+		   <cfif debugSettings.debugoutput.enabled> checked="true"</cfif> tabindex="4" />
 	  </td>
 	</tr>
 	<tr>
 	  <td bgcolor="##f0f0f0">Assertions</td>
 	  <td>
 	    <input type="checkbox" name="assert" id="assert" value="true"
-		   <cfif debugSettings.system.assert> checked="true"</cfif> tabindex="4" />
+		   <cfif debugSettings.system.assert> checked="true"</cfif> tabindex="5" />
 	  </td>
 	</tr>
 	<tr>
@@ -109,10 +115,10 @@
 	  <td bgcolor="##ffffff">
 	    <div class="inline-inputs">
 	      <input type="checkbox" name="enableslowquerylog" id="enableslowquerylog" value="true" 
-		     <cfif debugSettings.slowquerytime != -1> checked="true"</cfif> tabindex="5" />&nbsp;&nbsp;
+		     <cfif debugSettings.slowquerytime != -1> checked="true"</cfif> tabindex="6" />&nbsp;&nbsp;
 	      <span>Log queries running more than</span>&nbsp;
 	      <input type="text" name="slowquerytime" id="slowquerytime" class="span2" maxlength="4" 
-		     value="<cfif debugSettings.slowquerytime != -1>#debugSettings.slowquerytime#</cfif>" tabindex="6" />&nbsp;seconds&nbsp;
+		     value="<cfif debugSettings.slowquerytime != -1>#debugSettings.slowquerytime#</cfif>" tabindex="7" />&nbsp;seconds&nbsp;
 	      <img src="../images/arrow_refresh_small.png" height="16" width="16" 
 		   alt="Requires Server Restart" title="Requires Server Restart" />
 	    </div>
@@ -120,7 +126,7 @@
 	</tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
-	  <td><input type="submit" class="btn primary" name="submit" value="Submit" tabindex="7" /></td>
+	  <td><input type="submit" class="btn primary" name="submit" value="Submit" tabindex="8" /></td>
 	</tr>
       </table>
     </form>

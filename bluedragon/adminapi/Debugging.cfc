@@ -52,6 +52,11 @@
       <cfset localConfig.system.runtimelogging = "true" />
       <cfset doSetConfig = true />
     </cfif>
+
+    <cfif !StructKeyExists(localConfig.system, "runtimeloggingmax")>
+      <cfset localConfig.system.runtimeloggingmax = "100" />
+      <cfset doSetConfig = true />
+    </cfif>
     
     <cfif !StructKeyExists(localConfig, "debugoutput")>
       <cfset localConfig.debugoutput = {} />
@@ -200,6 +205,7 @@
     <cfset debugSettings.system.assert = localConfig.system.assert />
     <cfset debugSettings.system.debug = localConfig.system.debug />
     <cfset debugSettings.system.runtimelogging = localConfig.system.runtimelogging />
+    <cfset debugSettings.system.runtimeloggingmax = localConfig.system.runtimeloggingmax />
     <cfset debugSettings.debugoutput = localConfig.debugoutput />
     <cfset debugSettings.slowquerytime = localConfig.cfquery.slowlog />
     
@@ -210,6 +216,7 @@
 	      hint="Saves the basic debug settings">
     <cfargument name="debug" type="boolean" required="true" hint="Enables/disables 'extended error reporting' is enabled" />
     <cfargument name="runtimelogging" type="boolean" required="true" hint="Enables/disables logging of runtime errors to a file" />
+    <cfargument name="runtimeloggingmax" type="numeric" required="true" hint="Maximum number of RTE logs to save on disk" />
     <cfargument name="enabled" type="boolean" required="true" hint="Enables/disables debug output" />
     <cfargument name="assert" type="boolean" required="true" hint="Enables/disables cfassert and the assert function" />
     <cfargument name="enableslowquerylog" type="boolean" required="true" hint="Enables/disables slow query logging" />
@@ -228,6 +235,7 @@
     <cfscript>
       localConfig.system.debug = ToString(arguments.debug);
       localConfig.system.runtimelogging = ToString(arguments.runtimelogging);
+      localConfig.system.runtimeloggingmax = ToString(arguments.runtimeloggingmax);
       localConfig.debugoutput.enabled = ToString(arguments.enabled);
       localConfig.system.assert = ToString(arguments.assert);
       

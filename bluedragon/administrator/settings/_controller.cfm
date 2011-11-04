@@ -198,8 +198,9 @@
 	<cfelse>
 	  <cftry>
 	    <cfset Application.serverSettings.setServerSettings(args.buffersize, args.whitespacecomp, args.errorhandler, 
-		   args.missingtemplatehandler, args.defaultcharset, 
-		   args.scriptprotect, args.legacyformvalidation,
+		   args.missingtemplatehandler, args.defaultcharset, args.scriptprotect, 
+		   args.strictarraypassbyreference, args.functionscopedvariables, 
+		   args.formurlcombined, args.legacyformvalidation,
 		   args.scriptsrc, args.tempdirectory, 
 		   args.componentcfc, args.servercfc, 
 		   args.verifypathsettings) />

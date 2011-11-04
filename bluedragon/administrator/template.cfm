@@ -113,6 +113,7 @@
 		    <a href="##" class="dropdown-toggle">Other Links</a>
 		    <ul class="dropdown-menu">
 		      <li><a href="http://www.openbd.org/manual" target="_blank">OpenBD Manual</a></li>
+		      <li><a href="http://www.openbd.org/manual/?/engine_bluedragonxml" target="_blank">OpenBD Configuration Reference</a></li>
 		      <li><a href="http://groups.google.com/group/openbd" target="_blank">OpenBD Google Group</a></li>
                       <li><a href="http://www.openbd.org" target="_blank">OpenBD Web Site</a></li>
 		      <li><a href="http://wiki.openbd.org" target="_blank">OpenBD Wiki</a></li>

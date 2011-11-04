@@ -26,7 +26,19 @@
   <cfif !StructKeyExists(serverSettings, "legacyformvalidation")>
     <cfset serverSettings.legacyformvalidation = true />
   </cfif>
+
+  <cfif !StructKeyExists(serverSettings, "formurlcombined")>
+    <cfset serverSettings.formurlcombined = false />
+  </cfif>
   
+  <cfif !StructKeyExists(serverSettings, "strictarraypassbyreference")>
+    <cfset serverSettings.strictarraypassbyreference = false />
+  </cfif>
+
+  <cfif !StructKeyExists(serverSettings, "functionscopedvariables")>
+    <cfset serverSettings.functionscopedvariables = false />
+  </cfif>
+ 
   <cfset charsets = Application.serverSettings.getAvailableCharsets() />
 </cfsilent>
 <cfsavecontent variable="request.content">
@@ -124,7 +136,7 @@
 	</tr>
 	<tr>
 	  <td bgcolor="##f0f0f0" style="width:300px;">Response Buffer Size</td>
-	  <td bgcolor="##ffffff">
+	  <td>
 	    <div class="inline-inputs">
 	      <input class="span2" type="text" name="buffersize" id="buffersize" value="#serverSettings.buffersize#"<cfif serverSettings.buffersize == 0> readOnly="true"</cfif> tabindex="1" /><span>KB</span>
 	      <input type="checkbox" name="bufferentirepage" id="bufferentirepage" value="1" 
@@ -135,7 +147,7 @@
 	</tr>
 	<tr>
 	  <td bgcolor="##f0f0f0">Whitespace Compression</td>
-	  <td bgcolor="##ffffff">
+	  <td>
 	    <div class="inline-inputs">
 	      <input type="radio" name="whitespacecomp" id="whitespacecompTrue" value="true"<cfif serverSettings.whitespacecomp> checked="true"</cfif> tabindex="3" />
 	      <span>Yes</span>
@@ -146,21 +158,21 @@
 	</tr>
 	<tr>
 	  <td bgcolor="##f0f0f0">Default Error Handler</td>
-	  <td bgcolor="##ffffff">
+	  <td>
 	    <input type="text" name="errorhandler" id="errorhandler" class="span6" value="#serverSettings.errorhandler#" 
 		   tabindex="5" />
 	  </td>
 	</tr>
 	<tr>
 	  <td bgcolor="##f0f0f0">Missing Template Handler</td>
-	  <td bgcolor="##ffffff">
+	  <td>
 	    <input type="text" name="missingtemplatehandler" id="missingtemplatehandler" class="span6" 
 		   value="#serverSettings.missingtemplatehandler#" tabindex="6" />
 	  </td>
 	</tr>
 	<tr>
 	  <td bgcolor="##f0f0f0">Default Character Set</td>
-	  <td bgcolor="##ffffff">
+	  <td>
 	    <select name="defaultcharset" id="defaultcharset" tabindex="6">
 	      <cfloop collection="#charsets#" item="charset">
 		<option value="#charset#"<cfif serverSettings.defaultcharset == charset> selected="true"</cfif>>#charset#</option>
@@ -170,7 +182,7 @@
 	</tr>
 	<tr>
 	  <td bgcolor="##f0f0f0">Global Script Protection</td>
-	  <td bgcolor="##ffffff">
+	  <td>
 	    <div class="inline-inputs">
 	      <input type="radio" name="scriptprotect" id="scriptprotectTrue" value="true"<cfif serverSettings.scriptprotect> checked="true"</cfif> tabindex="7" />
 	      <span>Yes</span>
@@ -181,55 +193,92 @@
 	  </td>
 	</tr>
 	<tr>
+	  <td bgcolor="##f0f0f0">Always Pass Arrays By Reference</td>
+	  <td>
+	    <div class="inline-inputs">
+	      <input type="radio" name="strictarraypassbyreference" id="strictarraypassbyreferenceTrue" value="true"
+		     <cfif serverSettings.strictarraypassbyreference> checked="true"</cfif> tabindex="9" />
+	      <span>Yes</span>
+	      <input type="radio" name="strictarraypassbyreference" id="strictarraypassbyreferenceFalse" value="false"
+		     <cfif !serverSettings.strictarraypassbyreference> checked="true"</cfif> tabindex="10" />
+	      <span>No</span>
+	    </div>
+	  </td>
+	</tr>
+	<tr>
+	  <td bgcolor="##f0f0f0">Auto-VAR Scope Variables in Functions</td>
+	  <td>
+	    <div class="inline-inputs">
+	      <input type="radio" name="functionscopedvariables" id="functionscopedvariablesTrue" value="true"
+		     <cfif serverSettings.functionscopedvariables> checked="true"</cfif> tabindex="11" />
+	      <span>Yes</span>
+	      <input type="radio" name="functionscopedvariables" id="functionscopedvariablesFalse" value="false"
+		     <cfif !serverSettings.functionscopedvariables> checked="true"</cfif> tabindex="12" />
+	      <span>No</span>
+	    </div>
+	  </td>
+	</tr>
+	<tr>
+	  <td bgcolor="##f0f0f0">Combine Form and URL Scopes</td>
+	  <td>
+	    <div class="inline-inputs">
+	      <input type="radio" name="formurlcombined" id="formurlcombinedTrue" value="true"<cfif serverSettings.formurlcombined> checked="true"</cfif> tabindex="13" />
+	      <span>Yes</span>
+	      <input type="radio" name="formurlcombined" id="formurlcombinedFalse" value="false"<cfif !serverSettings.formurlcombined> checked="true"</cfif> tabindex="14" />
+	      <span>No</span>
+	    </div>
+	  </td>
+	</tr>
+	<tr>
 	  <td bgcolor="##f0f0f0">Support Legacy Form Validation</td>
-	  <td bgcolor="##ffffff">
+	  <td>
 	    <div class="inline-inputs">
 	      <input type="radio" name="legacyformvalidation" id="legacyformvalidationTrue" 
 		     value="true"<cfif serverSettings.legacyformvalidation> checked="true"</cfif> 
-		     tabindex="9" />&nbsp;
+		     tabindex="15" />&nbsp;
 	      <span>Yes</span>
 	      <input type="radio" name="legacyformvalidation" id="legacyformvalidationFalse" 
 		     value="false"<cfif !serverSettings.legacyformvalidation> checked="true"</cfif> 
-		     tabindex="10" />
+		     tabindex="16" />
 	      <span>No</span>
 	    </div>
 	  </td>
 	</tr>
 	<tr>
 	  <td bgcolor="##f0f0f0">Default CFFORM Script Source Location</td>
-	  <td bgcolor="##ffffff">
+	  <td>
 	    <input type="text" name="scriptsrc" id="scriptsrc" class="span6" 
-		   value="#serverSettings.scriptsrc#" tabindex="11" />
+		   value="#serverSettings.scriptsrc#" tabindex="17" />
 	  </td>
 	</tr>
 	<tr>
 	  <td bgcolor="##f0f0f0">Temp Directory Location</td>
-	  <td bgcolor="##ffffff">
+	  <td>
 	    <input type="text" name="tempdirectory" id="tempdirectory" class="span6" value="#serverSettings.tempdirectory#" 
-		   tabindex="12" />
+		   tabindex="18" />
 	  </td>
 	</tr>
 	<tr>
 	  <td bgcolor="##f0f0f0">Base ColdFusion Component (CFC)</td>
-	  <td bgcolor="##ffffff">
+	  <td>
 	    <input type="text" name="componentcfc" id="componentcfc" class="span6" value="#serverSettings['component-cfc']#" 
-		   tabindex="13" />
+		   tabindex="19" />
 	  </td>
 	</tr>
 	<tr>
 	  <td bgcolor="##f0f0f0">Server CFC</td>
-	  <td bgcolor="##ffffff">
+	  <td>
 	    <input type="text" name="servercfc" id="servercfc" class="span6" value="#serverSettings.servercfc#" 
-		   tabindex="14" />
+		   tabindex="20" />
 	  </td>
 	</tr>
 	<tr>
 	  <td bgcolor="##f0f0f0">Verify Path Settings?</td>
-	  <td bgcolor="##ffffff">
+	  <td>
 	    <div class="inline-inputs">
-	      <input type="radio" name="verifypathsettings" id="verifypathsettingsTrue" value="true" checked="true" tabindex="15" />
+	      <input type="radio" name="verifypathsettings" id="verifypathsettingsTrue" value="true" checked="true" tabindex="21" />
 	      <span>Yes</span>
-	      <input type="radio" name="verifypathsettings" id="verifypathsettingsFalse" value="false" tabindex="16" />
+	      <input type="radio" name="verifypathsettings" id="verifypathsettingsFalse" value="false" tabindex="22" />
 	      <span>No</span>
 	    </div>
 	  </td>
@@ -237,7 +286,7 @@
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
 	  <td>
-	    <input class="btn primary" type="submit" name="submit" value="Submit" tabindex="17" />
+	    <input class="btn primary" type="submit" name="submit" value="Submit" tabindex="23" />
 	  </td>
 	</tr>
       </table>

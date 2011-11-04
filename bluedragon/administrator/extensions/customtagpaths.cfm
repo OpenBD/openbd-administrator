@@ -80,24 +80,42 @@
 	<button data-controls-modal="moreInfo" data-backdrop="true" data-keyboard="true" class="btn primary">More Info</button>
       </div>
     </div>
-    
+
     <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
-    
+
     <cfif customTagMessage != "">
-      <p class="#customTagMessageType#">#customTagMessage#</p>
+      <div class="alert-message #customTagMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#customTagMessage#</p>
+      </div>
+    </cfif>
+
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
     </cfif>
     
     <cfif ArrayLen(customTagPaths) gt 0>
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##f0f0f0">
-	  <td><strong>Actions</strong></td>
-	  <td><strong>Custom Tag Path</strong></td>
+	  <th style="width:100px;">Actions</th>
+	  <th>Custom Tag Path</th>
 	</tr>
 	<cfloop index="i" from="1" to="#ArrayLen(customTagPaths)#">
-	  <tr bgcolor="##ffffff">
-	    <td width="100">
+	  <tr>
+	    <td>
 	      <a href="javascript:void(0);" 
 		 onclick="javascript:editCustomTagPath('#Replace(customTagPaths[i], '\', '\\', 'all')#');" 
 		 alt="Edit Custom Tag Path" title="Edit Custom Tag Path">
@@ -119,34 +137,25 @@
       </table>
     </cfif>
     
-    <cfif StructKeyExists(session, "errorFields") && ArrayLen(session.errorFields) gt 0>
-      <p class="error">The following errors occurred:</p>
-      <ul>
-	<cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
-	  <li>#session.errorFields[i][2]#</li>
-	</cfloop>
-      </ul>
-    </cfif>
-    
     <br />
     
     <form name="customTagPathForm" action="_controller.cfm?action=processCustomTagPathForm" method="post" 
 	  onsubmit="javascript:return validate(this);">
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr>
-	  <td colspan="2" bgcolor="##dedede"><strong><span id="actionHeader">Add a</span> Custom Tag Path</strong></td>
+	  <th colspan="2" bgcolor="##dedede"><span id="actionHeader">Add a</span> Custom Tag Path</strong></th>
 	</tr>
 	<tr>
-	  <td align="right" bgcolor="##f0f0f0"><label for="directory">Custom Tag Path</label></td>
-	  <td bgcolor="##ffffff">
-	    <input type="text" name="directory" id="directory" size="40" value="#customTagPath#" tabindex="1" />
+	  <td bgcolor="##f0f0f0">Custom Tag Path</td>
+	  <td>
+	    <input type="text" name="directory" id="directory" class="span6" value="#customTagPath#" tabindex="1" />
 	  </td>
 	</tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
 	  <td>
-	    <input type="button" name="reset" value="Reset" onclick="javascript:resetCustomTagPathForm();" tabindex="2" />
-	    <input type="submit" name="submit" value="Submit" tabindex="3" />
+	    <input type="button" name="reset" class="btn default" value="Reset" onclick="javascript:resetCustomTagPathForm();" tabindex="2" />
+	    <input type="submit" name="submit" class="btn primary" value="Submit" tabindex="3" />
 	  </td>
 	</tr>
       </table>

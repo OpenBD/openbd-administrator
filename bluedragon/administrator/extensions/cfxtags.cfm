@@ -57,32 +57,53 @@
     </script>
     
     <h2>CFX Tags</h2>
-    
+
     <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
-    
+
     <cfif cppTagsMessage != "">
-      <p class="#cppTagsMessageType#">#cppTagsMessage#</p>
+      <div class="alert-message #cppTagsMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#cppTagsMessage#</p>
+      </div>
     </cfif>
-    
+
     <cfif javaTagsMessage != "">
-      <p class="#javaTagsMessageType#">#javaTagsMessage#</p>
+      <div class="alert-message #javaTagsMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#javaTagsMessage#</p>
+      </div>
+    </cfif>
+
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
     </cfif>
     
     <cfif ArrayLen(cppTags) gt 0 || ArrayLen(javaTags) gt 0>
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="100%">
+      <table>
 	<tr bgcolor="##f0f0f0">
-	  <td><strong>Actions</strong></td>
-	  <td><strong>Tag Name</strong></td>
-	  <td><strong>Type</strong></td>
-	  <td><strong>Module/Class</strong></td>
-	  <td><strong>Description</strong></td>
+	  <th style="width:100px;">Actions</th>
+	  <th>Tag Name</th>
+	  <th>Type</th>
+	  <th>Module/Class</th>
+	  <th>Description</th>
 	</tr>
 	<cfif arrayLen(cppTags) gt 0>
 	  <cfloop index="i" from="1" to="#ArrayLen(cppTags)#">
-	    <tr bgcolor="##ffffff">
-	      <td width="100">
+	    <tr>
+	      <td>
 		<a href="_controller.cfm?action=editCPPCFXTag&cfxTag=#cppTags[i].name#" alt="Edit CFX Tag" title="Edit CFX Tag"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
 		<a href="_controller.cfm?action=verifyCFXTag&name=#cppTags[i].name#&type=cpp" alt="Verify CFX Tag" title="Verify CFX Tag"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
 		<a href="javascript:void(0);" onclick="javascript:deleteCFXTag('#cppTags[i].name#','cpp');" alt="Delete CFX Tag" title="Delete CFX Tag"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>
@@ -96,8 +117,8 @@
 	</cfif>
 	<cfif ArrayLen(javaTags) gt 0>
 	  <cfloop index="i" from="1" to="#arrayLen(javaTags)#">
-	    <tr bgcolor="##ffffff">
-	      <td width="100">
+	    <tr>
+	      <td>
 		<a href="_controller.cfm?action=editJavaCFXTag&cfxTag=#javaTags[i].name#" alt="Edit CFX Tag" title="Edit CFX Tag"><img src="../images/pencil.png" border="0" width="16" height="16" /></a>
 		<a href="_controller.cfm?action=verifyCFXTag&name=#javaTags[i].name#&type=java" alt="Verify CFX Tag" title="Verify CFX Tag"><img src="../images/accept.png" border="0" width="16" height="16" /></a>
 		<a href="javascript:void(0);" onclick="javascript:deleteCFXTag('#javaTags[i].name#','java');" alt="Delete CFX Tag" title="Delete CFX Tag"><img src="../images/cancel.png" border="0" width="16" height="16" /></a>

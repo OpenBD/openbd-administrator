@@ -23,16 +23,18 @@
 <cfsilent>
   <cfparam name="cfxTagMessage" type="string" default="" />
   <cfparam name="cfxTagMessageType" type="string" default="" />
-  <cfparam name="cfxTag" type="struct" default="#structNew()#" />
+  <cfparam name="cfxTag" type="struct" default="#StructNew()#" />
   <cfparam name="cfxTagAction" type="string" default="create" />
   
   <cfif StructKeyExists(session, "cfxTag")>
     <cfset cfxTag = session.cfxTag />
-    <cfset cfxAction = "update" />
+    <cfset cfxTagAction = "update" />
     <cfset submitButtonAction = "Update" />
     <cfelse>
       <cfset cfxTag = {name:'', displayname:'cfx_', description:'', 
-                       class:'', cfxAction:'create', submitButtonAction:'Register'} />
+                       class:''} />
+      <cfset cfxTagAction = "create" />
+      <cfset submitButtonAction = "Register" />
   </cfif>
 </cfsilent>
 <cfsavecontent variable="request.content">
@@ -69,54 +71,62 @@
     </div>
     
     <cfif StructKeyExists(session, "message") && session.message.text != "">
-      <p class="#session.message.type#">#session.message.text#</p>
-    </cfif>
-    
-    <cfif cfxTagMessage != "">
-      <p class="#cfxTagMessageType#">#cfxTagMessage#</p>
+      <div class="alert-message #session.message.type# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#session.message.text#</p>
+      </div>
     </cfif>
 
-    <cfif StructKeyExists(session, "errorFields") && ArrayLen(session.errorFields) gt 0>
-      <p class="error">The following errors occurred:</p>
-      <ul>
-	<cfloop index="i" from="1" to="#arrayLen(session.errorFields)#">
-	  <li>#session.errorFields[i][2]#</li>
-	</cfloop>
-      </ul>
+    <cfif cfxTagMessage != "">
+      <div class="alert-message #cfxTagMessageType# fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<p>#cfxTagMessage#</p>
+      </div>
+    </cfif>
+
+    <cfif StructKeyExists(session, "errorFields") && IsArray(session.errorFields) && ArrayLen(session.errorFields) gt 0>
+      <div class="alert-message block-message error fade in" data-alert="alert">
+	<a class="close" href="##">x</a>
+	<h5>The following errors occurred:</h5>
+	<ul>
+	  <cfloop index="i" from="1" to="#ArrayLen(session.errorFields)#">
+	    <li>#session.errorFields[i][2]#</li>
+	  </cfloop>
+	</ul>
+      </div>
     </cfif>
     
     <form action="_controller.cfm?action=processJavaCFXForm" method="post" onsubmit="javascript:return validate(this);">
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="600">
+      <table>
 	<tr>
-	  <td bgcolor="##f0f0f0"><strong><label for="name">Tag Name</label></strong></td>
-	  <td bgcolor="##ffffff">
-	    <input type="text" name="name" id="name" size="40" value="#cfxTag.displayname#" tabindex="1" />
-	  </td>
-	</tr>
-	<tr>
-	  <td bgcolor="##f0f0f0"><strong><label for="class">Class Name</label></strong></td>
-	  <td bgcolor="##ffffff">
-	    <input type="text" name="class" id="class" size="40" value="#cfxTag.class#" tabindex="2" />
-	  </td>
-	</tr>
-	<tr>
-	  <td valign="top" bgcolor="##f0f0f0"><strong><label for="description">Description</label></strong></td>
-	  <td valign="top" bgcolor="##ffffff">
-	    <textarea name="description" id="description" cols="40" rows="6" tabindex="3">#cfxTag.description#</textarea>
-	  </td>
-	</tr>
-	<tr bgcolor="##f0f0f0">
-	  <td align="right">
-	    <input type="button" name="cancel" id="cancel" value="Cancel" 
-		   onclick="javascript:location.replace('cfxtags.cfm');" tabindex="4" />
-	  </td>
+	  <td bgcolor="##f0f0f0">Tag Name</td>
 	  <td>
-	    <input type="submit" name="submit" id="submit" value="#submitButtonAction# Java CFX Tag" tabindex="5" />
+	    <input type="text" name="name" id="name" class="span6" value="#cfxTag.displayname#" tabindex="1" />
+	  </td>
+	</tr>
+	<tr>
+	  <td bgcolor="##f0f0f0">Class Name</td>
+	  <td>
+	    <input type="text" name="class" id="class" class="span6" value="#cfxTag.class#" tabindex="2" />
+	  </td>
+	</tr>
+	<tr>
+	  <td valign="top" bgcolor="##f0f0f0">Description</td>
+	  <td valign="top">
+	    <textarea name="description" id="description" class="span6" rows="6" tabindex="3">#cfxTag.description#</textarea>
+	  </td>
+	</tr>
+	<tr bgcolor="##dedede">
+	  <td>&nbsp;</td>
+	  <td>
+	    <input type="button" class="btn default" name="cancel" id="cancel" value="Cancel" 
+		   onclick="javascript:location.replace('cfxtags.cfm');" tabindex="4" />
+	    <input type="submit" class="btn primary" name="submit" id="submit" value="#submitButtonAction# Java CFX Tag" tabindex="5" />
 	  </td>
 	</tr>
       </table>
       <input type="hidden" name="existingCFXName" value="#cfxTag.name#" />
-      <input type="hidden" name="cfxAction" value="#cfxAction#" />
+      <input type="hidden" name="cfxAction" value="#cfxTagAction#" />
     </form>
 
     <div id="moreInfo" class="modal hide fade">

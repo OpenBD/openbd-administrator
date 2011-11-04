@@ -69,6 +69,11 @@
       <cfset localConfig.cfmail.usetls = "false" />
       <cfset doSetConfig = true />
     </cfif>
+
+    <cfif !StructKeyExists(localConfig.cfmail, "catchemail")>
+      <cfset localConfig.cfmail.catchemail = "" />
+      <cfset doSetConfig = true />
+    </cfif>
     
     <cfif doSetConfig>
       <cfset setConfig(localConfig) />
@@ -86,6 +91,7 @@
     <cfargument name="domain" type="string" required="true" hint="The default domain used by cfmail" />
     <cfargument name="usessl" type="boolean" required="true" hint="Boolean indicating whether or not to use SSL" />
     <cfargument name="usetls" type="boolean" required="true" hint="Boolean indicating whether or not to use TLS" />
+    <cfargument name="catchemail" type="string" required="true" hint="Email address to which to send ALL outgoing mail" />
     
     <cfset var localConfig = getConfig() />
 
@@ -99,6 +105,7 @@
     <cfset localConfig.cfmail.domain = arguments.domain />
     <cfset localConfig.cfmail.usessl = ToString(arguments.usessl) />
     <cfset localConfig.cfmail.usetls = ToString(arguments.usetls) />
+    <cfset localConfig.cfmail.catchemail = arguments.catchemail />
 
     <cfset setConfig(localConfig) />
   </cffunction>

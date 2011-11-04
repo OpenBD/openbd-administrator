@@ -35,6 +35,10 @@
     <cfset mailServers = Application.mail.getMailServers() />
     <cfset charsets = Application.mail.getAvailableCharsets() />
     
+    <cfif !StructKeyExists(mailSettings, "catchemail")>
+      <cfset mailSettings.catchemail = "" />
+    </cfif>
+    
     <cfcatch type="bluedragon.adminapi.mail">
       <cfset mailMessage = CFCATCH.Message />
       <cfset mailMessageType = "error" />
@@ -206,8 +210,8 @@
       </tr>
       <tr>
 	<td bgcolor="##f0f0f0" style="width:140px;">Spooled Mail</td>
-	<td bgcolor="##ffffff">#spoolCount#</td>
-	<td bgcolor="##ffffff" style="width:40px;">
+	<td>#spoolCount#</td>
+	<td style="width:40px;">
 	  <a href="javascript:void(0);" onclick="javascript:triggerMailSpool();" 
 	     alt="Trigger Mail Spool" title="Trigger Mail Spool">
 	    <img src="../images/arrow_refresh.png" height="16" width="16" border="0" />
@@ -215,9 +219,9 @@
 	</td>
       </tr>
       <tr>
-	<td bgcolor="##f0f0f0" align="right">Undelivered Mail</td>
-	<td bgcolor="##ffffff">#undeliveredCount#</td>
-	<td bgcolor="##ffffff">
+	<td bgcolor="##f0f0f0">Undelivered Mail</td>
+	<td>#undeliveredCount#</td>
+	<td>
 	  <a href="javascript:void(0);" onclick="javascript:respoolUndeliveredMail();" 
 	     alt="Respool Undelivered Mail" title="Respool Undelivered Mail">
 	    <img src="../images/email_go.png" height="16" width="16" border="0" />
@@ -312,43 +316,43 @@
 	  <th colspan="2"><h5>#mailServerFormActionHeader# Mail Server</h5></th>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="smtpserver">SMTP Server</label></td>
-	  <td bgcolor="##ffffff">
+	  <td bgcolor="##f0f0f0">SMTP Server</td>
+	  <td>
 	    <input type="text" name="smtpserver" id="smtpserver" class="span6" value="#mailServer.smtpserver#" tabindex="2" />
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="smtpport">SMTP Port</label></td>
-	  <td bgcolor="##ffffff">
+	  <td bgcolor="##f0f0f0">SMTP Port</td>
+	  <td>
 	    <input type="text" name="smtpport" id="smtpport" class="span2" maxlength="5" value="#mailServer.smtpport#" 
 		   tabindex="3" />
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="username">User Name</label></td>
-	  <td bgcolor="##ffffff">
+	  <td bgcolor="##f0f0f0">User Name</td>
+	  <td>
 	    <input type="text" name="username" id="username" class="span6" value="#mailServer.username#" 
 		   tabindex="4" />
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="password">Password</label></td>
-	  <td bgcolor="##ffffff">
+	  <td bgcolor="##f0f0f0">Password</td>
+	  <td>
 	    <input type="password" name="password" id="password" class="span6" value="#mailServer.password#" 
 		   tabindex="5" />
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="isPrimary">Primary</label></td>
-	  <td bgcolor="##ffffff">
+	  <td bgcolor="##f0f0f0">Primary</td>
+	  <td>
 	    <input type="checkbox" name="isPrimary" id="isPrimary" value="true"
 		   <cfif mailServer.isPrimary> checked="true"</cfif> tabindex="6" />&nbsp;
 	    (Note: if only one mail server is defined, it will always be primary)
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="testConnection">Test Connection</label></td>
-	  <td bgcolor="##ffffff">
+	  <td bgcolor="##f0f0f0">Test Connection</td>
+	  <td>
 	    <input type="checkbox" name="testConnection" id="testConnection" value="true" tabindex="7" />
 	  </td>
 	</tr>
@@ -365,7 +369,7 @@
     
     <form name="mailSettingsForm" action="_controller.cfm?action=processMailSettingsForm" method="post" 
 	  onsubmit="javascript:return validateMailSettingsForm(this);">
-      <table border="0" bgcolor="##999999" cellpadding="2" cellspacing="1" width="700">
+      <table>
 	<tr bgcolor="##dedede">
 	  <th colspan="2">
 	    <h5>Global Mail Settings</h5>
@@ -373,29 +377,29 @@
 	  </th>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="timeout">Timeout</label></td>
-	  <td bgcolor="##ffffff">
+	  <td bgcolor="##f0f0f0">Timeout</td>
+	  <td>
 	    <input type="text" name="timeout" id="timeout" class="span2" maxlength="3" value="#mailSettings.timeout#" 
 		   tabindex="9" /> seconds
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="threads">Mail Threads</label></td>
-	  <td bgcolor="##ffffff">
+	  <td bgcolor="##f0f0f0">Mail Threads</td>
+	  <td>
 	    <input type="text" name="threads" id="threads" class="span2" maxlength="3" value="#mailSettings.threads#" 
 		   tabindex="10" />
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="interval">Spool Interval</label></td>
-	  <td bgcolor="##ffffff">
+	  <td bgcolor="##f0f0f0">Spool Interval</td>
+	  <td>
 	    <input type="text" name="interval" id="interval" class="span2" maxlength="5" value="#mailSettings.interval#" 
 		   tabindex="11" /> seconds
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="charset">Default CFMAIL Character Set</label></td>
-	  <td bgcolor="##ffffff">
+	  <td bgcolor="##f0f0f0">Default CFMAIL Character Set</td>
+	  <td>
 	    <select name="charset" id="charset" tabindex="12">
 	      <cfloop collection="#charsets#" item="charset">
 		<option value="#charset#"<cfif mailSettings.charset is charset> selected="true"</cfif>>#charset#</option>
@@ -404,30 +408,38 @@
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="usessl">Use SSL</label></td>
-	  <td bgcolor="##ffffff">
+	  <td bgcolor="##f0f0f0">Use SSL</td>
+	  <td>
 	    <input type="checkbox" name="usessl" id="usessl" value="true" tabindex="13" 
 		   <cfif mailSettings.usessl>checked="true"</cfif> />
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="usessl">Use TLS</label></td>
-	  <td bgcolor="##ffffff">
+	  <td bgcolor="##f0f0f0">Use TLS</td>
+	  <td>
 	    <input type="checkbox" name="usetls" id="usetls" value="true" tabindex="14" 
 		   <cfif mailSettings.usetls>checked="true"</cfif> />
 	  </td>
 	</tr>
 	<tr>
-	  <td bgcolor="##f0f0f0"><label for="charset">Default CFMAIL Domain</label></td>
-	  <td bgcolor="##ffffff">
+	  <td bgcolor="##f0f0f0">Default CFMAIL Domain</td>
+	  <td>
 	    <input type="text" name="domain" id="domain" class="span6" value="#mailSettings.domain#" 
 		   tabindex="15" /><br />
 	    (Note: This value is used in the "message-id" mail part and not related to SMTP.)
 	  </td>
 	</tr>
+	<tr>
+	  <td bgcolor="##f0f0f0">Catch-All Email Address</td>
+	  <td>
+	    <input type="text" name="catchemail" id="catchemail" class="span6" value="#mailSettings.catchemail#" 
+		   tabindex="16" /><br />
+	    (If defined, <strong>ALL</strong> outgoing mail will be delivered to this address.)
+	  </td>
+	<tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
-	  <td><input class="btn primary" type="submit" name="submit" value="Submit" tabindex="16" /></td>
+	  <td><input class="btn primary" type="submit" name="submit" value="Submit" tabindex="17" /></td>
 	</tr>
       </table>
     </form>

@@ -1,10 +1,21 @@
 Open BlueDragon Admin Console/API Release Notes 
 __________________________________
 
-$Date: 2010/4/25 08:07:00 $
+$Date: 2011/11/06 10:00:00 $
 __________________________________
+-- Stable Release 2.0 [6th November 2011]
 
--- Stable Relase 1.4 [27th October 2010]
+- ENHANCEMENT: complete UI overhaul using Twitter Bootstrap
+- ENHANCEMENT: added control for enabling/disabling combined form and url scopes
+- ENHANCEMENT: added control for enabling/disabling strict array pass by reference
+- ENHANCEMENT: added control for enabling/disabling auto-VAR scoping of function variables
+- ENHANCEMENT: added control for setting max number of RTE logs to store on disk
+- ENHANCEMENT: moved scheduled task page from debugging/logging section to data & services section
+- ENHANCEMENT: "modernized" the codebase using new operator syntax (==, ||, etc.)
+- fix for #81--add development (catch-all) email address to mail settings page
+- fixed bug when deleting scheduled tasks with an apostrophe in the name
+
+-- Stable Release 1.4 [27th October 2010]
 
 - fix for #76--Add checkboxes for "Use SSL" and "Use TLS" on mail servers
 - fix for #78--Add query slowlog settings to admin console

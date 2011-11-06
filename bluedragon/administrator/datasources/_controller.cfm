@@ -368,7 +368,185 @@
       <cfset session.message.type = "info" />
       <cflocation url="index.cfm" addtoken="false" />
     </cfcase>
+
+    <!--- SCHEDULED TASKS --->
+    <cfcase value="processScheduledTaskForm">
+      <cfset errorFields = ArrayNew(2) />
+      <cfset errorFieldsIndex = 1 />
+      
+      <cfif Trim(args.name) == "">
+	<cfset errorFields[errorFieldsIndex][1] = "name" />
+	<cfset errorFields[errorFieldsIndex][2] = "A name for the scheduled task is required" />
+	<cfset errorFieldsIndex++ />
+      </cfif>
+      
+      <cfif Trim(args.urltouse) == "" || !IsValid("url", args.urltouse)>
+	<cfset errorFields[errorFieldsIndex][1] = "urltouse" />
+	<cfset errorFields[errorFieldsIndex][2] = "A valid URL for the scheduled task is required" />
+	<cfset errorFieldsIndex++ />
+      </cfif>
+      
+      <cfif Trim(args.porttouse) != "" && !IsNumeric(Trim(args.porttouse))>
+	<cfset errorFields[errorFieldsIndex][1] = "porttouse" />
+	<cfset errorFields[errorFieldsIndex][2] = "Please enter a numeric value for the port" />
+	<cfset errorFieldsIndex++ />
+	<cfelse>
+	  <cfset args.porttouse = -1 />
+      </cfif>
+      
+      <cfif Trim(args.proxyport) != "" && !IsNumeric(Trim(args.proxyport))>
+	<cfset errorFields[errorFieldsIndex][1] = "proxyport" />
+	<cfset errorFields[errorFieldsIndex][2] = "Please enter a numeric value for the proxy port" />
+	<cfset errorFieldsIndex++ />
+	<cfelse>
+	  <cfset args.proxyport = 80 />
+      </cfif>
+      
+      <cfif args.runinterval == "once" && !IsValid("time", Trim(args.starttime_once))>
+	<cfset errorFields[errorFieldsIndex][1] = "starttime_once" />
+	<cfset errorFields[errorFieldsIndex][2] = "Please enter a valid start time" />
+	<cfset errorFieldsIndex++ />
+      </cfif>
+      
+      <cfif args.runinterval == "recurring" && !IsValid("time", Trim(args.starttime_recurring))>
+	<cfset errorFields[errorFieldsIndex][1] = "starttime_recurring" />
+	<cfset errorFields[errorFieldsIndex][2] = "Please enter a valid start time" />
+	<cfset errorFieldsIndex++ />
+      </cfif>
+      
+      <cfif args.runinterval == "daily" && !IsValid("time", Trim(args.starttime_daily))>
+	<cfset errorFields[errorFieldsIndex][1] = "starttime_daily" />
+	<cfset errorFields[errorFieldsIndex][2] = "Please enter a valid start time" />
+	<cfset errorFieldsIndex++ />
+      </cfif>
+
+      <cfif Trim(args.endtime_daily) != "" && !IsValid("time", args.endtime_daily)>
+	<cfset errorFields[errorFieldsIndex][1] = "endtime_daily" />
+	<cfset errorFields[errorFieldsIndex][2] = "Please enter a valid end time for the daily task" />
+	<cfset errorFieldsIndex++ />
+      </cfif>
+
+      <cfif Trim(args.enddate) != "" && !IsValid("date", args.enddate)>
+	<cfset errorFields[errorFieldsIndex][1] = "enddate" />
+	<cfset errorFields[errorFieldsIndex][2] = "Please enter a valid end date" />
+	<cfset errorFieldsIndex++ />
+      </cfif>
+
+      <cfif args.runinterval == "recurring" && Trim(args.tasktype) == "">
+	<cfset errorFields[errorFieldsIndex][1] = "tasktype" />
+	<cfset errorFields[errorFieldsIndex][2] = "Please select the interval for the recurring task" />
+	<cfset errorFieldsIndex++ />
+      </cfif>
+      
+      <cfif args.runinterval == "daily" && (Trim(args.interval) == "" || !IsNumeric(args.interval) || args.interval gt 86400)>
+	<cfset errorFields[errorFieldsIndex][1] = "interval" />
+	<cfset errorFields[errorFieldsIndex][2] = "Please enter a valid number of seconds for the daily task. This number may not exceed 86400." />
+	<cfset errorFieldsIndex++ />
+      </cfif>
+      
+      <cfif StructKeyExists(args, "publish") && args.publish && 
+	    (Trim(args.publishpath) == "" || Trim(args.publishfile) == "")>
+	<cfset errorFields[errorFieldsIndex][1] = "publishpath" />
+	<cfset errorFields[errorFieldsIndex][2] = "Please enter a path and file name to which to publish the file" />
+	<cfset errorFieldsIndex++ />
+      </cfif>
+      
+      <cfif Trim(args.requesttimeout) == "" || !IsNumeric(args.requesttimeout)>
+	<cfset errorFields[errorFieldsIndex][1] = "requesttimeout" />
+	<cfset errorFields[errorFieldsIndex][2] = "Please enter a numeric value for request timeout" />
+	<cfset errorFieldsIndex++ />
+      </cfif>
+      
+      <cfif ArrayLen(errorFields) gt 0>
+	<cfset session.errorFields = errorFields />
+	<cflocation url="scheduledtasks.cfm" addtoken="false" />
+      </cfif>
+      
+      <cftry>
+	<cfif !IsValid("date", args.startdate)>
+	  <cfset args.startdate = DateFormat(now(), "mm/dd/yyyy") />
+	  <cfelse>
+	    <cfset args.startdate = DateFormat(args.startdate, "mm/dd/yyyy") />
+	</cfif>
+	
+	<cfif args.runinterval == "once">
+	  <cfset args.starttime = TimeFormat(args.starttime_once, "HH:mm") />
+	  <cfset args.interval = "ONCE" />
+	  <cfelseif args.runinterval == "recurring">
+	    <cfset args.starttime = TimeFormat(args.starttime_recurring, "HH:mm") />
+	    <cfset args.interval = args.tasktype />
+	    <cfelseif args.runinterval == "daily">
+	      <cfset args.starttime = TimeFormat(args.starttime_daily, "HH:mm") />
+	</cfif>
+	
+	<cfif Trim(args.enddate) != "">
+	  <cfset args.enddate = DateFormat(args.enddate, "mm/dd/yyyy") />
+	</cfif>
+	
+	<cfif args.runinterval == "daily" && Trim(args.endtime_daily) != "">
+	  <cfset args.endtime = TimeFormat(args.endtime_daily, "HH:mm") />
+	  <cfelse>
+	    <cfset args.endtime = "" />
+	</cfif>
+
+	<cfset Application.scheduledTasks.setScheduledTask(args.name, args.urltouse, args.startdate, args.starttime, 
+	       args.interval, args.porttouse, args.enddate, args.endtime, 
+	       args.username, args.password, 
+	       args.proxyserver, args.proxyport, args.publish, 
+	       args.publishpath, args.uridirectory, args.publishfile, 
+	       args.resolvelinks, args.requesttimeout, args.scheduledTaskAction) />
+
+	<cfif CompareNoCase(args.name, args.existingScheduledTaskName) != 0>
+	  <cfset Application.scheduledTasks.deleteScheduledTask(args.existingScheduledTaskName) />
+	</cfif>
+	
+	<cfcatch type="bluedragon.adminapi.scheduledtasks">
+	  <cfset session.message.text = CFCATCH.Message />
+	  <cfset session.message.type = "error" />
+	  <cflocation url="scheduledtasks.cfm" addtoken="false" />
+	</cfcatch>
+      </cftry>
+      
+      <cfset session.message.text = "The scheduled task was #args.scheduledTaskAction#d successfully" />
+      <cfset session.message.type = "info" />
+      <cflocation url="scheduledtasks.cfm" addtoken="false" />
+    </cfcase>
     
+    <cfcase value="runScheduledTask">
+      <cftry>
+	<cfset Application.scheduledTasks.runScheduledTask(args.name) />
+	<cfcatch type="bluedragon.adminapi.scheduledtasks">
+	  <cfset session.message.text = CFCATCH.Message />
+	  <cfset session.message.type = "error" />
+	  <cflocation url="scheduledtasks.cfm" addtoken="false" />
+	</cfcatch>
+      </cftry>
+
+      <cfset session.message.text = "The scheduled task was run successfully." />
+      <cfset session.message.type = "info" />
+      <cflocation url="scheduledtasks.cfm" addtoken="false" />
+    </cfcase>
+    
+    <cfcase value="editScheduledTask">
+      <cfset session.scheduledTask = Application.scheduledTasks.getScheduledTasks(args.name) />
+      <cflocation url="scheduledtasks.cfm" addtoken="false" />
+    </cfcase>
+    
+    <cfcase value="deleteScheduledTask">
+      <cftry>
+	<cfset Application.scheduledTasks.deleteScheduledTask(args.name) />
+	<cfcatch type="bluedragon.adminapi.scheduledtasks">
+	  <cfset session.message.text = CFCATCH.Message />
+	  <cfset session.message.type = "error" />
+	  <cflocation url="scheduledtasks.cfm" addtoken="false" />
+	</cfcatch>
+      </cftry>
+      
+      <cfset session.message.text = "The scheduled task was deleted successfully." />
+      <cfset session.message.type = "info" />
+      <cflocation url="scheduledtasks.cfm" addtoken="false" />
+    </cfcase>
+        
     <!--- SEARCH COLLECTIONS --->
     <cfcase value="createSearchCollection">
       <cfset errorFields = arrayNew(2) />

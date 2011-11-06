@@ -86,6 +86,7 @@
 		    <a href="##" class="dropdown-toggle">Data &amp; Services</a>
 		    <ul class="dropdown-menu">
 		      <li<cfif theSection == "datasources" && ListFind("index.cfm,h2-embedded.cfm,sqlserver-jtds.cfm,sqlserver2005-ms.cfm,mysql5.cfm,oracle.cfm,other.cfm,postgresql.cfm", thePage) != 0> class="active"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/index.cfm">Datasources</a></li>
+		      <li<cfif theSection == "datasources" && thePage == "scheduledtasks.cfm"> class="active"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/scheduledtasks.cfm">Scheduled Tasks</a></li>
 		      <li<cfif theSection == "datasources" && thePage == "collections.cfm"> class="active"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/collections.cfm">Search Collections</a></li>
 		      <li<cfif theSection == "datasources" && thePage == "webservices.cfm"> class="active"</cfif>><a href="#contextPath#/bluedragon/administrator/datasources/webservices.cfm">Web Services</a></li>
 		    </ul>
@@ -95,7 +96,6 @@
 		    <ul class="dropdown-menu">
 		      <li<cfif theSection == "debugging" && thePage == "index.cfm"> class="active"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/index.cfm">Debug Settings</a></li>
 		      <li<cfif theSection == "debugging" && thePage == "ipaddresses.cfm"> class="active"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/ipaddresses.cfm">Debug IP Addresses</a></li>
-		      <li<cfif theSection == "debugging" && thePage == "scheduledtasks.cfm"> class="active"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/scheduledtasks.cfm">Scheduled Tasks</a></li>
 		      <li<cfif theSection == "debugging" && ListFind("logs.cfm,viewlogfile.cfm", thePage) != 0> class="active"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/logs.cfm">Log Files</a></li>
 		      <li<cfif theSection == "debugging" && ListFind("runtimeerrors.cfm,viewrtelog.cfm", thePage) != 0> class="active"</cfif>><a href="#contextPath#/bluedragon/administrator/debugging/runtimeerrors.cfm">Runtime Error Logs</a></li>
 		    </ul>

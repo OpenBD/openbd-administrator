@@ -757,9 +757,9 @@
     <cfset checkLoginStatus() />
 
     <cfif DirectoryExists(rteLogFilePath)>
-      <cfdirectory action="list" directory="#rteLogFilePath#" name="rteLogs" />
+      <cfdirectory action="list" directory="#rteLogFilePath#" name="rteLogs" filter="*.html" />
       
-      <cfquery name="rteLogs" dbtype="query" >
+      <cfquery name="rteLogs" dbtype="query">
 	SELECT * 
 	FROM rteLogs 
 	ORDER BY datelastmodified DESC

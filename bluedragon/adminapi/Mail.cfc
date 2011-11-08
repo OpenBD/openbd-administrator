@@ -6,7 +6,7 @@
     Matt Woodward - matt@mattwoodward.com
     Jordan Michaels - jordan@viviotech.net
 
-    This file is part of of the Open BlueDragon Admin API.
+    This file is part of the Open BlueDragon Admin API.
 
     The Open BlueDragon Admin API is free software: you can redistribute 
     it and/or modify it under the terms of the GNU General Public License 

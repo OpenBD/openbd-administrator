@@ -4,7 +4,7 @@
     Contributing Developers:
     Matt Woodward - matt@mattwoodward.com
 
-    This file is part of of the Open BlueDragon Administrator.
+    This file is part of the Open BlueDragon Administrator.
 
     The Open BlueDragon Administrator is free software: you can redistribute 
     it and/or modify it under the terms of the GNU General Public License 

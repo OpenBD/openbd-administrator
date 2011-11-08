@@ -4,7 +4,7 @@
     Contributing Developers:
     Matt Woodward - matt@mattwoodward.com
 
-    This file is part of of the Open BlueDragon Administrator.
+    This file is part of the Open BlueDragon Administrator.
 
     The Open BlueDragon Administrator is free software: you can redistribute 
     it and/or modify it under the terms of the GNU General Public License 
@@ -92,18 +92,20 @@
 	    <th>Last Updated</th>
 	  </tr>
 	  <cfloop index="i" from="1" to="#ArrayLen(logFiles)#">
-	    <tr>
-	      <td>
-		<a href="viewlogfile.cfm?logFile=#logFiles[i].name#" alt="View Log File" title="View Log File"><img src="../images/page_find.png" border="0" width="16" height="16" /></a>
-		<a href="javascript:void(0);" onclick="javascript:downloadLogFile('#logFiles[i].name#');" alt="Download Log File" title="Download Log File"><img src="../images/disk.png" border="0" width="16" height="16" /></a>
-		<!--- TODO: deleting and archiving log files didn't currently jive with how the openbd engine deals with log files, so commenting this out for now --->
-		<!--- <a href="javascript:void(0);" onclick="javascript:archiveLogFile('#logFiles[i].name#');" alt="Archive Log File" title="Archive Log File"><img src="../images/folder_page.png" border="0" width="16" height="16" /></a>
-		    <a href="javascript:void(0);" onclick="javascript:deleteLogFile('#logFiles[i].name#');" alt="Delete Log File" title="Delete Log File"><img src="../images/cancel.png" border="0" width="16" height="16" /></a> --->
-	      </td>
-	      <td><a href="viewlogfile.cfm?logFile=#logFiles[i].name#" alt="View Log File" title="View Log File">#logFiles[i].name#</a></td>
-	      <td>#logFiles[i].size#</td>
-	      <td>#logFiles[i].datelastmodified#</td>
-	    </tr>
+	    <cfif logFiles[i].name != '.DS_STORE'>
+	      <tr>
+		<td>
+		  <a href="viewlogfile.cfm?logFile=#logFiles[i].name#" alt="View Log File" title="View Log File"><img src="../images/page_find.png" border="0" width="16" height="16" /></a>
+		  <a href="javascript:void(0);" onclick="javascript:downloadLogFile('#logFiles[i].name#');" alt="Download Log File" title="Download Log File"><img src="../images/disk.png" border="0" width="16" height="16" /></a>
+		  <!--- TODO: deleting and archiving log files didn't currently jive with how the openbd engine deals with log files, so commenting this out for now --->
+		  <!--- <a href="javascript:void(0);" onclick="javascript:archiveLogFile('#logFiles[i].name#');" alt="Archive Log File" title="Archive Log File"><img src="../images/folder_page.png" border="0" width="16" height="16" /></a>
+		      <a href="javascript:void(0);" onclick="javascript:deleteLogFile('#logFiles[i].name#');" alt="Delete Log File" title="Delete Log File"><img src="../images/cancel.png" border="0" width="16" height="16" /></a> --->
+		</td>
+		<td><a href="viewlogfile.cfm?logFile=#logFiles[i].name#" alt="View Log File" title="View Log File">#logFiles[i].name#</a></td>
+		<td>#logFiles[i].size#</td>
+		<td>#logFiles[i].datelastmodified#</td>
+	      </tr>
+	    </cfif>
 	  </cfloop>
 	</table>
     </cfif>

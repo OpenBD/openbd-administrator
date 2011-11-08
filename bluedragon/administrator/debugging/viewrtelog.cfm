@@ -4,7 +4,7 @@
     Contributing Developers:
     Matt Woodward - matt@mattwoodward.com
 
-    This file is part of of the Open BlueDragon Administrator.
+    This file is part of the Open BlueDragon Administrator.
 
     The Open BlueDragon Administrator is free software: you can redistribute 
     it and/or modify it under the terms of the GNU General Public License 
@@ -39,7 +39,9 @@
 	<div class="pull-left"><h3>Viewing Contents of #url.rteLog#</h3></div>
 	<div class="pull-right"><h6><a href="runtimeerrors.cfm">&laquo; Back to Runtime Error Logs</a></h6></div>
       </div>
-      <cfoutput>#logContents#</cfoutput>
+      <div class="container" style="width:100%;">
+	#logContents#
+      </div>
       <cfelse>
 	<p><strong>No file contents to display</strong></p>
     </cfif>

@@ -3,6 +3,7 @@
     
     Contributing Developers:
     Matt Woodward - matt@mattwoodward.com
+    Nitai - nitai@razuna.com
 
     This file is part of the Open BlueDragon Administrator.
 
@@ -549,7 +550,7 @@
         
     <!--- SEARCH COLLECTIONS --->
     <cfcase value="createSearchCollection">
-      <cfset errorFields = arrayNew(2) />
+      <cfset errorFields = ArrayNew(2) />
       <cfset errorFieldsIndex = 1 />
       
       <!--- validate the form data --->
@@ -559,14 +560,8 @@
 	<cfset errorFieldsIndex++ />
       </cfif>
       
-      <cfif Trim(args.path) == "">
-	<cfset errorFields[errorFieldsIndex][1] = "path" />
-	<cfset errorFields[errorFieldsIndex][2] = "The value of Collection Path cannot be blank" />
-	<cfset errorFieldsIndex++ />
-      </cfif>
-      
       <cfif Trim(args.language) == "">
-	<cfset errorFields[errorFieldsIndex][1] = "path" />
+	<cfset errorFields[errorFieldsIndex][1] = "language" />
 	<cfset errorFields[errorFieldsIndex][2] = "You must select a Language for the collection" />
 	<cfset errorFieldsIndex++ />
       </cfif>
@@ -577,7 +572,7 @@
 	<cfelse>
 	  <cftry>
 	    <cfset Application.searchCollections.createSearchCollection(args.name, args.path, 
-		   args.language, args.storebody) />
+		   args.language, args.storebody, args.relative) />
 	    <cfcatch type="bluedragon.adminapi.searchcollections">
 	      <cfset session.message.text = CFCATCH.Message />
 	      <cfset session.message.type = "error" />
@@ -590,7 +585,7 @@
 	  <cflocation url="collections.cfm" addtoken="false" />
       </cfif>
     </cfcase>
-    
+     
     <cfcase value="showIndexForm">
       <cftry>
 	<cfset session.searchCollection = Application.searchCollections.getSearchCollection(args.name) />
@@ -608,12 +603,6 @@
       <cfset errorFields = ArrayNew(2) />
 
       <!--- validate the form data --->
-      <cfif Trim(args.key) == "">
-	<cfset errorFields[errorFieldsIndex][1] = "key" />
-	<cfset errorFields[errorFieldsIndex][2] = "The value of Directory Path cannot be blank" />
-	<cfset errorFieldsIndex++ />
-      </cfif>
-
       <cfif ArrayLen(errorFields) gt 0>
 	<cfset session.errorFields = errorFields />
 	<cflocation url="_controller.cfm?action=showIndexForm&name=#args.name#" addtoken="false" />
@@ -635,7 +624,55 @@
 	  </cftry>
       </cfif>
       
-      <cfset session.message.text = "The collection was indexed successfully: #collectionIndexStatus.inserted# documents inserted, #collectionIndexStatus.updated# documents updated, #collectionIndexStatus.deleted# documents deleted." />
+      <cfset session.message.text = "The collection was indexed successfully: " />
+
+      <cfif StructKeyExists(collectionIndexStatus, "inserted")>
+	<cfset session.message.text &= collectionIndexStatus.inserted />
+	<cfif collectionIndexStatus.inserted != 1>
+	  <cfset session.message.text &= " documents inserted, " />
+	  <cfelse>
+	    <cfset session.message.text &= " document inserted, " />
+	</cfif>
+      </cfif>
+
+      <cfif StructKeyExists(collectionIndexStatus, "updated")>
+	<cfset session.message.text &= collectionIndexStatus.updated />
+	<cfif collectionIndexStatus.updated != 1>
+	  <cfset session.message.text &= " documents updated, " />
+	  <cfelse>
+	    <cfset session.message.text &= " document updated, " />
+	</cfif>
+      </cfif>
+
+      <cfif StructKeyExists(collectionIndexStatus, "invalid")>
+	<cfset session.message.text &= collectionIndexStatus.invalid />
+	<cfif collectionIndexStatus.invalid != 1>
+	  <cfset session.message.text &= " documents invalid, " />
+	  <cfelse>
+	    <cfset session.message.text &= " document invalid, " />
+	</cfif>
+      </cfif>
+
+      <cfif StructKeyExists(collectionIndexStatus, "badkeys")>
+	<cfset session.message.text &= ArrayLen(collectionIndexStatus.badkeys) />
+	<cfif ArrayLen(collectionIndexStatus.badkeys) != 1>
+	  <cfset session.message.text &= " documents with bad keys, " />
+	  <cfelse>
+	    <cfset session.message.text &= " document with a bad key, " />
+	</cfif>
+      </cfif>
+
+      <cfif StructKeyExists(collectionIndexStatus, "deleted")>
+	<cfset session.message.text &= collectionIndexStatus.deleted />
+	<cfif collectionIndexStatus.deleted != 1>
+	  <cfset session.message.text &= " documents deleted, " />
+	  <cfelse>
+	    <cfset session.message.text &= " document deleted, " />
+	</cfif>
+      </cfif>
+
+      <cfset session.message.text = Left(session.message.text, Len(session.message.text) - 2) & "." />
+
       <cfset session.message.type = "info" />
       <cflocation url="collections.cfm" addtoken="false" />
     </cfcase>

@@ -4,6 +4,7 @@
     Contributing Developers:
     David C. Epler - dcepler@dcepler.net
     Matt Woodward - matt@mattwoodward.com
+    Nitai - nitai@razuna.com
 
     This file is part of the Open BlueDragon Admin API.
 
@@ -27,25 +28,17 @@
    extends="Base" 
    hint="Manages search collections - OpenBD Admin API">
   
-  <cffunction name="getSearchCollections" access="public" output="false" returntype="array" 
-	      hint="Returns an array containing defined search collections">
-    <cfset var searchCollections = [] />
-    <cfset var localConfig = getConfig() />
-    <cfset var sortKeys = [] />
-    <cfset var sortKey = {} />
+  <cffunction name="getSearchCollections" access="public" output="false" returntype="query" 
+	      hint="Returns a query containing defined search collections">
 
     <cfset checkLoginStatus() />
     
-    <!--- check to see if the cfcollection node exists --->
-    <cfif !StructKeyExists(localConfig, "cfcollection") || !StructKeyExists(localConfig.cfcollection, "collection")>
+    <cfset var collections = CollectionList() />
+    
+    <cfif collections.RecordCount == 0>
       <cfthrow message="No search collections defined" type="bluedragon.adminapi.searchcollections" />
       <cfelse>
-	<!--- set the sorting information --->
-	<cfset sortKey.keyName = "name" />
-	<cfset sortKey.sortOrder = "ascending" />
-	<cfset ArrayAppend(sortKeys, sortKey) />
-	
-	<cfreturn variables.udfs.sortArrayOfObjects(localConfig.cfcollection.collection, sortKeys, false, false) />
+	<cfreturn collections />
     </cfif>
   </cffunction>
   
@@ -81,20 +74,25 @@
     <cfthrow message="A search collection with that name does not exist" type="bluedragon.adminapi.searchcollections" />
   </cffunction>
   
-  <cffunction name="createSearchCollection" access="public" output="false" returntype="void" 
+  <cffunction name="createSearchCollection" access="public" output="true" returntype="void" 
 	      hint="Creates a search collection">
     <cfargument name="name" type="string" required="true" hint="The name of the search collection" />
     <cfargument name="path" type="string" required="true" hint="The path where the search collection will be stored" />
     <cfargument name="language" type="string" required="true" hint="The language of the search collection" />
     <cfargument name="storebody" type="boolean" required="true" 
 		hint="Boolean indicating whether or not to store the document body in the search collection" />
+    <cfargument name="relative" type="boolean" required="true" 
+		hint="Boolean indicating whether or not the path is relative or not" />
     
     <cfset checkLoginStatus() />
     
-    <cfcollection action="create" collection="#arguments.name#" path="#arguments.path#" 
-		  language="#arguments.language#" storebody="#arguments.storebody#" />
+    <cfif arguments.path == "">
+      <cfset CollectionCreate(collection=arguments.name, language=arguments.language, storebody=arguments.storebody) />
+      <cfelse>
+    	<cfset CollectionCreate(collection=arguments.name, language=arguments.language, storebody=arguments.storebody, path=arguments.path, relative=arguments.relative) />
+    </cfif>
   </cffunction>
-  
+
   <cffunction name="deleteSearchCollection" access="public" output="false" returntype="void" 
 	      hint="Deletes a search collection by name">
     <cfargument name="name" type="string" required="true" hint="The name of the collection to delete" />
@@ -114,7 +112,9 @@
     <cfargument name="urlpath" type="string" required="false" default="" hint="The URL prepended to search result documents" />
     <cfargument name="extensions" type="string" required="false" default="*" hint="Comma-delimited list of file extensions to index" />
     <cfargument name="recurse" type="boolean" required="false" default="false" hint="Boolean indicating whether or not to recurse subdirectories under the path being indexed" />
-
+    
+    <cfset var status = {} />
+    
     <cfset checkLoginStatus() />
     
     <cfif CompareNoCase(arguments.type, "path") == 0 || CompareNoCase(arguments.type, "file") == 0>

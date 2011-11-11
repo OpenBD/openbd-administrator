@@ -3,6 +3,7 @@
     
     Contributing Developers:
     Matt Woodward - matt@mattwoodward.com
+    Nitai - nitai@razuna.com
 
     This file is part of the Open BlueDragon Administrator.
 
@@ -27,7 +28,7 @@
   <cfparam name="searchCollectionsMessage" type="string" default="" />
 
   <cfset supportedLanguages = [] />
-  <cfset searchCollections = [] />
+  <cfset searchCollections = 0 />
   
   <cftry>
     <cfset supportedLanguages = Application.searchCollections.getSupportedLanguages() />
@@ -45,8 +46,8 @@
         if (f.name.value.length == 0) {
           alert("Please enter the collection name");
           return false;
-        } else if (f.path.value.length == 0) {
-          alert("Please enter the collection path");
+        } else if (f.relative[0].checked && f.path.value.length == 0) {
+          alert("When using a relative path you must provide the collection path");
           return false;
         } else if (f.language.value == "") {
           alert("Please select the collection language");
@@ -98,37 +99,43 @@
       </div>
     </cfif>
 
-    <cfif ArrayLen(searchCollections) == 0>
+    <cfif !IsQuery(searchCollections) || searchCollections.RecordCount == 0>
       <p><strong><em>No search collections configured</em></strong></p>
       <cfelse>
 	<table>
 	  <tr bgcolor="##dedede">
-	    <th colspan="5"><h5>Search Collections</h5></th>
+	    <th colspan="9"><h5>Search Collections</h5></th>
 	  </tr>
 	  <tr bgcolor="##f0f0f0">
 	    <th style="width:80px;">Actions</th>
 	    <th>Name</th>
 	    <th>Path</th>
 	    <th>Language</th>
+	    <th>Docs</th>
+	    <th>Size</th>
 	    <th>Store Body</th>
+	    <th>Created</th>
+	    <th>Modified</th>
 	  </tr>
-	  <cfloop index="i" from="1" to="#ArrayLen(searchCollections)#">
+
+	  <cfloop query="searchCollections">
 	    <tr bgcolor="##ffffff">
 	      <td>
-		<!--- <a href="_controller.cfm?action=getCollectionStatus&name=#searchCollections[i].name#">
-		    <img src="../images/information.png" width="16" height="16" alt="Collection Status" title="Collection Status" border="0" />
-		</a> --->
-		<a href="_controller.cfm?action=showIndexForm&name=#searchCollections[i].name#">
+		<a href="_controller.cfm?action=showIndexForm&name=#searchCollections.name#">
 		  <img src="../images/lightning.png" width="16" height="16" alt="Index Collection" title="Index Collection" border="0" />
 		</a>
-		<a href="javascript:void(0);" onclick="javascript:deleteSearchCollection('#searchCollections[i].name#')">
+		<a href="javascript:void(0);" onclick="javascript:deleteSearchCollection('#JSStringFormat(searchCollections.name)#')">
 		  <img src="../images/cancel.png" width="16" heigth="16" alt="Delete Collection" title="Delete Collection" border="0" />
 		</a>
 	      </td>
-	      <td>#searchCollections[i].name#</td>
-	      <td>#searchCollections[i].path#</td>
-	      <td>#searchCollections[i].language#</td>
-	      <td>#YesNoFormat(searchCollections[i].storebody)#</td>
+	      <td>#searchCollections.name#</td>
+	      <td>#searchCollections.path#</td>
+	      <td>#searchCollections.language#</td>
+	      <td>#searchCollections.doccount#</td>
+	      <td>#searchCollections.size#</td>
+	      <td>#YesNoFormat(searchCollections.storedbody)#</td>
+	      <td>#LSDateFormat(searchCollections.created)# #LSTimeFormat(searchCollections.created)#</td>
+	      <td>#LSDateFormat(searchCollections.lastmodified)# #LSTimeFormat(searchCollections.lastmodified)#</td>
 	    </tr>
 	  </cfloop>
 	</table>
@@ -151,14 +158,26 @@
 	<tr>
 	  <td bgcolor="##f0f0f0">Collection Path</td>
 	  <td>
-	    <input type="text" name="path" id="path" class="span12"
-		   value="#expandPath('/WEB-INF/bluedragon/work/cfcollection')#" tabindex="2" />
+	    <input type="text" name="path" id="path" class="span12" tabindex="2" /><br />
+	    (Leave blank to create the collection in the default location)
+	  </td>
+	</tr>
+	<tr>
+	  <td bgcolor="##f0f0f0">Relative</td>
+	  <td>
+	    <div class="inline-inputs">
+	      <input type="radio" name="relative" id="relativeTrue" value="true" tabindex="3" />
+	      <span>Yes</span>
+	      <input type="radio" name="relative" id="relativeFalse" value="false" checked="true" tabindex="4" />
+	      <span>No</span>
+	    </div>
+	    (If using a relative path, you must enter the relative path in the collection path field above)
 	  </td>
 	</tr>
 	<tr>
 	  <td bgcolor="##f0f0f0">Language</td>
 	  <td>
-	    <select name="language" id="language" tabindex="3">
+	    <select name="language" id="language" tabindex="5">
 	      <cfloop index="i" from="1" to="#ArrayLen(supportedLanguages)#">
 		<option value="#supportedLanguages[i]#"<cfif supportedLanguages[i] == "english"> selected="true"</cfif>>#supportedLanguages[i]#</option>
 	      </cfloop>
@@ -169,16 +188,16 @@
 	  <td bgcolor="##f0f0f0">Store Document Body</td>
 	  <td>
 	    <div class="inline-inputs">
-	      <input type="radio" name="storebody" id="storebodyTrue" value="true" tabindex="4" />
+	      <input type="radio" name="storebody" id="storebodyTrue" value="true" tabindex="6" />
 	      <span>Yes</span>
-	      <input type="radio" name="storebody" id="storebodyFalse" value="false" checked="true" tabindex="5" />
+	      <input type="radio" name="storebody" id="storebodyFalse" value="false" checked="true" tabindex="7" />
 	      <span>No</span>
 	    </div>
 	  </td>
 	</tr>
 	<tr bgcolor="##dedede">
 	  <td>&nbsp;</td>
-	  <td><input class="btn primary" type="submit" name="submit" value="Create Collection" tabindex="6" /></td>
+	  <td><input class="btn primary" type="submit" name="submit" value="Create Collection" tabindex="8" /></td>
 	</tr>
       </table>
     </form>

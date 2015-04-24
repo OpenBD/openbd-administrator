@@ -1,5 +1,5 @@
 <!---
-	Copyright (C) 2008 - Open BlueDragon Project - http://www.openbluedragon.org
+	Copyright (C) 2008 - Open BlueDragon Project - http://openbd.org
 
 	Contributing Developers:
 	Matt Woodward - matt@mattwoodward.com
@@ -20,10 +20,10 @@
 	along with the Open BlueDragon Administrator.  If not, see 
 	<http://www.gnu.org/licenses/>.
 --->
-<cfcomponent displayname"Application" output="false" hint="Application.cfc for OpenBD administrator">
+<cfcomponent displayname="Application" output="false" hint="Application.cfc for OpenBD administrator">
 
 	<cfscript>
-		this.name = "OpenBDAdminConsole";
+		this.name = "OpenBDAdminConsole3.0";
 		this.sessionmanagement = true;
 		this.setclientcookies = true;
 		this.sessiontimeout = CreateTimeSpan(0,0,20,0);

@@ -106,12 +106,15 @@
 	      hint="Sets the server configuration and tells OpenBD to refresh its settings">
     <cfargument name="currentConfig" type="struct" required="true" 
 		hint="The configuration struct, which is a struct representation of bluedragon.xml" />
+	<cfargument name="ignorelogincheck" required="false" />
     
     <cfset var admin = {} />
     <cfset var xmlConfig = "" />
     <cfset var success = false />
     
-    <cfset checkLoginStatus() />
+    <cfif !StructKeyExists(arguments, "ignorelogincheck")>
+    	<cfset checkLoginStatus() />
+    </cfif>
     
     <cflock scope="Server" type="exclusive" timeout="5">
       <cfset admin.server = Duplicate(arguments.currentConfig) />

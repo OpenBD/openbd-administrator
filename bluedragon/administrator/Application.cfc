@@ -3,6 +3,7 @@
 
 	Contributing Developers:
 	Matt Woodward - matt@mattwoodward.com
+	Marcus Fernstrom - marcus@marcusfernstrom.com
 
 	This file is part of the Open BlueDragon Administrator.
 
@@ -136,7 +137,7 @@
 			</cfif>
 		</cfif>
 
-		<cfif !Application.administrator.isUserLoggedIn() && ListLast(CGI.SCRIPT_NAME, "/") != "login.cfm" &&
+		<cfif !Application.administrator.isAdminUserLoggedIn() && ListLast(CGI.SCRIPT_NAME, "/") != "login.cfm" &&
 				ListLast(CGI.SCRIPT_NAME, "/") != "_loginController.cfm">
 			<cfset contextPath = getPageContext().getRequest().getContextPath() />
 

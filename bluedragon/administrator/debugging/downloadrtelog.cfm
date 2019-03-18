@@ -20,6 +20,12 @@
     along with the Open BlueDragon Administrator.  If not, see 
     <http://www.gnu.org/licenses/>.
 --->
-<cfset fullPath = Application.debugging.getRunTimeErrorLogPath() & Application.debugging.getFileSeparator() & url.rteLog />
-<cfheader name="Content-disposition" value="attachment;filename=#url.rteLog#" />
-<cfcontent type="text/plain" file="#fullPath#" />
+<cfif listLast(url.rteLog, "/") CONTAINS ".log">
+    <cfset fullPath = Application.debugging.getRunTimeErrorLogPath() & Application.debugging.getFileSeparator() & url.rteLog />
+    <cfheader name="Content-disposition" value="attachment;filename=#url.rteLog#" />
+    <cfcontent type="text/plain" file="#fullPath#" />
+<cfelse>
+    <cfsavecontent variable="request.content">
+      <h2>Nothing here for you!</h2>
+    </cfsavecontent>
+</cfif>

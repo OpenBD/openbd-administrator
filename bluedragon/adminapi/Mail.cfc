@@ -427,7 +427,7 @@
       <cfdirectory action="list" directory="#undeliveredMailPath#" name="undeliveredDirList" filter="*.email" />
       <cfset undeliveredCount = undeliveredDirList.RecordCount />
       <cfcatch type="any">
-	<cfset undeliveredCount = -1 />
+	     <cfset undeliveredCount = -1 />
       </cfcatch>
     </cftry>
     
@@ -453,8 +453,8 @@
 	</cfif>
       </cfloop>
     </cfif>
-    
-    <cfset triggerMailSpool() />
+    <!--- Not required as it automatically starts sending out emails --->
+    <!--- <cfset triggerMailSpool() /> --->
   </cffunction>
   
   <cffunction name="triggerMailSpool" access="public" output="false" returntype="void" 
@@ -473,7 +473,7 @@
     <cfif variables.isMultiContextJetty>
       <cfset mailSpoolPath = "#getJVMProperty('jetty.home')##variables.separator.file#logs#variables.separator.file#openbd#variables.separator.file#cfmail#variables.separator.file#spool" />
       <cfelse>
-	<cfset mailSpoolPath = expandPath("/WEB-INF/bluedragon/work/cfmail/spool") />
+	<cfset mailSpoolPath = GetMailspooldirectory() />
     </cfif>
     
     <cfreturn mailSpoolPath />
@@ -487,10 +487,10 @@
     
     <cfif variables.isMultiContextJetty>
       <cfset undeliveredMailPath = "#getJVMProperty('jetty.home')##variables.separator.file#logs#variables.separator.file#openbd#variables.separator.file#cfmail#variables.separator.file#undelivered" />
-      <cfelse>
-	<cfset undeliveredMailPath = expandPath("/WEB-INF/bluedragon/work/cfmail/undelivered") />
+    <cfelse>
+      <cfset undeliveredMailPath = GetMailundelivereddirectory() />
     </cfif>
-    
+
     <cfreturn undeliveredMailPath />
   </cffunction>
 </cfcomponent>

@@ -212,10 +212,10 @@
 	<td bgcolor="##f0f0f0" style="width:140px;">Spooled Mail</td>
 	<td>#spoolCount#</td>
 	<td style="width:40px;">
-	  <a href="javascript:void(0);" onclick="javascript:triggerMailSpool();" 
+	  <!--- <a href="javascript:void(0);" onclick="javascript:triggerMailSpool();" 
 	     alt="Trigger Mail Spool" title="Trigger Mail Spool">
 	    <img src="../images/arrow_refresh.png" height="16" width="16" border="0" />
-	  </a>
+	  </a> --->
 	</td>
       </tr>
       <tr>

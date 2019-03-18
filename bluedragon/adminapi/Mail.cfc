@@ -490,8 +490,6 @@
     <cfelse>
       <cfset undeliveredMailPath = GetMailundelivereddirectory() />
     </cfif>
-    <cfset consoleoutput(true, true)>
-    <cfset console("undeliveredMailPath", undeliveredMailPath)>
 
     <cfreturn undeliveredMailPath />
   </cffunction>
